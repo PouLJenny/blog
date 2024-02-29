@@ -1,0 +1,7 @@
+1. maven插件
+    1.1 archetype的使用 
+        1.1.1 案例1 
+              从已有的项目中创建maven原型骨架 
+              在项目根目录执行命令： mvn archetype:create-from-project
+              在项目target/generated-sources/archetype目录 执行命令： mvn install
+   

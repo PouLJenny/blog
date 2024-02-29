@@ -1,0 +1,38 @@
+<mxfile host="Electron" modified="2023-08-04T12:37:25.848Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.1 Chrome/112.0.5615.204 Electron/24.6.1 Safari/537.36" etag="RS274d7FKeviUTRIpmqp" version="21.6.1" type="device" pages="3">
+  <diagram id="aoC-PCiNpl2NHw54_jwn" name="TCP">
+    <mxGraphModel dx="1434" dy="879" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n8rIWKJ7RTIOCUiMREGj-1" value="TCP首部" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n8rIWKJ7RTIOCUiMREGj-2" value="TCP数据部分" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="190" width="480" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n8rIWKJ7RTIOCUiMREGj-4" value="" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n8rIWKJ7RTIOCUiMREGj-5" value="0&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 2&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;4&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;6&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 8&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 10&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 12&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 14&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;16&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;18&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 20&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 22&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;24&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;26&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; 28&amp;nbsp;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="360" y="370" width="600" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="5kgsecVrqh76B_5YF6Er" name="UDP">
+    <mxGraphModel dx="1434" dy="879" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J_Rr7KxKggqq3hUDPB89" name="IP">
+    <mxGraphModel dx="1434" dy="879" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

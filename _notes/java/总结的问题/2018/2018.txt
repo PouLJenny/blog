@@ -1,0 +1,109 @@
+2018-01-03
+    
+    1. spring 配置aop日志方式：
+       http://blog.csdn.net/donggua3694857/article/details/52752503
+       
+2018-01-04
+
+    1. Markdown 语法 
+    
+    
+    tomcat <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+			   maxHttpHeaderSize="65536" 
+			   maxPostSize="4194304"
+			   URIEncoding="UTF-8"
+               redirectPort="8443" />
+               
+    
+2018-01-08
+
+    1. restful风格api设计方式
+       https://en.wikipedia.org/wiki/Representational_state_transfer
+       http://blog.csdn.net/suo082407128/article/details/60132447
+       http://blog.csdn.net/why_2012_gogo/article/details/77606418
+       https://www.cnblogs.com/wuoshiwzm/p/6082315.html
+       百度地图的resful api 设计方案
+       http://api.map.baidu.com/direction/v1/routematrix
+       https://api.map.baidu.com/direction/v1/routematrix
+       
+2018-01-09
+
+    1.  对于表单提交，tomcat默认只解析POST的表单，对于PUT和DELETE的不处理，所以Spring拿不到。
+        解决方案：1、修改tomcat的server.xml：
+
+        <Connector port="8080" protocol="HTTP/1.1" 
+                   connectionTimeout="20000"
+                   redirectPort="8443"
+                   parseBodyMethods="POST,PUT,DELETE"
+                   URIEncoding="UTF-8" />
+        解决方案: 2、在web.xml中添加HttpPutFormContentFilter
+
+            <!--Servlet不支持PUT表单，需要Spring支持-->
+            <filter>
+                <filter-name>httpPutFormContentFilter</filter-name>
+                <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+            </filter>
+            <filter-mapping>
+                <filter-name>httpPutFormContentFilter</filter-name>
+                <url-pattern>/*</url-pattern>
+            </filter-mapping>
+2018-01-11
+
+    1. 谷歌大数据技术
+        MapReduce、 BidTable 、 GFS
+    
+    2. 
+
+    1. svn 分支使用
+       https://www.cnblogs.com/andy2simple/p/5386256.html
+       
+    2. mybatis log4j 打印sql日志
+       https://www.cnblogs.com/zjrodger/p/5447345.html
+       
+2018-01-15
+
+    1. 账号同一时间只能在一个地方登陆？
+    2. cmd cd命令时解决空格问题 路径加双引号
+    3. shodan？
+    4. java序列化漏洞？ https://paper.seebug.org/312/
+    
+2018-02-08
+
+    1. 代码评审 ？
+    2. http/2 ？
+    3. mock 模拟测试 ？
+    4. 线程池的使用？
+    5. 
+
+2018-02-27
+    1. mysql TPS/QPS
+    
+2018-03-15
+    
+    1. jdk自带的jvisualvm在使用插件功能的时候需要更改一下 java visualvm的插件中心
+       https://visualvm.github.io/ 这个是visualvm的官方网址 在里面可以找到
+       
+2018-07-12
+    1. maven pom文件标签详解  https://www.cnblogs.com/sharpest/p/7738444.html
+    2. 系统权限管理设计 https://blog.csdn.net/chexlong/article/details/37697555
+    3. 权限设计时必须要知道的三个原则
+        3.1 最小权限原则
+            最小权限是指在完成特定操作时，需赋予用户的必不可少的最细粒度的权限。
+            最小权限原则指导我们在设计权限时，权限的粒度要做到最小，保证在权限分配时，
+            只赋予用户足够完成其工作的权限。通过最小粒度的授权来限制用户的操作行为，
+            降低当账号被盗等情况发生时，非法操作对系统的破坏，最大程度的保护系统安全。
+        3.2 职责分离原则
+            职责分离原则是指在权限分配时，要考虑权限互斥的情况，即单个用户不能同时独立完成某些特定工作，
+            而需要由不同的用户协同完成；譬如：分配文章的创建和审核权限时，如果同时赋予一个用户，
+            那用户自发自审情况发生时，将让审核流程没有任何意义。所以在设计系统时，我们要将权限的互斥考虑进去，
+            通过互斥原则，直接杜绝此类问题的出现。
+        3.3 数据抽象原则
+            数据抽象原则是指在权限设计时，不要单纯的以对数据的增删改查操作来定义权限，我们需要结合业务场景来定义权限；
+            譬如：将文章的增删改权限，改为：文章的创建权限、文章的编辑权限、已发布文章的编辑权限、文章发布的权限等。
+            通过业务场景来定义权限，使权限的粒度更加合理，更加易于理解。
+			
+2018-07-16
+
+	1. oauth2 认证
+	http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html

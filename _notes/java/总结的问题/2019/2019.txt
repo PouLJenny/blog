@@ -1,0 +1,15 @@
+03-15
+
+1. 数据结构
+	bitset,bitmap,skiplist,skipmap
+03-18
+1. 从IT时代到DT时代
+   https://www.jianshu.com/p/df9e32c0b08b
+   
+03-19
+1. 书籍
+	《数学之美》 第二版 吴军 著
+	《 The Singularity is Near: When Humans Transcend Biology 》 Ray Kurzweil 著 中文版：《奇点临近》 李庆诚 董振华 田源 译
+	《The Evolution of Everything: How New Idea Emerge》Matt Ridley 著 中文版：《自上而下》 闾佳 译
+2. 埋点和无埋点
+	http://www.chinawebanalytics.cn/auto-event-tracking-good-bad-ugly/

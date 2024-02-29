@@ -1,0 +1,69 @@
+2017-05-10
+	1.ORACLE中 (+) 表示外连接。条件关联时，一般只列出表中满足连接条件的数据。如果条件的一边出现（+），则可列出该表中在条件另一侧的数据为空的那些记录。
+	
+2017-05-11
+
+    1. dbcp (Oracle)重新链接的问题 - Cause: java.sql.SQLException: No more data to read from socket	
+	2. 今天聚石塔出现问题了  
+	   定时器又停了一次  
+	   初步排查是因为定时器查询的数据过多再加上
+	   定时器太多还有定时器的时间间隔过短
+	   导致第一次的定时器没有执行完的时候，第二次定时器又过来了
+	   
+	   稍后查一下最初始的原因  2015-05-09 15:45:00 时定时器停掉 排查一下当时的原因
+	   
+2017-05-12
+	
+	1. 如何让程序自动清除浏览器的js缓存
+			
+	   <html>
+	   <head>
+		<meta   http-equiv="Expires"   CONTENT="0">
+		<meta   http-equiv="Cache-Control"   CONTENT="no-cache">
+		<meta   http-equiv="Pragma"   CONTENT="no-cache">
+       </head>
+
+	
+	2. POST 请求携带参数过大导致tomcat抛异常
+	   2017-5-12 14:17:50 org.apache.tomcat.util.http.Parameters processParameters
+       信息: More than the maximum number of request parameters (GET plus POST) for a single request ([10,000]) 
+	   were detected. Any parameters beyond this limit have been ignored. To change this limit, 
+	   set the maxParameterCount attribute on the Connector.
+             Note: further occurrences of this error will be logged at DEBUG level.
+			 
+        发布漏洞官方原文地址: http://mail-archives.apache.org/mod_mbox/www-announce/201112.mbox/%3C4EFB9800.5010106@apache.org%3E 
+
+		漏洞原理： 
+			在多数web容器的设计中，request都是依靠相应语言的hashtable/hashmap实现，当不同的key存入时如果hash值相等则以链表方式连接。拉链法是解决Hash冲突问题的方法之一，
+		把所有hash值相同的元素链接在同一个单链表中，然后放入到hashtable/hashmap的桶中。这也是jdk中hashmap/hashtable的实现方式。外部拉链法的缺点是：它需要稍微多一些的空间来实现，
+		因为添加任何元素都需要添加指向节点的指针，并且每次探查也要花费稍微多一点的时间，因为它需要间接引用逐一查找匹配，而不是直接访问元素。当大量相同hash值的元素保存时，就会导致链表巨长无比，
+		这时get出对应元素时要在链表里比对key是否相同直到找到对应的元素。所以此漏洞利用碰撞相同的hash值使得hashtable/hashmap退化为一个长链表，容器从request重新get时，map的计算过程会将时间复杂度巨增，
+		原来一个简单的过程将变成一个很费cpu的过程。
+
+		影响到的版本： 
+		Apache Tomcat 5.x
+		Apache Tomcat 6.x
+		Apache Tomcat 7.x
+		
+		Tomcat中Connector常用配置
+		http://blog.csdn.net/shipeng22022/article/details/38316959
+		
+	3. mysql 的索引 和oracle的索引的区别
+	
+2017-05-16
+
+    1. 检测代码工具 FindBugs、PMD和CheckStyle对比   http://blog.csdn.net/ml5271169588/article/details/6975701
+	
+	2. sonarqube  http://tianya23.blog.51cto.com/1081650/415146
+	
+2017-05-23
+	
+	1. Not all classes in the standard Java library were written to be thread-safe. Using them in a multi-threaded manner is highly likely to cause data problems or exceptions at runtime.
+       This rule raises an issue when an instance of Calendar, DateFormat, javax.xml.xpath.XPath, or javax.xml.validation.SchemaFactory is marked static.
+	   
+2017-05-27
+
+	1. 怎么在spring的一个service中调用另一个service  aop?
+	
+	
+	  

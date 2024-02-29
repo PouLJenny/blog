@@ -1,0 +1,25 @@
+<task>
+	1. 协助段哥完成催单功能，随后自己研究一边
+	2. 数据库乱码
+</task>
+<harvest>
+	1. maven-update project 设置默认的jre 在pom.xml 中插入：
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>3.5.1</version>
+		<configuration>
+			<fork>true</fork>
+            <meminitial>128m</meminitial> // 存储的初始化为128m
+            <maxmem>512m</maxmem>		  // 最大的存储空间为512m
+			<source>${jdk.version}</source>
+			<target>${jdk.version}</target>
+		</configuration>
+	</plugin>
+	
+	2. Target runtime Apache Tomcat v6.0 is not defined.错误解决方法  http://blog.csdn.net/xw13106209/article/details/5910358/
+	
+	3. mysql 连接url中useUnicode=true&characterEncoding=UTF-8 的作用  http://www.cnblogs.com/xuefuwu/archive/2012/05/06/2486577.html
+		&amp; = & ampersand
+	4. typeof() 函数注意大小写 
+</harvest>

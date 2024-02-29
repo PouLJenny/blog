@@ -1,0 +1,53 @@
+<mxfile host="Electron" modified="2024-02-03T15:44:36.705Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="LRnjixi2Dbb1JypqtPM-" version="22.1.2" type="device">
+  <diagram name="Springboot整体流程" id="tGMVDymokrfU0H8AJSUW">
+    <mxGraphModel dx="3533" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-3" value="Spring Framework" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#3700CC;fillColor=#6a00ff;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="810" y="170" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-4" value="Springboot Framework" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#005700;fillColor=#008a00;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="190" y="170" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-5" value="" style="endArrow=none;html=1;rounded=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="1322" as="sourcePoint" />
+            <mxPoint x="560" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-16" value="SpringApplication" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-320" y="200" width="300" height="1460" as="geometry">
+            <mxRectangle x="-240" y="200" width="140" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-7" value="构建SpringApplication" style="whiteSpace=wrap;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" vertex="1">
+          <mxGeometry x="85" y="50" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" source="trpK1KYeWfXuGcgGu1yp-9" target="trpK1KYeWfXuGcgGu1yp-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-9" value="&lt;div&gt;识别WebApplicationType&amp;nbsp;&lt;/div&gt;&lt;div&gt;SERVLET / REACTIVE / NONE&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" vertex="1">
+          <mxGeometry x="57.5" y="140" width="185" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" source="trpK1KYeWfXuGcgGu1yp-7" target="trpK1KYeWfXuGcgGu1yp-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" source="trpK1KYeWfXuGcgGu1yp-17" target="trpK1KYeWfXuGcgGu1yp-19" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-17" value="扫描加载所有jar包中的META-INF/spring.factories文件中的扩展点&lt;br&gt;BootstrapRegistryInitializer&lt;br&gt;ApplicationContextInitializer&lt;br&gt;ApplicationListener" style="whiteSpace=wrap;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" vertex="1">
+          <mxGeometry x="31.25" y="230" width="237.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-19" value="识别主类 带main方法的类" style="whiteSpace=wrap;html=1;" parent="trpK1KYeWfXuGcgGu1yp-16" vertex="1">
+          <mxGeometry x="31.25" y="350" width="237.5" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="trpK1KYeWfXuGcgGu1yp-21" value="AbstractApplicationContext" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="640" y="200" width="290" height="1200" as="geometry">
+            <mxRectangle x="640" y="200" width="200" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,12 @@
+<task>
+	1. 微信的登陆
+	2. xml配置文件的抬头 都是什么东西 用来干什么的
+	3. 激活卡巴斯基
+</task>
+<harvest>
+	1. content 和 context 的区别
+	2. xmlns是 XML Namespace 的缩写，xml命名空间 http://bbs.csdn.net/topics/390751819 
+		不写校验属性配置文件无法生效
+		
+	3. Spring 的bean作用域机制是可以扩展的 singleton 和 prototype 默认 singleton
+</harvest>

@@ -1,0 +1,15 @@
+2017-04-05
+
+
+2017-04-06
+ 
+    1. RESTful 软件架构风格
+       REST was defined by Roy Fielding in his 2000 PhD dissertation "Architectural Styles and the Design of Network-based Software Architectures" at UC Irvine.
+       
+       
+2017-04-07
+
+    1. JS中使用JSON.parse(str); 方法的时候注意下字符串里面不能有回车换行符，否则执行方法的时候就会报错。
+    2. oracle 中 制表符 chr(9)
+                 换行符 chr(10)
+                 回车符 chr(13)

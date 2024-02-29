@@ -1,0 +1,5 @@
+/ task
+
+/ harvest
+	d b d c a 
+	a b a a b

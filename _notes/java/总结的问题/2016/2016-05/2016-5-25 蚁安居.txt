@@ -1,0 +1,9 @@
+Hope is a good thing, maybe the best of things.And no good things ever dies.
+<任务>
+	1. easyui的弹出框
+	2. 云通讯
+</任务>
+
+<harvest>
+	
+</harvest>

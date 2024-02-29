@@ -1,0 +1,9 @@
+爬虫开源框架调研：
+https://blog.csdn.net/jay900323/article/details/50988146
+https://blog.csdn.net/CSDN_AF/article/details/70888852
+https://blog.csdn.net/gongbing798930123/article/details/79028549
+开源的网络爬虫汇总：
+https://github.com/liinnux/awesome-crawler-cn
+
+网络爬虫基本原理：
+https://www.cnblogs.com/xingzc/p/5986464.html

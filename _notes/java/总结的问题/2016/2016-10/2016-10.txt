@@ -1,0 +1,71 @@
+2016-10-08
+    1. html 中的<hr />标签 是在网页中插入水平分隔线
+    
+2016-10-10
+    1. mvn install:install-file -Dfile=taobao-sdk-java-auto_1477375874595-20170208.jar -DgroupId=com.taobao -DartifactId=taobao-sdk-java-auto_1477375874595 -Dversion=20170208 -Dpackaging=jar
+    
+2016-10-11
+
+    1. create table `tb_logs`(
+        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表主键ID',
+        `log_id` varchar(33) CHARACTER SET utf8 NOT NULL COMMENT '日志ID',
+        `log_content` varchar(4000) CHARACTER SET utf8 NOT NULL COMMENT '日志内容',
+        `create_time` date NOT NULL COMMENT '创建日期',
+        PRIMARY KEY (`id`)
+    )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='日志表';
+    
+    2. mysql中 show create table tablename;可以查看表的创建语句
+       show engines; 命令可以显示当前数据库支持的存储引擎情况
+    
+    3. insert into t_user(user_id,user_name,user_real_name,user_password,create_time) 
+                   values('','','','e10adc3949ba59abbe56e057f20f883e',now());
+                   
+2016-10-12
+    
+    1.  $("#id").bind("input propertychange",function() {});  // input框value值变化时触发的事件
+        $("#id").focus(function() {});// 
+        $("#id").blur(function() {});
+        
+2016-10-13
+
+    1. MyBatis中 ：int、String等作为parameterType只能传入单个值，要想传入多个值，可以使用List、Map或者自定义的数据类型等等
+    2. Spring在Service层获取request   http://blog.csdn.net/javaofliang/article/details/52237903
+    3. Spring配置拦截器 
+    4. 当你写的代码运行的时候跟想的不一样但是eclipse里面又不报错，这个时候很有可能就是有些文件没有发布到eclipse中去
+    
+2016-10-18
+
+    1. 微软账号   
+
+2016-10-19
+
+    1.  DROP TABLE IF EXISTS `t_order_logistics`;
+        CREATE TABLE `t_order_logistics`(
+          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表主键ID',
+          `logistics_id` varchar(33) NOT NULL COMMENT '记录ID',
+          `tid` varchar(33) NOT NULL COMMENT '淘宝主交易订单号',
+          `out_sid` varchar(33) COMMENT '运单号',
+          `company_name` varchar(40) COMMENT '物流公司名称',
+          `company_name_code` varchar(20) COMMENT '物流公司代码',
+          `create_time` date NOT NULL COMMENT '创建时间',
+          PRIMARY KEY (`id`)
+        )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='物流单号表';
+        
+        DROP TABLE IF EXISTS `t_kdn_company`;
+        CREATE TABLE `t_kdn_company`(
+          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表主键ID',
+          `company_name` varchar(40) COMMENT '物流公司名称',
+          `company_name_code` varchar(20) COMMENT '物流公司代码',
+          `create_time` date NOT NULL COMMENT '创建时间',
+          PRIMARY KEY (`id`)
+        )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='快递鸟物流公司代码表';
+        
+2016-10-28
+
+    1. controller 的接口中想要接收到post请求到的参数则必须在接口方法参数前面加@RequestBody
+        @RequestMapping(value = "/reservation")
+        @ResponseBody
+        public BaseResponse reservation(@RequestBody String data) {
+            return tmallService.reservation(data);
+        }
+    

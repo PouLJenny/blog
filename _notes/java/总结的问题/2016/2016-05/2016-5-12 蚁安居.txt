@@ -1,0 +1,11 @@
+<jdk>
+	fastjson的下载和api
+	实现序列化接口的类的seriVersionUID有什么作用
+	http://www.cnblogs.com/guanghuiqq/archive/2012/07/18/2597036.html
+	
+</jdk>
+
+<cmd>
+	cmd下 按alt+shift 可以 进行全半角 切换
+
+</cmd>

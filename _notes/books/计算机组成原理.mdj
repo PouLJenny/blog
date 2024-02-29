@@ -1,0 +1,1019 @@
+{
+	"_type": "Project",
+	"_id": "AAAAAAFF+h6SjaM2Hec=",
+	"name": "计算机组成原理",
+	"ownedElements": [
+		{
+			"_type": "FCFlowchart",
+			"_id": "AAAAAAF7IS9i5KzR/RQ=",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "计算机系统层次结构",
+			"ownedElements": [
+				{
+					"_type": "FCFlowchartDiagram",
+					"_id": "AAAAAAF7IS9i5azSstw=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "计算机的解题过程",
+					"ownedViews": [
+						{
+							"_type": "RectangleView",
+							"_id": "AAAAAAF7ITTUc6zpGeM=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"fillColor": "#ebd8ff",
+							"font": "Arial;13;0",
+							"left": 528,
+							"top": 264,
+							"width": 489,
+							"height": 145
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7ITEzuqzasVU=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7ITEzuqzYLfQ="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7ITEzuqzb5Ak=",
+									"_parent": {
+										"$ref": "AAAAAAF7ITEzuqzasVU="
+									},
+									"font": "Arial;13;0",
+									"left": 570,
+									"top": 314,
+									"width": 117,
+									"height": 13,
+									"text": "翻译成机器语言程序",
+									"wordWrap": true
+								}
+							],
+							"font": "Arial;13;0",
+							"left": 560,
+							"top": 304,
+							"width": 137,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7ITEzuqzb5Ak="
+							}
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7ITFCGaziPWs=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7ITFCGazgODI="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7ITFCGazjbwU=",
+									"_parent": {
+										"$ref": "AAAAAAF7ITFCGaziPWs="
+									},
+									"font": "Arial;13;0",
+									"left": 858,
+									"top": 314,
+									"width": 85,
+									"height": 13,
+									"text": "运行",
+									"wordWrap": true
+								}
+							],
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 304,
+							"width": 105,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7ITFCGazjbwU="
+							}
+						},
+						{
+							"_type": "FCTerminatorView",
+							"_id": "AAAAAAF7IUZvj61bgrM=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IUZvj61ZQIU="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7IUZvj61cQfo=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUZvj61bgrM="
+									},
+									"font": "Arial;13;0",
+									"left": 1130,
+									"top": 322,
+									"width": 68.63720703125,
+									"height": 13,
+									"text": "结果",
+									"wordWrap": true
+								}
+							],
+							"font": "Arial;13;0",
+							"left": 1120,
+							"top": 312,
+							"width": 88.63720703125,
+							"height": 33,
+							"nameLabel": {
+								"$ref": "AAAAAAF7IUZvj61cQfo="
+							}
+						},
+						{
+							"_type": "FCTerminatorView",
+							"_id": "AAAAAAF7IUjJYa1tjiU=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IUjJYK1rBDs="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7IUjJYa1uW3k=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUjJYa1tjiU="
+									},
+									"font": "Arial;13;0",
+									"left": 194,
+									"top": 322,
+									"width": 68.63720703125,
+									"height": 13,
+									"text": "开始",
+									"wordWrap": true
+								}
+							],
+							"font": "Arial;13;0",
+							"left": 184,
+							"top": 312,
+							"width": 88.63720703125,
+							"height": 33,
+							"nameLabel": {
+								"$ref": "AAAAAAF7IUjJYa1uW3k="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7IUlH1a1+diY=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IUlH1a18vU8="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7IUlH1q1/Muc=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUlH1a1+diY="
+									},
+									"model": {
+										"$ref": "AAAAAAF7IUlH1a18vU8="
+									},
+									"font": "Arial;13;0",
+									"left": 312,
+									"top": 306,
+									"width": 208,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7IUlH1a1+diY="
+									},
+									"edgePosition": 1,
+									"text": "用户编写的高级语言程序（源程序）"
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7ITEzuqzasVU="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IUjJYa1tjiU="
+							},
+							"lineStyle": 2,
+							"points": "272:327;560:327",
+							"nameLabel": {
+								"$ref": "AAAAAAF7IUlH1q1/Muc="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7IUu/k62h4zE=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IUu/kq2f3t8="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7IUu/lK2ioN8=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUu/k62h4zE="
+									},
+									"model": {
+										"$ref": "AAAAAAF7IUu/kq2f3t8="
+									},
+									"font": "Arial;13;0",
+									"left": 727,
+									"top": 301,
+									"width": 91,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7IUu/k62h4zE="
+									},
+									"edgePosition": 1,
+									"text": "目标程序计算机"
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7ITFCGaziPWs="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7ITEzuqzasVU="
+							},
+							"lineStyle": 2,
+							"points": "696:322;848:322",
+							"nameLabel": {
+								"$ref": "AAAAAAF7IUu/lK2ioN8="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7IUzQp63AauE=",
+							"_parent": {
+								"$ref": "AAAAAAF7IS9i5azSstw="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IUzQp62+ozA="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7IUzQp63BH0s=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUzQp63AauE="
+									},
+									"model": {
+										"$ref": "AAAAAAF7IUzQp62+ozA="
+									},
+									"font": "Arial;13;0",
+									"left": 1051,
+									"top": 312,
+									"width": 26,
+									"height": 13,
+									"alpha": 0.3430238272985673,
+									"distance": 29.732137494637012,
+									"hostEdge": {
+										"$ref": "AAAAAAF7IUzQp63AauE="
+									},
+									"edgePosition": 1,
+									"text": "输出"
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IUZvj61bgrM="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7ITFCGaziPWs="
+							},
+							"lineStyle": 2,
+							"points": "952:328;1120:328",
+							"nameLabel": {
+								"$ref": "AAAAAAF7IUzQp63BH0s="
+							}
+						}
+					]
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7ITEzuqzYLfQ=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "翻译成机器语言程序",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7IUu/kq2f3t8=",
+							"_parent": {
+								"$ref": "AAAAAAF7ITEzuqzYLfQ="
+							},
+							"name": "目标程序计算机",
+							"source": {
+								"$ref": "AAAAAAF7ITEzuqzYLfQ="
+							},
+							"target": {
+								"$ref": "AAAAAAF7ITFCGazgODI="
+							}
+						}
+					],
+					"documentation": "翻译成机器语言程序"
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7ITFCGazgODI=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "运行",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7IUzQp62+ozA=",
+							"_parent": {
+								"$ref": "AAAAAAF7ITFCGazgODI="
+							},
+							"name": "输出",
+							"source": {
+								"$ref": "AAAAAAF7ITFCGazgODI="
+							},
+							"target": {
+								"$ref": "AAAAAAF7IUZvj61ZQIU="
+							}
+						}
+					],
+					"documentation": "运行"
+				},
+				{
+					"_type": "FCTerminator",
+					"_id": "AAAAAAF7IUZvj61ZQIU=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "结果"
+				},
+				{
+					"_type": "FCTerminator",
+					"_id": "AAAAAAF7IUjJYK1rBDs=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "开始",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7IUlH1a18vU8=",
+							"_parent": {
+								"$ref": "AAAAAAF7IUjJYK1rBDs="
+							},
+							"name": "用户编写的高级语言程序（源程序）",
+							"tags": [
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAF7IU4PGK3Yij8=",
+									"_parent": {
+										"$ref": "AAAAAAF7IUlH1a18vU8="
+									},
+									"name": "输入",
+									"kind": "string"
+								}
+							],
+							"source": {
+								"$ref": "AAAAAAF7IUjJYK1rBDs="
+							},
+							"target": {
+								"$ref": "AAAAAAF7ITEzuqzYLfQ="
+							}
+						}
+					]
+				},
+				{
+					"_type": "FCFlowchartDiagram",
+					"_id": "AAAAAAF7IU85yK3crx0=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "计算机系统层次结构",
+					"ownedViews": [
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7IVBUFK3iSlY=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IVBUE63gzu4="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7IVBUFK3jqyU=",
+									"_parent": {
+										"$ref": "AAAAAAF7IVBUFK3iSlY="
+									},
+									"fillColor": "#ffd8d8",
+									"font": "Arial;13;0",
+									"left": 586,
+									"top": 634,
+									"width": 189,
+									"height": 13,
+									"text": "传统机器M1 （机器语言机器）",
+									"wordWrap": true
+								}
+							],
+							"fillColor": "#ffd8d8",
+							"font": "Arial;13;0",
+							"left": 576,
+							"top": 624,
+							"width": 209,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7IVBUFK3jqyU="
+							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAF7IVEAia3rGFM=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 624,
+							"width": 194.05908203125,
+							"height": 49,
+							"text": "用微程序解析机器指令"
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAF7IVFMiq3vm9w=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IVEAia3rGFM="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IVBUFK3iSlY="
+							},
+							"points": "784:648;848:648"
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7IVK/mq351Sw=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IVK/ma330qI="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7IVK/mq36fVY=",
+									"_parent": {
+										"$ref": "AAAAAAF7IVK/mq351Sw="
+									},
+									"fillColor": "#fff5d8",
+									"font": "Arial;13;0",
+									"left": 586,
+									"top": 474,
+									"width": 189,
+									"height": 13,
+									"text": "虚拟机器M3 （汇编语言机器）"
+								}
+							],
+							"fillColor": "#fff5d8",
+							"font": "Arial;13;0",
+							"showShadow": false,
+							"left": 576,
+							"top": 464,
+							"width": 209,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7IVK/mq36fVY="
+							},
+							"wordWrap": false
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAF7IVtVia4+co0=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 472,
+							"width": 241,
+							"height": 40,
+							"text": "将汇编语言程序翻译成机器语言程序"
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAF7IVwyLa5IKQY=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IVtVia4+co0="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IVK/mq351Sw="
+							},
+							"points": "784:488;848:488"
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7IV9BZq5bA7g=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IV9BZa5ZL4A="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7IV9BZ65c5ac=",
+									"_parent": {
+										"$ref": "AAAAAAF7IV9BZq5bA7g="
+									},
+									"fillColor": "#ebffd8",
+									"font": "Arial;13;0",
+									"left": 586,
+									"top": 394,
+									"width": 189,
+									"height": 13,
+									"text": "虚拟机器M4（高级语言机器）",
+									"wordWrap": true
+								}
+							],
+							"fillColor": "#ebffd8",
+							"font": "Arial;13;0",
+							"left": 576,
+							"top": 384,
+							"width": 209,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7IV9BZ65c5ac="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7IWA6ba5wZBw=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7IWA6bK5uDiI="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7IWA6ba5xU3Y=",
+									"_parent": {
+										"$ref": "AAAAAAF7IWA6ba5wZBw="
+									},
+									"model": {
+										"$ref": "AAAAAAF7IWA6bK5uDiI="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 694,
+									"top": 441,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7IWA6ba5wZBw="
+									},
+									"edgePosition": 1
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IVK/mq351Sw="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IV9BZq5bA7g="
+							},
+							"lineStyle": 2,
+							"points": "680:432;680:464",
+							"nameLabel": {
+								"$ref": "AAAAAAF7IWA6ba5xU3Y="
+							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAF7IWHhZK6HCWQ=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 392,
+							"width": 241,
+							"height": 40,
+							"text": "将高级语言程序翻译成汇编语言程序"
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAF7IWL/W66LKxQ=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IWHhZK6HCWQ="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IV9BZq5bA7g="
+							},
+							"points": "784:410;848:410"
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7I220ZK6RbyQ=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7I220Yq6P9ik="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7I220ZK6SjV8=",
+									"_parent": {
+										"$ref": "AAAAAAF7I220ZK6RbyQ="
+									},
+									"fillColor": "#ffc1ad",
+									"font": "Arial;13;0",
+									"left": 586,
+									"top": 714,
+									"width": 189,
+									"height": 13,
+									"text": "微程序机器M0 （微指令系统）",
+									"wordWrap": true
+								}
+							],
+							"fillColor": "#ffc1ad",
+							"font": "Arial;13;0",
+							"left": 576,
+							"top": 704,
+							"width": 209,
+							"height": 46,
+							"nameLabel": {
+								"$ref": "AAAAAAF7I220ZK6SjV8="
+							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAF7I26BlK6bgqs=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 704,
+							"width": 193,
+							"height": 40,
+							"text": "由硬件直接执行微指令"
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7I28QEK6n+Kc=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7I28QD66l9pY="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7I28QEa6osQA=",
+									"_parent": {
+										"$ref": "AAAAAAF7I28QEK6n+Kc="
+									},
+									"model": {
+										"$ref": "AAAAAAF7I28QD66l9pY="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 694,
+									"top": 681,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7I28QEK6n+Kc="
+									},
+									"edgePosition": 1
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7I220ZK6RbyQ="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IVBUFK3iSlY="
+							},
+							"lineStyle": 2,
+							"points": "680:672;680:704",
+							"nameLabel": {
+								"$ref": "AAAAAAF7I28QEa6osQA="
+							}
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAF7I2+Zaa6wWNU=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7I26BlK6bgqs="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7I220ZK6RbyQ="
+							},
+							"points": "784:725;848:725"
+						},
+						{
+							"_type": "FCProcessView",
+							"_id": "AAAAAAF7I3Z6i668sbY=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7I3Z6i666Do8="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAF7I3Z6i669CLg=",
+									"_parent": {
+										"$ref": "AAAAAAF7I3Z6i668sbY="
+									},
+									"fillColor": "#ffe2d8",
+									"font": "Arial;13;0",
+									"left": 586,
+									"top": 554,
+									"width": 189,
+									"height": 13,
+									"text": "虚拟机器M2 （操作系统机器）",
+									"wordWrap": true
+								}
+							],
+							"fillColor": "#ffe2d8",
+							"font": "Arial;13;0",
+							"left": 576,
+							"top": 544,
+							"width": 209,
+							"height": 49,
+							"nameLabel": {
+								"$ref": "AAAAAAF7I3Z6i669CLg="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7I3fXW67dKf4=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7I3fXWq7bAoc="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7I3fXW67eaQc=",
+									"_parent": {
+										"$ref": "AAAAAAF7I3fXW67dKf4="
+									},
+									"model": {
+										"$ref": "AAAAAAF7I3fXWq7bAoc="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 694,
+									"top": 521,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7I3fXW67dKf4="
+									},
+									"edgePosition": 1
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7I3Z6i668sbY="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7IVK/mq351Sw="
+							},
+							"lineStyle": 2,
+							"points": "680:512;680:544",
+							"nameLabel": {
+								"$ref": "AAAAAAF7I3fXW67eaQc="
+							}
+						},
+						{
+							"_type": "FCFlowView",
+							"_id": "AAAAAAF7I3fpRa7mTe8=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"model": {
+								"$ref": "AAAAAAF7I3fpRK7k6Hw="
+							},
+							"subViews": [
+								{
+									"_type": "EdgeLabelView",
+									"_id": "AAAAAAF7I3fpRa7nP0k=",
+									"_parent": {
+										"$ref": "AAAAAAF7I3fpRa7mTe8="
+									},
+									"model": {
+										"$ref": "AAAAAAF7I3fpRK7k6Hw="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 694,
+									"top": 601,
+									"height": 13,
+									"alpha": 1.5707963267948966,
+									"distance": 15,
+									"hostEdge": {
+										"$ref": "AAAAAAF7I3fpRa7mTe8="
+									},
+									"edgePosition": 1
+								}
+							],
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7IVBUFK3iSlY="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7I3Z6i668sbY="
+							},
+							"lineStyle": 2,
+							"points": "680:592;680:624",
+							"nameLabel": {
+								"$ref": "AAAAAAF7I3fpRa7nP0k="
+							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAF7I3gZs67u48w=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"left": 848,
+							"top": 544,
+							"width": 163,
+							"height": 40,
+							"text": "用机器语言解释操作系统"
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAF7I3hhfK7ypUk=",
+							"_parent": {
+								"$ref": "AAAAAAF7IU85yK3crx0="
+							},
+							"font": "Arial;13;0",
+							"head": {
+								"$ref": "AAAAAAF7I3gZs67u48w="
+							},
+							"tail": {
+								"$ref": "AAAAAAF7I3Z6i668sbY="
+							},
+							"lineStyle": 1,
+							"points": "785:566;847:565"
+						}
+					]
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7IVBUE63gzu4=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "传统机器M1 （机器语言机器）",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7I28QD66l9pY=",
+							"_parent": {
+								"$ref": "AAAAAAF7IVBUE63gzu4="
+							},
+							"source": {
+								"$ref": "AAAAAAF7IVBUE63gzu4="
+							},
+							"target": {
+								"$ref": "AAAAAAF7I220Yq6P9ik="
+							}
+						}
+					]
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7IVK/ma330qI=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "虚拟机器M3 （汇编语言机器）",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7I3fXWq7bAoc=",
+							"_parent": {
+								"$ref": "AAAAAAF7IVK/ma330qI="
+							},
+							"source": {
+								"$ref": "AAAAAAF7IVK/ma330qI="
+							},
+							"target": {
+								"$ref": "AAAAAAF7I3Z6i666Do8="
+							}
+						}
+					]
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7IV9BZa5ZL4A=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "虚拟机器M4（高级语言机器）",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7IWA6bK5uDiI=",
+							"_parent": {
+								"$ref": "AAAAAAF7IV9BZa5ZL4A="
+							},
+							"source": {
+								"$ref": "AAAAAAF7IV9BZa5ZL4A="
+							},
+							"target": {
+								"$ref": "AAAAAAF7IVK/ma330qI="
+							}
+						}
+					]
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7I220Yq6P9ik=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "微程序机器M0 （微指令系统）"
+				},
+				{
+					"_type": "FCProcess",
+					"_id": "AAAAAAF7I3Z6i666Do8=",
+					"_parent": {
+						"$ref": "AAAAAAF7IS9i5KzR/RQ="
+					},
+					"name": "虚拟机器M2 （操作系统机器）",
+					"ownedElements": [
+						{
+							"_type": "FCFlow",
+							"_id": "AAAAAAF7I3fpRK7k6Hw=",
+							"_parent": {
+								"$ref": "AAAAAAF7I3Z6i666Do8="
+							},
+							"source": {
+								"$ref": "AAAAAAF7I3Z6i666Do8="
+							},
+							"target": {
+								"$ref": "AAAAAAF7IVBUE63gzu4="
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

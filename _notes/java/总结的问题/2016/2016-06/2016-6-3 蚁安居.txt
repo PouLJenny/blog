@@ -1,0 +1,25 @@
+<task>
+	2. 微信的工资查询
+	3. excel的与数据库的导入、导出
+	1. base64
+	4. sql语句
+	5. 净水机
+</task>
+
+<harvest>
+	1. <!DOCTYPE html> http://baike.baidu.com/link?url=oWa2oFZhc4OVlxYY3hqDvSlo2NozIQ9RkcsCENs-h1dp9ZuQLUwFkOpoJpK7zV9KJwijp_boSNuJ4ZRHEmnLJq
+	2. jquery 的检测元素变化的时候执行方法 $("元素").change(function(){});
+	3. jquery 获取当前系统时间 var now = new Date(); http://blog.csdn.net/weiming8517/article/details/25604551
+	4. Class.forName(); 的作用 http://www.cnblogs.com/springcsc/archive/2010/03/03/1676977.html
+	5. excel的与数据库的导入、导出 POI与jxl两种方式
+	6.
+	DROP TABLE IF EXISTS `stu`;
+	CREATE TABLE `stu`(
+	`id` int(11) NOT NULL auto_increment,
+	`name` varchar(20),
+	`sex` char(2),
+	`num` int(11),
+	PRIMARY KEY (`id`)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+	7.
+</harvest>

@@ -1,0 +1,55 @@
+2016-05-03
+
+	<html5>
+		required aira-required 用在表单中的某一字段的input中，表示此字段为必填的
+		placeholder 占位符
+		Modernizr: 专为HTML5和css3开发的功能检测类库
+		form 表单没有action的话就会提交给自己
+	<html5>
+	
+2016-05-04 
+
+    <html5>
+		隐藏html标签的3种方法
+		1. 选择器{transform:scale(0);} ——将一个元素设置成无限小，这个元素将不可见
+		2. 在元素上直接添加hidden属性  —— 隐藏元素的所有展示平台，例如打印设备和移动设备
+		3. 选择器{hight:0;overflow:hidden;}—— 将元素的行高设置成0
+		
+		<figure>标签规定独立的流内容（图像，照片，图表，代码等等）
+		<figcaption>定义figure元素的标题 应该被置于figure元素的第一个或最后一个子元素的位置
+	</html5>
+
+	<js>
+		EL(expression language) 作用：在jsp中简化表达式的方法
+		语法结构${expression}
+		EL 提供“.”和"[]"两种运算符来存取数据 当要存取的属性名称中包含一些特殊字符，如.或-要用[]
+		如 ${user.My-Name} 应该为 ${user["My-Name"]}
+		如果要动态取值 也是要用"[]"
+		如${sessionScope.user[data]}中的data是一个变量
+		EL表达式取值必须是servlet四大(servletContext>session>request>pageContext)作用中的值
+		并自动从四大作用域中按作用范围从小到大寻找对应名字的值		
+	</js>
+	
+2016-05-05
+
+	<js>	
+		没有指明cookie的有效时间的时候，所创建的cookie有效期默认到用户浏览器关闭为止
+		
+		body载入完毕再运行js的两种方法
+		1.window.onload=function(){}
+		网页所有内容加载完毕后执行（包含图片）
+		2.$(document).ready(function(){});
+		这个方法等价于
+		  $(function(){
+		  });
+		  
+		这是jquery的方法 在DOM加载完毕之后再执行（DOM结构绘制完毕）		
+	</js>
+	
+2016-05-06
+
+	http传输中get方法跟post方法的区别
+	1： get方法是用来请求服务器数据的，get请求的参数会跟在url后进行传递，请求的数据会附在URL之后，以？分割URL和传输
+		数据，参数之间用&相连。get传输的数据有大小限制，跟URL的长度有直接关系，不同的浏览器对URL的长度的限制是不同的。	
+		
+		post方法是用来向服务器提交数据的

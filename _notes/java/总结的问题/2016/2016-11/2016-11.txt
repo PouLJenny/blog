@@ -1,0 +1,74 @@
+2016-11-02
+
+    1. 透传？
+    2. HttpClient
+    
+2016-11-07
+
+    1. 如果html不同的标签中的id是一样的，这个时候用document.getElementById(id); 方法获取到的元素为页面中自上到下第一个出现这个id的元素
+    
+2016-11-09
+
+    1. 枚举？
+    
+ 
+2016-11-11
+    
+    1. tomcat中怎么设置jvm的默认编码 
+       在catalina命令脚本中加入JAVA_OPTS=%JAVA_OPT%;-Dfile.encoding=UTF-8 -Duser.language=zh_CN
+       
+2016-11-14
+
+    1. 长连接？
+    2. & 地址计算的时候是 与1时原有的不变，与0时
+    
+2016-11-15 
+
+    1. DROP TABLE IF EXISTS `t_no_fix_history`;
+       CREATE TABLE `t_no_fix_history`(
+        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表主键',
+        `workcard_id` varchar(50) COMMENT '天猫工单ID',
+        `params` varchar(2000) COMMENT '接口调用参数',
+        `tmall_response_body` varchar(3000) COMMENT '天猫接口返回参数',
+        `feedback_status` int(4) NOT NULL COMMENT '反馈状态，0天猫接受并处理成功，1失败',
+        `create_time` datetime NOT NULL COMMENT '数据创建时间',
+        PRIMARY KEY (`id`)
+       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='无需安装反馈记录表';
+       
+2016-11-17 
+
+    1. 枚举？
+    
+2016-11-18
+
+    1. json字符串中的value值中有引号的时候会引发异常吗
+    
+2016-11-19
+
+    DROP TABLE IF EXISTS `t_origin_anomaly_order`;
+    CREATE TABLE `t_origin_anomaly_order`(
+        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表主键',
+        `msg_id` varchar(33) NOT NULL COMMENT '报文消息id',
+        `msg_status` tinyint(1) DEFAULT 0 COMMENT '是否处理，0未处理，1已处理，3重复订单',
+        `msg_content` varchar(3000) DEFAULT NULL,
+        `create_time` datetime NOT NULL COMMENT '创建时间',
+        `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+        PRIMARY KEY (`id`)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='异常订单转正常单存储表';
+    
+2016-11-21
+
+    1. 对称加密算法？ 
+    2. js 原生的ajax请求
+    
+2016-11-22 
+
+    1. python
+    
+2016-11-23
+
+    1. Rich Internet application
+    
+2016-11-26
+
+    1. JNDI

@@ -1,0 +1,3 @@
+# Gnu Linker(ld)
+
+

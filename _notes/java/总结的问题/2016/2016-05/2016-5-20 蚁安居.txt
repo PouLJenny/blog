@@ -1,0 +1,27 @@
+<任务>
+	1. access_token is invalid or not latest hint
+	2. svn
+	3. 学习angularjs
+</任务>
+
+<总结>
+	1. 解决“Dynamic Web Module 3.0 requires Java 1.6 or newer.”错误
+		
+	eclipse maven   
+	在项目的pom.xml的<build></build>标签中加入：   
+        <plugins>  
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-compiler-plugin</artifactId>  
+                <version>2.3.2</version>  
+                <configuration>  
+                    <source>1.8</source>  
+                    <target>1.8</target>  
+                </configuration>  
+            </plugin>  
+        </plugins>  
+  
+	保存，项目构建完成后在项目文件夹上点右键，选择Maven->Update Project Configuration，问题解决。  
+	
+	2. 大数据：hadoop
+</总结>

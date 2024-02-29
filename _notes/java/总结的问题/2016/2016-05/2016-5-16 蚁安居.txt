@@ -1,0 +1,6 @@
+<java>
+	xml格式的文件 转json数据
+	XOM.jar 包文件
+	LGPL GPL ??
+	xml文件的抬头
+</java>

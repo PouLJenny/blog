@@ -1,0 +1,15 @@
+git-ssh 配置和使用
+1、设置Git的user name和email：(如果是第一次的话)
+  $ git config --global user.name "humingx"
+  $ git config --global user.email "humingx@yeah.net"
+2、生成密钥
+ $ ssh-keygen -t rsa -C "humingx@yeah.net"
+ 
+3、登陆Github, 添加 ssh 。
+把id_rsa.pub文件里的内容复制到这里
+
+4. 修改仓库地址为git
+
+修改config文件
+
+ 

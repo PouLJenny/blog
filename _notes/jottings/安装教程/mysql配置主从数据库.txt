@@ -1,0 +1,60 @@
+1. 创建复制帐号
+    mysql> CREATE USER 'repl'@'%.example.com' IDENTIFIED BY 'password';
+    mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%.example.com';
+2. 配置master
+    包括打开二进制日志，指定唯一的servr ID。例如，在配置文件加入如下值：
+    server-id=1 
+    log-bin=mysql-bin
+    server-id：为主服务器A的ID值 log-bin：二进制变更日值
+    重启master，运行SHOW MASTER STATUS，
+    
+3.配置slave
+    Slave的配置与master类似，你同样需要重启slave的MySQL。如下：
+    server_id         = 2
+4. Setting the Master Configuration on the Slave
+    mysql> CHANGE MASTER TO
+        -> MASTER_HOST='master_host_name',
+        -> MASTER_USER='replication_user_name',
+        -> MASTER_PASSWORD='replication_password',
+        -> MASTER_LOG_FILE='recorded_log_file_name',
+        -> MASTER_LOG_POS=recorded_log_position;
+5. Start the slave threads:
+    mysql> START SLAVE;
+    
+6. show slave status;
+    当Slave_IO_Running和Slave_SQL_Running都为YES的时候就表示主从同步设置成功了。
+    接下来就可以进行一些验证了，比如在主master数据库的test数据库的一张表中插入一条数据，
+    在slave的test库的相同数据表中查看是否有新增的数据即可验证主从复制功能是否有效，
+    还可以关闭slave（mysql>stop slave;）,然后再修改master，看slave是否也相应修改（停止slave后，master的修改不会同步到slave），
+    就可以完成主从复制功能的验证了
+    
+    
+============ 配置 GTID 方式的主从同步 ==================
+https://blog.csdn.net/leshami/article/details/50630691
+Step 1: Synchronize the servers.
+        Make the servers readonly by setting the read_only system variable to ON on each server by issuing the following:
+        mysql> flush tables with read lock;
+        mysql> SET @@global.read_only = ON;
+Step 2: Stop both servers. Stop each server using mysqladmin as shown here, where username
+        is the user name for a MySQL user having sufficient privileges to shut down the server:
+        shell> mysqladmin -uusername -p shutdown
+        Then supply this user's password at the prompt
+Step 3: Start both servers with GTIDs enabled
+
+         gtid_mode=ON
+         enforce-gtid-consistency=true
+         
+         slave端加上
+         skip_slave_start=1 
+Step 4: Configure the slave to use GTID-based auto-positioning         
+         change master to
+         master_host='172.16.68.146',
+         master_port=3306,
+         master_user='repl',
+         master_password='Repl@Repl1',
+         master_auto_position=1;
+Step 5: Start the slave and disable read-only mode. Start the slave like this:
+        mysql> START SLAVE;
+        The following step is only necessary if you configured a server to be read-only in Step 1. To allow the
+        server to begin accepting updates again, issue the following statement:
+        mysql> SET @@global.read_only = OFF;    

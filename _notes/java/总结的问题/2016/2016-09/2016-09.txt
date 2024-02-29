@@ -1,0 +1,86 @@
+2016-09-02
+
+	1. jdk 的反编译工具jad.exe
+	
+2016-09-06
+
+	1. SHA-512 算法
+	
+2016-09-07
+
+	1. facade 模式
+	
+	最少知识原则： 尽量减少对象之间的交互，只留几个密友
+	项目设计中就是不要让太多的类耦合在一起
+	
+	对象的方法调用范围： 该对象本身
+                         作为参数传进来的对象
+						 此方法创建和实例化的对象
+						 对象的组件
+	
+2016-09-08
+
+	1. mysql 与 oracle 查询表及字段的注释的方法
+		mysql： 查询information_schema数据库中的tables和columns表
+		oracle：查询all_tab_comments/user_tab_comments 或者 all_col_comments/user_col_comments 表
+		
+	2. js获取项目路径的方法
+	        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+		    var curWwwPath=window.document.location.href;
+		    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+		    var pathName=window.document.location.pathname;
+		    var pos=curWwwPath.indexOf(pathName);
+		    //获取主机地址，如： http://localhost:8083
+		    var localHostPath=curWwwPath.substring(0,pos);
+
+2016-09-08
+
+	1. js中的json
+		学习使用官方的json2.js文件包
+		JSON.parse(jsonstr); //可以将json字符串转换成json对象 
+        JSON.stringify(jsonobj); //可以将json对象转换成json对符串
+
+	2. js改变option的选中状态
+	
+	3. 原生的JS获取ID为test的元素下的子元素。可以用：
+
+       var a = docuemnt.getElementById("test").getElementsByTagName("div");  这样是没有问题的
+	   
+	4. bootstrap
+	   
+	   HTML5 标签<nav></nav>
+	   
+	5. html中类名的第一个字符不能使用数字！它无法在 Mozilla 或 Firefox 中起作用。  
+	
+	
+2016-09-10
+
+	1. <meta http-equiv="X-UA-Compatible" content="IE=edge"> 是告诉IE浏览器用最新的
+	
+2016-09-12
+
+    1. 怎么获取json对象中所有的key值，想想别人调你的接口如果key值写错了的话怎么告诉他？？
+
+2016-09-19
+
+	1. POJO Plain Ordinary Java Object
+	   javabean
+	   EJB
+	   
+2016-09-21
+
+	1. linux 下怎么查看tomcat的控制台实时输出信息
+		进入tomcat/log 文件夹下面 输入命令 #  tail -f catalina.out
+
+2016-09-26
+
+    1. ISV independent software vendors
+    
+2016-09-27
+
+    1. ajax,jsp,servlet,log 
+    2. 
+    
+2016-09-30
+
+    1. orecal的savepoint 的用法？

@@ -1,0 +1,5 @@
+1. https://www.gnu.org/prep/ftp
+   进入网站找到符合自己地域的镜像网站
+2. 下载相应的源码包
+3. wget  https://mirrors.ustc.edu.cn/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
+4. https://blog.csdn.net/furzoom/article/details/53322510

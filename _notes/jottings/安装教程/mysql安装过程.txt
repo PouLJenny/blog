@@ -1,0 +1,52 @@
+1. 下载Yum Repository
+    a. Go to the Download MySQL Yum Repository page (http://dev.mysql.com/downloads/repo/yum/)
+       in the MySQL Developer Zone.
+    b. Select and download the release package for your platform
+    c. Install the downloaded release package with the following command, replacing platformand-version-specific-package-name with 
+       the name of the downloaded RPM package:
+       shell> sudo yum localinstall platform-and-version-specific-package-name.rpm
+        
+2. shell> yum repolist enabled | grep "mysql.*-community.*"
+    
+3. shell> sudo yum install mysql-community-server
+
+4. shell> sudo service mysqld start
+   Starting mysqld:[ OK ]
+
+5. shell> sudo service mysqld status
+    mysqld (pid 3066) is running.
+
+6. A superuser account 'root'@'localhost is created. A password for the superuser is set and
+    stored in the error log file. To reveal it, use the following command:
+    shell> sudo grep 'temporary password' /var/log/mysqld.log
+
+7. shell> mysql -uroot -p
+   mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
+   
+8、开机启动
+shell> systemctl enable mysqld
+
+9、配置默认编码为utf8
+vim /etc/my.cnf
+修改/etc/my.cnf配置文件，在[mysqld]下添加编码配置，如下所示：
+
+
+
+[mysqld]
+character_set_server=utf8
+init_connect='SET NAMES utf8mb4'
+
+10、 新建账号
+CREATE USER 'app'@'%' IDENTIFIED BY 'MyNewPass4!';
+GRANT ALL PRIVILEGES ON *.* TO 'app'@'%' WITH GRANT OPTION;
+CREATE USER 'finley'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'finley'@'localhost' WITH GRANT OPTION;
+
+默认配置文件路径： 
+配置文件：/etc/my.cnf 
+日志文件：/var/log//var/log/mysqld.log 
+服务启动脚本：/usr/lib/systemd/system/mysqld.service 
+socket文件：/var/run/mysqld/mysqld.pid
+
+卸载mysql
+https://www.cnblogs.com/taomylife/p/7234925.html

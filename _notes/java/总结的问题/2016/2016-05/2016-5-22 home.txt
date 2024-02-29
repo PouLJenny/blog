@@ -1,0 +1,8 @@
+1. HTML<fieldset>的作用 legend 元素为 fieldset 元素定义标题（caption）
+<form>
+  <fieldset>
+    <legend>health information</legend>
+    height: <input type="text" />
+    weight: <input type="text" />
+  </fieldset>
+</form>

@@ -1,0 +1,13 @@
+﻿<任务>
+	1. 卡券技术预演
+	2. access_token 时间限制
+</任务>
+<总结>
+	1. HttpURLConnection用法详解 http://j2ee2009.iteye.com/blog/1481441
+	2. 怎么用httpUrlConnection实现文件的上传 
+		http://blog.csdn.net/linfeng24/article/details/37885919?utm_source=tuicool&utm_medium=referral
+	3. HTTP 1.1与HTTP 1.0的比较 https http+ssl 即http的安全版
+		http://blog.csdn.net/elifefly/article/details/3964766
+		
+		Unix时间戳
+</总结>

@@ -1,0 +1,26 @@
+2016-12-03
+
+    1. spring的p标签是基于XML Schema的配置方式，目的是为了简化配置方式。
+    
+2016-12-06 
+
+    1. 原生的ajax，post传送数据的时候，后台接收到的是中文乱码，可通过xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+       这个方式来解决
+       
+       
+2016-12-07
+
+    1. 组合模式
+    
+2016-12-08
+
+    1. 享元设计模式
+    2. get请求中文参数乱码？？
+    3. Project build error: 'packaging' with value 'war' is invalid. Aggregator projects require 'pom' as packaging. 
+       项目的pom文件中可能会有<modules>
+                                  <module>?</module>
+                              </modules>
+
+2016-12-09
+
+    1. jdbc:mysql://localhost/logms?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true

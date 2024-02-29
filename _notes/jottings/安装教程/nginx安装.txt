@@ -1,0 +1,40 @@
+第一种方式=============================
+yum安装
+1. 
+To set up the yum repository for RHEL/CentOS, create the file named /etc/yum.repos.d/nginx.repo with the following contents:
+
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
+gpgcheck=0
+enabled=1
+Replace “OS” with “rhel” or “centos”, depending on the distribution used, and “OSRELEASE” with “6” or “7”, for 6.x or 7.x versions, respectively.
+
+
+2. 
+yum install nginx
+
+
+第二种方式，源码安装=============================
+1.  安装nginx必须的依赖包 
+    [root@rhel6u3-7 ~]# yum -y install gcc gcc-c++ openssl-devel pcre-devel zlib-devel  //yum创建过程略，安装略 
+2.  安装编译nginx，目前系统测试环境为rhel6.3  软件版本为nginx-1.27
+    [root@rhel6u3-7 ~]# useradd -s /sbin/nologin -M nginx //给nginx服务器创建后台进程管理用户 
+    [root@rhel6u3-7 ~]# tar zxvf nginx-1.2.7.tar.gz  //解压缩 
+    [root@rhel6u3-7 ~]# cd nginx-1.2.7  
+    [root@rhel6u3-7 nginx-1.2.7]# ./configure --user=nginx --group=nginx --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_realip_module --with-http_sub_module --with-http_ssl_module  --with-stream --with-http_auth_basic_module
+    // --user=nginx –group=nginx 设置允许nginx允许的用户和组为nginx 
+    // --prefix=/usr/local/nginx/  设置nginx安装路径 
+    // --with-http_stub_status_module 安装允许状态模块 
+    // --with-http_ssl_module 安装ssl模块 
+    //更多参数请参看 ./configure --help 
+3.  [root@rhel6u3-7 nginx-1.2.7]# make & make install   //编译安装过程略 
+4.  [root@rhel6u3-7 ~]# /usr/local/nginx/sbin/nginx  –V  //安装完成后查看Nginx的相关环境配置信息是否正确        
+5.  [root@rhel6u3-7 ~]# /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf   // -c指向nginx主配置文件 
+6.  启动nginx  ./nginx  
+    这个步骤出现了 [emerg]: getpwnam(“nginx”) failed 异常  解决方法：  没有安装nginx用户导致的无法启动 [root@localhost nginx-1.11.2]# useradd -s /sbin/nologin -M nginx
+    
+链接: http://blog.51cto.com/dreamfire/1140965         https://www.cnblogs.com/hanyinglong/p/5102141.html
+
+
+nginx部署vue的方式：https://stackoverflow.com/questions/47655869/how-to-use-vue-js-with-nginx

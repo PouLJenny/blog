@@ -1,0 +1,26 @@
+<head>
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
+</head>
+
+<body>
+    <video id="my-video" class="video-js" controls="true" preload="auto" fluid="true"
+        nativeControlsForTouch="true">
+        <source
+            src="http://192.168.1.8:19000/poul/%E6%96%B0%E5%8A%A0%E5%8D%B71/study/%E4%BA%BA%E5%A4%A7%E8%AF%BE%E7%A8%8B/%E5%BD%95%E5%B1%8F/%E4%BC%81%E4%B8%9A%E6%88%98%E7%95%A5%E7%AE%A1%E7%90%86/2023-11-18%2009-08-21.mp4"
+            type="video/mp4" />
+        <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a
+            web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+    </video>
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script defer>
+        var videoPlayer = videojs('my-video', {
+            playbackRates: [0.5, 1, 1.5, 2, 2.5, 3, 3.5]
+        });
+    </script>
+</body>

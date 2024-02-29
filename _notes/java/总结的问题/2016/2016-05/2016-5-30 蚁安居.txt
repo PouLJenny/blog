@@ -1,0 +1,11 @@
+<task>
+	1. 语音通信异常处理
+</task>
+<harvest>
+	1. It serves her right! 恶有恶报不表示善有善报
+	2. jsp文件会被容器转换成servlet类然后执行， jsp表达式： <%= ...%>
+		- jsp表达式
+		- jsp小脚本
+		- jsp声明
+	3. HTML <hr> 标签： 被水平线分隔的标题和段落：
+</harvest>

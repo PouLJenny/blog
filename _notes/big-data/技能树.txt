@@ -1,0 +1,20 @@
+https://blog.csdn.net/soonfly/article/details/51159586 
+
+
+学习路线：
+    1. java基础和linux基础
+    2. Hadoop的学习： 体系结构、原理、编程
+       1） 第一阶段: HDFS、MapReduce、HBase（NoSQL数据库）
+       2） 第二阶段： 数据分析引擎 Hive,Pig
+                    数据采集引擎 Sqoop,Flume
+       3)  第三阶段： HUE: Web管理工具
+                    ZooKeeper: 实现Hadoop的HA
+                    Oozie：    工作流引擎
+    3. Spark的学习
+       1） 第一个阶段： Scala编程语言
+       2） 第二个阶段： Spark Core 基于内存，数据的计算
+       3） 第三个阶段: Spark Sql  类似Oracle的SQL语句
+       4） 第四个阶段： Spark Streaming  进行实时计算（流式计算）：比如自来水厂
+       
+    4. Apache Storm: 类似Spark Streaming  进行实时计算（流式计算）：比如自来水厂
+       1） NoSql： redis基于内存的数据库

@@ -1,0 +1,21 @@
+﻿<js>
+	1. 如何实现一个按钮只能按一次——
+		1.1 定义一个全局变量并判断其值，条件满足就执行，不满足就不执行。
+		1.2 this.disabled = true; 加在元素体的函数的最后边或者是函数体的最下边执行。
+		1.3 是用jquery的one(type,[data],fn) 方法,type是事件类型，参数data可选，表示作为event.data属性值传递给
+			事件对象的额外数据对象；fn为绑定事件时所要触发的函数。
+		http://www.jb51.net/article/33833.htm  //参考网址
+		http://www.php100.com/html/it/mobile/2014/0807/7174.html  //jQuery中鲜为人知的的几个方法
+</js>
+
+<jdk>
+	1. StringBuilder和StringBuffer的区别 
+		StringBuffer线程安全的可变字符序列
+		StringBuilder 上的主要操作是 append 和 insert 方法，可重载这些方法，以接受任意类型的数据
+</jdk>
+
+<语言>
+	\r\n 回车换行
+	\n是换行，英文是New line，表示使光标下移一格
+	\r是回车，英文是Carriage return，表示使光标到行首
+</语言>

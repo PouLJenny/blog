@@ -1,0 +1,22 @@
+<html5>
+	隐藏html标签的3种方法
+	1. 选择器{transform:scale(0);} ——将一个元素设置成无限小，这个元素将不可见
+	2. 在元素上直接添加hidden属性  —— 隐藏元素的所有展示平台，例如打印设备和移动设备
+	3. 选择器{hight:0;overflow:hidden;}—— 将元素的行高设置成0
+	
+	<figure>标签规定独立的流内容（图像，照片，图表，代码等等）
+	<figcaption>定义figure元素的标题 应该被置于figure元素的第一个或最后一个子元素的位置
+</html5>
+
+<js>
+	EL(expression language) 作用：在jsp中简化表达式的方法
+	语法结构${expression}
+	EL 提供“.”和"[]"两种运算符来存取数据 当要存取的属性名称中包含一些特殊字符，如.或-要用[]
+	如 ${user.My-Name} 应该为 ${user["My-Name"]}
+	如果要动态取值 也是要用"[]"
+	如${sessionScope.user[data]}中的data是一个变量
+	EL表达式取值必须是servlet四大(servletContext>session>request>pageContext)作用中的值
+	并自动从四大作用域中按作用范围从小到大寻找对应名字的值
+	
+	
+</js>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="stylesheet" type="text/css" href="/demo/third-login/css/output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        window.onload = () => {
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const [accessToken, tokenType] = [fragment.get('access_token'), fragment.get('token_type')];
+
+            if (!accessToken) {
+                console.error('no access token');
+            } else {
+                fetch('https://discord.com/api/users/@me', {
+                    headers: {
+                        authorization: `${tokenType} ${accessToken}`,
+                    },
+                })
+                    .then(result => result.json())
+                    .then(response => {
+                        console.dir(response);
+                        const { username, discriminator, avatar, id,email } = response;
+                        //set the welcome username string
+                        document.getElementById('name').innerText = ` ${username}#${discriminator}`;
+
+                        //set the avatar image by constructing a url to access discord's cdn
+                        if (avatar == null) {
+                            document.getElementById("avatar").src = '/demo/third-login/pics/discard_default_avatar.png';
+                        } else {
+                            document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${id}/${avatar}.jpg`;
+                        }
+                        
+                        document.getElementById('email').innerText = ` ${email}`;
+
+                        document.getElementById('id').innerText = ` ${id}`;
+                    })
+                    .catch(console.error);
+            }
+
+
+        };
+    </script>
+</head>
+
+<body>
+    <div class="flex items-center justify-center h-screen bg-discord-gray text-white flex-col">
+        <div class="text-2xl">Welcome to the dashboard,</div>
+        <div class="text-4xl mt-3 items-center font-medium">
+            <img src='' id="avatar" class="rounded-full w-12 h-12 mr-3" />
+            <div id="name"></div>
+            <div id="email"></div>
+            <div id="id"></div>
+        </div>
+        <a href="/demo/third-login/third_login_discord" class="text-sm mt-5">Logout</a>
+    </div>
+</body>
+
+</html>

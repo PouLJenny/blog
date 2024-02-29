@@ -1,0 +1,16 @@
+<js>
+	
+	没有指明cookie的有效时间的时候，所创建的cookie有效期默认到用户浏览器关闭为止
+	
+	body载入完毕再运行js的两种方法
+	1.window.onload=function(){}
+	网页所有内容加载完毕后执行（包含图片）
+	2.$(document).ready(function(){});
+	这个方法等价于
+	  $(function(){
+	  });
+	  
+	这是jquery的方法 在DOM加载完毕之后再执行（DOM结构绘制完毕）
+	
+	
+</js>

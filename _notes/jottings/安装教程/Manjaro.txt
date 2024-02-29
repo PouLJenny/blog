@@ -1,0 +1,53 @@
+在我的联想Y485P笔记本上安装manjaro
+
+1. 下载manjaro镜像 
+   测试了好长时间 18版本的镜像虽然新，但是在我的电脑上启动的时候经常报 irq no handler for vector 错误，找了很久没有找到解决方案，所以我选择17的最新稳定版本 桌面KDE 
+2. manjaro的镜像跟windows的镜像有很大的区别 我使用软牒通把镜像刻录到U盘里无法启动，最后使用refus的DD模式刻录成功
+3. 安装过程省略 
+    注意安装的时候驱动选择free BIOS选择UEFI模式 关掉安全检查 开启SVM
+4. 启动后的配置
+   显卡驱动在没有找到很好的解决方案的时候尽量使用manjaro默认的驱动 不然非常容易导致电脑再也启动不了了。
+   而且经过我的多次重装，得到的结论就是：在manjaro系统上尽量保持系统给的默认设置，除非你非常了解你修改的配置，并找到了很好的系统解决方案，否则就选择默认的，这样稳定。
+   
+   配置国内的软件源   sudo pacman-mirrors -i -c China -m rank
+   刷新缓存          sudo pacman -Syy
+   添加Archlinux中文社区仓库 在 /etc/pacman.conf 文件的末尾添加以下两行
+   
+   [archlinuxcn] 
+   Server = https://mirrors.shu.edu.cn/archlinuxcn/$arch
+   
+   安装 `archlinuxcn-keyring` 包导入GPG key.   sudo pacman -Sy archlinuxcn-keyring
+   更新系统 pacman -Syu  这个过程差不多要20多分钟 跟新完了之后建议重启，检查这个更新是否成功 ，启动成功后为了保证系统的稳定行（我可不想折腾）建议尽量少的做这种操作，搞不好一更新系统就无法启动了，在这我表明linux开源做的很好，也是非常好用的系统比某win，但是世界上的计算机各式各样 为了保证稳定行还是少更新为好，因为我是要让linux替代windows的 
+   安装输入法管理工具 
+   sudo pacman -S fcitx-im  #选择默认全选   
+   sudo pacman -S fcitx-configtool
+   改配置文件 ~/.xprofile 和 /etc/profile 添加如下语句
+   export GTK_IM_MODULE=fcitx
+   export QT_IM_MODULE=fcitx
+   export XMODIFIERS="@im=fcitx"
+   注销重新登录就可以配置输入法了，输入法我没有选择搜狗输入法因为安装了搜狗输入法之后，它非常流氓的让我打不开输入法配置了，所以我选择manjaro系统默认的拼音输入法，自我感觉非常好用
+   
+   
+   科学上网
+   安装shadowsocks-qt5 添加远程的代理链接  https://www.jianshu.com/p/f85b8b5cd647  本地服务使用socks5服务，更改之后需要重启GUI客户端 这是底层代理 比应用层的代理快  
+   
+   
+   其他的软件直接在系统的包管理工具里面安装就可以了 
+   
+5. 最后manjaro真的是非常的棒，我希望它能带我走向大牛之路
+
+
+
+6. Manjaro使用期间遇到的问题在这里记录以下
+   
+   6.1 goldendict无法发音提示audio Player ao_open_live() failed  解决方案： 在goldendict的菜单“编辑”-》“首选项”》“音频”,在播放一栏，选择“使用外部程序播放”，填入命令行参数： 
+       cvlc  --play-and-exit -Vdummy
+   6.2 manjaro安装  https://github.com/cytle/wechat_web_devtools  github上的教程 很幸运竟然一次性安装成功没有出什么问题
+    
+   
+   
+   
+   
+  
+
+

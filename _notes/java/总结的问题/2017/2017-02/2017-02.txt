@@ -1,0 +1,76 @@
+2017-02-13
+
+    spring MVC 接受参数中文乱码的解决方式
+    解决方法：
+        get方法：在tomcat的server.xml的
+            <Connector port="8080" protocol="HTTP/1.1"
+            connectionTimeout="20000"
+            redirectPort="8443" />
+            添加URIEncoding="utf-8"
+            <Connector port="8080" protocol="HTTP/1.1"
+            connectionTimeout="20000"
+            redirectPort="8443" URIEncoding="utf-8"/>
+
+        post:
+        web.xml配置一个字符过滤器
+        <!-- Spring字符集过滤器 -->  
+        <filter>  
+            <filter-name>SpringEncodingFilter</filter-name>  
+            <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
+            <init-param>  
+                <param-name>encoding</param-name>  
+                <param-value>UTF-8</param-value>  
+            </init-param>  
+            <init-param>  
+                <param-name>forceEncoding</param-name>  
+                <param-value>true</param-value>  
+            </init-param>  
+        </filter>  
+        <filter-mapping>  
+            <filter-name>SpringEncodingFilter</filter-name>  
+            <url-pattern>/*</url-pattern>  
+        </filter-mapping>  
+        
+2017-02-15
+
+    maven设定项目编码
+        DOS下执行mvn compile命令时报错说缺少必要符号，事实上根本就没有缺少，但何以如此呢，为啥eclipse在编译时就没有这问题呢？ 
+        原因是编码的问题造成的！ 
+        eclipse在编译的使用使用的是UTF-8,因为整个项目设置的是UTF-8格式编码。 
+        当在DOS下执行mvn compile命令时，默认使用的是系统的GBK格式编码。 
+        问题解决方案是在pom.xml文件中添加如下代码:
+
+    <properties>  
+        <!-- 文件拷贝时的编码 -->  
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  
+        <!-- 编译时的编码 -->  
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>  
+    </properties> 
+
+    或者添加如下代码：
+    
+    <plugin>  
+        <groupId>org.apache.maven.plugins</groupId>  
+        <artifactId>maven-compiler-plugin</artifactId>  
+        <version>3.1</version>  
+        <configuration>  
+            <source>1.5</source>  
+            <target>1.5</target>  
+            <encoding>UTF-8</encoding>
+            <!-- 指定编码格式，否则在DOS下运行mvn compile命令时会出现莫名的错误，因为系统默认使用GBK编码 -->  
+        </configuration>  
+    </plugin>  
+    <plugin>  
+        <groupId>org.apache.maven.plugins</groupId>  
+        <artifactId>maven-resources-plugin</artifactId>  
+        <version>2.6</version>  
+        <configuration>  
+            <encoding>UTF-8</encoding>
+            <!-- 指定编码格式，否则在DOS下运行mvn命令时当发生文件资源copy时将使用系统默认使用GBK编码 -->  
+        </configuration>  
+    </plugin>
+
+2017-02-20
+
+    MAVEN 中央仓库的地址： https://repo.maven.apache.org/maven2

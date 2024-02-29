@@ -1,0 +1,6 @@
+<html5>
+	required aira-required 用在表单中的某一字段的input中，表示此字段为必填的
+	placeholder 占位符
+	Modernizr: 专为HTML5和css3开发的功能检测类库
+	form 表单没有action的话就会提交给自己
+<html5>

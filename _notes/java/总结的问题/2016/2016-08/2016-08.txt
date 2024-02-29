@@ -1,0 +1,185 @@
+2016-08-05
+
+	1. 将jar包加入到Maven本地仓库
+  
+			在下载的jar包下执行	
+			mvn install:install-file -Dfile=sqljdbc4.jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4 -Dversion=4.0 -Dpackaging=jar
+			
+			https://maven.apache.org/plugins/maven-install-plugin/install-file-mojo.html
+			然后就可以在项目下的pom.xml 文件中添加
+			<dependency>
+				<groupId>com.microsoft.sqlserver</groupId>
+				<artifactId>sqljdbc4</artifactId>
+				<version>4.0</version>
+			</dependency>
+
+			http://www.blogjava.net/fancydeepin/archive/2012/06/12/380605.html
+	
+	2. jsp 中绝对路径的写法
+			http://zhidao.baidu.com/link?url=o4_LSk52FD32Epz5fX_L2xgR6Cf8wBIVNNPRFXFhYAiTP9p5XUISofj8ArrNfHtRQgx2fwHEuCWuUyJYVGk6Ra
+
+	3. xml 中的实体引用
+		&lt;	<	小于
+		&gt;	>	大于
+		&amp;	&	和号
+		&apos;	'	省略号
+		&quot;	"	引号
+
+		CDATA段 里面写的是纯文本
+		格式 ： <![CDATA[文本内容]]>
+	
+2016-08-06
+
+	1. 清空mysql的表数据
+
+		1.1 truncate table tableName
+		1.2 delete from tableName
+	
+	2. 修改网页标题图片
+		在head里写：<link rel='icon' href='pic.ico ' type=‘image/x-ico’ /> 
+		记得图标是.ico格式的文件，不然不会显示
+
+	3. Spring 加载静态资源的方式
+		http://blog.csdn.net/yangbaba2000/article/details/7743763
+		http://blog.csdn.net/sbangm/article/details/41722559
+
+2016-08-07
+
+	1. js 中判断变量是否为数字
+		isNaN(x);  isNaN(x) 函数用于检查其参数是否是非数字值
+		
+	2. mysql 用limit进行分页查询
+	
+		select * from persons limit 10;
+		意思是，起点为0，开始查询，返回10条记录。
+	
+	3. mysql 进行排序查询
+		select * from content order by 字段一 asc ,字段二 asc,字段三 desc 
+		asc或desc（即升序(ascend)或降序(descend)）
+		
+	4. jquery 选择tr中的第几个td
+		$("tr").find("td:eq(3)")
+		jquery 选择器 http://www.w3school.com.cn/jquery/jquery_ref_selectors.asp
+	
+	5. 设置隐藏的input框
+		<button type="hidden" name="" value="" placeholder=""/>
+		
+	6.  json字符串转json对象：jQuery.parseJSON(jsonStr);
+		json对象转json字符串：JSON.stringify(jsonObj);
+		
+2016-08-09
+
+	1. mybatis 的动态sql
+		
+	2. cannot find the declaration of element 'beans'. 的错误是因为spring配置文件中的schema校验版本跟现在使用
+	   的spring版本不相符
+	   	   
+2016-08-10
+
+	1. localhost访问自己的项目没有问题 但是用本机的ip地址访问就出现功能异常
+		jsp获取地址的方法
+		(1)得到工程目录：request.getSession().getServletContext().getRealPath("")参数可具体到包名。
+			结果：E:\Tomcat\webapps\TEST
+		(2)得到IE地址栏地址：request.getRequestURL()
+			结果：http://localhost:8080/TEST/test
+		(3)得到相对地址：request.getRequestURI()
+			结果：/TEST/test
+		(4)得到服务器的域名 request.getServerName();
+			结果: localhost
+		(5)得到服务器的端口号 request.getServerPort();
+			结果：8080
+		用js获取当前页面的url信息方法
+			document.referrer;
+			http://www.cnblogs.com/glj1203/archive/2011/04/07/2008054.html
+	2. jsp 表达式 <%= content %> 
+		合法内容：变量、变量加运算符组合的表达式、有返回值的方法
+		转译成servlet时的规则： 在service()方法中用out.print语句输出该变量、表达式、方法的值
+	
+	3. JS制作简单的日历控件
+		http://www.cnblogs.com/NNUF/archive/2012/06/24/2560557.html
+		
+	4. MAVEN的常用命令
+		http://www.cnblogs.com/phoebus0501/archive/2011/05/10/2042511.html
+		
+	5. AngularJS bootstrap easyUI
+		
+2016-08-11
+
+	1. 反模式
+		http://baike.baidu.com/link?url=sagrBQCSLLwGMK_eaOtBZ5brwHWRLEb8XO5bpuYHAq0J-7Z2szFSqx9OtYHla0_yalXWvbQL457-sPfzZAeJyK
+		
+	2. 如何正确地使用Java的@deprecated 标注
+		http://www.importnew.com/10113.html
+
+2016-08-11
+	
+	1. 定义和用法
+		indexOf() 方法可返回某个指定的字符串值在字符串中首次出现的位置。
+		语法
+		stringObject.indexOf(searchvalue,fromindex)
+		参数		描述
+		searchvalue	必需。规定需检索的字符串值。
+		fromindex	可选的整数参数。规定在字符串中开始检索的位置。它的合法取值是 0 到 stringObject.length - 1。如省略该参数，则将从字符串的首字符开始检索。
+		
+2016-08-15
+	1. 
+	类：
+		JavaScript实际上压根儿没有类。改语言的一切都是基于对象的，其所依靠的是一套原型系统（prototype）。在传统的
+		面向对象语言中，我们一般会这样描述自己的做法：“我基于Person类创建了一个叫做Bob的新对象。”而在这种基于原型
+		的面向对象语言中，我们则会这样描述：“我将现有的Person对象扩展成了一个叫做Bob的新对象
+	封装：
+		在JavaScript中，尽管所有的方法和属性都是public的，但是我们将会看到，该语言还是提供了一些隐藏数据的方法，以
+		保护程序的隐秘性。
+	聚合
+		Book是由一个或多个author对象、publisher对象、若干个chapter对象以及一组table对象等合并而成的
+	继承
+		由于JavaScript中不存在类，因此继承只能发生在对象之间
+	多态
+		不同的对象通过相同的方法调用来实现各自行为的能力
+	http://developer.yahoo.com/yui/theater/
+	
+	2. js中当一个数字以0开头的时候，就表示这是一个八进制数, 0x开头的是16进制的
+	
+	3. js中NaN是一种特殊数字 ‘不是数字’
+	
+	4. js中判断变量的类型的方法 typeof(); 或者是typeof s;
+	
+	5. 如果JavaScript引擎在一个逻辑表达式中遇到一个非布尔类型的操作数，那么该操作数的值就会成为该表达式所返回的结果
+	
+	6. for-in循环用来遍历某个数组
+	
+2016-08-16
+
+	1. js中变量的作用域 
+		js中不能为变量定义特定的块作用域，但是可以定义所属的函数域。
+		
+	2. chrome console的使用技巧  
+		http://www.tuicool.com/articles/bAvAVjN
+		https://developers.google.com
+		
+	3. 表单里面的button 没有写type=”button“ 的话默认是submit
+	
+2016-08-19
+
+	1. 快速找亚军的方法
+	
+2016-08-26
+
+	1. java中的 位运算符 
+	2. HmacSHA1算法 
+	3. Math类的所有方法 
+	4. eclipse的所有快捷键
+	
+2016-08-26
+  
+	1. java中的 native 关键字的用法 http://blog.csdn.net/xw13106209/article/details/6989415
+	
+2016-08-31
+ 
+	1. RAM Random Access Memory
+	   ROM Read Only Memory
+	   
+	2. CD路径正确 为什么还是C:\ ?? 
+	   使用参数/d，如cd /d c:\windows
+	   
+	3. CREATE DATABASE `sonarquberep` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;

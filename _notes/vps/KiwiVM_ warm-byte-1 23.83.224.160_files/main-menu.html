@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0049)https://kiwivm.64clouds.com/1691826/main-menu.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Kiwi VM Control Panel</title>
+    
+    <script type="text/javascript" src="./common.js.php"></script>
+
+    <style>
+    html, body {
+        background-color: #f7f7f7;
+        font-family: 'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
+        font-size: 1em;
+        line-height:1.6em;
+        margin:0;
+        padding:0;
+        border-right: solid 1px #e0e0e0;
+        height:100%;
+        min-height: 100%;
+    }
+
+    .box {
+        height:100%;
+        min-height: 100%;
+        
+    }
+
+    .menu {
+        margin:0;
+        padding:0;
+    }
+    .menu li {
+        list-style:none;
+        margin:0;
+        padding:0;
+        background-color: #f7f7f7;
+        display:block;
+    }
+
+
+    .menu .group,
+    .menu .group:hover {
+        padding:0.5em;
+        background-color: #e0e0e0;
+        display:block;
+        text-shadow:1px 1px 1px #ffffff;
+        color:#444;
+        font-weight: bold;
+    }
+ 
+    .menu li a {
+        margin:0;
+        padding:0.2em;
+        padding-left:1em;
+        text-decoration: none;
+        color: #505050; 
+        display:block;
+    }
+    .menu li a:hover {
+        text-decoration: none;
+        color: #000000; 
+    }
+
+    .menu li:hover {
+        color: #000000; 
+        background-color: #e7e7e7;
+    }
+
+    .menu li.active,
+    .menu li.active a {
+        color: #ffffff; 
+        background-color: #ff8030;
+        text-shadow:1px 1px 1px #a04010;
+    }
+
+    .menu li.active:hover,
+    .menu li.active a:hover {
+        color: #ffffff; 
+        background-color: #ff7525;
+    }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <br>
+        
+        <ul class="menu">
+            <li class="group">Admin functions</li>
+
+            <li id="menuitem-main-controls" class=""><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=kiwi-main-controls.php">Main controls</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=private_network">Private network</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=stats">Detailed statistics</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=shellcmd">Root shell - basic</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/main-exec.php?mode=shell">Root shell - advanced</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=shell_vnc">Root shell - interactive</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=reload">Install new OS</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=2fa">Two-factor authentication</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=rootpassword">Root password modification</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=kiwivmpassword">KiwiVM password modification</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=ssh_keys">SSH keys</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=kiwivm_sessions">KiwiVM sessions</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=audit_log">Audit log</a></li><li class="group">Migration</li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=migrate">Migrate to another DC</a></li><li class="group">KiwiVM Extras</li><li class="active"><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=api">API</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=snapshots">Snapshots</a></li><li><a target="main" href="https://kiwivm.64clouds.com/1691826/preloader.php?load=main-exec.php?mode=backups">Backups</a></li>
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+
+    var make_button_active = function(){
+        var className = $(this).attr('class');
+        if (className == 'group') return false;
+        //Get item siblings
+        var siblings =($(this).siblings());
+
+        //Remove active class on all buttons
+        siblings.each(function (index)
+        {
+            $(this).removeClass('active');
+        })
+
+
+        //Add the clicked button class
+        $(this).addClass('active');
+    }
+
+    //Attach events to menu
+    $(document).ready(
+        function() {
+            $(".menu li").click(make_button_active);
+            $("#menuitem-main-controls").addClass('active');
+        }
+    )
+    </script>
+
+</body></html>

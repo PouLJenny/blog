@@ -1,0 +1,9 @@
+/ task
+
+/ harvest 
+
+	1. js escape()/unescape() 函数可对字符串进行编码/解码，这样就可以在所有的计算机上读取该字符串。
+	    ECMAScript v3 反对使用该方法，应使用 encodeURI()/decodeURI() 
+											和 encodeURIComponent()/decodeURIComponent() 替代它。
+	2. js  toGMTString() 方法可根据格林威治时间 (GMT) 把 Date 对象转换为字符串，并返回结果。不赞成使用此方法。
+			

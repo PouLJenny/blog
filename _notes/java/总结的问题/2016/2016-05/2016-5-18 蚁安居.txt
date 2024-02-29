@@ -1,0 +1,27 @@
+<任务>
+	1. 微信支付——红包
+	2. 微信接口的内部调用和文档 
+	电商？？
+	3. spring mybatis框架 servlet
+	
+</任务>
+<总结>
+	<微信>
+		1.微信红包发送规则
+			1.1 发送频率： 每分钟不能超过1800个
+			1.2 同一个商户号，每分钟最多给同一个用户发送一个红包
+		2. 红包规则
+			2.1 单个红包金额1~200 元
+			2.2 同一个红包只能发送给一个用户
+			2.3 红包发放后72小时未被领取将进行退款			
+	</微信>
+	
+	<java>
+		1. servlet sun公司制定的一种用来扩展web服务器功能的组件规范 生成动态网页
+		   容器： 符合一定规范，提供组件运行环境的一个程序
+		2. response.setContentType() 和 response.serCharacterEncoding()的区别
+		    以及request.setCharacterEncoding()
+						
+			http://blog.csdn.net/joywy/article/details/8006645
+	</java>
+</总结>

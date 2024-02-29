@@ -1,0 +1,33 @@
+https://github.com/flyzy2005/ss-fly
+
+git clone 地址: https://github.com/flyzy2005/ss-fly.git
+
+ss-fly/ss-fly.sh -i 1993Peng 1993 
+其中flyzy2005.com换成你要设置的shadowsocks的密码即可
+[成功] 安装成功尽情冲浪！
+
+你的服务器地址（IP）： 45.32.210.99 
+你的密码            ： 1993Peng 
+你的端口            ： 1994 
+你的加密方式        ： aes-256-cfb 
+欢迎访问flyzy小站   ： https://www.flyzy2005.com 
+
+
+你的服务器地址（IP）： 45.77.206.59 
+你的密码            ： 1993Peng 
+你的端口            ： 1993 
+你的加密方式        ： aes-256-cfb 
+欢迎访问flyzy小站   ： https://www.flyzy2005.com 
+你的ss链接： ss://YWVzLTI1Ni1jZmI6MTk5M1BlbmdANDUuNzcuMjA2LjU5OjE5OTM= 
+[root@vultr opt]# 
+
+
+## trojan
+
+## 加速
+https://www.v2rayssr.com/bbr.html
+
+加速脚本
+wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
+
+

@@ -1,0 +1,15 @@
+<task>
+ 
+</task>
+<harvest>
+	1. 方法中阻止表单的提交 方法中return false 可阻止， 默认缺省的是return true
+	2. jquery 给一个输入框赋值 $.val("这里面赋值"); 取值 用$.val();
+	3. 表单提交一个隐藏的值： <input type="hidden" name="" value=""/>
+	4. -- onblur:  官方标准解释是：事件会在对象失去焦点时发生 。
+	   -- onfocus：官方标准解释：事件在对象获得焦点时发生。
+	5. jquery 事件 http://www.w3school.com.cn/jquery/jquery_ref_events.asp
+	   jquery 选择器 
+	6. js中== 与 === 的区别 http://www.cnblogs.com/yiki/archive/2012/05/08/2489687.html
+	7. js跳转页面 window.location.href="";。
+	8. spring 静态资源加载
+</harvest>

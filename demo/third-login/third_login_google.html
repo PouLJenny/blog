@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://accounts.google.com/gsi/client" async></script>
+</head>
+
+<body>
+
+    <!-- uri登录  此登录方式会发送credential给配置的data-login_uri,post请求-->
+    <!-- <div id="g_id_onload" data-client_id="870186193875-9qg445hpd10nb57tq7o5udmo2cct88uc.apps.googleusercontent.com"
+        data-context="signin" data-ux_mode="popup" data-login_uri="https://blog.poul.top/demo/third-login/third_login_google.html"
+        data-itp_support="true">
+    </div> -->
+
+    <!-- js回调登录 -->
+    <div id="g_id_onload" data-client_id="870186193875-9qg445hpd10nb57tq7o5udmo2cct88uc.apps.googleusercontent.com"
+        data-context="signin" data-ux_mode="popup" data-callback="onLogin" data-itp_support="true" data-nonce="1234-nonce">
+    </div>
+
+    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with"
+        data-size="large" data-logo_alignment="left" data-locale="zh_CN">
+    </div>
+
+    <script>
+        function onLogin(userProfile) {
+            console.dir("invoke onLogin method", userProfile);
+            // 返回的是
+            console.dir(JSON.stringify(userProfile));
+        }
+    </script>
+</body>

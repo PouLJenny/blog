@@ -1,0 +1,72 @@
+2017-01-05
+   1. 
+    HTTP原理
+    HTTP默认的端口号是80，但是你也可以改成8080或者是其他的端口号
+    默认HTTP的端口号为80，HTTPS的端口号为443。
+    HTTP/1.1 一共定义了8种方法/动作，来表明Request-url指定的资源不同的操作方式
+    前三种是HTTP1.0中定义的请求方法
+    1.GET
+    2.POST
+    3.HEAD
+    4.OPTIONS
+    5.PUT
+    6.DELETE
+    7.TRACE
+    8.CONNECT
+   2. assert java中断言的用法
+   
+2017-01-07
+
+    1. 在本机新建的oracle数据库的账号密码
+       SYS 和 SYSTEM 的密码都是1993Peng
+       数据库ORACLE主目录是使用oracle主目录用户‘ windows_oracleuser ’安装的。
+       该数据库的windows服务将配置为以oracle主目录用户账户身份运行
+       oracle 主目录用户口令； 19930710Peng
+       
+       cmd 激活用户命令： net user windows_oracleuser /active:yes
+       
+       计算机程序设计艺术
+       Donald Knuth, The Art of Computer Programming 一共有3卷
+       
+2017-01-10
+
+    1. finalize() 方法在什么情况下被调用
+       1): 所有对象被Garbage Collection时自动调用,比如运行System.gc()的时候.
+       2): 程序退出时为每个对象调用一次finalize方法。
+       3): 显式的调用finalize方法
+       
+    2. cmd 中卸载服务用sc命令 如： sc delete MyService  
+
+2017-01-11
+    
+    1. 对象可能不被垃圾回收
+    2. 垃圾回收并不等于“析构”
+    3. 垃圾回收只与内存有关
+    
+    4. 垃圾回收器的工作方式
+        垃圾回收必须在程序暂停的情况下才能进行
+        1. 停止-复制（stop-and-copy）
+        2. 标记-清理(mark-and-sweep)
+        
+2017-01-13
+
+    1. 静态内部类
+       内部类的作用： 每个内部类都能独立地继承自一个（接口的）实现，所以无论外围类
+       是否已经继承了某个（接口的）实现，对于内部类都没有影响。
+
+2017-01-16
+
+    1. 摘要算法的加盐处理
+    
+2017-01-17
+
+    1. ISO 8859-1 不支持中文显示
+       springmvc controller层返回的String的responseBody默认是ISO 8859-1的编码
+       不支持中文显示
+       
+       springMVC返回对象的时候 需要依赖外部jar包将对象转换成json字符串
+       支持（gson,fasterxml.jackson）
+
+2017-01-18
+
+    1. 密码

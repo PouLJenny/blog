@@ -1,0 +1,13 @@
+<task>
+	1. 工资加密，整合
+	2. 文件的加密，双向加密
+</task>
+<harvest>
+
+	1. 加密：1.1 单项加密 （从某种意义上讲单项加密是摘要算法） http://www.iteye.com/topic/1122076/  http://blog.csdn.net/xiadaoceshen/article/details/8464476
+			 1.2 双向加密 
+				1.2.1 对称加密
+					DES算法 1972年美国IBM公司研制
+				1.2.3 非对称加密
+				
+</harvest>

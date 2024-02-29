@@ -1,0 +1,15 @@
+<eclipse>
+	”Ctrl+shift+x“  小写变大写
+	”Ctrl+shift+y“  大写变小写
+	自动添加 作者时间的注释
+	打开Eclipse,然后点击->windows->preferences->Java->code styles->code templates->comments->types->
+	点击右侧的edit进行编辑，在打开的编辑窗口中修改下面的文字
+</eclipse>
+
+<jdk>
+	String,StringBuilder,StringBuffer 的区别  http://www.cnblogs.com/A_ming/archive/2010/04/13/1711395.html
+	1.三者在执行速度方面的比较：StringBuilder >  StringBuffer  >  String 
+	
+	java读取properties文件的方法
+	http://zheng0324jian.iteye.com/blog/1176932
+</jdk>

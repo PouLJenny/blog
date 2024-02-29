@@ -1,0 +1,13 @@
+/ task
+	1. 微信对接
+	
+/ harvest
+
+	1.  
+		public String sendPassword(@RequestBody String requestBody) { // 接收java后台用post发送过来的数据
+			String result = weChatServiceI.sendMessage(requestBody);
+			return result;
+		}
+	
+		conn.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
+		为什么我不写这句话就可以调用微信的接口，而不可以调用自己写的接口（自己的接口在读取数据的时候出现错误）

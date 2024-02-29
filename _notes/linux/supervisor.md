@@ -1,0 +1,16 @@
+# Supervisor
+
+
+[官方文档](http://supervisord.org/index.html )
+
+
+## 安装
+https://blog.csdn.net/sl1992/article/details/106165171
+
+## `program:x`配置文件
+
+- `command`
+    程序的启动命令，这个命令执行的时候必须是前台启动，方便supervisor来管理。这个需要注意： 如果启动命令是一个`sh`脚本的话，需要在脚本中最终执行`exec`命令来替换掉当前的进程，否则，supervisor管理的是sh脚本的进程，而不是最终我们想要的进程
+- `autostart`
+    If true, this program will start automatically when supervisord is started
+- 

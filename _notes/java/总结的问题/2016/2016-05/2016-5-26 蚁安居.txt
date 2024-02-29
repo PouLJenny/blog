@@ -1,0 +1,8 @@
+
+<task>
+	1. audition
+	2. 申请使用自己的电脑
+</task>
+<harvest>
+
+</harvest>

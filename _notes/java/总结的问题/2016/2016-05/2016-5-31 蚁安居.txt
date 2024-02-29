@@ -1,0 +1,16 @@
+﻿<task>
+	1. 数据库建表
+	2. xp系统？？
+	3. linux 系统
+</task>
+<harvest>
+	1. mysql 的存储引擎：http://www.cnblogs.com/gbyukg/archive/2011/11/09/2242271.html
+	2. mysql 字符集（CHARACTER SET）和校对集（COLLATE） http://blog.sina.com.cn/s/blog_9707fac301016wxm.html
+	3. mysql 的日期数据类型 http://blog.csdn.net/aidenliu/article/details/5465300
+	4. mysql 的小数存储类型及money的常用类型 http://www.linuxidc.com/Linux/2013-07/88032.htm
+	5. mysql 的数据类型 http://jingyan.baidu.com/article/375c8e19b4924d25f2a22983.html
+	6. 如果mysql服务无法正常停止，使用命令：mysqladmin -u root shutdown
+	7. mysql 的comment的字段注释的添加 用 show full columns from table_name; 查看注释的信息 http://wenku.baidu.com/link?url=onlMyEeMvM0_8Z77_cpOot-Xh6jdK5GflVXhphYaSVa4f3R3ZUnF-5nA51YJmhJtgb7pMF9yEzFUu8WmcjyYfLjaXP2cAWUBPwmACKYzSiy
+	8. Maven命令下载源码和javadocs http://blog.csdn.net/topwqp/article/details/8902863
+	9. web.xml各个版本的 http://www.mkyong.com/web-development/the-web-xml-deployment-descriptor-examples/
+</harvest>

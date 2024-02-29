@@ -1,0 +1,30 @@
+目标：
+1. 解决card_type 格式错误问题 get
+2. 微信支付 等待接口申请成功
+3. json
+4. 怎么在eclipse中创建一个maven的web项目
+注意点：
+<java>
+	1 JSON建构于两种结构,json对象是一个无序的 名称/值 对 集合。 一个对象以{ 开始，以 }结束，每个名称后面跟一个
+	: 名称/值 对之间使用, 分隔。
+		1.1 "名称/值"对的集合(A colliction of name/value pairs)
+		1.2 值的有序列表（An ordered list of values）
+		
+	前面加反斜线 转移字符时	
+	"/" solidus
+	"\" reverse solidus
+	"b" backspace
+	"f" formfeed//换页
+	"n" newline
+	"r" carriage return 
+	"t" horizontal tab
+	"u" 4 hexadecimal digits
+	\r\n return to the head of this line, then fall to a new line.
+</java>
+
+<微信支付>
+	1.刷卡支付
+	2.扫码支付
+	3.公众号支付
+	4.APP支付
+</微信支付>

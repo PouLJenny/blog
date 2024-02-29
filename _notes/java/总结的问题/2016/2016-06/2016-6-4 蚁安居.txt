@@ -1,0 +1,8 @@
+<task>
+
+</task>
+<harvest>
+	1. 时间命名最好是用2001-01-01 这种格式为了方便排序
+	2. 在jQuery中，你能够通过逗号，来分隔字符选择多个选择。 $(.class1, .class2, #id1)
+	3. jquery 删除元素 $().remove(); 隐藏元素 $().hide();
+</harvest>

@@ -1,0 +1,68 @@
+
+We must accept finite disappointment, but we must never lose infinite hope.
+Climb mountains not so the world can see you, but so you can see the world.
+
+1Dynamic Web Module 3.0 requires Java 1.6 or newer
+
+在pom.xml文件中插入下面的插件
+
+<plugin>  
+    <groupId>org.apache.maven.plugins</groupId>  
+    <artifactId>maven-compiler-plugin</artifactId>  
+    <version>2.3.2</version>  
+    <configuration>  
+        <source>1.8</source>  
+        <target>1.8</target>  
+    </configuration>  
+ </plugin>  
+ 
+ 2缺少beans的解决方法
+ llyzq.iteye.com/blog/1117288
+ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+ 
+ http://www.springframework.org/schema/context/spring-context.xsd
+ 
+windows下cmd中 ipconfig命令查看 本机的ip配置
+
+3Jetty 的工作原理以及与 Tomcat 的比较
+http://blog.csdn.net/qing_2012/article/details/8276789
+
+Tomcat 系统架构与设计模式
+http://www.ibm.com/developerworks/cn/java/j-lo-tomcat1/
+
+4对象设计的六大原则
+    1. 组合复用原则
+		多用组合，少用继承 ； 找到变化的部分，抽象，封装变化； 
+		区分“Has-A” 与 “Is-A”
+	2. 依赖倒置原则
+		依赖： 成员变量、方法参数、返回值
+		要依赖于抽象，不要依赖于具体
+		高层模块不应该依赖于底层模块，二者都应该依赖其抽象
+		抽象不应该依赖具体，具体应该依赖抽象
+		针对接口编程，不要针对实现编程
+	3. 开闭原则
+		对扩展的开放，对修改的关闭
+		通过扩展已有软件系统，可以提供新的功能
+		修改的关闭，保证稳定性和延续性
+	4. 迪米特法则
+		一个对象应该与其他对象保持最少的了解。
+		成员变量、方法参数、方法返回值中需要的类为直接朋友
+		类与类之间的关系越密切了解越多，耦合度越大
+		尽量降低类与类之间的耦合（外观模式，中介者模式）
+		
+		接口隔离原则： 一个类对另一个类的依赖应该建立在最小的接口上
+	5. 里氏替换原则
+		所有引用基类的地方必须能透明的是用其子类对象
+		子类在扩展父类功能时不能破坏弗雷原有的功能
+		使用继承时：
+			子类可以实现父类的抽象方法，但是不能覆盖父类的抽象方法
+			当子类重载父类的方法的时候，方法的形参要比父类方法的参数更宽松
+			当子类实现父类的抽象方法时，方法的返回值要比父类更严格
+		是设计整个继承体系的原则
+	6. 单一职责原则
+		类应该只有一个导致类变更的理由
+		即一个类只负责一项职责
+		
+		降低类的复杂度
+		提高系统的可维护性
+		修改时降低风险溢出
