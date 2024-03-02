@@ -380,7 +380,7 @@ synchronized(myObject) {
 
 synchronized能保证可见性和原子性、有序性
 
-![](../jvm/pic/mark-word.png)
+![](/assets/notes/jvm/mark-word.png)
 对象头的具体数据结构在源码中的`markOop.hpp`文件中
 
 
