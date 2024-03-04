@@ -1,6 +1,6 @@
 # 孟子
 
-[wiki](https://zh.wikipedia.org/zh-hans/%E5%AD%9F%E5%AD%90 )
+[wiki](https://zh.wikipedia.org/zh-hans/%E5%AD%9F%E5%AD%90 "wiki")
 
 
 
