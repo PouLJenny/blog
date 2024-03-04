@@ -905,7 +905,8 @@ ping很频繁，而且要携带一些元数据，所以可能会加重网络负�
 
 ### 工具
 
-使用官方的redis-benchmark就可以了
+使用官方的redis-benchmark就可以了  
+[官方文档](https://redis.io/docs/management/optimization/benchmarks/)
 
 ```shell
 ./redis-benchmark -h 127.0.0.1 -p 6379
