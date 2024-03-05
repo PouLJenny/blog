@@ -1027,3 +1027,26 @@ ulimit -Sn
 
 ### Redis 性能问题
 [一文讲透如何排查 Redis 性能问题！](https://heapdump.cn/article/3523071)
+
+### Redis MONITOR命令 排查redis的性能
+https://www.ipcpu.com/2021/07/redis-monitor-3/#:~:text=Redis%E4%B8%ADMONITOR%E5%91%BD%E4%BB%A4%E7%94%A8,%E8%BF%94%E5%9B%9E%E5%80%BC%E6%80%BB%E6%98%AFOK%E3%80%82
+
+https://pdai.tech/md/db/nosql-redis/db-redis-y-monitor.html
+
+[官方文档](https://redis.io/commands/monitor/)
+
+搭配[redis-faina](https://github.com/facebookarchive/redis-faina)分析日志
+
+
+数据样例：
+```shell
+1709621398.306134 [1 172.18.70.172:55316] "GET" "NOTIFICATION_IMG"
+1709621398.306397 [1 172.18.70.179:46196] "HEXISTS" "nginx_log" "\x04>\x1cotJL05wjIShlwogRpcyfMkn_dllo"
+1709621398.306415 [1 172.18.70.170:50418] "GET" "LOGIN:SALT:extension"
+1709621398.307246 [1 172.18.70.172:55790] "GET" "USER:63f7lB8I7Off2KSN98rE2MZO"
+```
+
+其中第一个值为
+
+
+# EOF
