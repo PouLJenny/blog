@@ -303,6 +303,12 @@
 **anticipate**
 **eliminate**
 
+### 2024/03/06
+**impulse**
+**intended**
+**resemble**
+
+
 cowboy
 backward（s）
 surgeon
