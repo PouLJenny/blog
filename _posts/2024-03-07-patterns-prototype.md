@@ -9,26 +9,7 @@ published: false
 publish_file: 2024-03-07-patterns-prototype.md
 toc: true
 ---
-# Prototype模式 原型模式
-
-## Intent/目的
-
-使用原型实例创建指定种类的对象，通过复制原来的对象来创建新的对象。
-
-## Motivation/动机
-
-
-
-## Applicability/应用场景
-
-## Structure/结构
-
-## Participants/角色
-
-## Consequences/总结
-
-## Related Patterns/相关的模式
-
+# Prototype
 
 原型设计模式
 
