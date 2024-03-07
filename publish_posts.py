@@ -26,7 +26,7 @@ def try_publish_file(file_path,dest_file):
     # Check if the destination file exists and has the same content
     if os.path.exists(dest_file):
         if file_md5(file_path) == file_md5(dest_file):
-            print(f"Skipping {dest_file} as it already exists and has the same content.")
+            # print(f"Skipping {dest_file} as it already exists and has the same content.")
             return
     shutil.copyfile(file_path, dest_file)
     print(f"Copied {dest_file} to _posts directory.")

@@ -5,7 +5,7 @@ date:   2024-03-03 08:27:00 +0800
 categories: 设计模式
 tags: 设计模式
 permalink: /patterns/builder
-published: false
+published: true
 publish_file: 2024-03-03-patterns-builder.md
 toc: true
 ---
@@ -28,14 +28,38 @@ RTF（Rich Text Format）文档交换格式的阅读器应该能够将RTF转换�
 
 每种转换类，都将创建复杂对象的机制，隐藏在了抽象接口的后面。转换器的代码从负责解析RTF文档的阅读器中分离了出来，
 
-构造器模式保存了所有的这些关系。每个转换类被称为**Builder**,阅读器被称为**director**。
+构造器模式保存了所有的这些关系。每个转换类被称为**Builder**,阅读器被称为**director**。应用到上面这个例子中，构造器模式从转换的目标格式的创建和表示中分离了解析源文本格式的算法（解析RTF文档）。这让我们可以复用`RTFReader`的解析算法并从RTF文档创建不同的其他文本格式，只要在`RTFReader`中配置一下不同的`TextConverter`的子类就好了。
 
 ## Applicability/应用场景
 
+- 创建复杂对象的算法需要跟对象的生成和分配隔离开
+- 构造过程允许创建的对象有不同的表现
+
 ## Structure/结构
+
+![](/assets/notes/patterns/builder_02.png)
 
 ## Participants/角色
 
+- **Builder** (TextConverter)
+    - 指定创建对象的抽象接口
+- **ConcreteBuilder** (ASCIIConverter, TeXConverter, TextWidgetConverte)
+    - 生产对象的构造和分配部分实现了`Builder`接口
+    - 定义并保存了创建对象的逻辑
+    - 提供获取生成对象的方法
+- **Director** (RTFReader)
+    - 操作`Builder`接口来构造对象
+- **Product** (ASCIIText, TeXText, TextWidget)
+    - 构造器构造的复杂对象。
+
 ## Consequences/总结
 
+1. 它允许您改变产品的内部表示。
+1. 它隔离了构造和表示对象的代码
+1. 它可以让你更好的掌控构造的过程
+
 ## Related Patterns/相关的模式
+
+抽象工厂模式(Abstract Factory)跟构造器模式（Builder）很像，都是为了创建复杂的对象。两者的主要不同是构造器模式聚焦于一步一步的创建复杂对象。抽象工厂模式强调创建的是产品族（不管是不是复杂对象）。构造器模式返回产品作为他们的最后一步，这点跟抽象工厂模式完全不同，后者会立即返回对象。
+
+组合模式(Composite)往往用于被构建的对象中。
