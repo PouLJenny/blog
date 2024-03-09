@@ -23,3 +23,6 @@ BEGIN
     RETURN tempArr;
 END;
 ```
+
+## mysql jdbc url格式及其支持的参数
+[官方文档](https://dev.mysql.com/doc/connector-j/en/connector-j-reference-jdbc-url-format.html)
