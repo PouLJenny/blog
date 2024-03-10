@@ -146,6 +146,9 @@ collections:
     output: true
     sort_by: order
 
+plugins:
+  - jekyll-sitemap
+
 defaults:
   - scope:
       path: "" # An empty string here means all files in the project
