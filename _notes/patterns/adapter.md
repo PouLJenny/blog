@@ -77,7 +77,7 @@ Wrapper
 
 还有一些其他的东西需要去考虑:
 
-1. 
+1.  
 
 ## Related Patterns/相关的模式
 
