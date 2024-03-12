@@ -196,6 +196,7 @@ exclude:
   - LICENSE
   - rollup.config.js
   - package*.json
+  - publish_posts.py
 
 jekyll-archives:
   enabled: [categories, tags]

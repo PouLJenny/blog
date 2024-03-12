@@ -57,7 +57,7 @@ Wrapper
 
 组合的方式:
 
-![](/assets/notes/patterns/adapter_02.png)
+![](/assets/notes/patterns/adapter_03.png)
 
 
 ## Participants/角色
