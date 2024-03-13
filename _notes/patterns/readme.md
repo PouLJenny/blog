@@ -1,3 +1,23 @@
 ## 程序设计中的一些模式
 
 [wiki](https://en.wikipedia.org/wiki/Software_design_pattern '')
+
+
+
+# Builder模式 构造器模式
+
+## Intent/目的
+
+## Also Known As
+
+## Motivation/动机
+
+## Applicability/应用场景
+
+## Structure/结构
+
+## Participants/角色
+
+## Consequences/总结
+
+## Related Patterns/相关的模式
