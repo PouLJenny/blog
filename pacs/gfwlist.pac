@@ -5037,6 +5037,7 @@ var rules = [
             "tiltbrush.com",
             "timdir.com",
             "time.com",
+            "time.is",
             "timesnownews.com",
             "timsah.com",
             "timtales.com",
