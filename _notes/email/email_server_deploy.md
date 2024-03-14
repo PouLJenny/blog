@@ -86,7 +86,6 @@ https://mailu.io/
 - 阿里
 - 新浪
 - 搜狐
-- 
 
 ### aws企业邮箱部署
 亚马逊有两个服务,[官方文档](https://aws.amazon.com/cn/blogs/china/quickly-configure-enterprise-e-mail-with-amazon-workmail/)
