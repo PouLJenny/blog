@@ -2,7 +2,6 @@
 
 youtube会员视频列表：
 
-
 - [2023年4月第二次会员课程（国学思维）](https://www.youtube.com/watch?v=zI2EBMC0Q9I )
 - [2023年4月第四次会员课程（国学思维）](https://www.youtube.com/watch?v=bz7zZZ_7fto )
 - [2023年4月第六次会员课程（国学思维）](https://www.youtube.com/watch?v=17SrDvTQzC4)
@@ -71,6 +70,10 @@ youtube会员视频列表：
 
 大术，
 **君君臣臣，父父子子** 在其位谋其政，所谓屁股决定脑袋。什么地方说什么话，做什么事，因地制宜。
+
+## 4 
+
+
 
 
 ## 自然禅
