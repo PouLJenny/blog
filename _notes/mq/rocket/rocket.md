@@ -13,7 +13,7 @@ toc: true
 
 ## 介绍
 
-[官网](https://rocketmq.apache.org/ )
+[官网](https://rocketmq.apache.org/ )  
 [github](https://github.com/apache/rocketmq )
 
 
@@ -587,13 +587,13 @@ simpleConsumer.subscribe(topic, filterExpression);
 **策略原理**
 消息粒度负载均衡策略中，同一消费者分组内的多个消费者将按照消息粒度平均分摊主题中的所有消息，即同一个队列中的消息，可被平均分配给多个消费者共同消费。
 
-![](../pic/rocket-message-balance.png)
+![](/assets/notes/mq/rocket-message-balance.png)
 
 
 **顺序消息负载机制**
 在顺序消息中，消息的顺序性指的是同一消息组内的多个消息之间的先后顺序。因此，顺序消息场景下，消息粒度负载均衡策略还需要保证同一消息组内的消息，按照服务端存储的先后顺序进行消费。不同消费者处理同一个消息组内的消息时，会严格按照先后顺序锁定消息状态，确保同一消息组的消息串行消费。
 
-![](../pic/rocket-message-fifo-balance.png)
+![](/assets/notes/mq/rocket-message-fifo-balance.png)
 
 #### 队列粒度负载均衡
 对于历史版本（服务端4.x/3.x版本）的消费者，包括PullConsumer、DefaultPushConsumer、DefaultPullConsumer、LitePullConsumer等，默认且仅能使用队列粒度负载均衡策略。
@@ -601,7 +601,7 @@ simpleConsumer.subscribe(topic, filterExpression);
 **策略原理**
 队列粒度负载均衡策略中，同一消费者分组内的多个消费者将按照队列粒度消费消息，即每个队列仅被一个消费者消费。
 
-![](../pic/rocket-message-queue-balance.png)
+![](/assets/notes/mq/rocket-message-queue-balance.png)
 
 
 **策略特点**
@@ -623,11 +623,11 @@ simpleConsumer.subscribe(topic, filterExpression);
 
 #### PushConsumer消费重试策略
 
-![](../pic/rocket-push-consumer-retry.png)
+![](/assets/notes/mq/rocket-push-consumer-retry.png)
 
 #### SimpleConsumer消费重试策略
 
-![](../pic/rocket-simple-consumer-retry.png)
+![](/assets/notes/mq/rocket-simple-consumer-retry.png)
 
 
 
