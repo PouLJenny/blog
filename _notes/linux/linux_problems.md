@@ -445,6 +445,14 @@ int main() {
 }
 ```
 
+### AlmaLinux 8的GPG 密钥变更
+```shell
+rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+dnf clean packages
+yum update -y
+```
 
+https://almalinux.org/blog/2023-12-20-almalinux-8-key-update/
+https://w3sun.com/3588.html
 
 

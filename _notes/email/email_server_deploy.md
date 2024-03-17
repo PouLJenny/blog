@@ -51,6 +51,55 @@ https://james.apache.org/
 [github](https://github.com/apache/james-project/)
 语言： java
 
+
+docke测试
+```shell
+docker run  -it -d -p "20025:25" -p "20080:80" -p "20143:143" -p "20465:465" -p "20587:587" -p "20993:993" -p "24000:4000" -p "28000:8000" apache/james:demo-3.8.0
+```
+
+服务器开启端口:
+
+```shell
+firewall-cmd --zone=public --add-port=25/tcp --permanent
+firewall-cmd --zone=public --add-port=993/tcp --permanent
+firewall-cmd --zone=public --add-port=587/tcp --permanent
+firewall-cmd --zone=public --add-port=465/tcp --permanent
+```
+
+
+rest api管理端口
+
+#### Create a domain
+```shell
+curl -XPUT http://localhost:28000/domains/poul.top
+```
+
+#### Get the list of domains
+```shell
+curl -XGET http://localhost:28000/domains
+```
+#### Create a user
+```shell
+curl 'http://localhost:28000/users/me@poul.top' \
+  -X 'PUT' \
+  -H 'content-type: application/json' \
+  --data-raw '{"password":""}'
+```
+
+#### Retrieving the user list
+```shell
+curl -XGET http://localhost:28000/users
+```
+
+#### 配置发送代理
+
+mail.smtp.proxy.host 前缀的properties
+
+mail.smtp.proxy.host=172.17.0.1:8118
+
+mail.smtp.socks.host=172.17.0.1:1080
+props.put("mail.smtp.socks.host","172.17.0.1:1080") != null
+
 ### Haraka
 https://haraka.github.io/
 

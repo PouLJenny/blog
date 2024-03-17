@@ -74,5 +74,8 @@ To use the BuildKit backend, you need to set an environment variable `DOCKER_BUI
 - 进入运行中的docker容器的命令  `docker exec -it 64d99531cd10 /bin/bash`
 - 在容器外执行某个容器内的命令 `sudo docker exec -it $DOCKER_ID /bin/bash -c 'cd /packages/detectron && python tools/train.py'`
 - 解决docker container内时区跟宿主机不一致的问题的参数 `-v /etc/localtime:/etc/localtime -v /etc/timezone:/etc/timezone`
-
-
+- 复制文件从宿主机到container `docker cp /path/source $DOCKER_ID:/path/target`
+- 复制文件从container到宿主机 `docker cp $DOCKER_ID:/path/target /path/source`
+- 访问宿主机IP https://jingsam.github.io/2018/10/16/host-in-docker.html
+- docker container启动后修改 端口映射 https://cloud.tencent.com/developer/article/2170898
+- 
