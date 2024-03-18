@@ -2912,6 +2912,7 @@ var rules = [
             "joinclubhouse.com",
             "joinmastodon.org",
             "joins.com",
+            "jotform.com",
             "journalchretien.net",
             "journalofdemocracy.org",
             "joymiihub.com",
