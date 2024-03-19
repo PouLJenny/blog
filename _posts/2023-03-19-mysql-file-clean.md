@@ -113,7 +113,7 @@ ALTER TABLE `your_table_name` DROP INDEX `idx_indexed_column`;
 ## 清理
 
 首先执行:
-```shell
+```sql
 optimize table your_table_name;
 ```
 结果：
@@ -142,7 +142,7 @@ optimize table your_table_name;
 可以看到实际磁盘文件已经减少到13M了但是msyql的`information_schema.tables`表中信息没有变化。
 
 然后需要执行下面的sql
-```shell
+```sql
 analyze table your_table_name;
 ```
 结果：
