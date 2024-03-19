@@ -1,12 +1,12 @@
 ---
 layout: post
 title:  "Mysql 索引删除后，磁盘文件没有变化?"
-date:   2023-03-19 22:19:00 +0800
+date:   2024-03-19 22:19:00 +0800
 categories: mysql
 tags: mysql
 permalink: /mysql/file-clean
 published: true
-publish_file: 2023-03-19-mysql-file-clean.md
+publish_file: 2024-03-19-mysql-file-clean.md
 toc: true
 ---
 # Mysql 索引删除后，磁盘文件没有变化?
