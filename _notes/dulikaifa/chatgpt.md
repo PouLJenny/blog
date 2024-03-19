@@ -1,5 +1,8 @@
 # 做一个ChatGPT的小App
 
+## gpt开户升级教程
+https://www.vpsdawanjia.com/8223.html
+
 ## 盈利模式
 
 普通用户限制返回1000字
