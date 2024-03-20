@@ -71,5 +71,18 @@ trusted-host=pypi.douban.com
 1. https://pypi.mirrors.ustc.edu.cn/simple/
 1. http://pypi.douban.com/simple/
 
+## python 使用虚拟环境运行程序
+
+python安装包的时候会碰到各种各样的问题：
+- 全局安装的话，可能会有版本的冲突
+- 有些安装包macos可能并不能执行安装
+
+创建虚拟环境
+```shell
+python3 -m venv env
+source env/bin/activate
+```
+
+下面再执行具体的安装就可以了
 
 # EOF
