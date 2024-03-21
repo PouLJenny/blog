@@ -456,3 +456,9 @@ https://almalinux.org/blog/2023-12-20-almalinux-8-key-update/
 https://w3sun.com/3588.html
 
 
+### linux端口网络限速
+
+安装tc
+```shell
+yum install -y iproute-tc
+```

@@ -7,6 +7,18 @@
 ## 安装
 https://blog.csdn.net/sl1992/article/details/106165171
 
+### AlmaLinux安装
+
+1. Install EPEL repo
+```shell
+yum install epel-release
+```
+
+2.  Install supervisor
+```shell
+yum -y install supervisor
+```
+
 ## `program:x`配置文件
 
 - `command`

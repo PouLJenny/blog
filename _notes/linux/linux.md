@@ -136,4 +136,8 @@ disk:    将运⾏状态数据存到硬盘,然后关机,唤醒最慢
 
 https://www.baeldung.com/linux/monitor-network-usage#bd-iftop
 
+```shell
+nload eth0
+```
+
 ## EOF
