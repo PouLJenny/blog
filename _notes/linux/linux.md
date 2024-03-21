@@ -136,6 +136,7 @@ disk:    将运⾏状态数据存到硬盘,然后关机,唤醒最慢
 
 https://www.baeldung.com/linux/monitor-network-usage#bd-iftop
 
+查询本机网卡的实时网速
 ```shell
 nload eth0
 ```

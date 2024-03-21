@@ -1,3 +1,5 @@
+## 发布当前博客的博文 直接python3 执行即可
+
 import os
 import shutil
 import hashlib
