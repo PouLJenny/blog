@@ -21,3 +21,5 @@ package-lock.json
 
 .DS_Store
 env/
+
+review_notify.txt

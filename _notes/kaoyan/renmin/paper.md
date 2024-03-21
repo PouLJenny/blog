@@ -22,7 +22,7 @@
 1. 百度学术 http://xueshu.baidu.com
 1. 中外文数据库
 1. DOI,Digital Object Unique Identifier,即数字对象唯一标识符。每篇论文都有一个对应的DOI，DOI就是确定的，不会再改变。
-1. Sci-Hub 文献下载平台： https://scihub.wikicn.top
+1. Sci-Hub 文献下载平台： https://pismin.com/
 1. 中国人民大学图书馆： http://www.lib.ruc.edu.cn
 1. 科学社交网络，号称学术界的Facebook，Research Gate https://www.researchgate.net/
 1. 数据共享网站
