@@ -42,7 +42,7 @@ def process_files():
                                     last_modified_date = datetime.fromisoformat(date_str)
                                     age = (datetime.now() - last_modified_date).days
                                     if age in days_intervals:
-                                        f_notify.write(f"/_notes/{relative_file_path}:{line_number} {age} days ago - {line}\n")
+                                        f_notify.write(f"{relative_file_path}:{line_number} {age} days ago - {line}\n")
                                 except ValueError:
                                     continue
 
