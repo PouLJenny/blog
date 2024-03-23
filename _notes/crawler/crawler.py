@@ -35,11 +35,11 @@ proxies = {
     
 
 # 要爬取的亚马逊页面的URL
-url = 'https://www.amazon.com/s?k=gaming+chair&page=1'
+url = 'https://www.amazon.com/s?k=power+bank&page=1'
 
 # 发送HTTP GET请求
-response = requests.get(url, headers=headers,proxies=proxies,verify=False)
-
+# response = requests.get(url, headers=headers,proxies=proxies,verify=False)
+response = requests.get(url, headers=headers)
 # 检查响应状态码
 if response.status_code == 200:
     # 输出响应内容
