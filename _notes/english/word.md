@@ -330,7 +330,12 @@ extrinsic
 glyph
 hierarchical
 intersect
-
-
-
-
+defer
+raster
+constraint
+extent
+instantiating
+versatile
+sophisticated
+bare
+indirection
