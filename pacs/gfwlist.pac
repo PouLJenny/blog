@@ -1038,6 +1038,7 @@ var rules = [
             "cloakpoint.com",
             "cloudcone.com",
             "cloudflare.com",
+            "cloudflareinsights.com",
             "cloudfront.net",
             "club1069.com",
             "clubhouseapi.com",

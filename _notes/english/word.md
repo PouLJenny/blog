@@ -314,24 +314,21 @@
 ### 2024/03/12
 **revenue**
 
-cowboy
-backward（s）
-surgeon
-beside
-Satisfied
-wire
-course
-drive
-nourish
-feel
-glory
-circuit
-log
-head
-overall
-division
-sandwich
-here
-nitrogen
-pervasive
+### 2024/03/23
+**naive**
+prohibitively
+facitily
+
+### 2024/03/24
+drawback
+promote
+granularity
+prohibitive
+simultaneous
+intrinsic
+extrinsic
+glyph
+
+
+
 
