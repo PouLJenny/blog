@@ -11,7 +11,7 @@ toc: true
 ---
 # 责任链模式/chain of responsibility
 
-[wiki](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern '')
+[wiki](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern)
 
 ## 说明/Overview
 
@@ -19,7 +19,7 @@ toc: true
 
 ## 结构/Structure
 
-![](/assets/notes/patterns/chain_of_responsibility_struct.png '')
+![](/assets/notes/patterns/chain_of_responsibility_struct.png)
 
 ## 角色/Participants
 

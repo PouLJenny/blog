@@ -328,6 +328,8 @@ simultaneous
 intrinsic
 extrinsic
 glyph
+hierarchical
+intersect
 
 
 
