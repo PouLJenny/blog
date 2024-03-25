@@ -35,7 +35,7 @@ proxies = {
     
 
 # 要爬取的亚马逊页面的URL
-url = 'https://www.amazon.com/s?k=power+bank&page=1'
+url = 'https://www.amazon.com/s?k=gaming+chair&page=1'
 
 # 发送HTTP GET请求
 # response = requests.get(url, headers=headers,proxies=proxies,verify=False)
