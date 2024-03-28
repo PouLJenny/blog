@@ -65,3 +65,6 @@ fuck off 儒家
 - 人文社科
 
 《自私的基因》、《万物简史》、《枪炮、病菌与钢铁》、《果壳中的宇宙》、《启动的宇宙》、《上帝掷骰子吗》、《时间简史》、《被讨厌的勇气》、《亲密关系》、《人的行为》、《活着》、《通向宇宙的时间阶梯》。
+
+有个很棒的github
+https://github.com/0voice/expert_readed_books?tab=readme-ov-file
