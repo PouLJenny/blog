@@ -340,6 +340,8 @@ var rules = [
             "amazon.com",
             "amazon.de",
             "amazon.it",
+            "amazon.ca",
+            "amazon.fr",
             "amazonaws.com",
             "amd.com",
             "ameblo.jp",
