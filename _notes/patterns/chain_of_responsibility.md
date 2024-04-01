@@ -27,6 +27,11 @@ toc: true
 
 ![](/assets/notes/patterns/chain_of_responsibility_01.png)
 
+链上的第一个对象接收请求，要么处理它，要么将其转发给链上的下一个候选对象，后者也采取同样的操作。发出请求的对象并不明确知道谁将处理它——我们说请求有一个隐式接收者(implicit receiver).
+
+假设用户点击标有“打印”的按钮小部件以获取帮助。该按钮包含在一个`PrintDialog`实例中，这个实例知道它所属的应用程序对象（参见前面的对象图）。以下交互图说明了帮助请求是如何沿着链转发的：
+
+![](/assets/notes/patterns/chain_of_responsibility_02.png)
 
 
 ## Applicability/应用场景
