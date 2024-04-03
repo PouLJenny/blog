@@ -34,6 +34,7 @@ toc: true
 ![](/assets/notes/patterns/chain_of_responsibility_02.png)
 
 
+
 ## Applicability/应用场景
 
 ## Structure/结构

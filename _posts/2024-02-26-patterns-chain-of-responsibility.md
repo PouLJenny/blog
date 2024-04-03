@@ -11,58 +11,36 @@ toc: true
 ---
 # 责任链模式/chain of responsibility
 
-[wiki](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern)
+## Intent/目的
 
-## 说明/Overview
+通过给予多个对象机会来处理请求，避免请求的发送者与接收者之间的耦合。将接收对象进行链式连接，并沿着链传递请求，直到有一个对象处理它。
 
-责任链模式，是F4的23种设计模式之一，归属行为模式类下。
+## Motivation/动机
 
-## 结构/Structure
+考虑一个图形用户界面的上下文敏感帮助设施。用户可以通过单击界面的任何部分来获取帮助信息。提供的帮助取决于被选中的界面部分及其上下文；例如，对话框中的按钮小部件可能与主窗口中的类似按钮有不同的帮助信息。如果该界面部分没有具体的帮助信息，那么帮助系统应该显示一个关于即时上下文的更通用的帮助信息——例如，整个对话框。
 
-![](/assets/notes/patterns/chain_of_responsibility_struct.png)
+因此，根据帮助信息的通用性来组织帮助信息是很自然的——从最具体到最通用。此外，很明显，帮助请求由几个用户界面对象之一处理；具体由哪一个处理取决于上下文以及可用帮助的具体程度。
 
-## 角色/Participants
+这里的问题在于，最终提供帮助的对象对于发起帮助请求的对象（例如，按钮）并不是明确知道的。我们需要的是一种方法来解耦发起帮助请求的按钮和可能提供帮助信息的对象。责任链模式定义了这一过程是如何发生的。
 
-- `Handler` 
-    - defines an interface for handling requests.
-    - (optional) implements the successor link.
-- `ConcreteHandler`
-    - handles requests it is responsible for.
-    - can access it's successor.
-    - if the `ConcreteHandler` can handle the request,it does so.otherwise it forwards the request to its successor.
-- `Client`
-    - initiates the request to a `ConcreteHandler` object on the chain.
+这种模式的思想是通过给多个对象机会处理一个请求来解耦发送者和接收者。请求沿着一系列对象传递，直到其中一个对象处理它。
 
-## 协作/Collaborations
-When a client issue a request,the request propagates along the chain until a `ConcreteHandler` object takes responsibility 
-for handling it.
+![](/assets/notes/patterns/chain_of_responsibility_01.png)
 
-## 总结/Consequnces
-Chain of Responsibility has the following benefits and liabilities:
-1. Reduced coupling.
-2. Added flexibility in assigning responsibilities to objects.
-3. Receipt isn't guaranteed.
-4. 此模式最大的优点就在于它弱化了发出请求的人和处理请求的人之间的关系，Client角色向第一个ConceretHandler角色发出请求,然后请求会在责任链中传播，
-直到某个ConcerentHandler角色处理请求。如果不使用此种模式，就必须有个伟大的角色知道“谁应该处理什么请求”,这有点类似中央集权制。
-而让发出请求的人知道谁应该处理什么事情并不明智，因为如果发出请求的人不得不知道处理请求的人各自的责任分担情况，就会降低其作为可复用的组件的独立性。
-5. 可以动态的改变责任链,来满足不同场景的需求。
-6. 专注自己的工作
+链上的第一个对象接收请求，要么处理它，要么将其转发给链上的下一个候选对象，后者也采取同样的操作。发出请求的对象并不明确知道谁将处理它——我们说请求有一个隐式接收者(implicit receiver).
 
-缺点:
-使用责任链模式，可以推卸请求，知道找到合适的处理请求的对象，这样确实可以提高程序的灵活性。但是也会导致处理的延迟.
-这是一个需要权衡(trade off)的地方. 如果对响应时间要求非常敏感的地方，这种做法就不是太合适了。
+假设用户点击标有“打印”的按钮小部件以获取帮助。该按钮包含在一个`PrintDialog`实例中，这个实例知道它所属的应用程序对象（参见前面的对象图）。以下交互图说明了帮助请求是如何沿着链转发的：
 
-## 相关的设计模式/Related Patterns
-Chain of Responsibility is often applied in conjunction with Composite.There a component's parent can act its successor.
-
-有时会使用Commond模式向Handler发送请求
+![](/assets/notes/patterns/chain_of_responsibility_02.png)
 
 
-## 例子/Use cases
-F4的书里讲的都是些图形化界面组件的例子。
-服务端的开源框架里，自己找到的有下面的比较像的： 
-1. `Servlet` 中的 `Filter` 比较像,不过它是会单独定义一个`FilterChain`内部通过一个集合字段来维护一个`Filter`链条
-运行起来就是 一个Http请求过来 通过Filter链来找到那些不合法的请求 并立即响应
+## Applicability/应用场景
 
-TODO
+## Structure/结构
+
+## Participants/角色
+
+## Consequences/总结
+
+## Related Patterns/相关的模式
 
