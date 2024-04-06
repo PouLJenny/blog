@@ -531,14 +531,15 @@ Zabbix、OpenFalcon、Ganglia
 ### 分析工具
 
 - jmap    堆内存分析工具
-	- jmap -heap pid该命令用于：展示pid的整体堆信息，
-	- jmap -dump:live,format=b,file=sif.hprof pid
+	- `jmap -heap pid`该命令用于：展示pid的整体堆信息，
+	- `jmap -dump:live,format=b,file=heapdump_pid.hprof pid ` 命令转存整个jvm堆内存到文件中
 - jhat 分析jmap dump下来的文件
 - jps     java进程查询
 - jinfo   
 - jstat   
 - jstack  
 - [gcviewer](https://github.com/chewiebug/GCViewer)
+- mat
 ### 参考文档
 
 - https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/ 

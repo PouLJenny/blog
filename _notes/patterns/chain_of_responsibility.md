@@ -33,6 +33,8 @@ toc: true
 
 ![](/assets/notes/patterns/chain_of_responsibility_02.png)
 
+在这种情况下，`aPrintButton`和`aPrintDialog`都不处理请求；它在`anApplication`处停止了，`anApplication`可以处理它或忽略它。发出请求的客户端对最终满足请求的对象没有直接引用。
+
 
 
 ## Applicability/应用场景
