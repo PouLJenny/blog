@@ -33,14 +33,47 @@ toc: true
 
 ![](/assets/notes/patterns/chain_of_responsibility_02.png)
 
+在这种情况下，`aPrintButton`和`aPrintDialog`都不处理请求；它在`anApplication`处停止了，`anApplication`可以处理它或忽略它。发出请求的客户端对最终满足请求的对象没有直接引用。
+
+为了沿着链转发请求，并确保接收者保持隐式，链上的每个对象共享一个用于处理请求和访问其在链上的后继者的公共接口。例如，帮助系统可能定义一个带有相应`HandleHelp`操作的`HelpHandler`类。`HelpHandler`可以是候选对象类的父类，或者可以定义为一个mixin类。然后，希望处理帮助请求的类可以将`HelpHandler`作为父类：
+
+![](/assets/notes/patterns/chain_of_responsibility_03.png)
+
+`Button`、`Dialog`和`Application`类使用`HelpHandler`操作来处理帮助请求。`HelpHandler`的`HandleHelp`操作默认将请求转发给后继者。子类可以覆盖这个操作，在适当的情况下提供帮助；否则，它们可以使用默认实现来转发请求。
+
 
 ## Applicability/应用场景
 
+- 可能有多个对象处理一个请求，并且处理者事先并不知道。处理者应该被自动确定。
+- 你想向几个对象中的一个发出请求，而不显式指定接收者
+- 可以处理请求的对象集应该被动态指定。
+
 ## Structure/结构
+
+![](/assets/notes/patterns/chain_of_responsibility_04.png)
 
 ## Participants/角色
 
+- Handler (HelpHandler)
+  - 定义处理请求的接口
+  - （可选）实现后继链条
+- ConcreteHandler (PrintButton, PrintDialog)
+  - 处理自己支持的请求
+  - 可以访问它的后继者
+  - 如果`ConcreteHandler`能够处理请求，它就会这样做；否则，它将请求转发给它的后继者。
+- Client
+  - 向链上的一个`ConcreteHandler`对象发起请求。
+
 ## Consequences/总结
+
+1、 减少耦合。该模式使对象不必知道是哪个其他对象处理了一个请求。一个对象只需要知道请求将被“适当”处理。接收者和发送者都不需要明确了解对方，链中的一个对象也不需要了解链的结构。
+
+因此，责任链可以简化对象间的连接。与其让对象维持对所有候选接收者的引用，不如保持对其后继者的单一引用。
+
+2、在分配对象职责时增加了灵活性。责任链为在对象之间分配职责提供了额外的灵活性。通过在运行时向链中添加或以其他方式改变链，你可以增加或改变处理请求的职责。你还可以结合子类化来静态地专门处理处理程序。
+
+3、 请求的处理不能保证。由于请求没有明确的接收者，不能保证它会被处理——请求可能会在链的末端消失而从未被处理。当链没有正确配置时，请求也可能不被处理。
 
 ## Related Patterns/相关的模式
 
+责任链经常与组合模式（Composite）结合使用。在这种情况下，组件的父对象可以充当它的后继者。
