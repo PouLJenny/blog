@@ -23,11 +23,13 @@ headers = {
     'sec-fetch-site': 'same-origin',
     'sec-fetch-user': '?1',
     'upgrade-insecure-requests': '1',
-    'viewport-width': '1920'
+    'viewport-width': '1920',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'cookie': 'session-id=356-2519580-3741617; session-id-time=2082787201l; i18n-prefs=JPY; ubid-acbjp=358-8605154-6257824; lc-acbjp=ja_JP; skin=noskin; session-token="rsnvOcB0HUBm0HOb+k8UeD44Yz6xglzv3/pJA9CMDJt6LJIMMWuUlVkGvxghc4/Vw6pelJ/hdgtho1gQ2A0dYhkQcx8IjVUjnmIHb8jXsA1BAbH8ti1DtbQkzxF+IMOmz4JoFhgEmWJ/xzAwBmgbnOdfsLXfcEefi7+X9EW4pZc0lqqwcCx90u9bySqzd7WtTv/Ph7eXhWLir3refh2UL5rzBsBT4eFb9ouUcjRJ58jOcW0na/kFvppn/5kA+AWOYQFYLU6aZFSqjgETEcD3EwFWfftGAvm2XhKW/8WEK5l+Qe55Zc1cNjEELu2ZEo1F8PIrpkuzHbwuvxiU1dHFgJmtHMlTvdxielAQbDXgcZE="; csm-hit=tb:BH6Z5D12S30GSB4AA1MK+sa-M21WFEENDPVRT654RSR2-9VRG3JWHYAXPRR91H9VA|1712488244306&t:1712488244306&adb:adblk_no'
 }
 
 # 注意：referrer要根据实际情况使用，这里是示例
-referrer = "https://www.amazon.co.jp/s?k=prime&language=en_US&refresh=1&ref=glow_cls"
+referrer = "https://www.amazon.co.jp/"
 
 
 proxies = {
@@ -38,7 +40,7 @@ proxies = {
 
 # 要爬取的亚马逊页面的URL
 # url = 'https://www.amazon.com/s?k=gaming+chair&page=1'
-url = 'https://www.amazon.co.jp/s?k=%E3%82%B4%E3%83%AB%E3%83%95%E3%83%9C%E3%83%BC%E3%83%AB&crid=2ESXJDPVS2PLI&sprefix=go%2Caps%2C657&ref=nb_sb_ss_ts-doa-p_5_2' 
+url = 'https://www.amazon.co.jp/s?k=goto&page=2&crid=2ML53FWCOQFQ3&qid=1712488111&sprefix=%2Caps%2C720&ref=sr_pg_2' 
 
 # 发送HTTP GET请求
 response = requests.get(url, headers=headers,proxies=proxies,verify=False)
