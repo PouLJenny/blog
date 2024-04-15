@@ -2985,6 +2985,7 @@ var rules = [
             "kcoolonline.com",
             "kebrum.com",
             "kechara.com",
+            "keepa.com",
             "keepandshare.com",
             "keezmovies.com",
             "kendatire.com",
