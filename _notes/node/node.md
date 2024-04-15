@@ -26,3 +26,15 @@
     `npm install -g cnpm --registry=https://registry.npmmirror.com`
 2. 使用cnpm
     `cnpm install xxx`
+
+## 管理多个版本的NODE
+
+在本地管理多个版本的Node.js，最常用且方便的工具是 nvm（Node Version Manager）。nvm 允许你在同一台机器上安装和切换多个Node.js版本，这对于开发多个项目或需要测试在不同Node.js环境下的兼容性非常有帮助。以下是如何在不同操作系统上使用 nvm 来管理Node.js版本的步骤：
+
+```shell
+brew install nvm
+```
+
+配置环境：
+安装完成后，你可能需要重启终端或者手动执行下面的命令来使nvm命令生效：
+
