@@ -357,3 +357,7 @@ explicitly
 
 ### 2024/04/07
 sibling
+
+### 2024/04/17
+encapsulate
+undoable
