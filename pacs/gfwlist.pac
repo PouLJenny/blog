@@ -1955,6 +1955,7 @@ var rules = [
             "geekheart.info",
             "gekikame.com",
             "gelbooru.com",
+            "gemini.com",
             "genius.com",
             "geocities.co.jp",
             "geocities.com",
