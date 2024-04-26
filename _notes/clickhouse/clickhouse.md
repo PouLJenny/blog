@@ -315,6 +315,7 @@ alter table trips add index idx_tripid_minmax trip_id type minmax GRANULARITY 3;
 ###  导出数据到文件
 
 ```shell
+
 clickhouse-client --query "SELECT * from default.esKeywordAsinView limit 2" --format SQLInsert > esKeywordAsinView.sql
 
 clickhouse-client --query "SELECT * from default.esKeywordAsinView limit 2" --format CSV > esKeywordAsinView.csv
