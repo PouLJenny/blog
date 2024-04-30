@@ -27,7 +27,7 @@
     ## 安装nginx 并且配置域名的监听不然下面会执行失败
     ~/.acme.sh/acme.sh --issue -d www.poul.xyz --nginx
     mkdir -p /root/cert/www.poul.xyz
-    ~/.acme.sh/acme.sh --install-cert -d www.poul.xyz --key-file /root/cert/www.poul.xyz/key --fullchain-file /root/cert/www.poul.xyz/cert
+    ~/.acme.sh/acme.sh --install-cert -d www.poul.xyz --key-file /root/cert/www.poul.xyz/key --cert-file /root/cert/www.poul.xyz/cert  --fullchain-file /root/cert/www.poul.xyz/fullchain 
     ```
     结果：
     ```

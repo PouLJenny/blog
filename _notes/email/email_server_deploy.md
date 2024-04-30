@@ -66,6 +66,14 @@ firewall-cmd --zone=public --add-port=587/tcp --permanent
 firewall-cmd --zone=public --add-port=465/tcp --permanent
 ```
 
+#### 转换CA签发的证书为java识别的格式
+
+```shell
+openssl pkcs12 -export -in fullchain -inkey key -out certificate.p12 -name poul.top
+keytool -importkeystore -deststorepass poul.top -destkeypass poul.top -destkeystore keystore.jks -srckeystore certificate.p12 -srcstoretype PKCS12 -srcstorepass poul.top -alias poul.top -storetype JKS
+keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
+```
+
 
 rest api管理端口
 
@@ -99,6 +107,8 @@ mail.smtp.proxy.host=172.17.0.1:8118
 
 mail.smtp.socks.host=172.17.0.1:1080
 props.put("mail.smtp.socks.host","172.17.0.1:1080") != null
+
+
 
 ### Haraka
 https://haraka.github.io/
