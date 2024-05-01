@@ -1755,6 +1755,7 @@ var rules = [
             "flickriver.com",
             "fling.com",
             "flipboard.com",
+            "fliphtml5.com",
             "flipkart.com",
             "flitto.com",
             "flnet.org",
