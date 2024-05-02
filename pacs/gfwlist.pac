@@ -4292,6 +4292,7 @@ var rules = [
             "rferl.org",
             "rfi.fr",
             "rfi.my",
+            "richdad.com",
             "rightbtc.com",
             "rightster.com",
             "rigpa.org",
