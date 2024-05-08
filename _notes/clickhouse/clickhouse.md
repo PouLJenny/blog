@@ -281,7 +281,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = 'asinPasinNewest_20231220'
+    WHERE active and table = 'testTitle'
     GROUP BY
         database,
         table
