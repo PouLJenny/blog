@@ -289,6 +289,22 @@ RIGHT JOIN
 ORDER BY parts.bytes_size DESC
 ```
 
+```sql
+SELECT
+    database,
+    table,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS uncompressed_size,
+    formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
+    round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
+FROM system.parts
+WHERE active
+GROUP BY
+    database,
+    table
+ORDER BY sum(data_compressed_bytes) DESC
+LIMIT 100
+```
+
 
 ###  查看创建表的DDL语句
 ```sql
