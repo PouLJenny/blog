@@ -57,7 +57,7 @@ The Name Server boot success...
 先启动broker  
 由于启动默认会申请8G的jvm内存，需要调整一下，runbrocker.sh文件中的配置  
 ~~~shell
-nohup sh bin/mqbroker -n localhost:9876 --enable-proxy &
+nohup sh bin/mqbroker -n localhost:9876 -c ./conf/broker.conf --enable-proxy &
 ~~~
 
 验证broker是否启动成功, 比如, broker的ip是192.168.1.2 然后名字是broker-a
@@ -71,13 +71,38 @@ The broker[broker-a,192.169.1.2:10911] boot success...
 ```shell
 export NAMESRV_ADDR=localhost:9876
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
- SendResult [sendStatus=SEND_OK, msgId= ...
+ SendResult sendStatus=SEND_OK, msgId= ...
 
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
- ConsumeMessageThread_%d Receive New Messages: [MessageExt...
+ ConsumeMessageThread_%d Receive New Messages: MessageExt...
 ```
 
-6 关闭服务器  
+6 压力测试
+
+启动消费者
+```shell
+cd benchmark
+nohup ./consumer.sh -n localhost:9876 -t BenchTest > consumer.log 2>&1 &
+```
+
+启动生产者
+```shell
+nohup ./producer.sh -n localhost:9876 -t BenchTest > producer.log 2>&1 &
+nohup ./tproducer.sh -n localhost:9876 -t BenchTest > tproducer.log 2>&1 &
+nohup ./batchproducer.sh -n localhost:9876 -t BenchTest > batchproducer.log 2>&1 &
+```
+
+关闭测试
+```shell
+./shutdown.sh producer
+./shutdown.sh tproducer
+./shutdown.sh bproducer
+./shutdown.sh consumer
+```
+
+注意压力测试的时候需要关注机器的磁盘容量
+
+7 关闭服务器  
 ```shell
 sh bin/mqshutdown broker
 The mqbroker(36695) is running...

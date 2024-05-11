@@ -66,5 +66,11 @@ fuck off 儒家
 
 《自私的基因》、《万物简史》、《枪炮、病菌与钢铁》、《果壳中的宇宙》、《启动的宇宙》、《上帝掷骰子吗》、《时间简史》、《被讨厌的勇气》、《亲密关系》、《人的行为》、《活着》、《通向宇宙的时间阶梯》。
 
-有个很棒的github
+- 投资
+
+《思考致富》（Think and Grow Rich）是拿破仑·希尔（Napoleon Hill）在1937年出版的一本非常有影响力的个人成功指导书
+《情商：为什么情商比智商更重要》（Emotional Intelligence: Why It Can Matter More Than IQ） 丹尼尔·高曼（Daniel Goleman） 心理学家和科普作家
+《以交易为生》 亚历山大·艾尔德（Alexander Elder）是一位知名的交易专家和心理学家，他的著作《以交易为生》（Trading for a Living）是金融交易领域的经典之作，首次出版于1993年。这本书深入探讨了交易心理学、交易策略和风险管理，广受全球交易者的欢迎和推崇。
+
+- 有个很棒的github
 https://github.com/0voice/expert_readed_books?tab=readme-ov-file

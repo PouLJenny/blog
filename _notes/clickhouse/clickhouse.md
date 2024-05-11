@@ -114,6 +114,16 @@ SIMD指令，Single Instruction Multiple Data,一条指令可以处理多条数�
 
 ### 数据分区
 
+自己的电脑启动/home/poul/workspace/src/clickhouse/ClickHouse-v23.7.5.30-stable/build/programs/clickhouse-server时的数据目录
+```shell
+/data
+```
+
+自己的电脑启动/sbin/clickhouse-server时的数据目录
+```shell
+/var/lib/clickhouse/data
+```
+
 
 
 ```shell
