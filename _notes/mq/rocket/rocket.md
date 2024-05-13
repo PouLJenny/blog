@@ -92,6 +92,15 @@ nohup ./tproducer.sh -n localhost:9876 -t BenchTest > tproducer.log 2>&1 &
 nohup ./batchproducer.sh -n localhost:9876 -t BenchTest > batchproducer.log 2>&1 &
 ```
 
+生产者加入延时消息的机制
+
+```shell
+nohup ./producer.sh -n localhost:9876 -t BenchTest -d true > producer.log 2>&1 &
+nohup ./tproducer.sh -n localhost:9876 -t BenchTest -d true > tproducer.log 2>&1 &
+nohup ./batchproducer.sh -n localhost:9876 -t BenchTest -d true > batchproducer.log 2>&1 &
+```
+
+
 关闭测试
 ```shell
 ./shutdown.sh producer
@@ -240,6 +249,19 @@ sudo docker run -d --rm --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.names
 ### 普通消息
 
 ### 定时/延时消息
+
+定时消息，消息被发送至服务端后，在指定时间后才能被消费者消费。通过设置一定的定时时间可以实现分布式场景的延时调度。
+
+#### 声明周期
+
+![](/assets/notes/mq/rocket-dealy-message-lifecycle-01.png)
+
+- 初始化： 消息被生产者构建并完成初始化，待发送到服务端的状态
+- 定时中： 消息被发送到服务端，和普通消息不同的是，服务端不会直接构建消息索引，而是会将定时消息单独存储在定时存储系统中，等待定时时刻到达
+- 待消费： 定时时刻到达后，服务端将消息重新写入普通存储引擎，对下游消费者可见，等待消费者消费的状态。
+- 消费中： 消息被消费者获取，并按照消费者本地的业务逻辑进行处理的过程。此时服务端会等待消费者完成消费并提交消费结果，如果一定时间后没有收到消费者的响应，Apache RocketMQ会对消息进行重试处理
+- 消费提交： 消费者完成消费处理，并向服务端提交消费结果，服务端标记当前消息已经被处理（包括消费成功和失败）.RocketMQ 默认支持保留所有消息，此时消息数据并不会立即被删除，知识逻辑标记已消费。消息在保存时间到期或存储空间不足被删除前，消费者仍然可以回溯消息重新消费
+- 消息删除： RocketMQ 按照消息保存机制滚动清理最早的消息数据，将消息从物理文件中删除。
 
 ### 事务消息
 
@@ -645,6 +667,9 @@ simpleConsumer.subscribe(topic, filterExpression);
 
 
 ### 消费重试
+
+消费者在消费某条消息失败后，RocketMQ 服务端会根据重试策略重新消费该消息，超过一定次数后若还未消费成功，则该消息将不再继续重试，直接发送到死信队列中。
+
 
 #### PushConsumer消费重试策略
 

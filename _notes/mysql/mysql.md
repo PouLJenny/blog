@@ -39,10 +39,10 @@ toc: true
 4. 启动container
     ```shell
     ## 先验证一下 
-    sudo docker run --rm --name mysql8-01 -p 3306:3306 -v /home/poul/workspace/soft/docker/mysql8-01/data:/var/lib/mysql -v /etc/localtime:/etc/localtime -v /home/poul/workspace/soft/docker/mysql8-01/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=MyNewpass4! mysql:8.0.26
+    sudo docker run --rm --name mysql8-01 -p 3306:3306 -v /home/poul/workspace/soft/docker/mysql8-01/data:/var/lib/mysql -v /etc/localtime:/etc/localtime -v /home/poul/workspace/soft/docker/mysql8-01/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=MyNewPass4! mysql:8.0.26
 
     ## 验证成功后 后台启动
-     sudo docker run -it --name mysql8-01 -p 3306:3306 -v /home/poul/workspace/soft/docker/mysql8-01/data:/var/lib/mysql -v /etc/localtime:/etc/localtime -v /home/poul/workspace/soft/docker/mysql8-01/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=MyNewpass4! -d mysql:8.0.26
+     sudo docker run -it --name mysql8-01 -p 3306:3306 -v /home/poul/workspace/soft/docker/mysql8-01/data:/var/lib/mysql -v /etc/localtime:/etc/localtime -v /home/poul/workspace/soft/docker/mysql8-01/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=MyNewPass4! -d mysql:8.0.26
     ```
 5. 启动mysql客户端 验证一下
     登陆进入docker容器内
