@@ -47,3 +47,5 @@ https://blog.csdn.net/wqc19920906/article/details/82193316
 https://blog.csdn.net/wqc19920906/article/details/82193593
 https://www.cnblogs.com/likehua/p/3999538.html  kafka
 https://boilingfrog.github.io/2021/12/10/%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E7%9A%84%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E7%9A%84%E5%AF%B9%E6%AF%94/
+[对比各个MQ的性能](https://www.3mu.me/activemqrabbitmqkafkarocketmq-you-lie-shi-bi-jiao/)
+[对比各个MQ的性能](https://blog.csdn.net/chaochao2113/article/details/127378685)
