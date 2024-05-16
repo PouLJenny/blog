@@ -90,6 +90,8 @@ The broker[broker-a,192.169.1.2:10911] boot success...
 
 其实就是个注册中心
 
+源码入口`org.apache.rocketmq.namesrv.NamesrvStartup.main(String[] args)`,
+
 
 ### 客户端源码
 
