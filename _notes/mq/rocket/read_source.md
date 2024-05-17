@@ -92,6 +92,31 @@ The broker[broker-a,192.169.1.2:10911] boot success...
 
 源码入口`org.apache.rocketmq.namesrv.NamesrvStartup.main(String[] args)`,
 
+rocketmq协议中通过`org.apache.rocketmq.remoting.protocol.RequestCode` 声明的code值，定义了非常多的命令,`RemotingCommand`,namesrv判断不同的命令来处理不同的逻辑.里面一共有148个code值。
+
+大部分的命令处理逻辑在`org.apache.rocketmq.namesrv.processor.DefaultRequestProcessor`中
+
+注册的信息都是放在类`org.apache.rocketmq.namesrv.routeinfo.RouteInfoManager`中
+
+指的一提的是rocketmq，namesrv在设计上，多个节点之间是没有数据同步的逻辑的。这种就简化了实现逻辑，越简单的东西就越健壮。每个节点中的数据，依赖brocker上报的信息。
+
+
+#### broker
+
+rocketmq的核心
+
+源码入口`org.apache.rocketmq.broker.BrokerStartup.main(String[] args)`,
+启动`org.apache.rocketmq.broker.BrokerController`
+
+1. 做一些初始化的操作
+  1. 初始化元数据，主要就是加载一些配置
+  2. 初始化消息存储
+    1. 里面会存储，msgPutTotalYesterdayMorning，msgPutTotalTodayMorning，msgGetTotalYesterdayMorning，msgGetTotalTodayMorning
+    1. 初始化定时消息模块
+  3. 恢复并初始化服务
+
+
+
 
 ### 客户端源码
 
@@ -99,6 +124,6 @@ The broker[broker-a,192.169.1.2:10911] boot success...
 
 ### dashbord源码
 
-[rocketmq-dashboard]()
+[rocketmq-dashboard](https://github.com/apache/rocketmq-dashboard)
 
 # EOF
