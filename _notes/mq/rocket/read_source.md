@@ -86,7 +86,15 @@ The broker[broker-a,192.169.1.2:10911] boot success...
 
 ### 源码阅读
 
-#### nameserv
+#### 服务的默认端口
+
+1. namesrv: 9876
+2. broker: 10911
+3. proxy-prpc: 8081, 5.x版本新的模块
+4. messageStore-haListenPort: 10912
+5. broker-remoting-server: 10909
+
+#### namesrv
 
 其实就是个注册中心
 
