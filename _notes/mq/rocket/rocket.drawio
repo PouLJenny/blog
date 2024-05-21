@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-05-20T10:10:05.038Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="FLIFB799B6Dw_9_SPLIJ" version="22.1.2" type="device" pages="6">
+<mxfile host="Electron" modified="2024-05-21T12:58:24.156Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="3IGhHwfqkWv_emmGKbui" version="22.1.2" type="device" pages="6">
   <diagram name="RocketMQ整体架构" id="tGMVDymokrfU0H8AJSUW">
     <mxGraphModel dx="1194" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
       <root>
@@ -21,7 +21,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="iNzXc18kSLljcT1sNXSv-6" value="生产者（客户端）" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-40" y="100" width="340" height="560" as="geometry" />
+          <mxGeometry x="-70" y="100" width="400" height="630" as="geometry" />
         </mxCell>
         <mxCell id="iNzXc18kSLljcT1sNXSv-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="iNzXc18kSLljcT1sNXSv-6" source="iNzXc18kSLljcT1sNXSv-13" target="iNzXc18kSLljcT1sNXSv-14">
           <mxGeometry relative="1" as="geometry" />
@@ -33,10 +33,10 @@
           <mxGeometry x="40" y="130" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="iNzXc18kSLljcT1sNXSv-7" value="rocketmq-broker" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="390" y="100" width="200" height="200" as="geometry" />
+          <mxGeometry x="414" y="100" width="266" height="200" as="geometry" />
         </mxCell>
         <mxCell id="iNzXc18kSLljcT1sNXSv-12" value="消费者（客户端）" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="810" y="100" width="200" height="200" as="geometry" />
+          <mxGeometry x="780" y="100" width="230" height="200" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
