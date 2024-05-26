@@ -11,7 +11,18 @@ https://www.vpsdawanjia.com/8223.html
 
 ## 技术调研
 
-### OpenAI
+### OpenAI API
+
+[官方API文档](https://platform.openai.com/docs/api-reference/introduction)
+
+#### 计算token的小工具
+https://platform.openai.com/tokenizer
+
+或者直接使用当前目录的小程序`caltoken.py`
+
+#### 各个模型的api价格
+
+https://openai.com/api/pricing/
 
 #### api-keys
 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
@@ -20,6 +31,15 @@ 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
 ```
 Authorization: Bearer OPENAI_API_KEY
 ```
+
+#### 关键概念
+
+- Text generatiion models
+- Assistants
+- Embeddings
+- Tokens
+
+
 
 ### Android
 
