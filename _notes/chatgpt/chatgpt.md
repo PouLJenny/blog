@@ -39,6 +39,21 @@ Authorization: Bearer OPENAI_API_KEY
 - Embeddings
 - Tokens
 
+#### 限流策略
+
+- RPM requests per minute
+- RPD requests per day
+- TPM tokens per minute
+- TPD tokens per day
+- IPM images per minute
+
+batch api的限流策略(下面是chatgpt给我的回答):
+The batch queue limits for the GPT-4o model in the OpenAI API are as follows:
+
+Per-Batch Limits: A single batch may include up to 50,000 requests, and a batch input file can be up to 100 MB in size.
+Rate Limits: GPT-4o supports up to 10 million tokens per minute for high-usage developers​
+
+
 
 
 ### Android

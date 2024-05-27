@@ -58,7 +58,7 @@ The Name Server boot success...
 先启动broker  
 由于启动默认会申请8G的jvm内存，需要调整一下，runbrocker.sh文件中的配置  
 ~~~shell
-nohup sh bin/mqbroker -n localhost:9876 -bc ./conf/broker.conf -pm local -pc ./conf/  --enable-proxy &
+nohup sh bin/mqbroker -n localhost:9876 -bc ./conf/broker.conf -pm local -pc ./conf/rmq-proxy.json  --enable-proxy &
 ~~~
 
 验证broker是否启动成功, 比如, broker的ip是192.168.1.2 然后名字是broker-a
