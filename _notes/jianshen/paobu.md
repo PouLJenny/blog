@@ -26,3 +26,10 @@
    3. 时机： 落地后迅速拉起
    4. 方向： 脚跟拉向臀部
    5. 2～3分钟
+
+
+## 相关视频
+
+[【收藏向】3个跑步姿势错误，90%的人都会犯（附纠正方法）](https://www.youtube.com/watch?v=W8cbazPjUI4)
+[跑步最重要的基本功，正確跑步姿勢你會了嗎『運動J計畫S2』 EP2](https://www.youtube.com/watch?v=ivLyi3nnuu4)
+[一般人的跑步姿勢和專業人士差異在哪？三大常見問題教你這樣簡單調整、改善，避免運動傷害！｜跑步、跑步姿勢、跑步技巧 ft. NBRC 李翰暄 Shindo 教練、威力](https://www.youtube.com/watch?v=zz7caz8GsEQ)
