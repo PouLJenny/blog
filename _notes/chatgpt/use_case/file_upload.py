@@ -13,7 +13,7 @@ client = OpenAI(
 
 
 out = client.files.create(
-  file=open("/Users/poul/tmp/test_gpt/test_batch.json1", "rb"),
+  file=open("/Users/poul/tmp/translate_gpt/split_batch/batch-translate-001.json1", "rb"),
   purpose="batch"
 ).to_json()
 
