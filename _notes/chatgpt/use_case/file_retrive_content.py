@@ -10,8 +10,7 @@ with open('/Users/poul/.openai/api_key', 'r') as file:
 client = OpenAI(
   api_key=api_key_1
 )
-
-out = client.files.content("file-fKsDiwYnECBgPi8Jhq2Z5sIA")
-print(out.text)
-
-
+outfile = "/Users/poul/tmp/translate_gpt/split_batch/batch_gpt_result/batch-translate-v2-001-test.json1.res.file.json1"
+out = client.files.content("file-hnMbY6882jaGzxNPMsLsrWoQ")
+out.write_to_file(outfile)
+print("done,file is",outfile)

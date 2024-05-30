@@ -265,6 +265,10 @@ NIO定义了四个核心组件
 - **Channels** , and their associated decoders and encoders,which translate between bytes and Unicode characters; 读写一个Channel就可以搞定。
 - **Selectors and selection keys**, which together with selectable channels define a multiplexed, non-blocking I/O facility. 相比于标准的I/O模型，底层走的是阻塞式I/O模型，NIO可以走I/O多路复用模型和non-blocking I/O模型了。主要是体现在网络IO。
 
+#### Buffers
+
+JDK中的顶级类`java.nio.Buffer`
+
 
 #### 文件I/O
 java示例

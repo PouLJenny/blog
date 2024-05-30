@@ -12,14 +12,14 @@ client = OpenAI(
   api_key=api_key_1
 )
 
-batch_input_file_id = "file-O1J32TDAHZ9AJxKe7aaoTc4K"
+batch_input_file_id = "file-XQH1H7z7y1oClBhcPqE89OqN"
 
 out = client.batches.create(
     input_file_id=batch_input_file_id,
     endpoint="/v1/chat/completions",
     completion_window="24h",
     metadata={
-      "description": "batch-translate-001.json1"
+      "description": "batch-translate-v2-004.json1"
     }
 ).to_json()
 
