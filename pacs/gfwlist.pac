@@ -3712,6 +3712,7 @@ var rules = [
             "ns2.name",
             "ns3.name",
             "nsc.gov.tw",
+            "nsmm.cc",
             "ntbk.gov.tw",
             "ntbna.gov.tw",
             "ntbt.gov.tw",
