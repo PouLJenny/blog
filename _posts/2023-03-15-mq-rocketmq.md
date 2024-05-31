@@ -22,13 +22,14 @@ toc: true
 ## 安装 
 
 ### 源码/二进制文件安装
-1 下载源码包  
+
+#### 1 下载源码包  
 
 ```shell
 wget https://dist.apache.org/repos/dist/release/rocketmq/5.1.0/rocketmq-all-5.1.0-source-release.zip
 ```
 
-2 解压源码包并编译构建二进制可执行文件  
+#### 2 解压源码包并编译构建二进制可执行文件  
 
 ```shell
 unzip rocketmq-all-5.1.0-source-release.zip
@@ -39,7 +40,7 @@ cd distribution/target/rocketmq-5.1.0/rocketmq-5.1.0
 
 编译的时候各种报错，还是选择[二进制文件](https://dist.apache.org/repos/dist/release/rocketmq/5.1.0/rocketmq-all-5.1.0-bin-release.zip)吧
 
-3 启动NameServer   
+#### 3 启动NameServer   
 
 这个地方默认启动的时候申请4G的jvm内存，可以在runserver.sh文件中调小一点   
 ~~~shell
@@ -52,12 +53,12 @@ tail -f ~/logs/rocketmqlogs/namesrv.log
 The Name Server boot success...
 ~~~
 
-4 启动Brocker + Proxy
+#### 4 启动Brocker + Proxy
 
 先启动broker  
 由于启动默认会申请8G的jvm内存，需要调整一下，runbrocker.sh文件中的配置  
 ~~~shell
-nohup sh bin/mqbroker -n localhost:9876 --enable-proxy &
+nohup sh bin/mqbroker -n localhost:9876 -bc ./conf/broker.conf -pm local -pc ./conf/rmq-proxy.json  --enable-proxy &
 ~~~
 
 验证broker是否启动成功, 比如, broker的ip是192.168.1.2 然后名字是broker-a
@@ -66,18 +67,52 @@ tail -f ~/logs/rocketmqlogs/proxy.log
 The broker[broker-a,192.169.1.2:10911] boot success...
 ~~~
 
-5 工具测试消息收发 
+#### 5 工具测试消息收发 
 
 ```shell
 export NAMESRV_ADDR=localhost:9876
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
- SendResult [sendStatus=SEND_OK, msgId= ...
+ SendResult sendStatus=SEND_OK, msgId= ...
 
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
- ConsumeMessageThread_%d Receive New Messages: [MessageExt...
+ ConsumeMessageThread_%d Receive New Messages: MessageExt...
 ```
 
-6 关闭服务器  
+#### 6 压力测试
+
+启动消费者
+```shell
+cd benchmark
+nohup ./consumer.sh -n localhost:9876 -t BenchTest > consumer.log 2>&1 &
+```
+
+启动生产者
+```shell
+nohup ./producer.sh -n localhost:9876 -t BenchTest -s 2048 > producer.log 2>&1 &
+nohup ./tproducer.sh -n localhost:9876 -t BenchTest > tproducer.log 2>&1 &
+nohup ./batchproducer.sh -n localhost:9876 -t BenchTest > batchproducer.log 2>&1 &
+```
+
+生产者加入延时消息的机制
+
+```shell
+nohup ./producer.sh -n localhost:9876 -t BenchTest -d true > producer.log 2>&1 &
+nohup ./tproducer.sh -n localhost:9876 -t BenchTest -d true > tproducer.log 2>&1 &
+nohup ./batchproducer.sh -n localhost:9876 -t BenchTest -d true > batchproducer.log 2>&1 &
+```
+
+
+关闭测试
+```shell
+./shutdown.sh producer
+./shutdown.sh tproducer
+./shutdown.sh bproducer
+./shutdown.sh consumer
+```
+
+注意压力测试的时候需要关注机器的磁盘容量
+
+#### 7 关闭服务器  
 ```shell
 sh bin/mqshutdown broker
 The mqbroker(36695) is running...
@@ -215,6 +250,25 @@ sudo docker run -d --rm --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.names
 ### 普通消息
 
 ### 定时/延时消息
+
+定时消息，消息被发送至服务端后，在指定时间后才能被消费者消费。通过设置一定的定时时间可以实现分布式场景的延时调度。
+
+#### 生命周期
+
+![](/assets/notes/mq/rocket-dealy-message-lifecycle-01.png)
+
+- 初始化： 消息被生产者构建并完成初始化，待发送到服务端的状态
+- 定时中： 消息被发送到服务端，和普通消息不同的是，服务端不会直接构建消息索引，而是会将定时消息单独存储在定时存储系统中，等待定时时刻到达
+- 待消费： 定时时刻到达后，服务端将消息重新写入普通存储引擎，对下游消费者可见，等待消费者消费的状态。
+- 消费中： 消息被消费者获取，并按照消费者本地的业务逻辑进行处理的过程。此时服务端会等待消费者完成消费并提交消费结果，如果一定时间后没有收到消费者的响应，Apache RocketMQ会对消息进行重试处理
+- 消费提交： 消费者完成消费处理，并向服务端提交消费结果，服务端标记当前消息已经被处理（包括消费成功和失败）.RocketMQ 默认支持保留所有消息，此时消息数据并不会立即被删除，知识逻辑标记已消费。消息在保存时间到期或存储空间不足被删除前，消费者仍然可以回溯消息重新消费
+- 消息删除： RocketMQ 按照消息保存机制滚动清理最早的消息数据，将消息从物理文件中删除。
+
+#### 创建延迟消息的主题
+
+```shell
+./bin/mqadmin updateTopic -c DefaultCluster -t repairDelay -n localhost:9876 -a +message.type=DELAY
+```
 
 ### 事务消息
 
@@ -621,6 +675,9 @@ simpleConsumer.subscribe(topic, filterExpression);
 
 ### 消费重试
 
+消费者在消费某条消息失败后，RocketMQ 服务端会根据重试策略重新消费该消息，超过一定次数后若还未消费成功，则该消息将不再继续重试，直接发送到死信队列中。
+
+
 #### PushConsumer消费重试策略
 
 ![](/assets/notes/mq/rocket-push-consumer-retry.png)
@@ -632,6 +689,8 @@ simpleConsumer.subscribe(topic, filterExpression);
 
 
 ### 消息存储和清理机制
+
+默认磁盘达到75%(`diskMaxUsedSpaceRatio`)的阈值时,RocketMQ 会优先删除最早的 CommitLog 文件，以腾出空间。
 
 TODO//
 
