@@ -339,6 +339,7 @@ randomAccessFile.close();
 ```
 
 JDK底层native方法实际执行的代码
+`src/java.base/unix/native/libnio/ch/FileDispatcherImpl.c`
 ```c++
 JNIEXPORT jint JNICALL
 Java_sun_nio_ch_FileDispatcherImpl_read0(JNIEnv *env, jclass clazz,
@@ -363,7 +364,7 @@ Java_sun_nio_ch_FileDispatcherImpl_write0(JNIEnv *env, jclass clazz,
 ```
 
 特点：
-1. NIO更新和读取文件的时候使用一个Channel,维护一个FileDescriptor，即可，相反标准的I/O需要使用两个Stream，使用两个FileDescriptor.
+1. NIO更新和读取文件的时候使用一个Channel,维护一个`FileDescriptor`即可，相反标准的I/O需要使用两个Stream，使用两个`FileDescriptor`.
 2. 文件IO的Channel是`sun.nio.ch.FileChannelImpl`,此类无法使用`Selector`,底层走的还是`read`，`write`的systemcall，这个地方猜测可能是，文件访问不像网络，走blocking I/O性能就很好了
 
 #### 网络I/O

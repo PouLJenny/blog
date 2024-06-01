@@ -12,8 +12,8 @@ toc: true
 # JVM 源码阅读
 
 [github](https://github.com/openjdk/jdk)
-[openjdk](https://openjdk.java.net/)
-[openjdk8](https://github.com/openjdk/jdk8)
+[openjdk-projects](https://openjdk.org/projects/jdk/)
+[openjdk8-github](https://github.com/openjdk/jdk8)
 
 ## JDK 11
 ### Linux 编译源码
