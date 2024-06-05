@@ -12,7 +12,7 @@ client = OpenAI(
 )
 
 
-out = client.batches.retrieve("batch_VqyoJ2mU1I0elcqRZfW6h9wH").to_json()
+out = client.batches.retrieve("batch_NLJVIuyrVmwYHtPXWfcYGKPE").to_json()
 
 
 print(out)

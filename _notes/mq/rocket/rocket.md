@@ -267,7 +267,7 @@ sudo docker run -d --rm --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.names
 #### 创建延迟消息的主题
 
 ```shell
-./bin/mqadmin updateTopic -c DefaultCluster -t repairDelay -n localhost:9876 -a +message.type=DELAY
+./bin/mqadmin updateTopic -c DefaultCluster -r 12 -w 12  -t repairDelay -n localhost:9876 -a +message.type=DELAY
 ```
 
 ### 事务消息
