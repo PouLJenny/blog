@@ -376,3 +376,16 @@ tied
 
 ### 2024/05/30
 nucleus
+
+### 2024/06/07
+spectator
+substantial
+expense
+loan
+mortgage
+doodad
+dice
+condo
+invent
+lush
+divorce
