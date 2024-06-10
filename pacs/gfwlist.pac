@@ -1564,6 +1564,7 @@ var rules = [
             "etherscan.io",
             "etizer.org",
             "etokki.com",
+            "etoro.com",
             "etowns.net",
             "etowns.org",
             "etsy.com",
