@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-05-30T08:58:26.209Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="oxdI8cWfxmmCmD3aUjGo" version="22.1.2" type="device" pages="6">
+<mxfile host="Electron" modified="2024-06-11T04:22:37.966Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="UlD5xuAu1hVPYrOWRAs3" version="22.1.2" type="device" pages="6">
   <diagram name="RocketMQ整体架构" id="tGMVDymokrfU0H8AJSUW">
     <mxGraphModel dx="1194" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
       <root>
@@ -16,7 +16,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="Njm8uuOlYr0Ty8j9v9_n" name="消息流转(普通消息)">
-    <mxGraphModel dx="2021" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2021" dy="877" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -59,19 +59,19 @@
         <mxCell id="iNzXc18kSLljcT1sNXSv-7" value="Broker" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="350" y="100" width="500" height="730" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="iNzXc18kSLljcT1sNXSv-7" source="tfikcWR6l1cj0gRh4lxW-13" target="fBE9P5sNcpX-yUYS2i5b-1">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="iNzXc18kSLljcT1sNXSv-7" source="tfikcWR6l1cj0gRh4lxW-13" target="fBE9P5sNcpX-yUYS2i5b-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="tfikcWR6l1cj0gRh4lxW-13" value="接收到写入请求" style="whiteSpace=wrap;html=1;" parent="iNzXc18kSLljcT1sNXSv-7" vertex="1">
           <mxGeometry x="20" y="40" width="170" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="iNzXc18kSLljcT1sNXSv-7" source="fBE9P5sNcpX-yUYS2i5b-1" target="fBE9P5sNcpX-yUYS2i5b-3">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="iNzXc18kSLljcT1sNXSv-7" source="fBE9P5sNcpX-yUYS2i5b-1" target="fBE9P5sNcpX-yUYS2i5b-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-1" value="SendMessageProcessor类负责处理请求" style="whiteSpace=wrap;html=1;" vertex="1" parent="iNzXc18kSLljcT1sNXSv-7">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-1" value="SendMessageProcessor类负责处理请求" style="whiteSpace=wrap;html=1;" parent="iNzXc18kSLljcT1sNXSv-7" vertex="1">
           <mxGeometry x="20" y="130" width="170" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-3" value="一些权限上的校验" style="whiteSpace=wrap;html=1;" vertex="1" parent="iNzXc18kSLljcT1sNXSv-7">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-3" value="一些权限上的校验" style="whiteSpace=wrap;html=1;" parent="iNzXc18kSLljcT1sNXSv-7" vertex="1">
           <mxGeometry x="20" y="220" width="170" height="40" as="geometry" />
         </mxCell>
         <mxCell id="iNzXc18kSLljcT1sNXSv-12" value="消费者（客户端）" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -80,20 +80,35 @@
         <mxCell id="tfikcWR6l1cj0gRh4lxW-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="tfikcWR6l1cj0gRh4lxW-9" target="tfikcWR6l1cj0gRh4lxW-13" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-11" value="MessageStore" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-11" value="MessageStore" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="900" y="100" width="470" height="730" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="fBE9P5sNcpX-yUYS2i5b-11" source="fBE9P5sNcpX-yUYS2i5b-12" target="fBE9P5sNcpX-yUYS2i5b-14">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="fBE9P5sNcpX-yUYS2i5b-11" source="fBE9P5sNcpX-yUYS2i5b-12" target="fBE9P5sNcpX-yUYS2i5b-14" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-12" value="持久化消息" style="whiteSpace=wrap;html=1;" vertex="1" parent="fBE9P5sNcpX-yUYS2i5b-11">
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-12" value="持久化消息" style="whiteSpace=wrap;html=1;" parent="fBE9P5sNcpX-yUYS2i5b-11" vertex="1">
           <mxGeometry x="60" y="40" width="170" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-14" value="CommitLog找到最新的&lt;br&gt;MappedFile" style="whiteSpace=wrap;html=1;" vertex="1" parent="fBE9P5sNcpX-yUYS2i5b-11">
+        <mxCell id="ooIhEpk0MiTpT4_jgDqY-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="fBE9P5sNcpX-yUYS2i5b-11" source="fBE9P5sNcpX-yUYS2i5b-14" target="ooIhEpk0MiTpT4_jgDqY-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-14" value="CommitLog找到最新的&lt;br&gt;MappedFile" style="whiteSpace=wrap;html=1;" parent="fBE9P5sNcpX-yUYS2i5b-11" vertex="1">
           <mxGeometry x="60" y="130" width="170" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="fBE9P5sNcpX-yUYS2i5b-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="fBE9P5sNcpX-yUYS2i5b-3" target="fBE9P5sNcpX-yUYS2i5b-12">
+        <mxCell id="ooIhEpk0MiTpT4_jgDqY-5" value="CommitLog把消息存储到MappedFile文件中" style="whiteSpace=wrap;html=1;" vertex="1" parent="fBE9P5sNcpX-yUYS2i5b-11">
+          <mxGeometry x="60" y="230" width="170" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fBE9P5sNcpX-yUYS2i5b-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="fBE9P5sNcpX-yUYS2i5b-3" target="fBE9P5sNcpX-yUYS2i5b-12" edge="1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ooIhEpk0MiTpT4_jgDqY-2" value="源码链路（5.2.0）" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="810" y="880" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ooIhEpk0MiTpT4_jgDqY-3" value="org.apache.rocketmq.store.CommitLog#asyncPutMessage (902)" style="whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="891" y="970" width="350" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ooIhEpk0MiTpT4_jgDqY-4" value="org.apache.rocketmq.store.logfile.MappedFile#appendMessage(org.apache.rocketmq.common.message.MessageExtBrokerInner, org.apache.rocketmq.store.AppendMessageCallback, org.apache.rocketmq.store.PutMessageContext) (1013)" style="whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="910" y="1020" width="690" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

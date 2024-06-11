@@ -4085,6 +4085,7 @@ var rules = [
             "powerphoto.org",
             "powerpointninja.com",
             "pp.ru",
+            "ppfocus.com",
             "prayforchina.net",
             "premeforwindows7.com",
             "premproxy.com",
