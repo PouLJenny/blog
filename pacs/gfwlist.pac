@@ -3316,6 +3316,7 @@ var rules = [
             "memrijttm.org",
             "mercatox.com",
             "mercdn.net",
+            "merchantwords.com",
             "mercyprophet.org",
             "mercurial-scm.org",
             "mergersandinquisitions.org",
