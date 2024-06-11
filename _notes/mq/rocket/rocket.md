@@ -15,6 +15,7 @@ toc: true
 
 [官网](https://rocketmq.apache.org/ )  
 [github](https://github.com/apache/rocketmq )
+[官方文档-设计](https://github.com/apache/rocketmq/blob/rocketmq-all-5.2.0/docs/cn/design.md)
 
 
 本文基于**5.x**版本来进行讲解操作
