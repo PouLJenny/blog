@@ -69,21 +69,21 @@
 
 增加服务
 进入`/usr/lib/systemd/system`目录，增加`redis.service`文件，并添加如下内容
-``` 
-    [Unit]
-    #描述信息
-    Description=Redis Server 3.0.4
-    #启动时机,开机启动最好在网络服务启动后即启动
-    After=network.target
-    [Service]
-    #此处为命令行启动redis的命令及参数,可参考官方文档
-    ExecStart=/usr/local/bin/redis-server /etc/redis.conf --daemonize no  
-    #停止redis服务器命令
-    ExecStop=/usr/local/bin/redis-cli -h 127.0.0.1 -p 6379 shutdown 
-    User=redis #运行reddis用户
-    Group=redis #所属组
-    [Install]
-    WantedBy=multi-user.target #字符界面下启动
+```
+[Unit]
+#描述信息
+Description=Redis Server 3.0.4
+#启动时机,开机启动最好在网络服务启动后即启动
+After=network.target
+[Service]
+#此处为命令行启动redis的命令及参数,可参考官方文档
+ExecStart=/usr/local/bin/redis-server /etc/redis.conf --daemonize no  
+#停止redis服务器命令
+ExecStop=/usr/local/bin/redis-cli -h 127.0.0.1 -p 6379 shutdown 
+User=redis #运行reddis用户
+Group=redis #所属组
+[Install]
+WantedBy=multi-user.target #字符界面下启动
 ```
 测试服务
 
