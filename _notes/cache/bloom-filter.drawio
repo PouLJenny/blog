@@ -1,0 +1,73 @@
+<mxfile host="Electron" modified="2024-06-18T08:58:23.217Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="9gv-tvzzB9tmeuw17TN0" version="22.1.2" type="device">
+  <diagram name="第 1 页" id="COTfRDMGZWay6cbd4_ft">
+    <mxGraphModel dx="1194" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cAyG8W1JEfPSIt_hgs_7-2" target="cAyG8W1JEfPSIt_hgs_7-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-2" value="DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="291" y="440" width="246" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-3" value="bloom filter" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="229" y="310" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="cAyG8W1JEfPSIt_hgs_7-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="120" as="sourcePoint" />
+            <mxPoint x="500" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="414" y="310" as="sourcePoint" />
+            <mxPoint x="590" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-7" value="not in bloom filter" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="359" y="230" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-8" value="1. 如果不在布隆过滤器里面，就一定不在数据库中&lt;br&gt;2. 如果在布隆过滤器中，由于存在hash冲突，则不一定在数据库中&lt;br&gt;3. 所以布隆过滤器不存在的值只是实际不存在值的子集" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="660" y="140" width="370" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-10" value="" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="860" y="330" width="370" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-11" value="所有不存在的值" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="977" y="300" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-12" value="布隆过滤器中不存在的值" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="942" y="350" width="188" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-13" value="布隆过滤器中认为存在，&lt;br&gt;但是数据库中没有的值" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1087" y="505" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-14" value="布隆过滤器本身因为长度固定限制，刚开始数据量少的情况下，hash冲突不明显，效果比较好，&lt;br&gt;等数据越来越多，hash冲突越来越多，效果就会下降。图中黄色的区域就会越来越小，红色区域就会越来越大，&lt;br&gt;而红色区域是会直接访问数据库的。" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="650" width="610" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-15" value="" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="860" y="720" width="370" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-16" value="所有不存在的值" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="977" y="690" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-17" value="布隆过滤器中不存在的值" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="978" y="771.25" width="116" height="117.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-18" value="布隆过滤器中认为存在，&lt;br&gt;但是数据库中没有的值" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1087" y="895" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-19" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1030" y="570" as="sourcePoint" />
+            <mxPoint x="1030" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cAyG8W1JEfPSIt_hgs_7-20" value="数据量增多" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="610" width="80" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
