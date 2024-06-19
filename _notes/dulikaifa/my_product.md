@@ -5,6 +5,10 @@
 APP(Android + IOS) + Web
 
 
+- [sortly](https://www.sortly.com/)
+- [encircle](https://www.getencircle.com/)
+- [BluePlum Home Inventory](https://www.blueplum.com/)
+
 
 ## 记账系统
 
