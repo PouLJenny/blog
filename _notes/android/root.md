@@ -12,3 +12,4 @@ https://notenoughtech.com/featured/how-to-unlock-root-miui12-5-with-google-pay/
 ## Terminal 工具
 https://f-droid.org/en/packages/com.termux/
 
+
