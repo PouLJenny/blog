@@ -2,6 +2,7 @@
 
 ## gpt开户升级教程
 https://www.vpsdawanjia.com/8223.html
+https://www.vvacard.com/index/Index/signIn.html
 
 ## 盈利模式
 

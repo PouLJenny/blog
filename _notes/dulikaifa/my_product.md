@@ -16,6 +16,10 @@ https://www.libertyhomeguard.com/best-home-inventory-apps-to-protect-your-belong
 
 ### 市场趋势
 
+- [sortly](https://www.sortly.com/)
+- [encircle](https://www.getencircle.com/)
+- [BluePlum Home Inventory](https://www.blueplum.com/)
+
 
 ## 记账系统
 

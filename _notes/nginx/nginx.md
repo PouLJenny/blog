@@ -101,3 +101,13 @@ kill -s WINCH `cat /usr/local/nginx/logs/nginx.pid.oldbin`
 - crit,
 - alert, 
 - emerg.
+
+
+## nginx日志乱码如何解析
+
+使用python脚本  
+```python
+s = "\x22\xE8\x91\xA1\xE8\x90\x84\xE9\x85\x92\x22"
+decoded_s = s.encode('latin-1').decode('utf-8')
+print(decoded_s)
+```
