@@ -127,4 +127,8 @@ system integrity protection (SIP)
 https://www.macappbox.com/a/soundsource.html
 https://rogueamoeba.com/support/knowledgebase/?showArticle=ACE-StepByStep&product=SoundSource&arch=mchip&step=7#aceinstall
 
+## 修改电脑时区
+
+https://testingbot.com/software-testing-questions/how-to-change-your-time-zone-on-mac
+
 # EOF
