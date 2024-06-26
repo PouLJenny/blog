@@ -96,6 +96,7 @@ systemctl start nginx
 当自己的服务器连不上，但是需要科学上网的时候，可通过下面的方式应急
 1. https://www.58zfdao.com/user
 2. https://bywave.art/
+3. [clash服务，这个相对更好一点](https://portal.shadowsocks.nz/index.php)
 新的google账号
 stormnumbus@gmail.com
 ....0827P...

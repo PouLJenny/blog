@@ -15,3 +15,7 @@
 安装给定版本的 service和 store（谷歌框架apk我没找到 使用 Hi谷歌安装器安装的）：
 google play services v20.50.16（080406） 注意后面的小版本号 
 google play store v22.5.28-16[0] 不用担心这个不是最新版，登录后会自动更新到最新版（建议下我给定版本）
+
+### Google play 在国内无法安装商店内应用的问题
+
+https://www.yetpage.com/archives/278

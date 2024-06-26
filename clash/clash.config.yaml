@@ -11,7 +11,18 @@ proxies:
   type: trojan
   server: hostdare.poul666.top
   port: 5443
-  password: r$GP>Wi5!0=9g'/tIk;~@;zq67()^ot<
+  password: wmJd8mGtHj94QYGn93
+  skip-cert-verify: true
+
+## 这个是处理google play下载问题的节点，每月100G，谨慎使用
+- name: Japan-TY-1-Rate:1.0
+  type: trojan
+  server: ty-1.rise-fuji.com
+  port: 443
+  password: wmJd8mGtHj94QYGn93
+  alpn:
+    - h2
+    - http/1.1
   skip-cert-verify: true
 
 proxy-groups:
@@ -19,6 +30,11 @@ proxy-groups:
   type: select
   proxies:
     - "trojan"
+
+- name: "GOOGLE_PLAY"
+  type: select
+  proxies:
+    - "Japan-TY-1-Rate:1.0"
 
 rule-providers:
   reject:
@@ -66,7 +82,7 @@ rule-providers:
   private:
     type: http
     behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt"
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt"
     path: ./ruleset/private.yaml
     interval: 86400
 
@@ -113,6 +129,8 @@ rule-providers:
     interval: 86400
 
 rules:
+  - DOMAIN-SUFFIX,googleapis.cn,GOOGLE_PLAY
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,GOOGLE_PLAY
   - RULE-SET,applications,DIRECT
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT

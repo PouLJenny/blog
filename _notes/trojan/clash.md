@@ -5,6 +5,7 @@ clash规则集配置 https://github.com/Loyalsoldier/clash-rules?tab=readme-ov-f
 clash已经删库跑路了，最后的一些信息 https://github.com/Loyalsoldier/clash-rules/tree/hidden
 
 
+clash各种配置详解 https://github.com/MetaCubeX/mihomo/blob/Meta/docs/config.yaml
 
 直连域名列表 direct.txt：
 https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt
