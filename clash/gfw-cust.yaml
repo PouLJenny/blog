@@ -1,5 +1,9 @@
 # 自定义的gfw域名
 payload:
-  - '+.pstmrk.it'
+  - '+.telegram.me'
+  - '+.telegram.dog'
+  - '+.telegram.me'
+  - '+.telegram.org'
+  - '+.telegramdownload.com'
 
 
