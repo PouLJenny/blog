@@ -16,6 +16,19 @@
 google play services v20.50.16（080406） 注意后面的小版本号 
 google play store v22.5.28-16[0] 不用担心这个不是最新版，登录后会自动更新到最新版（建议下我给定版本）
 
-### Google play 在国内无法安装商店内应用的问题
+## Google play 在国内无法安装商店内应用的问题
 
 https://www.yetpage.com/archives/278
+
+
+跟本原因就是
+```yaml
+  - DOMAIN-SUFFIX,googleapis.cn,GOOGLE_PLAY
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,GOOGLE_PLAY
+```
+上面中的两个域名，需要代理到国外节点，而且这个节点的ip不能让google识别成中国的ip。
+
+
+## IP被Google标记为中国的怎么处理
+https://vps.dance/google-ip-location.html
+https://www.74110.net/tutorial/linux/google-ip-location-2/
