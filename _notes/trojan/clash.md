@@ -1,5 +1,8 @@
 # Clash
 
+
+[安装包下载](https://www.clashforwindows.net/)
+
 clash规则集配置 https://github.com/Loyalsoldier/clash-rules?tab=readme-ov-file
 
 clash已经删库跑路了，最后的一些信息 https://github.com/Loyalsoldier/clash-rules/tree/hidden
