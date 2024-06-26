@@ -71,7 +71,6 @@ systemctl start nginx
    安装命令
    ```sehll
     wget -N --no-check-certificate "https://github.000060000.xyz/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
-    
    ```
 
 1. 两台机器之间的网络测速工具iperf3
