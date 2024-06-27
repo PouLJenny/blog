@@ -70,6 +70,11 @@ https://www.libertyhomeguard.com/best-home-inventory-apps-to-protect-your-belong
 - [encircle](https://www.getencircle.com/)
 - [BluePlum Home Inventory](https://www.blueplum.com/)
 
+### 工具/合作方
+
+- [中国商品信息服务平台](https://www.gds.org.cn/#/home/index)
+- [中国物品编码平台](http://www.ancc.org.cn/)
+
 ### 市场调研
 
 ### 用户痛点/产品价值
@@ -80,6 +85,9 @@ https://www.libertyhomeguard.com/best-home-inventory-apps-to-protect-your-belong
     3. 时间，过期，定期保养
 
 ### 市场趋势
+
+
+
 
 
 ## 记账系统

@@ -10,9 +10,15 @@ proxies:
 - name: 'trojan'
   type: trojan
   server: hostdare.poul666.top
-  port: 5443
+  port: 7443
   password: wmJd8mGtHj94QYGn93
-  skip-cert-verify: true
+  sni: hostdare.poul666.top
+  client-fingerprint: chrome
+  udp: true
+  alpn:
+    - h2
+    - http/1.1
+  skip-cert-verify: false
 
 ## 这个是处理google play下载问题的节点，每月100G，谨慎使用
 - name: Japan-TY-1-Rate:1.0
