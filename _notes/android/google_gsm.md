@@ -32,3 +32,4 @@ https://www.yetpage.com/archives/278
 ## IP被Google标记为中国的怎么处理
 https://vps.dance/google-ip-location.html
 https://www.74110.net/tutorial/linux/google-ip-location-2/
+https://support.google.com/websearch/workflow/9308722 发起google申请
