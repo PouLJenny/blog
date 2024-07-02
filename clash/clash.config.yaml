@@ -10,7 +10,7 @@ proxies:
 - name: 'trojan'
   type: trojan
   server: hostdare.poul666.top
-  port: 7443
+  port: 8443
   password: wmJd8mGtHj94QYGn93
   sni: hostdare.poul666.top
   client-fingerprint: chrome
