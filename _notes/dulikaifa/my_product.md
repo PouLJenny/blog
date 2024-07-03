@@ -101,3 +101,11 @@ https://www.libertyhomeguard.com/best-home-inventory-apps-to-protect-your-belong
 
 APP(Android + IOS) + Web
 
+
+
+## 需要用到的一些工具
+
+- vscode
+- flutter
+- https://www.sketch.com/
+- figma

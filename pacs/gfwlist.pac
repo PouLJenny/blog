@@ -5445,6 +5445,7 @@ var rules = [
             "videomo.com",
             "videopediaworld.com",
             "videopress.com",
+            "video-dns.com",
             "vidinfo.org",
             "vietdaikynguyen.com",
             "vijayatemple.org",
