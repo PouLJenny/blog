@@ -3835,6 +3835,7 @@ var rules = [
             "openid.net",
             "openleaks.org",
             "opensource.google",
+            "openstreetmap.org",
             "opentech.fund",
             "openvpn.net",
             "openvpn.org",
