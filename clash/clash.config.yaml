@@ -40,7 +40,7 @@ proxy-groups:
 - name: "GOOGLE_PLAY"
   type: select
   proxies:
-    - "Japan-TY-1-Rate:1.0"
+    - "trojan"
 
 rule-providers:
   reject:
