@@ -9,6 +9,11 @@ https://blog.csdn.net/hguisu/article/details/7609483
 ### 依赖（Dependency）
 在UML中，依赖关系用带箭头的虚线表示，由依赖的一方指向被依赖的一方。
 
+```mermaid
+classDiagram
+    Animal <|-- Duck
+```
+
 ### 关联（Association）
 在 UML 类图中， 用实线连接有关联的对象所对应的类
 #### 双向关联
