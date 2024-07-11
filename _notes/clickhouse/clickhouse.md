@@ -384,6 +384,145 @@ SYSTEM RELOAD DICTIONARY default.dictionary_name
 DROP table 
 ```
 
+### 如何停止ALTER 和 DELETE 操作在后台执行的任务
+
+查询当前正在执行的变更
+```sql
+SELECT database, table, mutation_id, command, parts_to_do, is_done
+FROM system.mutations
+WHERE is_done = 0;
+```
+
+取消变更
+```sql
+KILL MUTATION WHERE mutation_id = 'your_mutation_id' AND database = 'your_database' AND table = 'your_table';
+```
+
+### System库中有用的表信息
+
+#### 1. system.parts
+作用：包含所有表的分区和分片信息。
+示例查询：
+```sql
+SELECT * FROM system.parts WHERE table = 'your_table';
+```
+#### 2. system.mutations
+作用：包含所有正在进行或已经完成的变更操作（如 ALTER 和 DELETE）。
+示例查询：
+```sql
+SELECT * FROM system.mutations WHERE table = 'your_table';
+```
+#### 3. system.tables
+作用：包含关于所有表的元数据信息。
+示例查询：
+```sql
+SELECT * FROM system.tables WHERE database = 'your_database';
+```
+#### 4. system.columns
+作用：包含关于所有列的元数据信息。
+示例查询：
+```sql
+SELECT * FROM system.columns WHERE table = 'your_table';
+```
+#### 5. system.query_log
+作用：记录所有执行的查询信息。
+示例查询：
+```sql
+SELECT * FROM system.query_log WHERE type = 'QueryFinish' ORDER BY event_time DESC LIMIT 10;
+```
+#### 6. system.processes
+作用：包含当前正在执行的查询。
+示例查询：
+```sql
+SELECT * FROM system.processes;
+```
+#### 7. system.metrics
+作用：提供各种运行时指标，包括内存使用、CPU使用等。
+示例查询：
+```sql
+SELECT * FROM system.metrics;
+```
+#### 8. system.settings
+作用：包含当前服务器的配置设置。
+示例查询：
+```sql
+SELECT * FROM system.settings;
+```
+#### 9. system.replicas
+作用：提供关于复制表的信息，包括复制状态和延迟。
+示例查询：
+```sql
+SELECT * FROM system.replicas;
+```
+#### 10. system.events
+作用：提供关于内部事件的统计信息，如已处理的查询数、分区合并数等。
+示例查询：
+```sql
+SELECT * FROM system.events;
+```
+#### 11. system.asynchronous_metrics
+作用：包含定期收集的异步系统指标。
+示例查询：
+```sql
+SELECT * FROM system.asynchronous_metrics;
+```
+#### 12. system.disks
+作用：包含关于所有配置的磁盘的信息。
+示例查询：
+```sql
+SELECT * FROM system.disks;
+```
+#### 13. system.clusters
+作用：包含关于配置的集群的信息。
+示例查询：
+```sql
+SELECT * FROM system.clusters;
+```
+#### 14. system.detached_parts
+作用：包含被分离但仍在磁盘上的数据分片信息。
+示例查询：
+```sql
+SELECT * FROM system.detached_parts;
+```
+#### 15. system.dictionaries
+作用：包含所有已加载的字典的信息。
+示例查询：
+```sql
+SELECT * FROM system.dictionaries;
+```
+#### 16. system.macros
+作用：包含服务器配置中定义的所有宏。
+示例查询：
+```sql
+SELECT * FROM system.macros;
+```
+#### 17. system.networks
+作用：包含网络接口和其IP地址信息。
+示例查询：
+```sql
+SELECT * FROM system.networks;
+```
+#### 18. system.zookeeper
+作用：包含Zookeeper状态和配置的信息。
+示例查询：
+```sql
+SELECT * FROM system.zookeeper;
+```
+#### 19. system.dictionaries
+作用：包含所有字典的详细信息。
+示例查询：
+```sql
+SELECT * FROM system.dictionaries;
+```
+#### 20. system.replicated_fetches
+作用：包含关于当前正在进行的复制任务的信息。
+示例查询：
+```sql
+SELECT * FROM system.replicated_fetches;
+```
+
+这些 system 表提供了对ClickHouse服务器和数据库状态的深刻洞察，帮助管理员和用户监控系统性能、调试查询和管理数据库配置。
+
 ## 源码编译
 
 阅读github中的build文件`https://github.com/ClickHouse/ClickHouse/blob/master/docs/en/development/build.md`,参见“Building on Any Linux”部分
