@@ -8,11 +8,31 @@
 
 
 [绝伦深蹲](https://www.youtube.com/watch?v=aHbgQg9Ksu8) 性爱之前做效果会更好
-侧式深蹲
+[厕式深蹲](https://www.bilibili.com/video/BV1b14y137Cr/?vd_source=973c7d5ced4869eb290f9a3842143b40)
+https://www.bilibili.com/video/BV1ax4y1x74J/?spm_id_from=333.337.search-card.all.click&vd_source=973c7d5ced4869eb290f9a3842143b40
+
+蹲下吸气，起身呼气
 
 10 x 3 组
 
 ## 第二天 脱敏训练
+
+敏感是什么？敏感就是接触的少，接触的多了就不敏感了。 
+
+大脑才是最应该脱敏的地方。
+
+敏感真的不好吗?  身体肯定是因为好才会灵敏，敏感。有感觉才会有快感！
+
+
+1. 食指和大拇指挤捏冠状沟，让自己能感觉到一点点的痛
+2. 揉搓系带
+3. 挤捏龟头
+4. 挤捏阴茎体
+
+
+降低敏感的方式：
+1. 4-7-8 呼吸
+2. 扯淡
 
 
 ## 第三天 龙根三增术
