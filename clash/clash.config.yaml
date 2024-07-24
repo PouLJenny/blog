@@ -41,6 +41,7 @@ proxy-groups:
   type: select
   proxies:
     - "trojan"
+    - "Japan-TY-1-Rate:1.0"
 
 rule-providers:
   reject:
