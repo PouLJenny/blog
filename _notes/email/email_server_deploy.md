@@ -74,6 +74,18 @@ keytool -importkeystore -deststorepass poul.top -destkeypass poul.top -destkeyst
 keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
 ```
 
+```shell
+openssl pkcs12 -export -in fullchain -inkey key -out certificate.p12 -name imap.poul.top
+keytool -importkeystore -deststorepass imap.poul.top -destkeypass imap.poul.top -destkeystore keystore.jks -srckeystore certificate.p12 -srcstoretype PKCS12 -srcstorepass imap.poul.top -alias imap.poul.top -storetype JKS
+keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
+```
+
+```shell
+openssl pkcs12 -export -in fullchain -inkey key -out certificate.p12 -name smtp.poul.top
+keytool -importkeystore -deststorepass smtp.poul.top -destkeypass smtp.poul.top -destkeystore keystore.jks -srckeystore certificate.p12 -srcstoretype PKCS12 -srcstorepass smtp.poul.top -alias smtp.poul.top -storetype JKS
+keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
+```
+
 
 rest api管理端口
 
