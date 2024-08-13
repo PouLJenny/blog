@@ -111,3 +111,52 @@ s = "\x22\xE8\x91\xA1\xE8\x90\x84\xE9\x85\x92\x22"
 decoded_s = s.encode('latin-1').decode('utf-8')
 print(decoded_s)
 ```
+
+java则使用下面的代码处理
+```java
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DecodeEscapedCharacters {
+    public static void main(String[] args) {
+        // 示例字符串，其中包含转义字符
+        String escapedString = "{\\\\x22pageNum\\\\x22:1";
+
+        // 将 \xNN 转义字符替换为实际字符
+        String decodedString = replaceHexEscapes(escapedString);
+
+        // 输出处理后的字符串
+        System.out.println("Decoded String: " + decodedString);
+    }
+
+    private static String replaceHexEscapes(String str) {
+        // 正则表达式匹配 \xNN 形式的转义字符
+        Pattern pattern = Pattern.compile("\\\\x([0-9A-Fa-f]{2})");
+        Matcher matcher = pattern.matcher(str);
+
+        // 使用 StringBuilder 来构建替换后的字符串
+        StringBuilder sb = new StringBuilder();
+        int lastEnd = 0;
+
+        while (matcher.find()) {
+            // 追加匹配之前的部分
+            sb.append(str, lastEnd, matcher.start());
+
+            // 获取匹配的十六进制值
+            String hex = matcher.group(1);
+            // 将十六进制值转换为字符
+            char ch = (char) Integer.parseInt(hex, 16);
+            // 添加字符到结果
+            sb.append(ch);
+
+            // 更新最后匹配位置
+            lastEnd = matcher.end();
+        }
+
+        // 添加最后未匹配到的部分
+        sb.append(str.substring(lastEnd));
+
+        return sb.toString();
+    }
+}
+```
