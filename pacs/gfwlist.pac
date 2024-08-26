@@ -4788,6 +4788,7 @@ var rules = [
             "sylfoundation.org",
             "syncback.com",
             "synergyse.com",
+            "sysgeeker.com",
             "sysresccd.org",
             "sytes.net",
             "syx86.cn",
