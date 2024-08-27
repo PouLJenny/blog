@@ -3381,6 +3381,7 @@ var rules = [
             "minhhue.net",
             "miniforum.org",
             "ministrybooks.org",
+            "minusflow.com",
             "minzhuhua.net",
             "minzhuzhanxian.com",
             "minzhuzhongguo.org",
