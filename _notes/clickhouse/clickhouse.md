@@ -291,7 +291,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = 'testTitle'
+    WHERE active and table = 'brandAdvertising'
     GROUP BY
         database,
         table

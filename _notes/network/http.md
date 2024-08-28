@@ -19,11 +19,13 @@
 
 - RFC 7540 - "Hypertext Transfer Protocol Version 2 (HTTP/2)"
 - RFC 7541 - "HPACK: Header Compression for HTTP/2"
+- RFC 8441 - "Bootstrapping WebSockets with HTTP/2"
+
 ### HTTP/3:
 
-- RFC 7540 - "Hypertext Transfer Protocol Version 2 (HTTP/2)" (Referenced for HTTP/3's transport layer)
-- RFC 7541 - "HPACK: Header Compression for HTTP/2" (Referenced for HTTP/3's header compression)
-- RFC 8441 - "Bootstrapping WebSockets with HTTP/2"
+- RFC 9114: HTTP/3
+- RFC 8999: QUIC: The Next Generation of Transport
+
 
 
 ## Accept-Language
