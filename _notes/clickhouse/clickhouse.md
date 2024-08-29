@@ -228,6 +228,8 @@ SELECT
     spPosition
 FROM default.keywordAsinAd;
 
+
+
 -- 3、数据迁移
 -- 通过insert select where 分批次导入。
 
@@ -238,6 +240,14 @@ from keywordAsinAd
 where  updateTime >= '2023-10-01' and  updateTime < '2023-10-10';
 ```
 
+物化视图实际上是底层的表在起作用,比如类似下面这个样子
+```
+┌─database─┬─table_name─────────────────────┬─engine───────────┐
+│ default  │ .inner.keywordAsinAdByAsinView │ MergeTree        │
+│ default  │ keywordAsinAdByAsinView        │ MaterializedView │
+└──────────┴────────────────────────────────┴──────────────────┘
+```
+所以查询
 
 ## 安装
 
@@ -291,7 +301,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = 'brandAdvertising'
+    WHERE active and table = '.inner.keywordAsinAdByAsinView'
     GROUP BY
         database,
         table
@@ -522,6 +532,131 @@ SELECT * FROM system.replicated_fetches;
 ```
 
 这些 system 表提供了对ClickHouse服务器和数据库状态的深刻洞察，帮助管理员和用户监控系统性能、调试查询和管理数据库配置。
+
+
+## system.query_log
+
+### ProfileEvents解释
+
+1. Query
+解释: 总的查询计数。
+用途: 表示查询执行的次数。
+2. SelectQuery
+解释: SELECT 查询的计数。
+用途: 用于计数SELECT类型的查询，帮助区分不同类型的查询。
+3. FileOpen
+解释: 文件打开操作的计数。
+用途: 表示查询过程中需要打开多少个文件，较高的值可能表明查询需要频繁访问磁盘文件。
+4. Seek
+解释: 文件指针移动（seek）操作的计数。
+用途: 表示查询过程中文件指针的移动次数，频繁的 seek 操作可能会增加查询的 I/O 负担。
+5. ReadBufferFromFileDescriptorRead
+解释: 通过文件描述符从文件中读取的操作次数。
+用途: 统计从磁盘读取数据的次数，通常与磁盘 I/O 直接相关。
+6. ReadBufferFromFileDescriptorReadBytes
+解释: 通过文件描述符从文件中读取的字节数。
+用途: 表示从磁盘读取的数据总量，较高的值表明查询读取了大量数据。
+7. ReadCompressedBytes
+解释: 从压缩文件或压缩块中读取的字节数。
+用途: 表示读取并解压缩了多少数据，可能影响查询的 CPU 和 I/O 性能。
+8. CompressedReadBufferBlocks
+解释: 读取的压缩块数量。
+用途: 用于衡量查询过程中解压缩操作的频率。
+9. CompressedReadBufferBytes
+解释: 读取的压缩字节总数。
+用途: 与 ReadCompressedBytes 类似，表示解压缩的数据量。
+10. UncompressedCacheHits
+解释: 未压缩缓存命中的次数。
+用途: 表示查询直接从未压缩的缓存中获取数据的次数，较高的命中率通常意味着更好的性能。
+11. UncompressedCacheMisses
+解释: 未压缩缓存未命中的次数。
+用途: 表示查询需要从磁盘读取数据而不是直接从缓存中读取的次数。
+12. UncompressedCacheWeightLost
+解释: 未压缩缓存中丢失的权重（通常以字节为单位）。
+用途: 表示由于缓存被刷新或驱逐，导致未压缩缓存失效的字节量。
+13. IOBufferAllocs
+解释: I/O 缓冲区分配的次数。
+用途: 表示查询过程中分配的 I/O 缓冲区的数量。
+14. IOBufferAllocBytes
+解释: I/O 缓冲区分配的总字节数。
+用途: 表示分配的 I/O 缓冲区的总大小。
+15. ArenaAllocChunks
+解释: Arena 分配的内存块数量。
+用途: 用于管理内存分配，表示分配的内存块数。
+16. ArenaAllocBytes
+解释: Arena 分配的总字节数。
+用途: 表示查询期间分配的内存总量。
+17. FunctionExecute
+解释: 执行函数的次数。
+用途: 表示在查询执行过程中调用的函数次数。
+18. MarkCacheHits
+解释: Mark 缓存命中的次数。
+用途: Mark 缓存用于存储 MergeTree 数据结构中的元数据。较高的命中率意味着查询无需读取大量的磁盘数据。
+19. CreatedReadBufferOrdinary
+解释: 创建的普通读取缓冲区的次数。
+用途: 表示查询过程中创建的读取缓冲区数量。
+20. DiskReadElapsedMicroseconds
+解释: 磁盘读取操作消耗的总时间（微秒）。
+用途: 表示查询过程中花费在磁盘读取上的总时间，较高的值可能表明磁盘 I/O 成为瓶颈。
+21. SelectedParts
+解释: 选中的 MergeTree 数据部分的数量。
+用途: 表示查询从多少数据部分中选择了数据，较多的部分可能意味着查询涉及了较大的数据范围。
+22. SelectedRanges
+解释: 选中的 MergeTree 数据范围的数量。
+用途: 表示查询从多少数据范围中选择了数据。
+23. SelectedMarks
+解释: 选中的 MergeTree 数据标记的数量。
+用途: 表示查询过程中访问了多少数据标记，较多的标记访问可能会影响查询性能。
+24. SelectedRows
+解释: 查询过程中选中的数据行数。
+用途: 表示查询读取了多少行数据。
+25. SelectedBytes
+解释: 查询过程中选中的数据字节数。
+用途: 表示查询读取了多少字节的数据。
+26. ContextLock
+解释: Context 锁定的次数。
+用途: 表示查询过程中获得 Context 锁的次数，可能与查询上下文的管理有关。
+27. RWLockAcquiredReadLocks
+解释: 读写锁中的读锁获取次数。
+用途: 表示查询过程中获取读锁的次数，读写锁用于同步访问共享资源。
+28. RealTimeMicroseconds
+解释: 查询实际消耗的总时间（微秒）。
+用途: 用于衡量查询的整体耗时。
+29. UserTimeMicroseconds
+解释: 用户态消耗的总时间（微秒）。
+用途: 表示在用户态（不包括内核态）花费的时间。
+30. SystemTimeMicroseconds
+解释: 系统态消耗的总时间（微秒）。
+用途: 表示在系统态（包括内核态）花费的时间。
+31. SoftPageFaults
+解释: 软页错误的次数。
+用途: 表示查询过程中发生的软页错误（从内存中获取数据，而不是从磁盘中）。
+32. OSIOWaitMicroseconds
+解释: 操作系统 I/O 等待时间（微秒）。
+用途: 表示查询过程中由于等待 I/O 完成而导致的总延迟时间。
+33. OSCPUWaitMicroseconds
+解释: 操作系统 CPU 等待时间（微秒）。
+用途: 表示查询过程中由于等待 CPU 资源而导致的总延迟时间。
+34. OSCPUVirtualTimeMicroseconds
+解释: 虚拟 CPU 时间（微秒）。
+用途: 表示查询过程中在虚拟 CPU 上花费的时间。
+35. OSReadBytes
+解释: 操作系统读取的字节数。
+用途: 表示查询过程中操作系统级别的读取字节总量。
+36. OSWriteBytes
+解释: 操作系统写入的字节数。
+用途: 表示查询过程中操作系统级别的写入字节总量。
+37. OSReadChars
+解释: 操作系统读取的字符数。
+用途: 另一种表示查询过程中读取的数据量的指标。
+38. OSWriteChars
+解释: 操作系统写入的字符数。
+用途: 另一种表示查询过程中写入的数据量的指标。
+39. QueryProfilerSignalOverruns
+解释: 查询分析器信号溢出次数。
+用途: 表示查询分析过程中由于信号溢出而未能准确捕获的事件次数。
+
+
 
 ## 源码编译
 

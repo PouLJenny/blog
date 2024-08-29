@@ -1,15 +1,14 @@
 # Manjaro配置远程桌面
 
 
-https://alvin.red/2021/11/06/archlinux-xrdp/
-https://wiki.archlinux.org/title/Xrdp, 
-
 
 ## 安装RDP
 
 1. 安装
 ```shell
 sudo pacman -Syu yay
+# 安装xrdp之前可能需要安装一些开发包,因为需要做源码的编译
+sudo pacman -S base-devel
 yay -S xrdp xorgxrdp-glamor pulseaudio-module-xrdp
 ```
 
@@ -56,10 +55,22 @@ session     include     system-remote-login
 5. 提高画质 `/etc/xrdp/xrdp.ini`
 ```ini
 bitmap_compression=false
+bulk_compression=false
 max_bpp=32
 ```
 
 6. 启动服务
 ```shell
-sudo systemctl enable --now xray.service xrdp-sesman.service
+sudo systemctl enable --now xrdp.service xrdp-sesman.service
+
+sudo systemctl restart xrdp.service xrdp-sesman.service
 ```
+
+7. 一些问题
+
+发现每次restart xrdp的时候都会出现连接黑屏的问题
+
+### 参考文档
+
+https://alvin.red/2021/11/06/archlinux-xrdp/ , 此博客有些错误的地方
+https://wiki.archlinux.org/title/Xrdp, archlinux官方的文档，我觉得看这个就足够了
