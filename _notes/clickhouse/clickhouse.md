@@ -249,6 +249,12 @@ where  updateTime >= '2023-10-01' and  updateTime < '2023-10-10';
 ```
 所以查询
 
+### 删除物化视图
+
+```sql
+DROP VIEW IF EXISTS default.keywordAsinAdByCampainView;
+```
+
 ## 安装
 
 `curl https://clickhouse.com/ | sh`
@@ -726,4 +732,6 @@ run_cmake() {
 }
 ```
 
+
+# EOF
 

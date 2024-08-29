@@ -28,6 +28,8 @@ Manjaro基于Arch Linux，继承了Arch Linux滚动更新的特点，可以直�
 2. 制作启动U盘  
 manjaro的镜像跟windows的镜像有很大的区别，刚开始我使用软牒通把镜像刻录到U盘里无法启动，最后使用rufus的DD模式刻录成功。  
 
+macos系统可以使用[etcherlaena)](https://etcher.balena.io/)替代
+
 3. 安装  
 安装的时候驱动选择free，BIOS选择UEFI模式并关掉安全检查  
 
