@@ -114,18 +114,22 @@ SIMD指令，Single Instruction Multiple Data,一条指令可以处理多条数�
 
 ### 数据分区
 
-自己的电脑启动/home/poul/workspace/src/clickhouse/ClickHouse-v23.7.5.30-stable/build/programs/clickhouse-server时的数据目录
-```shell
-/data
-```
+启动服务的时候最好指定一下配置文件 `/etc/clickhouse-server/config.xml`,如果不指定的话，默认使用当前目录的`data`
 
-自己的电脑启动/sbin/clickhouse-server时的数据目录
+配置文件中的数据目录默认是
 ```shell
 /var/lib/clickhouse/data
 ```
 
+```shell
+sudo /home/poul/workspace/src/clickhouse/ClickHouse-v23.7.5.30-stable/build/programs/clickhouse-server --config-file=/etc/clickhouse-server/config.xml
+
+sudo /sbin/clickhouse-server --config-file=/etc/clickhouse-server/config.xml
+自己的电脑启动/home/poul/workspace/src/clickhouse/ClickHouse-v23.7.5.30-stable/build/programs/clickhouse-server时的数据目录
+```
 
 
+相关的目录文件
 ```shell
 drwxr-x--- 2 clickhouse clickhouse 4.0K  8月25日 16:37 20150701_1_1_0/
 drwxr-x--- 2 clickhouse clickhouse 4.0K  8月25日 16:37 20150702_2_2_0/
@@ -174,6 +178,37 @@ drwxr-x--- 2 clickhouse clickhouse 4.0K  8月25日 16:37 20150702_2_2_0/
 ```
 
 通过文件分区后的文件目录发现，创建表的时候指定分区键之后，会根据分区键路由到单独的一个文件目录中，类似于分表的方式。
+
+## 存储引擎
+
+
+### MergeTree
+
+创建一张表
+
+```sql
+-- 该表负责存储用户参加过的活动，每参加一个活动，就会生成一条记录
+CREATE TABLE IF NOT EXISTS user_activity_event (
+    ID UInt64,  -- 表的 ID
+    UserName String,  -- 用户名
+    ActivityName String,  -- 活动名称
+    ActivityType String,  -- 活动类型
+    ActivityLevel Enum('Easy' = 0, 'Medium' = 1, 'Hard' = 2),  -- 活动难度等级
+    IsSuccess Int8,  -- 是否成功
+    JoinTime DATE  -- 参加时间
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(JoinTime)  -- 按照 toYYYYMM(JoinTime) 进行分区
+ORDER BY ID;  -- 按照 ID 字段排序
+
+-- 插入一条数据
+INSERT INTO user_activity_event VALUES (1, '张三', '寻找遗失的时间', '市场营销', 'Medium', 1, '2020-05-13');
+INSERT INTO user_activity_event VALUES (3, '王五', '寻找遗失的时间', '市场营销', 'Medium', 1, '2020-06-11');
+```
+
+The merge mechanism does not guarantee that all rows with the same primary key will be in the same data part.
+
+
+
 
 ## 数据模型
 
@@ -413,6 +448,15 @@ WHERE is_done = 0;
 ```sql
 KILL MUTATION WHERE mutation_id = 'your_mutation_id' AND database = 'your_database' AND table = 'your_table';
 ```
+
+### 如何让sql不走OS cache
+
+```sql
+select * from default.my_table where id='abc' settings min_bytes_to_use_direct_io=1;
+```
+参见 https://github.com/ClickHouse/ClickHouse/issues/36301
+
+但是貌似不起作用
 
 ### System库中有用的表信息
 
