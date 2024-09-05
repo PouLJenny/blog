@@ -539,6 +539,7 @@ SELECT * FROM system.replicated_fetches;
 
 这些 system 表提供了对ClickHouse服务器和数据库状态的深刻洞察，帮助管理员和用户监控系统性能、调试查询和管理数据库配置。
 
+### 限制
 
 ## system.query_log
 
