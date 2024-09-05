@@ -287,7 +287,7 @@ where  updateTime >= '2023-10-01' and  updateTime < '2023-10-10';
 ### 删除物化视图
 
 ```sql
-DROP VIEW IF EXISTS default.keywordAsinAdByCampainView;
+DROP VIEW IF EXISTS default.keywordAsinAdByCampaignView;
 ```
 
 ## 安装
