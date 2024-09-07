@@ -294,6 +294,58 @@ DROP VIEW IF EXISTS default.keywordAsinAdByCampaignView;
 
 `curl https://clickhouse.com/ | sh`
 
+```shell
+[poul@poul-work clickhouse]$ sudo ./clickhouse install
+[sudo] password for poul:
+Copying ClickHouse binary to /usr/bin/clickhouse.new
+Renaming /usr/bin/clickhouse.new to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-server to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-client to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-local to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-benchmark to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-obfuscator to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-git-import to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-compressor to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-format to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-extract-from-config to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-keeper to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-keeper-converter to /usr/bin/clickhouse.
+Creating symlink /usr/bin/clickhouse-disks to /usr/bin/clickhouse.
+Creating symlink /usr/bin/ch to /usr/bin/clickhouse.
+Creating symlink /usr/bin/chl to /usr/bin/clickhouse.
+Creating symlink /usr/bin/chc to /usr/bin/clickhouse.
+Creating clickhouse group if it does not exist.
+ groupadd -r clickhouse
+Creating clickhouse user if it does not exist.
+ useradd -r --shell /bin/false --home-dir /nonexistent -g clickhouse clickhouse
+Will set ulimits for clickhouse user in /etc/security/limits.d/clickhouse.conf.
+Creating config directory /etc/clickhouse-server.
+Creating config directory /etc/clickhouse-server/config.d that is used for tweaks of main server configuration.
+Creating config directory /etc/clickhouse-server/users.d that is used for tweaks of users configuration.
+Data path configuration override is saved to file /etc/clickhouse-server/config.d/data-paths.xml.
+Log path configuration override is saved to file /etc/clickhouse-server/config.d/logger.xml.
+User directory path configuration override is saved to file /etc/clickhouse-server/config.d/user-directories.xml.
+OpenSSL path configuration override is saved to file /etc/clickhouse-server/config.d/openssl.xml.
+Creating log directory /var/log/clickhouse-server.
+Creating data directory /var/lib/clickhouse.
+Creating pid directory /var/run/clickhouse-server.
+ chown -R clickhouse:clickhouse '/var/log/clickhouse-server'
+ chown -R clickhouse:clickhouse '/var/run/clickhouse-server'
+ chown  clickhouse:clickhouse '/var/lib/clickhouse'
+Enter password for the default user:
+Password for the default user is an empty string. See /etc/clickhouse-server/users.xml and /etc/clickhouse-server/users.d to change it.
+Setting capabilities for clickhouse binary. This is optional.
+ chown -R clickhouse:clickhouse '/etc/clickhouse-server'
+
+ClickHouse has been successfully installed.
+
+Start clickhouse-server with:
+ sudo clickhouse start
+
+Start clickhouse-client with:
+ clickhouse-client
+```
+
 
 ## MergeTree引擎的
 
@@ -729,6 +781,54 @@ git clone -b v23.7.5.30-stable http://github.com/ClickHouse/ClickHouse.git Click
 
 git submodule update --init --recursive
 ```
+
+1. 版本 v20.8.17.25-lts 编译过程
+
+
+手动安装cmake3.10,如果使用其它版本可能会出问题
+
+```shell
+wget https://cmake.org/files/v3.10/cmake-3.10.3.tar.gz
+tar -xzvf cmake-3.10.3.tar.gz
+cd cmake-3.10.3
+
+./bootstrap
+make
+sudo make install
+
+/usr/local/bin/cmake --version
+```
+
+手动安装gcc9,如果使用其它版本可能会有问题
+
+```shell
+sudo pacman -S base-devel gmp mpfr libmpc
+
+wget https://ftp.gnu.org/gnu/gcc/gcc-9.5.0/gcc-9.5.0.tar.gz
+tar -xvf gcc-9.5.0.tar.gz
+cd gcc-9.5.0
+
+mkdir build
+cd build
+
+../configure --prefix=/usr/local/gcc-9 --enable-languages=c,c++ --disable-multilib
+
+make -j$(nproc)
+
+sudo make install
+```
+
+```shell
+# 安装依赖
+sudo pacman -S git cmake ninja clang gcc gdb libunwind zlib bzip2 lz4 xz
+
+cd Clickhouse 
+git submodule update --init --recursive
+mkdir build && cd build
+/usr/local/bin/cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug  ..
+ninja -j 20
+```
+
 
 1. 编译
 ```shell
