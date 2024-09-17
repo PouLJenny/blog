@@ -362,6 +362,7 @@ var rules = [
             "amoiist.com",
             "ampproject.org",
             "amtb-taipei.org",
+            "analyticsvidhya.com",
             "anchor.fm",
             "anchorfree.com",
             "ancsconf.org",
