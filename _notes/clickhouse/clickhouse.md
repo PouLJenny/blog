@@ -639,6 +639,56 @@ SELECT * FROM system.replicated_fetches;
 
 ## system.query_log
 
+- type: 查询类型，1 表示开始执行，2 表示结束执行，3 表示异常发生时的状态。
+- event_date: 查询执行的日期（没有时间部分，仅日期）。
+- event_time: 查询开始的时间（包含日期和时间）。
+- event_time_microseconds: 查询开始的时间（微秒精度）。
+- query_start_time: 查询开始的时间戳。
+- query_duration_ms: 查询执行时间，单位为毫秒。
+- read_rows: 读取的行数。
+- read_bytes: 读取的数据量，单位为字节。
+- written_rows: 写入的行数。
+- written_bytes: 写入的数据量，单位为字节。
+- result_rows: 查询结果返回的行数。
+- result_bytes: 查询结果返回的数据量，单位为字节。
+- memory_usage: 查询执行过程中使用的内存量，单位为字节。
+- query: 执行的 SQL 查询文本。
+- exception: 如果查询执行发生异常，则记录异常信息。
+- exception_code: 异常代码，和异常信息对应。
+- stack_trace: 异常发生时的堆栈跟踪。
+- is_initial_query: 是否是初始查询（1 为初始查询，0 为子查询）。
+- user: 执行查询的用户。
+- query_id: 查询的唯一标识符。
+- address: 客户端的 IP 地址。
+- port: 客户端的端口。
+- initial_user: 如果是子查询，此字段表示发起查询的用户。
+- initial_query_id: 初始查询的标识符。
+- initial_address: 初始查询发起客户端的 IP 地址。
+- initial_port: 初始查询发起客户端的端口。
+- interface: 查询接口的类型（如 TCP、HTTP 等）。
+- os_user: 操作系统的用户。
+- client_hostname: 客户端的主机名。
+- client_name: 客户端名称。
+- client_version_major: 客户端主版本号。
+- client_version_minor: 客户端次版本号。
+- client_version_patch: 客户端补丁版本号。
+- http_method: HTTP 方法（GET 或 POST）。
+- http_user_agent: 客户端的 User-Agent 字符串。
+- quota_key: 配额限制的键。
+- revision: ClickHouse 修订版本号。
+- thread_ids: 查询使用的线程 ID。
+- ProfileEvents: 查询期间发生的性能事件。
+- Settings: 查询执行时的设置。
+- used_aggregate_functions: 使用的聚合函数列表。
+- used_aggregate_function_combinators: 使用的聚合函数组合器。
+- used_database_engines: 使用的数据库引擎。
+- used_data_type_families: 使用的数据类型系列。
+- used_dictionaries: 使用的字典。
+- used_formats: 使用的格式。
+- used_functions: 使用的函数。
+- used_storages: 使用的存储。
+- used_table_functions: 使用的表函数。
+
 ### ProfileEvents解释
 
 1. Query
