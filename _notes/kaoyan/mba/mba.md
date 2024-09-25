@@ -1,3 +1,4 @@
+
 # MBA
 
 工商管理硕士，英文全称：Master of Business Administration，简称MBA。

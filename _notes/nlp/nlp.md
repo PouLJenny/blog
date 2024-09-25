@@ -46,7 +46,7 @@ TF-IDF文本特征提取算法的主要思想是：如果某个词或短语在�
 
 Google 团队的 Tomas Mikolov 等人在 2013 年提出。
 
-Word2Vec方法使用的是distributed representation 的词向量表示方式。distributed representation 最早由Hinton在1986年提出，其基本思想是通过训练将每个词映射成$K$维实数向量（$K$一般为模型中的超参数）,通过词之间的距离(比如余弦相似度、欧式距离等)来判断它们之间的语义相似度。它采用一个三层的神经网络，即输入层-隐藏层-输出层，核心技术是根据词频使用Huffman编码，使得所有词频相似的词隐藏层激活的内容基本一致，出现频率越高的词语激活的隐藏层数目越少，这样有效地降低了计算的复杂度。Word2Vec输出的词向量可用于很多自然语言处理相关的工作，如聚类、分类、找同义词、词性分析等。
+Word2Vec方法使用的是distributed representation 的词向量表示方式。distributed representation 最早由[Hinton](https://www.cs.toronto.edu/~hinton/) 在[1986年提出](https://gwern.net/doc/ai/nn/1986-rumelhart-2.pdf)，其基本思想是通过训练将每个词映射成$K$维实数向量（$K$一般为模型中的超参数）,通过词之间的距离(比如余弦相似度、欧式距离等)来判断它们之间的语义相似度。它采用一个三层的神经网络，即输入层-隐藏层-输出层，核心技术是根据词频使用Huffman编码，使得所有词频相似的词隐藏层激活的内容基本一致，出现频率越高的词语激活的隐藏层数目越少，这样有效地降低了计算的复杂度。Word2Vec输出的词向量可用于很多自然语言处理相关的工作，如聚类、分类、找同义词、词性分析等。
 
 模型：包括 Skip-Gram 和 CBOW 两种主要架构。
 - Skip-Gram：根据目标词预测上下文词，适用于小数据集且对罕见词效果较好。
@@ -55,6 +55,11 @@ Word2Vec方法使用的是distributed representation 的词向量表示方式。
 特点： 生成的词向量可以捕捉到语义和语法关系，支持向量运算（如“国王 - 男人 + 女人 = 女王”），在 NLP 任务中表现出色。
 
 
+https://www.cs.toronto.edu/~hinton/backprop.html
+https://code.google.com/archive/p/word2vec/
+https://arxiv.org/abs/1301.3781
+https://arxiv.org/abs/1310.4546
+https://www.microsoft.com/en-us/research/publication/linguistic-regularities-in-continuous-space-word-representations/?from=http%3A%2F%2Fresearch.microsoft.com%2Fpubs%2F189726%2Frvecs.pdf
 
 
 
@@ -73,6 +78,10 @@ Facebook 的 AI 研究团队在 2016 年提出。
 扩展 Word2Vec，使用字符 n-gram，将词分解为多个子词或字符块，从而能够处理未登录词（OOV）和拼写错误的词。
 
 特点： 对稀有词和复合词有更好的语义捕捉能力。
+
+[官网](https://fasttext.cc/)  
+[github](https://github.com/facebookresearch/fastText/)
+
 
 ### ELMo (Embeddings from Language Models)
 
