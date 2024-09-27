@@ -1,7 +1,7 @@
 # Markdown的数学符号
 
 
-https://katex.org/docs/supported.html
+https://katex.org/docs/supported
 https://en.wikibooks.org/wiki/LaTeX/Mathematics
 http://liyangbit.com/math/jupyter-latex/
 上面三个为查阅字典网址，相当的好用
