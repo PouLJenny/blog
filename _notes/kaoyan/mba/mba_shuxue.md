@@ -86,6 +86,52 @@
 
 $f(x)$能被$(x-a)$整除 $\Leftrightarrow$ $f(x)$含有因式$(x-a)$ $\Leftrightarrow$ 当$f(a)=0$ $\Leftrightarrow$ $(x-a)|f(x)$ $\Leftrightarrow$ $a$是$f(x)=0$的根
 
+### 多项式因式分解 - 提取公因式法
+
+$ab + ac = a(b + c)$
+
+比如： 
+
+$x^2 - xy - x + y  = (x^2 - xy) - (x - y) = x(x - y) - (x-y) = (x - 1)(x - y) $
+
+
+### 多项式因式分解 - 十字相乘法
+
+$x^2 + (p + q)x + pq = (x + p)(x + q)$
+
+### 多项式因式分解 - 公式法
+
+- $a^2 - b^2  = (a+b)(a-b)$
+- $a^2 \pm 2ab + b^2 = (a \pm b) ^ 2$
+- $a^3 + b^3 = (a + b)(a^2 - ab + b^2)$
+- $a^3 - b^3 = (a - b)(a^2 + ab + b^2)$
+- $(a + b + c)^2 = a^2 + b^2 + c^2 + 2ab + 2ac + 2bc$
+- $a^2 + b^2 + c^2 \pm ab \pm bc \pm ac = \frac12 \lbrack(a \pm b)^2 + (b \pm c ) ^2 + (a \pm c)^2 \rbrack$
+
+比如：
+$3x^3y - 81y^4 = 3y(x^3 - 27y^3) = 3y(x^3 - (3y)^3) = 3y(x - 3y)(x^2 + 3xy + 9y^2)$
+
+### 多项式因式分解 - 分组分解法
+
+$ac + ad + bc + bd = a(c + d) + b(c + d) = (a + b)(c + d)$
+
+### 多项式因式分解 - 求根法
+
+$f(x) = (x - a_1)(x - a_2)(x-a_3)\cdots \Leftrightarrow \begin{cases}
+   f(a_1) = 0 \\
+   f(a_2) = 0 \\
+   f(a_3) = 0 \\
+   \cdots
+\end{cases} $
+
+### 多项式因式分解 - 待定系数法
+
+应用环境: 对变形后的代数式的构成是清晰的，只是对每部分的系数未知，那么就可以采用待定系数法。这种变形是恒等变形。
+
+应用步骤：
+1. 先将系数用参数表示
+2. 展开对比系数，得到关于参数的方程，解方程即可得到参数（系数）
+
 
 ## 公式定理整理
 
@@ -97,13 +143,14 @@ $f(x)$能被$(x-a)$整除 $\Leftrightarrow$ $f(x)$含有因式$(x-a)$ $\Leftrigh
 
 1. 余式定理，
 
-   证明： f(x) = g(x)(x - a) + R , g(x) 为商多项式，R为常数余数
+证明： 
+f(x) = g(x)(x - a) + R , g(x) 为商多项式，R为常数余数
 
-         展开得
-         f(x) = xg(x) - ag(x) + R
+展开得
+f(x) = xg(x) - ag(x) + R
 
-         把a带入函数中,
-         f(a) = ag(a) - ag(a) + R = R
+把a带入函数中,
+f(a) = ag(a) - ag(a) + R = R
 
 1. 整数长除法， 就是小学开始使用的除法运算
 
@@ -113,13 +160,7 @@ $f(x)$能被$(x-a)$整除 $\Leftrightarrow$ $f(x)$含有因式$(x-a)$ $\Leftrigh
  ![](./pics/duoxiangshi_changchu.png)
 
 
- 1. 多项式的因式分解
-    - $a^2 - b^2  = (a+b)(a-b)$
-    - $a^2 \pm 2ab + b^2 = (a \pm b) ^ 2$
-    - $a^3 + b^3 = (a + b)(a^2 - ab + b^2)$
-    - $a^3 - b^3 = (a - b)(a^2 - ab + b^2)$
-    - $(a + b + c)^2 = a^2 + b^2 + c^2 + 2ab + 2ac + 2bc$
-    - $a^2 + b^2 + c^2 \pm ab \pm bc \pm ac = \frac12 \lbrack(a \pm b)^2 + (b \pm c ) ^2 + (a \pm c)^2 \rbrack$
+
 
 ## 错误习题整理
 
