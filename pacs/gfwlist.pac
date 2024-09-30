@@ -338,7 +338,6 @@ var rules = [
             "amazon.ca",
             "amazon.co.jp",
             "amazon.co.uk",
-            "amazon.com",
             "amazon.de",
             "amazon.it",
             "amazon.ca",
