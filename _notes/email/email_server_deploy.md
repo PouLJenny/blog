@@ -52,7 +52,7 @@ https://james.apache.org/
 语言： java
 
 
-docke测试
+docker测试
 ```shell
 docker run  -it -d -p "20025:25" -p "20080:80" -p "20143:143" -p "20465:465" -p "20587:587" -p "20993:993" -p "24000:4000" -p "28000:8000" apache/james:demo-3.8.0
 ```
