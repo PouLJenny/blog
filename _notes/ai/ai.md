@@ -3,6 +3,12 @@
 [What is artificial intelligence and how is it used](https://www.europarl.europa.eu/news/en/headlines/society/20200827STO85804/what-is-artificial-intelligence-and-how-is-it-used '')
 
 
+## 历史
+
+- 1943 ~ 1956 the inseption of artificial intelligence
+    - neuron,Hebbian learning,SNARC,Turing ,Logic Theorist
+- 1952 ~ 1969 early enthusiasm,great expectations
+
 
 ## 需要掌握的技能
 学习人工智能需要掌握的技能包括以下几个方面：
@@ -12,3 +18,7 @@
 4. 深度学习：需要了解深度学习的基本原理，包括神经网络、卷积神经网络、循环神经网络等，并了解如何使用深度学习来解决各种问题。
 5. 数据处理：需要了解如何处理数据，包括数据预处理、特征提取、数据清洗和数据可视化等。
 6. 软件工程：需要了解软件开发和
+
+
+## 一些书籍
+- [Artificial Intelligence: A Modern Approach 4th](https://pdf.poul666.top/web/viewer.html?file=https://file.poul666.top/poul/%E6%96%B0%E5%8A%A0%E5%8D%B71/study/ebook/ai/Artificial.Intelligence.A.Modern.Approach.4th.Edition.Peter.Norvig.%20Stuart.Russell.Pearson.9780134610993.EBooksWorld.ir.pdf)
