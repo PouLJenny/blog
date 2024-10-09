@@ -5809,6 +5809,7 @@ var rules = [
             "xm.com",
             "xml-training-guide.com",
             "xmovies.com",
+            "xmwav.com",
             "xn--4gq171p.com",
             "xn--czq75pvv1aj5c.org",
             "xn--i2ru8q2qg.com",

@@ -6,8 +6,17 @@
 ## 历史
 
 - 1943 ~ 1956 the inseption of artificial intelligence
+    - Warren McCulloch and Walter Pitts (1943).
     - neuron,Hebbian learning,SNARC,Turing ,Logic Theorist
 - 1952 ~ 1969 early enthusiasm,great expectations
+- 1966 ~ 1973 A dose of reality
+- 1969 ~ 1986 expert systems
+- 1986 ~ present, back-propagation ,parallel distributed processing
+- 1987 ~ present, machine learning, 
+    - hidden Markov models 
+    - Bayesian networks
+- 2001 ~ present, big data
+- 2011 ~ present, deep learning 
 
 
 ## 需要掌握的技能
