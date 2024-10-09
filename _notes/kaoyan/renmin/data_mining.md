@@ -218,6 +218,8 @@ Support Vectors are those data points that the margin pushes up against;
 - 深度信念网络 DBN
 - k-Nearest Neighbors KNN
 
+
+
 ### 机器学习
 
 传统的机器学习是通过领域专家来建模，然后调整参数的。
@@ -310,3 +312,6 @@ Support Vectors are those data points that the margin pushes up against;
  3. 把每个对象分配给距它最近的中心点做属的cluster
  4. 重新计算每个cluster的中心点
  5. 重复2，3，4步，直到算法收敛
+   
+
+# EOF
