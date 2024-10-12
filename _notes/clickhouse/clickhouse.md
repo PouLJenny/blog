@@ -394,7 +394,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = '.inner.keywordAsinAdByAsinView'
+    WHERE active and table = 'brandAd'
     GROUP BY
         database,
         table
@@ -495,6 +495,7 @@ SELECT database, table, mutation_id, command, parts_to_do, is_done
 FROM system.mutations
 WHERE is_done = 0;
 ```
+
 
 取消变更
 ```sql
