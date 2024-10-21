@@ -20,28 +20,30 @@
     1. `/usr/local/bin/certbot renew` 命令可以更新证书，可以通过crontab做定时更新
 
 1. 第二种安装证书的方式(推荐) 使用[acme.sh](https://tlanyan.pp.ua/use-acme-sh-get-free-cert/ '')
-    ```shell
-    curl https://get.acme.sh | sh
-    acme.sh --set-default-ca --server letsencrypt
-    ~/.acme.sh/acme.sh  --upgrade  --auto-upgrade
-    ## 安装nginx 并且配置域名的监听不然下面会执行失败
-    ~/.acme.sh/acme.sh --issue -d www.poul.xyz --nginx
-    mkdir -p /root/cert/www.poul.xyz
-    ~/.acme.sh/acme.sh --install-cert -d www.poul.xyz --key-file /root/cert/www.poul.xyz/key --cert-file /root/cert/www.poul.xyz/cert  --fullchain-file /root/cert/www.poul.xyz/fullchain 
-    ```
-    结果：
-    ```
-    [2021年 09月 25日 星期六 15:55:10 UTC] Installing key to: /root/cert/www.poul.xyz/key
-    [2021年 09月 25日 星期六 15:55:10 UTC] Installing full chain to: /root/cert/www.poul.xyz/cert
-    ```
-    
-    定时更新证书的方式 现在证书的有效期是两个月 需要定时更新
-    ```shell
-    /root/.acme.sh/acme.sh --issue -d vultr.poul666.top --nginx
-    /root/.acme.sh/acme.sh --install-cert -d github.poul666.top --key-file /root/cert/github.poul666.top/key --fullchain-file /root/cert/github.poul666.top/cert
-    systemctl restart trojan
-    ## 此脚本已打包到服务器的目录 /root/cert/www.poul.xyz/renew.sh 并配置了crontab 
-    ```
+```shell
+curl https://get.acme.sh | sh
+acme.sh --set-default-ca --server letsencrypt
+~/.acme.sh/acme.sh  --upgrade  --auto-upgrade
+## standalone模式
+/root/.acme.sh/acme.sh  --issue  --standalone  -d www.poul.xyz
+## 安装nginx 并且配置域名的监听不然下面会执行失败
+~/.acme.sh/acme.sh --issue -d www.poul.xyz --nginx
+mkdir -p /root/cert/www.poul.xyz
+~/.acme.sh/acme.sh --install-cert -d www.poul.xyz --key-file /root/cert/www.poul.xyz/key --cert-file /root/cert/www.poul.xyz/cert  --fullchain-file /root/cert/www.poul.xyz/fullchain 
+```
+结果：
+```
+[2021年 09月 25日 星期六 15:55:10 UTC] Installing key to: /root/cert/www.poul.xyz/key
+[2021年 09月 25日 星期六 15:55:10 UTC] Installing full chain to: /root/cert/www.poul.xyz/cert
+```
+
+定时更新证书的方式 现在证书的有效期是两个月 需要定时更新
+```shell
+/root/.acme.sh/acme.sh --issue -d vultr.poul666.top --nginx
+/root/.acme.sh/acme.sh --install-cert -d github.poul666.top --key-file /root/cert/github.poul666.top/key --fullchain-file /root/cert/github.poul666.top/cert
+systemctl restart trojan
+## 此脚本已打包到服务器的目录 /root/cert/www.poul.xyz/renew.sh 并配置了crontab 
+```
 1. 登陆服务器后执行下面的命令
 ```shell
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)"
