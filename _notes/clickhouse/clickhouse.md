@@ -448,6 +448,7 @@ alter table trips add index idx_tripid_minmax trip_id type minmax GRANULARITY 3;
 clickhouse-client --query "SELECT * from default.esKeywordAsinView limit 2" --format SQLInsert > esKeywordAsinView.sql
 
 clickhouse-client --query "SELECT * from default.esKeywordAsinView limit 2" --format CSV > esKeywordAsinView.csv
+clickhouse-client --query "SELECT * from default.esKeywordAsinView limit 2" --format TSV > esKeywordAsinView.tsv
 
 clickhouse-client --query "select event_time,query_duration_ms,replaceAll(replaceAll(query,'\n',' '),'asinSearchKeywordScore_20230911','asinSearchKeywordScore_test') as query  from system.query_log as log where log.event_date = '2023-09-12' and log.query like '%asinSearchKeywordScore_20230911%' and log.query like '%order by af desc limit 1%' limit 10000" --format CSVWithNames > bs_sql_20230912_test.csv
 ```

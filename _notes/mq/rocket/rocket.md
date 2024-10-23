@@ -43,7 +43,7 @@ cd distribution/target/rocketmq-5.1.0/rocketmq-5.1.0
 
 #### 3 启动NameServer   
 
-这个地方默认启动的时候申请4G的jvm内存，可以在runserver.sh文件中调小一点   
+这个地方默认启动的时候申请4G的jvm内存，可以在`runserver.sh`文件中调小一点   
 ~~~shell
 nohup sh bin/mqnamesrv &
 ~~~
@@ -57,7 +57,7 @@ The Name Server boot success...
 #### 4 启动Brocker + Proxy
 
 先启动broker  
-由于启动默认会申请8G的jvm内存，需要调整一下，runbrocker.sh文件中的配置  
+由于启动默认会申请8G的jvm内存，需要调整一下`runbroker.sh`文件中的配置  
 ~~~shell
 nohup sh bin/mqbroker -n localhost:9876 -bc ./conf/broker.conf -pm local -pc ./conf/rmq-proxy.json  --enable-proxy &
 ~~~
