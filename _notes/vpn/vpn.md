@@ -79,7 +79,7 @@ AllowedIPs = 10.110.110.2/32
 ```
 
 
-客户端配置文件`wg0-client.conf`
+客户端配置文件`wg0.conf`
 ```config
 [Interface]
 # 客户端的私钥
