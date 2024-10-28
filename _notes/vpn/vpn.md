@@ -44,57 +44,78 @@ https://openvpn.net/vpn-server-resources/assigning-a-static-vpn-client-ip-addres
 [官网](https://www.wireguard.com/)
 
 
-安装
+安装配置
 ```shell
+# ubuntu
 sudo apt update
 sudo apt install wireguard
 
-## 声称服务端密钥对
-wg genkey | tee server_private.key | wg pubkey > server_public.key
+# manjaro
+sudo pacman -s wireguard-tools
 
+# macos
+brew update
+brew install wireguard-tools
 
-## 添加客户端配置
-wg genkey | tee client_private.key | wg pubkey > client_public.key
+## 生成密钥对
+wg genkey | tee private.key | wg pubkey > public.key
 ```
 
 配置文件 `/etc/wireguard/wg0.conf`
 ```conf
 [Interface]
-# 服务端的私钥
-PrivateKey = <服务端的私钥>
-# WireGuard VPN 服务端的监听端口
+# 服务端私钥
+PrivateKey = gO0NaG+3YxHvkFS7lKn8Bs9md4XL50632xAhhZuH/mg=
+# 服务端ip
+Address = 10.0.1.1/24
+# 服务端监听的端口号，因为走的是udp的协议，所以telnet是不通的！
 ListenPort = 51820
-# VPN 网段配置，例如使用 10.0.0.1/24
-Address = 10.110.110.1/32
-# 打开 IP 转发
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-
+PostUp = iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
 
 [Peer]
-# 客户端的公钥
-PublicKey = <客户端公钥>
-# 客户端的 VPN 内网 IP 地址
-AllowedIPs = 10.110.110.2/32
+# Host home
+# 客户端公钥
+PublicKey = 8PvlyrlZoHWL+DuJ/sRbl/UKwVVtlcCusCTCfRX0Sjg=
+# 客户端ip
+AllowedIPs = 10.0.1.2/32
+PersistentKeepalive = 25
+
+[Peer]
+# Host work
+# 客户端公钥
+PublicKey = /0NYJkAMm1Zgbe/+Bi2ggZDYL7vt0d/1wg3U0WZgZmI=
+# 客户端ip
+AllowedIPs = 10.0.1.3/32
+PersistentKeepalive = 25
+```
+
+```shell
+# 启动
+wg up wg0
+# 配置开机自动启动
+systemctl enable wg-quick@wg0
+# 更新配置文件后重启
+wg down wg0
+wg up wg0
 ```
 
 
-客户端配置文件`wg0.conf`
-```config
+客户端配置文件`/etc/wireguard/wg0.conf`
+```conf
 [Interface]
-# 客户端的私钥
-PrivateKey = 2Duu6Hxa0u29TfU2Br26SMM+l7hKM5pkldNCUDiPVVc=
-# 客户端的 VPN 内网 IP 地址
-Address = 10.110.110.2/32
-# DNS 配置（可选）
-DNS = 1.1.1.1
+# 客户端私钥
+PrivateKey = SGsItP+Bbg3h+BEzKaOtbDKPt0dDjqusPQbiQQGJqUk=
+Address = 10.0.1.2/24
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o enp2s0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o enp2s0  -j MASQUERADE
 
 [Peer]
-# 服务端的公钥
-PublicKey = jcjc7Dy57j2j06kQn/ulXrUNSxKMUrk04m5ECQ47vn8=
-# 服务端的 IP 和端口
+# 服务端公钥
+PublicKey = PKNMzruckKZukzaICKh/LP1/WguK+z0Wc41PnVO57GE=
+AllowedIPs = 10.0.1.0/24
+# 服务端ip端口号，
 Endpoint = 117.50.220.144:51820
-# 允许通过 VPN 的网段
-AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25
 ```
 
