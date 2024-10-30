@@ -119,3 +119,16 @@ Endpoint = 117.50.220.144:51820
 PersistentKeepalive = 25
 ```
 
+macos的客户端配置文件在`/opt/homebrew/etc/wireguard/wg0.conf`
+```conf
+[Interface]
+PrivateKey = IPV2DATaTiaBQ/0YQ4nZkZX/fDVrj7eFOUix43vrVkQ=
+Address = 10.0.1.5/24
+
+
+[Peer]
+PublicKey = PKNMzruckKZukzaICKh/LP1/WguK+z0Wc41PnVO57GE=
+AllowedIPs = 10.0.1.0/24
+Endpoint = 117.50.220.144:51820
+PersistentKeepalive = 25
+```

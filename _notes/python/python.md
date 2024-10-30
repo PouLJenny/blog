@@ -2,6 +2,7 @@
 
 [官网](https://www.python.org/ )
 [文档](https://docs.python.org/3/)
+[tutorial](https://docs.python.org/3/tutorial/index.html)
 
 
 ## pyenv
@@ -70,6 +71,12 @@ trusted-host=pypi.douban.com
 1. https://mirrors.aliyun.com/pypi/simple/
 1. https://pypi.mirrors.ustc.edu.cn/simple/
 1. http://pypi.douban.com/simple/
+
+也可以使用临时的方式：
+
+```shell
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple package_name
+```
 
 ## python 使用虚拟环境运行程序
 

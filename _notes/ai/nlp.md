@@ -56,6 +56,7 @@ Word2Vec方法使用的是distributed representation 的词向量表示方式。
 
 
 https://www.cs.toronto.edu/~hinton/backprop.html
+[hinton的一些论文](https://www.cs.toronto.edu/~hinton/papers.html)
 https://code.google.com/archive/p/word2vec/
 https://arxiv.org/abs/1301.3781
 https://arxiv.org/abs/1310.4546

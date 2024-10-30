@@ -33,3 +33,9 @@ https://www.yetpage.com/archives/278
 https://vps.dance/google-ip-location.html
 https://www.74110.net/tutorial/linux/google-ip-location-2/
 https://support.google.com/websearch/workflow/9308722 发起google申请
+
+
+## 禁止浏览器重定向google地址
+
+直接访问
+`https://www.google.com/ncr`
