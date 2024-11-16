@@ -34,6 +34,9 @@ pyenv install 3.6.15
 ## url可能访问非常慢，可以使用本地文件安装
 cd ~/.pyenv/
 mkdir cache
+## 系统安装的时候会做编译操作，需要安装一些开发库
+## CentOS 
+sudo yum install -y gcc zlib-devel bzip2-devel readline-devel sqlite-devel openssl-devel tk-devel libffi-devel xz-devel
 ## 把Python-3.6.x.tar.xz安装包下载到此目录
 pyenv install 3.6.15
 ```
