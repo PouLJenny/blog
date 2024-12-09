@@ -503,6 +503,51 @@ WHERE is_done = 0;
 KILL MUTATION WHERE mutation_id = 'your_mutation_id' AND database = 'your_database' AND table = 'your_table';
 ```
 
+
+### 优化表的分区
+
+查询表分区数量
+```sql
+SELECT
+    `table`,
+    partition,
+    count()
+FROM system.parts
+WHERE (database = 'default') AND (`table` = '.inner.bt_keywordAsinAdByAsinView')
+GROUP BY
+    `table`,
+    partition
+ORDER BY
+    `table` ASC,
+    partition ASC
+```
+
+优化表分区
+```sql
+OPTIMIZE TABLE `.inner.keywordAsinAdByAsinView` PARTITION '202409' final
+```
+
+查询正在执行的optimize
+```sql
+SELECT query_id, user, query, elapsed, read_rows, read_bytes, written_rows, written_bytes 
+FROM system.processes 
+WHERE query LIKE 'OPTIMIZE%';
+```
+
+停止正在执行的 OPTIMIZE
+```sql
+KILL QUERY WHERE query_id = '<query_id>';
+```
+
+查询历史 OPTIMIZE 操作
+```sql
+SELECT query_start_time, query_duration_ms, query, result, exception
+FROM system.query_log
+WHERE query LIKE 'OPTIMIZE%' AND type = 'QueryFinish'
+ORDER BY query_start_time DESC;
+```
+
+
 ### 如何让sql不走OS cache
 
 ```sql

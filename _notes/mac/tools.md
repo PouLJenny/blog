@@ -131,4 +131,11 @@ https://rogueamoeba.com/support/knowledgebase/?showArticle=ACE-StepByStep&produc
 
 https://testingbot.com/software-testing-questions/how-to-change-your-time-zone-on-mac
 
+
+## 保持电脑唤醒状态
+
+```shell
+caffeinate -d
+```
+
 # EOF
