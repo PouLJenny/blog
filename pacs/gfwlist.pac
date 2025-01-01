@@ -3588,6 +3588,7 @@ var rules = [
             "neo-miracle.com",
             "neo4j.io",
             "neo4j.com",
+            "neo4j.org",
             "neowin.net",
             "nepusoku.com",
             "nesnode.com",
