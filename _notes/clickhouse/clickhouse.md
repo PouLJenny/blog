@@ -494,6 +494,18 @@ select * from system.dictionaries;
 SYSTEM RELOAD DICTIONARY default.dictionary_name
 ```
 
+### 查询字典表的内存占用
+
+
+```sql
+SELECT
+    name AS dictionary_name,
+    status,
+    formatReadableSize(bytes_allocated) AS memory_usage
+FROM system.dictionaries
+order by bytes_allocated desc
+```
+
 ### 物化视图刷新
 ```sql
 
