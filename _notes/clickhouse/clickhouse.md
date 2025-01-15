@@ -290,6 +290,14 @@ where  updateTime >= '2023-10-01' and  updateTime < '2023-10-10';
 DROP VIEW IF EXISTS default.keywordAsinAdByCampaignView;
 ```
 
+### 字典表 Dictionary
+
+[Dictionaries](https://clickhouse.com/docs/en/dictionary)
+[Data Modelling - Defining Dictionaries](https://clickhouse.com/docs/en/sql-reference/dictionaries)
+[ways-to-store-dictionaries-in-memory](https://clickhouse.com/docs/en/sql-reference/dictionaries#ways-to-store-dictionaries-in-memory)
+[Using Dictionaries to Accelerate Queries](https://clickhouse.com/blog/faster-queries-dictionaries-clickhouse)
+
+
 ## 安装
 
 `curl https://clickhouse.com/ | sh`
@@ -416,6 +424,14 @@ GROUP BY
     table
 ORDER BY sum(data_compressed_bytes) DESC
 LIMIT 100
+```
+
+### 查询表占用的内存空间
+
+```sql
+SELECT name,formatReadableSize(bytes_allocated) AS size
+FROM system.dictionaries
+order by bytes_allocated desc
 ```
 
 
@@ -856,6 +872,13 @@ SELECT * FROM system.replicated_fetches;
 解释: 查询分析器信号溢出次数。
 用途: 表示查询分析过程中由于信号溢出而未能准确捕获的事件次数。
 
+
+## 新版本的Analyzer
+
+- [Understanding Query Execution with the Analyzer](https://clickhouse.com/docs/en/guides/developer/understanding-query-execution-with-the-analyzer)
+- [新版本的analyzer](https://clickhouse.com/blog/clickhouse-release-24-03#analyzer-enabled-by-default)
+- [analyzer官方文档](https://clickhouse.com/docs/en/operations/analyzer)
+- [阿里云新版analyzer相关文档](https://help.aliyun.com/zh/clickhouse/product-overview/enterprise-edition-release-notes/?spm=5176.23735256.console-base_help.dexternal.7b9537b4ylMFUo&scm=20140722.S_help%40%40%E6%96%87%E6%A1%A3%40%402862632.S_RQW%40ag0%2BBB2%40ag0%2BBB1%40ag0%2Bos0.ID_2862632-RL_allow~UND~experimental~UND~analy-LOC_console~UND~help-OR_ser-V_4-P0_0)
 
 
 ## 源码编译
