@@ -26,3 +26,26 @@ yum -y install supervisor
 - `autostart`
     If true, this program will start automatically when supervisord is started
 - 
+
+
+## 需要修改的配置
+
+1. 修改最小的句柄数，默认是1024，对一些通用的服务来说太小了，比如nginx
+```conf
+[supervisord]
+minfds=65535                 ; min. avail startup file descriptors; default 1024
+```
+
+2. 修改`/tmp/` 目录下的配置文件，为`/var/tmp`，防止操作系统自动清理，导致应用程序不正常
+
+```conf
+[unix_http_server]
+file=/var/tmp/supervisor.sock
+
+[supervisord]
+logfile=/var/tmp/supervisord.log
+pidfile=/var/tmp/supervisord.pid
+
+[supervisorctl]
+serverurl=unix:///var/tmp/supervisor.sock
+```

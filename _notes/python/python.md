@@ -89,7 +89,7 @@ python安装包的时候会碰到各种各样的问题：
 
 创建虚拟环境
 ```shell
-python -m venv env
+python3 -m venv env
 source env/bin/activate
 ```
 

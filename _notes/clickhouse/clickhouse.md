@@ -426,10 +426,10 @@ ORDER BY sum(data_compressed_bytes) DESC
 LIMIT 100
 ```
 
-### 查询表占用的内存空间
+### 查询字典表占用的内存空间
 
 ```sql
-SELECT name,formatReadableSize(bytes_allocated) AS size
+SELECT name,formatReadableSize(bytes_allocated) AS size,status
 FROM system.dictionaries
 order by bytes_allocated desc
 ```
@@ -529,7 +529,7 @@ SELECT
     partition,
     count()
 FROM system.parts
-WHERE (database = 'default') AND (`table` = '.inner.bt_keywordAsinAdByAsinView')
+WHERE (database = 'default') AND (`table` = 'keywordAsinAd')
 GROUP BY
     `table`,
     partition
