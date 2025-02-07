@@ -431,7 +431,29 @@ LIMIT 100
 ```sql
 SELECT name,formatReadableSize(bytes_allocated) AS size,status
 FROM system.dictionaries
-order by bytes_allocated desc
+order by bytes_allocated desc;
+
+
+SELECT formatReadableSize(sum(bytes_allocated)) AS size
+FROM system.dictionaries;
+```
+
+
+### 查询clickhouse内存占用并清理
+
+```sql
+您好，上述您反馈的ClickHouse内存超限错误是由于查询或后台任务消耗的内存超过了实例总内存的90%。
+
+这个是由于查询结果集过大或后台异步任务（如主键合并）占用内存所致。
+
+建议您：
+
+1. 优化查询，减少结果集大小。
+2. 查看`system.processes`和`system.merge`表，确认是否有高内存占用的后台任务。
+3. 考虑垂直升配，提高实例内存规模。
+4. 清理缓存：执行`SYSTEM DROP MARK CACHE`和`system drop uncompressed cache`。
+
+若问题持续，请检查内存使用情况并考虑调整`mark_cache_size`和`uncompressed_cache_size`参数。操作前请做好数据备份，并在非业务高峰期进行。
 ```
 
 
@@ -492,6 +514,18 @@ select * from system.dictionaries;
 字典表的名字必须要带scheme的名字，不然可能会出现找不到的问题。
 ```sql
 SYSTEM RELOAD DICTIONARY default.dictionary_name
+```
+
+### 查询字典表的内存占用
+
+
+```sql
+SELECT
+    name AS dictionary_name,
+    status,
+    formatReadableSize(bytes_allocated) AS memory_usage
+FROM system.dictionaries
+order by bytes_allocated desc
 ```
 
 ### 物化视图刷新
