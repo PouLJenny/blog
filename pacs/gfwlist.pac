@@ -2355,6 +2355,7 @@ var rules = [
             "greenreadings.com",
             "greenvpn.net",
             "greenvpn.org",
+            "grok.com",
             "grotty-monday.com",
             "grow.google",
             "gs-discuss.com",
