@@ -3278,6 +3278,7 @@ var rules = [
             "material.io",
             "mathable.io",
             "mathiew-badimon.com",
+            "mathworks.com",
             "matome-plus.com",
             "matome-plus.net",
             "matrix.org",
