@@ -90,6 +90,7 @@
 
 [复试指南](https://zhuanlan.zhihu.com/p/586603649)
 [2024年初试成绩分布](https://www.educity.cn/mba/5318398.html)
+[招生专题](https://www.mbachina.com/zt/2024/buaaMBA/)
 
 
 ### 材料准备
