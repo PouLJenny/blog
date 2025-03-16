@@ -4892,6 +4892,7 @@ var rules = [
             "tdm.com.mo",
             "teachparentstech.org",
             "teamamericany.com",
+            "teamviewer.com",
             "technews.tw",
             "techspot.com",
             "techviz.net",
