@@ -91,6 +91,7 @@
 [复试指南](https://zhuanlan.zhihu.com/p/586603649)
 [2024年初试成绩分布](https://www.educity.cn/mba/5318398.html)
 [招生专题](https://www.mbachina.com/zt/2024/buaaMBA/)
+[北京航空航天大学经济管理学院招收2025年非全日制工商管理硕士研究生（MBA）一志愿复试录取工作方案](https://mba.buaa.edu.cn/info/1014/7532.htm)
 
 
 ### 材料准备
