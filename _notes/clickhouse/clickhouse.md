@@ -104,6 +104,11 @@ Yandex自己用clickhouse存了万亿级的数据，90%的查询都是1s内返�
 
 数据存储到磁盘使用了LZ4算法，压缩比可达7:1
 
+#### 支持的压缩算法
+
+[压缩模型](https://clickhouse.com/docs/data-compression/compression-modes)
+[列压缩模型](https://clickhouse.com/docs/sql-reference/statements/create/table#column_compression_codec)
+
 ### CPU寄存器向量化执行
 
 SIMD指令，Single Instruction Multiple Data,一条指令可以处理多条数据
