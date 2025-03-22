@@ -463,11 +463,11 @@ SELECT *, formatReadableSize(value) FROM system.asynchronous_metrics WHERE (metr
 3. 考虑垂直升配，提高实例内存规模。
 4. 清理缓存：执行`SYSTEM DROP MARK CACHE`和`system drop uncompressed cache` `SYSTEM DROP QUERY CACHE;`。
 
-```sql
+
 SYSTEM DROP MARK CACHE;
 system drop uncompressed cache;
 SYSTEM DROP QUERY CACHE;
-```
+
 
 若问题持续，请检查内存使用情况并考虑调整`mark_cache_size`和`uncompressed_cache_size`参数。操作前请做好数据备份，并在非业务高峰期进行。
 ```
