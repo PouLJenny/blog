@@ -61,6 +61,8 @@ brew install wireguard-tools
 wg genkey | tee private.key | wg pubkey > public.key
 ```
 
+### 服务端
+
 配置文件 `/etc/wireguard/wg0.conf`
 ```conf
 [Interface]
@@ -100,7 +102,19 @@ wg down wg0
 wg up wg0
 ```
 
+服务端需要添加配置
+```shell
+sysctl net.ipv4.ip_forward
+# 期望返回的值应该是： net.ipv4.ip_forward = 1
+echo 1 > /proc/sys/net/ipv4/ip_forward
+```
+持久化到 `/etc/sysctl.conf`
+```ini
+net.ipv4.ip_forward = 1
+```
 
+
+### 客户端
 客户端配置文件`/etc/wireguard/wg0.conf`
 ```conf
 [Interface]
@@ -132,3 +146,5 @@ AllowedIPs = 10.0.1.0/24
 Endpoint = 117.50.220.144:51820
 PersistentKeepalive = 25
 ```
+
+

@@ -262,6 +262,8 @@ https://zhuanlan.zhihu.com/p/72636722
 
 邮箱： laozimvip@gmail.com
 
+## 其他视频
 
+[国学与躺平](https://www.youtube.com/watch?v=yJzKNXr2CiE&list=PL3HQbS1lEzdTNDeU_9YjRf5R9c5LY-Vun)
 
 # EOF
