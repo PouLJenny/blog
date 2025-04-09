@@ -8,3 +8,12 @@
 [大语言模型历史-博客](https://juejin.cn/post/7226541360044556343 )
 
 ## 分类
+
+## 提示词
+
+如何写好大模型的提示词
+
+[langchain](https://python.langchain.com/docs/introduction/)
+
+
+

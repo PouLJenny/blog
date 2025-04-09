@@ -373,7 +373,7 @@ ClickHouse的SQL语法跟MySQL非常像
 
 ###  查看表占用的存储空间
 ```sql
-SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = 'opensky';
+SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = 'productBuffer2';
 ```
 
 ```sql
@@ -423,13 +423,32 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
-WHERE active
+WHERE active and table in ('productBuffer2Repair','product2Repair','product2RepairTest','product2RepairStatic',
+'product2RepairTestCompress','product2RepairTestCompressZstd',
+'product2RepairMut','product2RepairTest3','productNew','product2RepairTest4')
 GROUP BY
     database,
     table
 ORDER BY sum(data_compressed_bytes) DESC
-LIMIT 100
+LIMIT 200
 ```
+
+### 查询表每一列占用的磁盘空间
+
+```sql
+SELECT 
+    name AS column_name,
+    formatReadableSize(data_compressed_bytes) AS compressed_size,
+    formatReadableSize(data_uncompressed_bytes) AS uncompressed_size,
+    round(data_compressed_bytes / data_uncompressed_bytes, 2) AS compression_ratio
+FROM system.columns
+WHERE database = 'default' 
+  AND table = 'product2RepairTest3'
+ORDER BY data_compressed_bytes DESC;
+
+
+```
+
 
 ### 查询字典表占用的内存空间
 
@@ -442,6 +461,7 @@ order by bytes_allocated desc;
 SELECT formatReadableSize(sum(bytes_allocated)) AS size
 FROM system.dictionaries;
 ```
+
 
 
 ### 查询clickhouse内存占用并清理
@@ -510,6 +530,10 @@ clickhouse-client --query "select event_time,query_duration_ms,replaceAll(replac
 ### 导入数据从文件
 ```shell
 clickhouse-client --password clickhouse -d test --multiquery <  /home/poul/tmp/esKeywordAsinView.sql
+```
+```shell
+clickhouse-client --host=your_clickhouse_host --query="INSERT INTO your_table FORMAT CSV" < your_file.csv
+clickhouse-client --host=your_clickhouse_host --query="INSERT INTO your_table FORMAT CSVWithNames" < your_file.csv
 ```
 
 ### 查询执行过的sql日志
