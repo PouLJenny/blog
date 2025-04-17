@@ -423,9 +423,7 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
-WHERE active and table in ('productBuffer2Repair','product2Repair','product2RepairTest','product2RepairStatic',
-'product2RepairTestCompress','product2RepairTestCompressZstd',
-'product2RepairMut','product2RepairTest3','productNew','product2RepairTest4')
+WHERE active 
 GROUP BY
     database,
     table
@@ -603,7 +601,7 @@ SELECT
     partition,
     count()
 FROM system.parts
-WHERE (database = 'default') AND (`table` = 'keywordAsin_new')
+WHERE (database = 'default') AND (`table` = 'brandAd')
 GROUP BY
     `table`,
     partition
