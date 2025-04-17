@@ -601,7 +601,7 @@ SELECT
     partition,
     count()
 FROM system.parts
-WHERE (database = 'default') AND (`table` = 'brandAd')
+WHERE (database = 'default') AND (`table` = 'productNew')
 GROUP BY
     `table`,
     partition
