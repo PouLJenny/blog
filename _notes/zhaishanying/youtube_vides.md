@@ -1,14 +1,27 @@
 
+摘取信息的js代码
+```js
+var nodes = document.querySelectorAll('#contents ytd-rich-item-renderer.style-scope.ytd-rich-grid-renderer #content');
+var result = ""
+for (let node of nodes) {
+    var hr = node.querySelector('a#thumbnail').href;
+    var title = node.querySelector('#video-title').innerText;
+    result =  result + "\n"+  (title + ":" + hr);
+}
+console.log(result)
+```
+
 ## 视频
+
 
 习近平是中国唯一当权者（评述）:https://www.youtube.com/watch?v=nLTDn6d_IuY
 如果爱国，就必须反对党（评述）:https://www.youtube.com/watch?v=vjSYMk2Mb5Q
-中国当权者的决策流程（评述）:https://www.youtube.com/watch?v=dwsDHtHRFTA
+中国当权者的决策流程（评述）:https://www.youtube.com/watch?v=dwsDHtHRFTA&pp=0gcJCX4JAYcqIYzv
 骗子能够让我更强大！（评述）:https://www.youtube.com/watch?v=TRaTLytQhRE
 唐山“打人”事件的幕后真相（评述）:https://www.youtube.com/watch?v=e8OgPSGmj_A
 我亲身经历的“真实”江泽民（秘闻）:https://www.youtube.com/watch?v=lgARiXttpDM
 中国央视春晚背后的“选妃”记（秘闻）:https://www.youtube.com/watch?v=Uvi-k2hZQvA
-从共产党的组织构建看权力把控（秘闻）:https://www.youtube.com/watch?v=hpYqooWXezw
+从共产党的组织构建看权力把控（秘闻）:https://www.youtube.com/watch?v=hpYqooWXezw&pp=0gcJCX4JAYcqIYzv
 动态清零是“疫情”中国的最佳选择？（评述）:https://www.youtube.com/watch?v=wnEbiFqy_ZM
 中国共产党才是中国最大黑社会！（评述）:https://www.youtube.com/watch?v=_in9-sIt0d8
 负债、欠钱是越来越多中国人的唯一选择（评述）:https://www.youtube.com/watch?v=nInPWjhB9_g
@@ -23,21 +36,21 @@
 从小事情感知香港外汇快要“凉凉”了（评述）:https://www.youtube.com/watch?v=VSDulsyRRL8
 中国人未来避险的八个“关键词”（评述）:https://www.youtube.com/watch?v=1kHnZIMrnjE
 推衍中国重大事件结果的简单方式（评述）:https://www.youtube.com/watch?v=VqeNnQYU1Us
-房地产“强制停贷”背后的庞氏骗局（评述）:https://www.youtube.com/watch?v=ORRPNulGBgY&pp=0gcJCX4JAYcqIYzv
+房地产“强制停贷”背后的庞氏骗局（评述）:https://www.youtube.com/watch?v=ORRPNulGBgY
 给国内“骂我”的朋友们点“赞”（评述）:https://www.youtube.com/watch?v=m2GJhQT9EX4
 国内“住房断贷”用户真的不用还钱！（评述）:https://www.youtube.com/watch?v=0FW-xLYPLrs
-以中国处境为“镜”可知人生得失（评述）:https://www.youtube.com/watch?v=MFEf6JQKyr8&pp=0gcJCX4JAYcqIYzv
-“骗子”让我上“热搜”了（评述）:https://www.youtube.com/watch?v=YM-B_SQHm3M
+以中国处境为“镜”可知人生得失（评述）:https://www.youtube.com/watch?v=MFEf6JQKyr8
+“骗子”让我上“热搜”了（评述）:https://www.youtube.com/watch?v=YM-B_SQHm3M&pp=0gcJCX4JAYcqIYzv
 我要做“杀人诛心”的“坏事”了（评述）:https://www.youtube.com/watch?v=tHZUGeRNbNk
 中国所有寺院都供奉“战犯”了？！（评述）:https://www.youtube.com/watch?v=UcghYOx2JTY
 “区块链”和“数字货币”的命运推衍（商业）:https://www.youtube.com/watch?v=GLkM6Bz42Gk
 我赚取“百亿”财富的基础逻辑——下（商业）:https://www.youtube.com/watch?v=yIxG4kY__mY
-我赚取“百亿”财富的基础逻辑——上（商业）:https://www.youtube.com/watch?v=8erGi9vo_Gw
-中国国内要大乱了！（评述）:https://www.youtube.com/watch?v=Uyq4nScR4sQ
+我赚取“百亿”财富的基础逻辑——上（商业）:https://www.youtube.com/watch?v=8erGi9vo_Gw&t=188s
+中国国内要大乱了！（评述）:https://www.youtube.com/watch?v=Uyq4nScR4sQ&pp=0gcJCX4JAYcqIYzv
 中国“80后”都没有养老💰了（评述）:https://www.youtube.com/watch?v=aytCsTVSKk4
 中国人都让中国“名人”玩坏了（评述）:https://www.youtube.com/watch?v=CIqsZsuM7sY
 佩洛西访问台湾的另类思维（评述）:https://www.youtube.com/watch?v=F_Fn6BySP6M
-中国清华、北大的真“丑”闻（秘闻）:https://www.youtube.com/watch?v=uvV_maLBezA&pp=0gcJCX4JAYcqIYzv
+中国清华、北大的真“丑”闻（秘闻）:https://www.youtube.com/watch?v=uvV_maLBezA
 从佩洛西访台看中、美玩政治的差距（评述）:https://www.youtube.com/watch?v=2KluhKYFK_o
 从拉登到佩洛西，美国从学生到老师（评述）:https://www.youtube.com/watch?v=jU2QwD_UZq4
 中国共产党用演艺明星把台湾“统一”了（评述）:https://www.youtube.com/watch?v=lahJblWr6YY&pp=0gcJCX4JAYcqIYzv
@@ -47,7 +60,7 @@
 中国专家帮助中国“腾飞”的大智慧（评述）:https://www.youtube.com/watch?v=eqkXCgYFtRI
 香港经济这次整体要“趴”了（评述）:https://www.youtube.com/watch?v=5VRHg53iLwc
 小骗子叫板中国著名“砖家、叫兽”（商业）:https://www.youtube.com/watch?v=sCiaIRuFQqA
-2017年创建生态星球理论的宣传片:https://www.youtube.com/watch?v=CrttAs-aBrw&pp=0gcJCX4JAYcqIYzv
+2017年创建生态星球理论的宣传片:https://www.youtube.com/watch?v=CrttAs-aBrw
 我手把手教你怎么成为“骗子”（商业）:https://www.youtube.com/watch?v=xZgV6nij_NU
 我人生的“区块链”梦想（商业）:https://www.youtube.com/watch?v=gHD3ujjVGWA
 闲聊中国今天的“小四喜”（评述）:https://www.youtube.com/watch?v=si7iDxoW-VY
@@ -62,28 +75,28 @@
 司马南是自己“作”死的（上）！（评述）:https://www.youtube.com/watch?v=5e_yp-YZxQI
 司马南是自己“作”死的（中）！（揭秘）:https://www.youtube.com/watch?v=jGxacFOk1e4
 梦想肢解中国的恶魔遭报应了（评述）:https://www.youtube.com/watch?v=RES7R1HMV64
-给国内朋友的三个建议（评述）:https://www.youtube.com/watch?v=xItsdTGvPl0
+给国内朋友的三个建议（评述）:https://www.youtube.com/watch?v=xItsdTGvPl0&pp=0gcJCX4JAYcqIYzv
 人要为自己活一生（评论）:https://www.youtube.com/watch?v=4kHE8yx0naM
 我的1991到1992（揭秘）:https://www.youtube.com/watch?v=_78qCLWsaz4
 中国人不得不都变成“骗子”（揭秘）:https://www.youtube.com/watch?v=WGv4TTf9-Es
-唐山打人事件“真相”来了？！（评述）:https://www.youtube.com/watch?v=2i-NMqJQElc&pp=0gcJCX4JAYcqIYzv
+唐山打人事件“真相”来了？！（评述）:https://www.youtube.com/watch?v=2i-NMqJQElc
 静观“伟大”中国花开花落（评述）:https://www.youtube.com/watch?v=TwKLHq90liA
 未来中国很多房子都是“白送”的！（评述）:https://www.youtube.com/watch?v=8pYVdZpUliA
-中国到底欠了多少钱（假富豪能撑多久）？（评述）:https://www.youtube.com/watch?v=jFTmz5c945k&pp=0gcJCX4JAYcqIYzv
+中国到底欠了多少钱（假富豪能撑多久）？（评述）:https://www.youtube.com/watch?v=jFTmz5c945k
 让王小东这种败类“死”绝才是中国之幸（揭秘）:https://www.youtube.com/watch?v=gwGM6R-V62Y
-人民币兑美元下跌的“叁”结果（评述）:https://www.youtube.com/watch?v=YRpsR0mDtO4&pp=0gcJCX4JAYcqIYzv
+人民币兑美元下跌的“叁”结果（评述）:https://www.youtube.com/watch?v=YRpsR0mDtO4
 中国北斗项目赔了“数亿”资金的原因（揭秘）:https://www.youtube.com/watch?v=98UBKMgxp3E
 中国全面军事化时代开始了（揭秘）:https://www.youtube.com/watch?v=v3LSKePw3bY
-年轻人是中国改革开放最大的牺牲品（评述）:https://www.youtube.com/watch?v=K6EhlvzS7xg&pp=0gcJCX4JAYcqIYzv
+年轻人是中国改革开放最大的牺牲品（评述）:https://www.youtube.com/watch?v=K6EhlvzS7xg
 被邓小平玩“死”的中共中央主席（揭秘）:https://www.youtube.com/watch?v=dktVeYQlpiQ
 华为从“雄鹰”退化成“秃鹫”的亲身感受（评述）:https://www.youtube.com/watch?v=18Z4gImSyDA
 中国楼市、股市可以抄底了？！（评述）:https://www.youtube.com/watch?v=0k_2sAqSWTc
 拿回属于中国的远东地区才是中国人该做的（评述）:https://www.youtube.com/watch?v=6xi7sUeMfFE
 把司马南用废了，真可惜（商业）:https://www.youtube.com/watch?v=LPA5UdpNpAk
-中国明星们的色情“罗生门”:https://www.youtube.com/watch?v=mf8dKECPspU&pp=0gcJCX4JAYcqIYzv
+中国明星们的色情“罗生门”:https://www.youtube.com/watch?v=mf8dKECPspU
 努力建设祖国的中国人最终什么结果？（评述）:https://www.youtube.com/watch?v=lC82ZHllr8E
 中国经济最后“活命”机会也消失了（评述）:https://www.youtube.com/watch?v=RCYqIopZJEU
-取信于民？失信于民！信心比黄金更重要！（评价）（对普京也一样）:https://www.youtube.com/watch?v=y5tJ2d3swms&pp=0gcJCX4JAYcqIYzv
+取信于民？失信于民！信心比黄金更重要！（评价）（对普京也一样）:https://www.youtube.com/watch?v=y5tJ2d3swms
 给台湾领导人的“小”建议（评论）:https://www.youtube.com/watch?v=Dg0rSAUWkfU
 中共需要人民永远当奴隶（评述）:https://www.youtube.com/watch?v=joAWEorqlPs
 “易联购”成为中国第二嚣张“骗子”！（评论）:https://www.youtube.com/watch?v=77HkmUJ8ZiY
@@ -92,8 +105,8 @@
 知道商业保险“真相”了，会选择怎么做？（揭秘）:https://www.youtube.com/watch?v=zGuB7RIlE_I
 “复星系”难以逃脱这次“梦魇”了。（评述）:https://www.youtube.com/watch?v=om0JODFdmkw
 俄罗斯已经面濒临“肢解”噩运了（评述）:https://www.youtube.com/watch?v=WEfFFBFFRts
-政治问题是促使我“润”的根本原因？（揭秘）:https://www.youtube.com/watch?v=W8OAFOd4pqI&pp=0gcJCX4JAYcqIYzv
-昔日中国金融的“黄金”20年（揭秘）:https://www.youtube.com/watch?v=nD-0AEb-Ra8
+政治问题是促使我“润”的根本原因？（揭秘）:https://www.youtube.com/watch?v=W8OAFOd4pqI
+昔日中国金融的“黄金”20年（揭秘）:https://www.youtube.com/watch?v=nD-0AEb-Ra8&pp=0gcJCX4JAYcqIYzv
 “黄金”一代走了，没人看得懂现在的“肮脏”金融了（揭秘）:https://www.youtube.com/watch?v=ItPjXaXoanM
 让你的人生“心想事成”的“终极”法则（揭秘）:https://www.youtube.com/watch?v=ULDaKMTRge0
 俄罗斯已经把中国逼到了“死角”（评论）:https://www.youtube.com/watch?v=lKmRjDzIHkg
@@ -113,42 +126,182 @@
 我对“二十大”的思想解读（平均）:https://www.youtube.com/watch?v=SLfDErhasIc&pp=0gcJCX4JAYcqIYzv
 聊聊“习包子”上位的“闲话”（评述）:https://www.youtube.com/watch?v=YtjE-LS3gTw
 聊点“家长里短”的小事情（评论）:https://www.youtube.com/watch?v=i0aL2Ud7nYA
-明天，中国人的“房事”可能也要被“计划”了（评述）:https://www.youtube.com/watch?v=-saKFiqSGb8
+明天，中国人的“房事”可能也要被“计划”了（评述）:https://www.youtube.com/watch?v=-saKFiqSGb8&pp=0gcJCX4JAYcqIYzv
 十月份第三周要闻评述（评论）:https://www.youtube.com/watch?v=MfpbjhStCWc
 中国开启“大独裁者”时代（评述）:https://www.youtube.com/watch?v=H_trAXY0hpY
 中国未来还孕育着“大转机”（评述）:https://www.youtube.com/watch?v=8Hbd4Pm2RSs
 我又没忍住，开口“骂人”了（评论）:https://www.youtube.com/watch?v=1ss9yWgGPuI
 中国人“润”出来的通用方式（揭秘）:https://www.youtube.com/watch?v=yocqi0245do
 让大家开心的“国学”人生体验（揭秘）:https://www.youtube.com/watch?v=n3TUBdJuYaI
-十月份第四周要闻评述:https://www.youtube.com/watch?v=1JVhhp4Imo8
+十月份第四周要闻评述:https://www.youtube.com/watch?v=1JVhhp4Imo8&pp=0gcJCX4JAYcqIYzv
 “数字货币”的种类划分和基础作用（商业）:https://www.youtube.com/watch?v=EaWM7qkPIw0
 从“富士康726宿舍”到“俄乌战争”（评论）:https://www.youtube.com/watch?v=sXexdmcztM0
-1990到2000的北京“情色”纪实（揭秘）:https://www.youtube.com/watch?v=IgKZqy26qPo&pp=0gcJCX4JAYcqIYzv
+1990到2000的北京“情色”纪实（揭秘）:https://www.youtube.com/watch?v=IgKZqy26qPo
 社会主义公有制是专门生产“蠢货”的制度（揭秘）:https://www.youtube.com/watch?v=x7kuWMEZMyA
 11月第一周新闻评述:https://www.youtube.com/watch?v=rfFr-jA2u-0
 “肉身回国”报效中华的“伟大”科学家（揭秘）:https://www.youtube.com/watch?v=GJI38B-P0aw
 我是为了“黑”中共而黑的吗？（评论）:https://www.youtube.com/watch?v=upnF911a5LI
 可以做中国“金融圈”勇士吗？（揭秘）:https://www.youtube.com/watch?v=PVEizJPGTzs
 不懂“国学文化”就可能少赚一个亿（评述）:https://www.youtube.com/watch?v=uuQQU9JTX6I
-十一月份第二周新闻评述:https://www.youtube.com/watch?v=h4Qr31x8WjI&pp=0gcJCX4JAYcqIYzv
+十一月份第二周新闻评述:https://www.youtube.com/watch?v=h4Qr31x8WjI
 中国社会进入集体“过度心理补偿”阶段（评述）:https://www.youtube.com/watch?v=6CMJBQyl7UA
-关于现金、就业、疫情的“三件小事”（评论）:https://www.youtube.com/watch?v=Cc06xDvtdmM
+关于现金、就业、疫情的“三件小事”（评论）:https://www.youtube.com/watch?v=Cc06xDvtdmM&pp=0gcJCX4JAYcqIYzv
 十一月第三周新闻综述:https://www.youtube.com/watch?v=5eUwLEN21A4
 中国成为真正的“斯坦福监狱”（抱歉有很多口误）:https://www.youtube.com/watch?v=yQkeDanSYS8
 江泽民是中国的“罪人”吗？（评述）:https://www.youtube.com/watch?v=JS0pcPjAN48
-十二月第一周新闻评述:https://www.youtube.com/watch?v=R9Tmrx9oVzY
-解读“金稅四期”的运行本质（商业）:https://www.youtube.com/watch?v=vGdAGdaMAKA&pp=0gcJCX4JAYcqIYzv
-“八卦”闲聊“占星术”（评述）:https://www.youtube.com/watch?v=NRyqBTXiaqo&pp=0gcJCX4JAYcqIYzv
-中国经济三马车腿全“打折”（评论）:https://www.youtube.com/watch?v=2ZbJMrSD7UE&pp=0gcJCX4JAYcqIYzv
+十二月第一周新闻评述:https://www.youtube.com/watch?v=R9Tmrx9oVzY&pp=0gcJCX4JAYcqIYzv
+解读“金稅四期”的运行本质（商业）:https://www.youtube.com/watch?v=vGdAGdaMAKA
+“八卦”闲聊“占星术”（评述）:https://www.youtube.com/watch?v=NRyqBTXiaqo
+中国经济三马车腿全“打折”（评论）:https://www.youtube.com/watch?v=2ZbJMrSD7UE
 中国“新冠”生活手册（揭秘）:https://www.youtube.com/watch?v=FO4YEWMLkoo
 十二月份第二周新闻评述:https://www.youtube.com/watch?v=IXWF0Cjd1zc
-人生“十项基本原则”（商业）:https://www.youtube.com/watch?v=-MK9m_bAryE
+人生“十项基本原则”（商业）:https://www.youtube.com/watch?v=-MK9m_bAryE&t=734s
 为什么牛叉的5G中国没人聊了（评述）:https://www.youtube.com/watch?v=Nyck8ZgU_pA
 给伟大领袖找块风水宝地（评论）:https://www.youtube.com/watch?v=oc4NgCau1SE
 中共需要人民兜里的钱发“工资”了（评价）:https://www.youtube.com/watch?v=pK24u4Y82oI
 十二月第三周新闻评述:https://www.youtube.com/watch?v=ELwzNIzSe1E
-中共中央经济工作“追悼会”（揭秘）:https://www.youtube.com/watch?v=ZFnbcNByxqg&pp=0gcJCX4JAYcqIYzv
+中共中央经济工作“追悼会”（揭秘）:https://www.youtube.com/watch?v=ZFnbcNByxqg
 我在中国看守所的那些日子（揭秘）:https://www.youtube.com/watch?v=8zHMRzcNOLU
+2023是全球加密数字货币的“梦魇”之年:https://www.youtube.com/watch?v=xKS2rdEaZnc
+中国共产党无法辩驳的“根本”缺陷（评论）:https://www.youtube.com/watch?v=rrU1X9j78_k
+十二月份第四周新闻评述:https://www.youtube.com/watch?v=XsbSt4ois18
+中国2023年GDP萎缩会超过5%（评述）:https://www.youtube.com/watch?v=_bVuS-PKjnE&pp=0gcJCX4JAYcqIYzv
+马斯克构建完成“星球大战计划”（中共军队克星）:https://www.youtube.com/watch?v=yRhMS2ledpQ
+200斤和普京“坚如磐石”的各怀鬼胎（评论）:https://www.youtube.com/watch?v=82AbejvRct8
+恐怖如斯的中国负债经济模式（揭秘）:https://www.youtube.com/watch?v=FGbQE-Vy7JM
+十二月第五周新闻评述（2022年收官）:https://www.youtube.com/watch?v=xq3rv4tQruQ
+欺骗充斥的中国拿什么支撑2023年？！（评述）:https://www.youtube.com/watch?v=tMG792xkmWg
+替代人类的“ChatGPT”来了（评论）:https://www.youtube.com/watch?v=Pv9S_E_F-0A
+忽悠至“死”的中国新能源汽车（揭秘）:https://www.youtube.com/watch?v=L-craDhHoa8
+中国连环债务开始“爆发”了（评论）:https://www.youtube.com/watch?v=OEq7oEApC_8
+2023年第一周新闻评述:https://www.youtube.com/watch?v=zyi80TS3R-s
+养老是2023中国经济崩溃的“支柱”产业（评述）:https://www.youtube.com/watch?v=J40cTvbRhC8
+我们这代人大都是民族“罪人”（评论）:https://www.youtube.com/watch?v=U6bIAxEl0r8
+北京的“九大”情色圈子（上）:https://www.youtube.com/watch?v=K-c0cBhUPTk
+建立新中国的前期工作“梦想”:https://www.youtube.com/watch?v=e1Jcer-Ne64&pp=0gcJCX4JAYcqIYzv
+2023年第二周新闻综述:https://www.youtube.com/watch?v=SckLz89Pquw
+2022年我的60个预言（上）:https://www.youtube.com/watch?v=2TO24RsHUac
+2022年我的60个预言（中）:https://www.youtube.com/watch?v=givVinPdwnE
+中国正在被迫“闭关锁国”（评论）:https://www.youtube.com/watch?v=_60t0shz7Ro
+精神病洪流中挣扎的“伟大中国”（评论）:https://www.youtube.com/watch?v=nYnMi_WQ8Io
+2023年第三周新闻评述:https://www.youtube.com/watch?v=kyKuSS6Rdro
+2022年我的60个预言（下）:https://www.youtube.com/watch?v=vZTgdoQJHFE
+中共倒闭的“最晚”时间点:https://www.youtube.com/watch?v=YArH0WEJsZo
+既然做奴隶的，死就死了吧！（评价）:https://www.youtube.com/watch?v=xr3vA4qYFK4
+2023年第四周新闻评述（一月最后1期）:https://www.youtube.com/watch?v=BUS49Fg8FSU
+“真相”应该带给我们快乐（评论）:https://www.youtube.com/watch?v=tr--ejvjSP0&pp=0gcJCX4JAYcqIYzv
+只能为自己曾经的愚蠢买单（评论）:https://www.youtube.com/watch?v=arlW2g1m5aU
+中国经济大萧条“无解”了（评论）:https://www.youtube.com/watch?v=xWsl14fIVAI
+2023年2月第一周新闻评述:https://www.youtube.com/watch?v=CCxg5UFTMnk
+奇葩中国2月“黑”事闲谈（评论）:https://www.youtube.com/watch?v=m4Ei6HO80mQ
+中国未来顺利发展的三条出路（揭秘）:https://www.youtube.com/watch?v=RBr6tXM4RF8
+伟大领袖终于露面发表重要讲话了（评论）:https://www.youtube.com/watch?v=cZUQIhyEKKo
+2023年2月第2周新闻评述:https://www.youtube.com/watch?v=jfpNp_PiJwM
+如何做个最好的销售（商业）:https://www.youtube.com/watch?v=I_d3ISux85w
+从中国“润”出去的基础常识（揭秘）:https://www.youtube.com/watch?v=CBNRbBiUUQM
+我在YouTube里面讲什么？（揭秘）:https://www.youtube.com/watch?v=X3jGY-SBL4Q
+2023年2月第三周新闻评述:https://www.youtube.com/watch?v=tg89MQ5G3qo
+牛逼的“中国制造”存在吗？（评论）:https://www.youtube.com/watch?v=_9KhHzFk3jI&pp=0gcJCX4JAYcqIYzv
+几十年惯性，无法刹车！:https://www.youtube.com/watch?v=NtTTFpb4A90
+数据迷雾“看”两会前中国（评论）:https://www.youtube.com/watch?v=nLL2xM4siJ0
+新能源汽车尽可能别买，未来更新换代会越来越快！:https://www.youtube.com/watch?v=3y-WXBP_d-I
+中国经济支柱产业“真相”（揭秘）:https://www.youtube.com/watch?v=U8Kbv6PouwY&pp=0gcJCX4JAYcqIYzv
+新能源汽车和燃油车的差别:https://www.youtube.com/watch?v=LAyX8QVn-Rc
+2023年2月第四周新闻评述:https://www.youtube.com/watch?v=FzcFOVaNUJs
+二中全会无解中国失业难题（评论）:https://www.youtube.com/watch?v=T37LylQ0piI
+3月1日凸显中国战争危机（评论）:https://www.youtube.com/watch?v=Wv9gW57r8wU
+套在中共头上的绞索越来越紧（评论）:https://www.youtube.com/watch?v=GZzNZr5xUWw
+2023年3月第一周新闻评述:https://www.youtube.com/watch?v=4omtvpX1J34
+老李的最后“遗言”:https://www.youtube.com/watch?v=0P8xrkpzO3Q&pp=0gcJCX4JAYcqIYzv
+2023年的无“聊”小事（评论）:https://www.youtube.com/watch?v=Q_46IwUkCuU
+又蠢又坏的中国政府改革方案出台了（评论）:https://www.youtube.com/watch?v=aZCnzPvX040
+中国正在显现军阀割据的局面（评论）:https://www.youtube.com/watch?v=RIs_ZBcNBF4
+2023年3月第二周新闻评述:https://www.youtube.com/watch?v=wxPNnVgbKJs&pp=0gcJCX4JAYcqIYzv
+难以总结的中共“两会”（评论）:https://www.youtube.com/watch?v=f1X-Y72BDUs
+中共两会的“国际政治”瞎想（评论）:https://www.youtube.com/watch?v=WlKSFTx8tAw
+郭文贵今天早已命中注定（评论）:https://www.youtube.com/watch?v=dc-aJcWJtqI
+从郭文贵事件更了解中共本质（评论）:https://www.youtube.com/watch?v=aQhfNn0UlJE
+北京九大“情色”圈子（下）:https://www.youtube.com/watch?v=wFoV7ADjlBo
+民无信则（国）不立（评论）:https://www.youtube.com/watch?v=a3zX-34iWts
+2023年第五周新闻评述:https://www.youtube.com/watch?v=rq4b3_7Kk6E
+开设“思想盛宴”会员群（通知）:https://www.youtube.com/watch?v=yqeij4wj_5M
+张继科的“伟大”及其他（评述）:https://www.youtube.com/watch?v=LzQovpCW7n0
+会员群割韭菜以及“QG”移植（评论）:https://www.youtube.com/watch?v=_LV5dIpp6YM
+疯狂造假时代开启（放松）:https://www.youtube.com/watch?v=-J8JAYqO3E8
+北方沙尘暴再次“回归”的主要原因（放松）:https://www.youtube.com/watch?v=vI6JU2-Z7RE
+司马南老师加油！:https://www.youtube.com/watch?v=plpqo4aqTvM
+倒查8年的“抓钱”行动开始了（尽早准备）:https://www.youtube.com/watch?v=Yu_CP8pjDXc
+五一长假，谨慎出行！:https://www.youtube.com/watch?v=RYcEn_7qBIs&pp=0gcJCX4JAYcqIYzv
+我的骗子自尊心被打击了（评论）:https://www.youtube.com/watch?v=vQHGYQdzTKg
+中国人都“被”傻掉了（评论）:https://www.youtube.com/watch?v=kiC0ikv0u1s
+中国即将进入“饿死”人的时代了（评论）:https://www.youtube.com/watch?v=Av2xyQqLwgs
+中国经济一片“大好”:https://www.youtube.com/watch?v=a2JA4ZfYeTY
+日本女U “啪啪啪”到底多钱银子？:https://www.youtube.com/watch?v=YBvHmFapTFk&pp=0gcJCX4JAYcqIYzv
+中国“小学加法不及格”笑话:https://www.youtube.com/watch?v=h9zuZSxIgeQ
+中共真的“懒”到造假都随意了！:https://www.youtube.com/watch?v=1n6T5LVTSyA
+在中国新流行的“口红”效应:https://www.youtube.com/watch?v=37gqBX5cj6M&pp=0gcJCX4JAYcqIYzv
+中共执政，所有者缺位就是“死局”:https://www.youtube.com/watch?v=T-sbgVl7F5U
+从“以人为本”看中国的没希望:https://www.youtube.com/watch?v=7e41grPxJ2g
+2023年5月第一周新闻汇总（评论）:https://www.youtube.com/watch?v=Do1x12QRifw
+美国在南海选择和中国“开战”的原因:https://www.youtube.com/watch?v=xoeTbCG9m5U
+中国经济最后的“救命稻草”:https://www.youtube.com/watch?v=G5ObjGJ8h-w
+骗术也许能挽救中国经济（评论）:https://www.youtube.com/watch?v=YjRFtNxSIyk
+中共2～3年全面垮台的依据（评述）:https://www.youtube.com/watch?v=dBr09tU-fgA
+世界大变局真要来了！:https://www.youtube.com/watch?v=Kia-eQWZ_Lk
+世界的真相（短）:https://www.youtube.com/watch?v=0M03k4an8VI
+中国国内惊现“恐怖”袭击:https://www.youtube.com/watch?v=Rdb0L4DEDnI&pp=0gcJCX4JAYcqIYzv
+中国人更“民主、自由”了？:https://www.youtube.com/watch?v=JWR9rSjqhLk
+河北公安厅啪啪打脸小粉红:https://www.youtube.com/watch?v=Z6L5zARzgzw
+中国的“历史”真相（评论）:https://www.youtube.com/watch?v=mru-TQYMlyo
+2023年4月第一次会员课程（赚钱模式）:https://www.youtube.com/watch?v=G9SHTUcE_m4
+2023年4月第二次会员课程（国学思维）:https://www.youtube.com/watch?v=zI2EBMC0Q9I&t=1466s
+2023年4月第三次会员课程（赚钱逻辑）:https://www.youtube.com/watch?v=Al9DeU4B9yk
+2023年4月第四次会员课程（国学思维）:https://www.youtube.com/watch?v=bz7zZZ_7fto
+2023年4月第五次会员视频（赚钱模式）:https://www.youtube.com/watch?v=UMhaJgHFX9A
+2023年4月第六次会员课程（国学思维）:https://www.youtube.com/watch?v=17SrDvTQzC4&t=1046s
+2023年4月第七次会员视频（赚钱模式）:https://www.youtube.com/watch?v=HuXL9NrphE8
+2023年4月第十次课程（国学思维）:https://www.youtube.com/watch?v=0RlWcfaRaz4
+2023年5月第一次会员视频（赚钱模式）:https://www.youtube.com/watch?v=Pel29TnLt3M
+2023年5月第二次会员视频（国学思维）:https://www.youtube.com/watch?v=xrklwXwMExA
+2023年5月第三次会员视频（赚钱模式）:https://www.youtube.com/watch?v=lvAsva9wJIk
+有钱人更要努力！:https://www.youtube.com/watch?v=WQXWZ0m8VEk
+2023年5月第四次会员视频（国学思维）:https://www.youtube.com/watch?v=6xdxrMkfQO0
+2023年5月第五次会员视频（赚钱模式）:https://www.youtube.com/watch?v=ZG1ADAh803A
+深圳的统租和中国人蝼蚁（评论）:https://www.youtube.com/watch?v=xNUxxprVMDM
+人民币兑美元下跌还没开始:https://www.youtube.com/watch?v=ahQnjTCMK5U
+马斯克是纯粹的生意人:https://www.youtube.com/watch?v=6vsbGHfcf6o
+中国人“灭种”了:https://www.youtube.com/watch?v=NFBa319d010
+聊聊我眼中的“郭文贵”（评论）:https://www.youtube.com/watch?v=0z-01xodnkA&t=2s
+中国股市启动“魔鬼镰刀”（评论）:https://www.youtube.com/watch?v=W4TxSkQbHrA
+从金融小事看中共愚蠢（评论）:https://www.youtube.com/watch?v=ZpJA5K32ASo
+中国人真实的一生（评论）:https://www.youtube.com/watch?v=E97QGxZ1wfI
+中共又创造“世界奇迹”了:https://www.youtube.com/watch?v=TcdmP1_I_2w
+俄罗斯火药桶引爆中共？（评论）:https://www.youtube.com/watch?v=icSF1F2Sv38
+中共在2023年到底做了什么？:https://www.youtube.com/watch?v=_8To1sIsRHc
+人民币汇率肯定破“八”的本质原因:https://www.youtube.com/watch?v=BXsu5zA8-vU
+中共的一盘“自缢”大棋（评论）:https://www.youtube.com/watch?v=3yLguCcTVTo
+消失的“数万亿”美元去哪儿了？:https://www.youtube.com/watch?v=_evVSI8eEmE&pp=0gcJCX4JAYcqIYzv
+给张捷拍个“马屁”（评论）:https://www.youtube.com/watch?v=EuF_ceWdbJ4
+中共GDP骗局（评述）:https://www.youtube.com/watch?v=WK-PLQSDW30
+中共骗子又开始撒大谎了（宣言）:https://www.youtube.com/watch?v=NiWolDPFlls
+有房子的能跑赶紧跑（最后窗口期）:https://www.youtube.com/watch?v=PlQ-eEXVFLw
+人民币兑美元“破了”7.3:https://www.youtube.com/watch?v=itbKcuxCWR4
+人民币真实价值正在跳水:https://www.youtube.com/watch?v=W5mGOKTxd2k
+别把我讲的“乐呵”太当回事:https://www.youtube.com/watch?v=2tiU3CKV0Ek
+中共创造中华民族“伟大”历史奇迹！:https://www.youtube.com/watch?v=Ud0zKOtPZnU
+2016年时候提出来的超前“幼稚”理论:https://www.youtube.com/watch?v=T-w_y6zL2_A
+中共国务院“已经”消失了:https://www.youtube.com/watch?v=Bxp9nAVaITg
+电动汽车仅仅是遥控玩具！:https://www.youtube.com/watch?v=AevOFQ3RXVY
+销量数万的人工智能儿童产品（我的旧事）:https://www.youtube.com/watch?v=mOVbrQjI5FU
+2023年普通人赚钱的最佳时间:https://www.youtube.com/watch?v=fvHHR_xmWTI
+给朋友们的“免死”谏言:https://www.youtube.com/watch?v=PTybIVNJwME&t=299s
+中共的真相（朋友供稿，重磅推荐。南京大屠杀的内幕）:https://www.youtube.com/watch?v=KBhzMxsc110
+中国中央电视台写真（朋友提供，国人自创）:https://www.youtube.com/watch?v=t8wRwePMQQE
+中国“大萧条、大衰退”登堂入室:https://www.youtube.com/watch?v=fN8XmKZOe24&pp=0gcJCX4JAYcqIYzv
+特朗普在这里栏目引发的“小地震”:https://www.youtube.com/watch?v=6d3s4GiNBc0
+关于“特朗普”打赌的说明:https://www.youtube.com/watch?v=ZDGKOpegjB0
+推荐特别好的项目:https://www.youtube.com/watch?v=1pPX4i_gp1c
+郭文贵铁窗余生的“启示”:https://www.youtube.com/watch?v=Wn16UKS-cz4
 
 
 ## 直播
@@ -523,3 +676,4 @@
 美关税制裁下，中国的六大变化:https://www.youtube.com/watch?v=9YgfisGSs6s&pp=0gcJCX4JAYcqIYzv
 川二和习大默契的“共赢游戏”:https://www.youtube.com/watch?v=LWtEylO70o0
 中共战舰沉没预兆，以及不该让中共知道的信息:https://www.youtube.com/watch?v=Zfw0hIqz7XM&t=6s
+敢恋爱的中国男人都成“憨批”了:https://www.youtube.com/watch?v=byD8poadwJE
