@@ -601,7 +601,7 @@ SELECT
     partition,
     count()
 FROM system.parts
-WHERE (database = 'default') AND (`table` = 'productNew')
+WHERE (database = 'default') AND (`table` = 'keywordAsinAdAgg_week')
 GROUP BY
     `table`,
     partition
@@ -771,6 +771,21 @@ SELECT * FROM system.replicated_fetches;
 这些 system 表提供了对ClickHouse服务器和数据库状态的深刻洞察，帮助管理员和用户监控系统性能、调试查询和管理数据库配置。
 
 ### 限制
+
+### 查询CPU占用高的SQL
+
+
+```sql
+SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicroseconds')])   AS userCPU,
+       sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'SystemTimeMicroseconds')]) AS systemCPU,
+
+       substring(query, 1, 200)                                                               as q
+FROM system.query_log
+where (event_time >= toDateTime('2025-04-21 11:05:00')) AND (event_time <= toDateTime('2025-04-21 11:08:00'))
+group by q
+ORDER BY userCPU DESC limit 30;
+```
+
 
 ## system.query_log
 
