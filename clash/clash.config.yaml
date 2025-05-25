@@ -11,7 +11,7 @@ proxies:
   type: trojan
   server: hostdare.poul666.top
   port: 8443
-  password: wmJd8mGtHj94QYGn93
+  password: "r$GP>Wi5!0=9g'/tIk;~@;zq67()^ot<"
   sni: hostdare.poul666.top
   client-fingerprint: chrome
   udp: true
