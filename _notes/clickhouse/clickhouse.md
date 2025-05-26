@@ -778,12 +778,17 @@ SELECT * FROM system.replicated_fetches;
 ```sql
 SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicroseconds')])   AS userCPU,
        sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'SystemTimeMicroseconds')]) AS systemCPU,
-
+       count(*) as sqlNum,
        substring(query, 1, 200)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-04-21 11:05:00')) AND (event_time <= toDateTime('2025-04-21 11:08:00'))
+where (event_time >= toDateTime('2025-05-22 10:30:00')) AND (event_time <= toDateTime('2025-05-22 11:44:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
+
+
+select * from system.query_log where query like 'select sum(bytes_on_disk) as used_space from system.parts where disk_name = %'
+and event_time >= toDateTime('2025-05-21 15:00:00')
+limit 10 \G
 ```
 
 

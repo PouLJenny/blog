@@ -56,6 +56,12 @@ actionsfile gfwlist.action
 下面配置需要走代理的域名地址即可,贼方便
 ```
 
+最好配置一下链接数，默认的128有点少
+```config
+# 最大客户端连接数（默认是 128）
+max-client-connections 1024
+```
+
 `/etc/profile`文件如下配置
 ```config
 ## 代理
