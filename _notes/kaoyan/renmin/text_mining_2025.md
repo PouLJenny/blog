@@ -50,4 +50,9 @@ https://openi.pcl.ac.cn/info-ruc/tm25projects
 
 卷积层，全连接层，pooling层
 
+
+### 250223上午
+
+RNN LSTM
+
 # EOF
