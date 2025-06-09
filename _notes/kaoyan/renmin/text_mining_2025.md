@@ -31,6 +31,8 @@
     - BERT、GTP、T5
  
 
+
+
 #### Matlab
 https://matlab.mathworks.com/
 
@@ -42,3 +44,10 @@ https://openi.pcl.ac.cn/info-ruc/tm25projects
 
 
 
+### 250222下午
+
+#### 深度模型CNN 
+
+卷积层，全连接层，pooling层
+
+# EOF
