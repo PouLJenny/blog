@@ -6,6 +6,13 @@
 [大语言模型历史-中国人民大学](http://ai.ruc.edu.cn/research/science/20230605100.html )
 [大语言模型历史-中国人民大学-论文](https://arxiv.org/abs/2303.18223 )
 [大语言模型历史-博客](https://juejin.cn/post/7226541360044556343 )
+[Quick Start Guide to Large Language Models](https://archive.org/details/quick-start-guide-to-large-language-models-strategies-and-best-practices-for-usi_202407/page/n5/mode/2up?view=theater)
+
+
+## 定义
+
+Large language models (LLMs) are AI models that are usually (but not necessarily) derived from the Transformer architecture and are designed to understand and generate human language, code, and much more
+
 
 ## 分类
 

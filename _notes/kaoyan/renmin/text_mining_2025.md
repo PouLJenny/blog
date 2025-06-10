@@ -29,8 +29,6 @@
     - CNN、RNN & LSTM 、Self-attentions, Transformers
 - Large Language Models
     - BERT、GTP、T5
- 
-
 
 
 #### Matlab
@@ -53,6 +51,20 @@ https://openi.pcl.ac.cn/info-ruc/tm25projects
 
 ### 250223上午
 
-RNN LSTM  Self-attentions, Transformers
+- RNN 
+- LSTM  
+
+- Self-attentions, Transformers
+- Large Language Models
+    - BERT（encoder only）
+    - GPT (decoder only)
+    - T5 (both encoder and decoder)
+
+训练模型不需要人工标注，直接随机的挖空，然后让大模型做完形填空就可以了
+
+
+### 250223下午
+
+
 
 # EOF
