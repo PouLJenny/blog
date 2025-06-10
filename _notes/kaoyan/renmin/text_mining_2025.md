@@ -53,6 +53,6 @@ https://openi.pcl.ac.cn/info-ruc/tm25projects
 
 ### 250223上午
 
-RNN LSTM
+RNN LSTM  Self-attentions, Transformers
 
 # EOF
