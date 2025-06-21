@@ -35,6 +35,21 @@ Spark's design philosophy centers around four key characteristics:
     - Spark专注于计算，不涉及存储，并将两者分离。所以可以读取任何地方的数据，也可以把结果数据写入到任何地方
 
 
+## 一些概念
+
+- Application
+  - 一个使用Spark API构建的用户程序
+- SparkSession
+  - 提供与底层Spark功能交互的入口点，并允许使用其API编程Spark的对象
+- Job
+  - 并行计算，由多个任务组成，
+- Stage
+  - 每个Job都被分为更小的Stage集合，并且stage之间相互依赖
+- Task
+  - A single unit of work or execution that will be sent to a Spark executor.
+  
+  
+
 ## 连接Clickhouse
 
 [Spark Connector](https://clickhouse.com/docs/integrations/apache-spark/spark-native-connector)

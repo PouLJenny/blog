@@ -1238,6 +1238,7 @@ var rules = [
             "darpa.mil",
             "dastrassi.org",
             "data-vocabulary.org",
+            "databricks.com",
             "data.gov.tw",
             "daum.net",
             "david-kilgour.com",
