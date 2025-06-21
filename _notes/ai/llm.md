@@ -7,6 +7,7 @@
 [大语言模型历史-中国人民大学-论文](https://arxiv.org/abs/2303.18223 )
 [大语言模型历史-博客](https://juejin.cn/post/7226541360044556343 )
 [Quick Start Guide to Large Language Models](https://archive.org/details/quick-start-guide-to-large-language-models-strategies-and-best-practices-for-usi_202407/page/n5/mode/2up?view=theater)
+[quick start llms 作者主页](https://sinanozdemir.ai/#publications)
 
 
 ## 定义
@@ -18,9 +19,15 @@ Large language models (LLMs) are AI models that are usually (but not necessarily
 
 ## 提示词
 
+
 如何写好大模型的提示词
 
 [langchain](https://python.langchain.com/docs/introduction/)
+
+## 微调
+
+### SFT微调
+Supervised Fine-Tuning，监督微调
 
 
 ## 论文

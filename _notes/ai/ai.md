@@ -33,3 +33,6 @@
 
 ## 一些书籍
 - [Artificial Intelligence: A Modern Approach 4th](https://pdf.poul666.top/web/viewer.html?file=https://file.poul666.top/poul/%E6%96%B0%E5%8A%A0%E5%8D%B71/study/ebook/ai/Artificial.Intelligence.A.Modern.Approach.4th.Edition.Peter.Norvig.%20Stuart.Russell.Pearson.9780134610993.EBooksWorld.ir.pdf)
+
+
+## [学习路线](https://github.com/loveunk/machine-learning-deep-learning-notes?tab=readme-ov-file)

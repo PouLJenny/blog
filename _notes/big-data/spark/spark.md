@@ -1,17 +1,38 @@
 # Spark
 
-
 [官网](https://spark.apache.org/)
 [github](https://github.com/apache/spark)
 
-## 源码下载
 
+
+## 论文
+
+- [Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-82.pdf)
+- [Apache Spark: A Unified Engine for Big Data Processing](https://people.eecs.berkeley.edu/~matei/papers/2016/cacm_apache_spark.pdf)
+
+
+
+## 源码下载
 [下载网页](https://spark.apache.org/downloads.html)
 
 
 ## 编译
 [编译](https://spark.apache.org/docs/3.5.5/building-spark.html)
 
+
+## 设计哲学
+
+Spark's design philosophy centers around four key characteristics:
+- Speed
+    - 代码实现，高效利用了当今计算机的硬件条件
+    - Spark将其查询计算构建为有向无环图(DAG)
+    - 所有中间结果都是缓存在内存中的，限制了磁盘I/O的使用
+- Ease of use
+    - 统一数据抽象类型， Resilient Distributed Dataset (RDD)
+- Modularity 
+    - 有个统一的引擎，来处理所有的workload
+- Extensibility
+    - Spark专注于计算，不涉及存储，并将两者分离。所以可以读取任何地方的数据，也可以把结果数据写入到任何地方
 
 
 ## 连接Clickhouse
