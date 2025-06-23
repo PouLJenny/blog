@@ -14,6 +14,7 @@
 
 ## 源码下载
 [下载网页](https://spark.apache.org/downloads.html)
+[learning-spark书籍源码](https://github.com/databricks/LearningSparkV2)
 
 
 ## 编译
@@ -48,7 +49,7 @@ Spark's design philosophy centers around four key characteristics:
 - Task
   - A single unit of work or execution that will be sent to a Spark executor.
   
-  
+
 
 ## 连接Clickhouse
 
