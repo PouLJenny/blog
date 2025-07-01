@@ -304,6 +304,190 @@ DROP VIEW IF EXISTS default.keywordAsinAdByCampaignView;
 [Using Dictionaries to Accelerate Queries](https://clickhouse.com/blog/faster-queries-dictionaries-clickhouse)
 
 
+### 投影 Projection
+
+投影是为了加速非Primary Key的查询，本质是在每个Part目录下再创建一个子目录来存储。
+
+
+创建表`trips`
+
+```sql
+CREATE TABLE trips
+(
+    `trip_id` UInt32,
+    `vendor_id` Enum8('1' = 1, '2' = 2, '3' = 3, '4' = 4, 'CMT' = 5, 'VTS' = 6, 'DDS' = 7, 'B02512' = 10, 'B02598' = 11, 'B02617' = 12, 'B02682' = 13, 'B02764' = 14, '' = 15),
+    `pickup_date` Date,
+    `pickup_datetime` DateTime,
+    `dropoff_date` Date,
+    `dropoff_datetime` DateTime,
+    `store_and_fwd_flag` UInt8,
+    `rate_code_id` UInt8,
+    `pickup_longitude` Float64,
+    `pickup_latitude` Float64,
+    `dropoff_longitude` Float64,
+    `dropoff_latitude` Float64,
+    `passenger_count` UInt8,
+    `trip_distance` Float64,
+    `fare_amount` Float32,
+    `extra` Float32,
+    `mta_tax` Float32,
+    `tip_amount` Float32,
+    `tolls_amount` Float32,
+    `ehail_fee` Float32,
+    `improvement_surcharge` Float32,
+    `total_amount` Float32,
+    `payment_type` Enum8('UNK' = 0, 'CSH' = 1, 'CRE' = 2, 'NOC' = 3, 'DIS' = 4),
+    `trip_type` UInt8,
+    `pickup` FixedString(25),
+    `dropoff` FixedString(25),
+    `cab_type` Enum8('yellow' = 1, 'green' = 2, 'uber' = 3),
+    `pickup_nyct2010_gid` Int8,
+    `pickup_ctlabel` Float32,
+    `pickup_borocode` Int8,
+    `pickup_ct2010` String,
+    `pickup_boroct2010` String,
+    `pickup_cdeligibil` String,
+    `pickup_ntacode` FixedString(4),
+    `pickup_ntaname` String,
+    `pickup_puma` UInt16,
+    `dropoff_nyct2010_gid` UInt8,
+    `dropoff_ctlabel` Float32,
+    `dropoff_borocode` UInt8,
+    `dropoff_ct2010` String,
+    `dropoff_boroct2010` String,
+    `dropoff_cdeligibil` String,
+    `dropoff_ntacode` FixedString(4),
+    `dropoff_ntaname` String,
+    `dropoff_puma` UInt16
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(pickup_date)
+ORDER BY pickup_datetime;
+```
+
+导入数据
+```sql
+INSERT INTO trips
+SELECT * FROM s3(
+    'https://datasets-documentation.s3.eu-west-3.amazonaws.com/nyc-taxi/trips_{1..2}.gz',
+    'TabSeparatedWithNames', "
+    `trip_id` UInt32,
+    `vendor_id` Enum8('1' = 1, '2' = 2, '3' = 3, '4' = 4, 'CMT' = 5, 'VTS' = 6, 'DDS' = 7, 'B02512' = 10, 'B02598' = 11, 'B02617' = 12, 'B02682' = 13, 'B02764' = 14, '' = 15),
+    `pickup_date` Date,
+    `pickup_datetime` DateTime,
+    `dropoff_date` Date,
+    `dropoff_datetime` DateTime,
+    `store_and_fwd_flag` UInt8,
+    `rate_code_id` UInt8,
+    `pickup_longitude` Float64,
+    `pickup_latitude` Float64,
+    `dropoff_longitude` Float64,
+    `dropoff_latitude` Float64,
+    `passenger_count` UInt8,
+    `trip_distance` Float64,
+    `fare_amount` Float32,
+    `extra` Float32,
+    `mta_tax` Float32,
+    `tip_amount` Float32,
+    `tolls_amount` Float32,
+    `ehail_fee` Float32,
+    `improvement_surcharge` Float32,
+    `total_amount` Float32,
+    `payment_type` Enum8('UNK' = 0, 'CSH' = 1, 'CRE' = 2, 'NOC' = 3, 'DIS' = 4),
+    `trip_type` UInt8,
+    `pickup` FixedString(25),
+    `dropoff` FixedString(25),
+    `cab_type` Enum8('yellow' = 1, 'green' = 2, 'uber' = 3),
+    `pickup_nyct2010_gid` Int8,
+    `pickup_ctlabel` Float32,
+    `pickup_borocode` Int8,
+    `pickup_ct2010` String,
+    `pickup_boroct2010` String,
+    `pickup_cdeligibil` String,
+    `pickup_ntacode` FixedString(4),
+    `pickup_ntaname` String,
+    `pickup_puma` UInt16,
+    `dropoff_nyct2010_gid` UInt8,
+    `dropoff_ctlabel` Float32,
+    `dropoff_borocode` UInt8,
+    `dropoff_ct2010` String,
+    `dropoff_boroct2010` String,
+    `dropoff_cdeligibil` String,
+    `dropoff_ntacode` FixedString(4),
+    `dropoff_ntaname` String,
+    `dropoff_puma` UInt16
+") SETTINGS input_format_try_infer_datetimes = 0
+```
+
+上面的表的主键是`pickup_datetime`
+
+如果我们查询
+```sql
+select * from trips where trip_id = 1201418711
+```
+因为不在主键中，所以会导致全表扫描。
+
+
+下面是当前表，在磁盘上的存储
+```shell
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:17 201507_1_1_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201507_5_5_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_2_2_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_3_3_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_6_6_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201509_4_4_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201509_7_7_0/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:17 detached/
+-rw-r-----  1 clickhouse clickhouse    1 Jun 24 08:17 format_version.txt
+```
+
+创建投影
+```sql
+ALTER TABLE trips ADD PROJECTION trip_id_projection(
+    select * order by trip_id
+);
+
+-- 创建投影后，历史数据并不能生效，需要手动触发一下
+ALTER TABLE trips MATERIALIZE PROJECTION trip_id_projection;
+```
+
+创建投影之后的文件目录
+```shell
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:17 201507_1_1_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201507_1_1_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201507_5_5_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201507_5_5_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_2_2_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201508_2_2_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_3_3_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201508_3_3_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201508_6_6_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201508_6_6_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201509_4_4_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201509_4_4_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:18 201509_7_7_0/
+drwxr-x---  3 clickhouse clickhouse 4096 Jun 24 08:28 201509_7_7_0_8/
+drwxr-x---  2 clickhouse clickhouse 4096 Jun 24 08:17 detached/
+-rw-r-----  1 clickhouse clickhouse    1 Jun 24 08:17 format_version.txt
+-rw-r-----  1 clickhouse clickhouse  103 Jun 24 08:28 mutation_8.txt
+```
+
+
+再执行查询
+```sql
+explain
+select * from trips where trip_id = 1201418711
+```
+
+```text
+   ┌─explain────────────────────────────────────┐
+1. │ Expression ((Project names + Projection))  │
+2. │   Filter                                   │
+3. │     ReadFromMergeTree (trip_id_projection) │
+   └────────────────────────────────────────────┘
+```
+能看到走投影了
+
 ## 安装
 
 `curl https://clickhouse.com/ | sh`
@@ -374,7 +558,7 @@ ClickHouse的SQL语法跟MySQL非常像
 
 ###  查看表占用的存储空间
 ```sql
-SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = 'productBuffer2';
+SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = 'keywordAsinRec';
 ```
 
 ```sql
@@ -408,7 +592,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = 'brandAd'
+    WHERE active and table = 'keywordAsinRec'
     GROUP BY
         database,
         table
@@ -461,6 +645,20 @@ SELECT formatReadableSize(sum(bytes_allocated)) AS size
 FROM system.dictionaries;
 ```
 
+
+### 查询投影占用的磁盘大小
+
+```sql
+SELECT
+    table,
+    name,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size
+FROM system.projection_parts
+WHERE database = 'default'
+  -- AND table = 'trips'
+GROUP BY table, name
+ORDER BY sum(bytes_on_disk) DESC;
+```
 
 
 ### 查询clickhouse内存占用并清理
@@ -658,7 +856,7 @@ SELECT * FROM system.parts WHERE table = 'your_table';
 作用：包含所有正在进行或已经完成的变更操作（如 ALTER 和 DELETE）。
 示例查询：
 ```sql
-SELECT * FROM system.mutations WHERE table = 'your_table';
+SELECT * FROM system.mutations WHERE table = 'keywordAsinRec';
 ```
 #### 3. system.tables
 作用：包含关于所有表的元数据信息。
@@ -782,7 +980,7 @@ SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicros
        count(*) as sqlNum,
        substring(query, 1, 400)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-06-18 09:00:00')) AND (event_time <= toDateTime('2025-06-18 10:00:00'))
+where (event_time >= toDateTime('2025-06-25 10:48:00')) AND (event_time <= toDateTime('2025-06-25 10:50:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 

@@ -21,15 +21,15 @@ proxies:
   skip-cert-verify: false
 
 ## 这个是处理google play下载问题的节点，每月100G，谨慎使用
-- name: Japan-TY-1-Rate:1.0
-  type: trojan
-  server: ty-1.rise-fuji.com
-  port: 443
-  password: wmJd8mGtHj94QYGn93
-  alpn:
-    - h2
-    - http/1.1
-  skip-cert-verify: true
+# - name: Japan-TY-1-Rate:1.0
+#   type: trojan
+#   server: ty-1.rise-fuji.com
+#   port: 443
+#   password: wmJd8mGtHj94QYGn93
+#   alpn:
+#     - h2
+#     - http/1.1
+#   skip-cert-verify: true
 
 proxy-groups:
 - name: "PROXY"
@@ -37,11 +37,11 @@ proxy-groups:
   proxies:
     - "trojan"
 
-- name: "GOOGLE_PLAY"
-  type: select
-  proxies:
-    - "trojan"
-    - "Japan-TY-1-Rate:1.0"
+# - name: "GOOGLE_PLAY"
+#   type: select
+#   proxies:
+#     - "trojan"
+#     - "Japan-TY-1-Rate:1.0"
 
 rule-providers:
   reject:
@@ -100,12 +100,12 @@ rule-providers:
     path: ./ruleset/gfw.yaml
     interval: 86400
 
-  gfw-cust:
-    type: http
-    behavior: domain
-    url: "https://blog.poul.top/clash/gfw-cust.yaml"
-    path: ./ruleset/gfw-cust.yaml
-    interval: 86400
+  # gfw-cust:
+  #   type: http
+  #   behavior: domain
+  #   url: "https://blog.poul.top/clash/gfw-cust.yaml"
+  #   path: ./ruleset/gfw-cust.yaml
+  #   interval: 86400
 
   tld-not-cn:
     type: http
@@ -144,8 +144,8 @@ rule-providers:
 
 ## 黑名单模式
 rules:
-  - DOMAIN-SUFFIX,googleapis.cn,GOOGLE_PLAY
-  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,GOOGLE_PLAY
+  # - DOMAIN-SUFFIX,googleapis.cn,GOOGLE_PLAY
+  # - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,GOOGLE_PLAY
   - RULE-SET,applications,DIRECT
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT
