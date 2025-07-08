@@ -61,6 +61,17 @@ Spark's design philosophy centers around four key characteristics:
 - Task
   - A single unit of work or execution that will be sent to a Spark executor.
   
+## SparkSQL
+
+####  Catalyst optimizer 
+
+优化器会把计算查询转换为执行计划
+1. analysis
+2. logical optimization
+3. physical planning
+4. code generation  
+
+- Project Tungsten
 
 
 ## 连接Clickhouse
