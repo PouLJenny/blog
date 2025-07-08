@@ -1573,6 +1573,8 @@ var rules = [
             "etizer.org",
             "etokki.com",
             "etoro.com",
+            "todoist.com",
+            "todoist.b-cdn.net",
             "torostatic.com",
             "etowns.net",
             "etowns.org",

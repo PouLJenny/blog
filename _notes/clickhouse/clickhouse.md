@@ -558,7 +558,7 @@ ClickHouse的SQL语法跟MySQL非常像
 
 ###  查看表占用的存储空间
 ```sql
-SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = 'keywordAsinRec';
+SELECT formatReadableSize(total_bytes) FROM system.tables WHERE name = '.inner.bt_keywordAsinAdLatestAsinView';
 ```
 
 ```sql
@@ -625,7 +625,8 @@ SELECT
     formatReadableSize(data_uncompressed_bytes) AS uncompressed_size,
     round(data_compressed_bytes / data_uncompressed_bytes, 2) AS compression_ratio
 FROM system.columns
-WHERE database = 'default' 
+WHERE database = 'd
+efault' 
   AND table = 'product2RepairTest3'
 ORDER BY data_compressed_bytes DESC;
 
@@ -752,6 +753,7 @@ select * from system.dictionaries;
 ```sql
 SYSTEM RELOAD DICTIONARY default.dictionary_name
 ```
+
 
 ### 查询字典表的内存占用
 
@@ -978,9 +980,9 @@ SELECT * FROM system.replicated_fetches;
 SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicroseconds')])   AS userCPU,
        sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'SystemTimeMicroseconds')]) AS systemCPU,
        count(*) as sqlNum,
-       substring(query, 1, 400)                                                               as q
+       substring(query, 1, 70)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-06-25 10:48:00')) AND (event_time <= toDateTime('2025-06-25 10:50:00'))
+where (event_time >= toDateTime('2025-07-04 16:01:00')) AND (event_time <= toDateTime('2025-07-04 16:05:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 

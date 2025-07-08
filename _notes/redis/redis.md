@@ -19,6 +19,43 @@ toc: true
 [官网](https://redis.io/)  
 [Github](https://github.com/redis/redis)
 
+## 源码调试
+
+1. `make distclean`
+2. `make BUILD_WITH_DEBUG=yes -j$(nproc)`
+3. 添加 `.vscode/launch.json`
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Redis Server",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/redis-server",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "logging": {
+        "moduleLoad": true,
+        "trace": true
+      }
+    }
+  ]
+}
+```
+
 ## 数据类型
 - Strings
 - Lists

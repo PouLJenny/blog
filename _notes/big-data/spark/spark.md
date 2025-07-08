@@ -19,6 +19,18 @@
 
 ## 编译
 [编译](https://spark.apache.org/docs/3.5.5/building-spark.html)
+[github](https://github.com/apache/spark/tree/v3.5.5)
+
+`./build/mvn -DskipTests clean package`
+
+## 启动
+
+### Standalone模式
+
+```shell
+./sbin/start-master.sh -h 0.0.0.0 -p 7077 --webui-port 8080
+./sbin/start-worker.sh spark://127.0.0.1:7077
+```
 
 
 ## 设计哲学
@@ -60,7 +72,7 @@ Spark's design philosophy centers around four key characteristics:
 ```shell
 /home/poul/workspace/src/spark/spark-3.5.5/bin/spark-submit \
 --master spark://poul-work:7077 \
---packages com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.8.0,com.clickhouse:clickhouse-jdbc:0.6.3 \
+--packages com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.8.0,com.clickhouse:clickhouse-client:0.7.0,com.clickhouse:clickhouse-http-client:0.7.0,org.apache.httpcomponents.client5:httpclient5:5.2.1 \
 /home/poul/workspace/src/Connan/all_test_py/spark/ck_connector_test.py
 ```
 
