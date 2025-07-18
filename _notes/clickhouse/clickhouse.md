@@ -608,7 +608,7 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
-WHERE active 
+WHERE active and database = 'ssb'
 GROUP BY
     database,
     table

@@ -10,7 +10,10 @@
 - [Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-82.pdf)
 - [Apache Spark: A Unified Engine for Big Data Processing](https://people.eecs.berkeley.edu/~matei/papers/2016/cacm_apache_spark.pdf)
 
+## 参考文档
 
+- [Spark SQL内置函数手册](https://spark.apache.org/docs/3.5.5/api/sql/index.html)
+- 
 
 ## 源码下载
 [下载网页](https://spark.apache.org/downloads.html)
@@ -23,13 +26,23 @@
 
 `./build/mvn -DskipTests clean package`
 
+上面的方式编译出来的没办法执行`spark-sql`
+
+需要通过下面的方式来处理
+`build/mvn -Phive -Phive-thriftserver -DskipTests clean package`
+
 ## 启动
 
 ### Standalone模式
 
 ```shell
+# 指定一下当前的ip，选择一个合适的ip
+export SPARK_LOCAL_IP=192.168.31.27
 ./sbin/start-master.sh -h 0.0.0.0 -p 7077 --webui-port 8080
 ./sbin/start-worker.sh spark://127.0.0.1:7077
+
+# 关闭所有的spark服务
+./sbin/stop-all.sh
 ```
 
 
@@ -77,13 +90,45 @@ Spark's design philosophy centers around four key characteristics:
 ## 连接Clickhouse
 
 [Spark Connector](https://clickhouse.com/docs/integrations/apache-spark/spark-native-connector)
+
 [Spark Connector Github](https://github.com/ClickHouse/spark-clickhouse-connector)
 
 
+## 提交一个任务
 ```shell
 /home/poul/workspace/src/spark/spark-3.5.5/bin/spark-submit \
+--executor-memory 8g \
 --master spark://poul-work:7077 \
---packages com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.8.0,com.clickhouse:clickhouse-client:0.7.0,com.clickhouse:clickhouse-http-client:0.7.0,org.apache.httpcomponents.client5:httpclient5:5.2.1 \
-/home/poul/workspace/src/Connan/all_test_py/spark/ck_connector_test.py
+--packages com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.8.0,com.clickhouse:clickhouse-client:0.7.0,com.clickhouse:clickhouse-http-client:0.7.0,org.apache.httpcomponents.client5:httpclient5:5.2.1,com.clickhouse:clickhouse-jdbc:0.8.0 \
+/home/poul/workspace/src/Connan/all_test_py/spark/batch_test.py
+
 ```
 
+阿里云的spark serverless提交
+
+```shell
+--conf spark.jars.packages=com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.8.0,com.clickhouse:clickhouse-client:0.7.0,com.clickhouse:clickhouse-http-client:0.7.0,org.apache.httpcomponents.client5:httpclient5:5.2.1,com.clickhouse:clickhouse-jdbc:0.8.0 \
+oss://spark-workspace/batch_test.py
+```
+
+
+```shell
+--conf spark.jars=oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_clickhouse-client-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_clickhouse-data-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_clickhouse-http-client-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_clickhouse-jdbc-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_client-v2-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse_jdbc-v2-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.clickhouse.spark_clickhouse-spark-runtime-3.5_2.12-0.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/com.fasterxml.jackson.core_jackson-core-2.17.2.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/commons-codec_commons-codec-1.17.1.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/commons-io_commons-io-2.16.1.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/commons-io_commons-io-2.16.1.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.apache.commons_commons-lang3-3.16.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.apache.httpcomponents.client5_httpclient5-5.2.1.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.apache.
+httpcomponents.core5_httpcore5-5.2.1.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.apache.httpcomponents.core5_httpcore5-h2-5.2.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.lz4_lz4-pure-java-1.8.0.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.ow2.asm_asm-9.5.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.roaringbitmap_RoaringBitmap-0.9.47.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.roaringbitmap_shims-0.9.47.jar,oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/2175e3200add48e580582379192f3cb8/org.slf4j_slf4j-api-2.0.7.jar \
+oss://workflow-ide-cn-shenzhen/spark_artifact/w-04c835df4a505ae3/batch_test.py
+```
+
+从clickhouse查询spark发起的sql请求
+```sql
+select 
+query,max(event_time),min(event_time)
+from system.query_log
+where event_time >= '2025-07-11 15:25:09' and event_time <= '2025-07-11 16:25:09' and lower(http_user_agent) like '%spark%'
+group by query order by max(event_time) desc;
+
+select
+query,exception
+from system.query_log
+where event_time >= '2025-07-11 15:25:09' and event_time <= '2025-07-11 16:25:09' and lower(http_user_agent) like '%spark%'
+and exception is not null and exception != '' order by event_time desc;
+```

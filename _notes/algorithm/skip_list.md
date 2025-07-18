@@ -13,6 +13,9 @@ toc: true
 # Skip List / 跳表
 
 [非常牛逼的一个博客](https://www.jianshu.com/p/9d8296562806 )
+[论文 Skip Lists: A Probabilistic Alternative to Balanced Trees](https://epaperpress.com/sortsearch/download/skiplist.pdf)
+
+
 
 ## 介绍
 

@@ -31,3 +31,18 @@ org.springframework.scheduling.support.CronSequenceGenerator 解析cron表达式
 
 
 ### SIA-TASK 的任务解析流程
+
+
+### AirFlow
+由于是用python写的，对java支持的不是特别友好，而是不懂python的话运维起来也是麻烦
+
+[官网](https://airflow.apache.org/)
+[github](https://github.com/apache/airflow/)
+
+### dolphinscheduler
+是用java实现的
+
+[官网](https://dolphinscheduler.apache.org/en-us)
+[github](https://github.com/apache/dolphinscheduler)
+
+

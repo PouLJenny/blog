@@ -81,6 +81,23 @@ LRU-K具有LRU的优点，同时能够避免LRU的缺点，实际应用中LRU-2�
 [博客](https://melonshell.github.io/2020/02/07/ds_cache_eli/ "")
 
 
+## Papers 算法的相关论文
 
+### SkipList
+[Skip Lists: A Probabilistic Alternative to Balanced Trees](https://epaperpress.com/sortsearch/download/skiplist.pdf)
+
+### Self‑adjusting trees
+[Self‑Adjusting Binary Search Trees](https://www.cs.cmu.edu/~sleator/papers/self-adjusting.pdf)
+
+### LSM-tree
+[The Log-Structured Merge-Tree (LSM-Tree)](https://www.cs.umb.edu/~poneil/lsmtree.pdf)
+
+### B-tree
+[ORGANIZATION AND MAINTENANCE OF LARGE ORDERED INDICES ](https://dl.acm.org/doi/pdf/10.1145/1734663.1734671)
+
+### AVL Tree
+[An algorithm for the organization of information](https://zhjwpku.com/assets/pdf/AED2-10-avl-paper.pdf)
+
+# EOF
 
 

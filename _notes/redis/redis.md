@@ -133,12 +133,285 @@ struct __attribute__ ((__packed__)) sdshdr64 {
 **二进制安全的**，如果你在字符串中输入了 `\0` 字符，比如`re\0di\0s` 
 这样的话你从redis里面读出来的字符串可能是`re di s`,这样就不对了，redis自己实现的sds数据结构，通过`len`参数可以很好的解决这个问题
 
+`__attribute__ ((__packed__))` 作用： 取消二进制对齐
+1. 默认情况下结构体按变量大小的最小公倍数做字节对齐
+2. 取消结构体在编译过程中的优化对齐，按照实际占用字节数进行对齐
+3. 带来的好处就是省内存，省空间
+
+
 内存重分配
 
 惰性释放
 
 
+#### SDS一些重要的API
 
+
+##### sdsnewlen
+
+```c
+sds _sdsnewlen(const void *init, size_t initlen, int trymalloc) {
+    void *sh; // sds指针
+    sds s; // buf
+    char type = sdsReqType(initlen);// 根据长度判断使用的sdshdr类型
+    /* Empty strings are usually created in order to append. Use type 8
+     * since type 5 is not good at this. */
+    if (type == SDS_TYPE_5 && initlen == 0) type = SDS_TYPE_8;
+    int hdrlen = sdsHdrSize(type);
+    unsigned char *fp; /* flags pointer. */
+    size_t usable;
+
+    assert(initlen + hdrlen + 1 > initlen); /* Catch size_t overflow */
+    sh = trymalloc?
+        s_trymalloc_usable(hdrlen+initlen+1, &usable) :
+        s_malloc_usable(hdrlen+initlen+1, &usable);
+    if (sh == NULL) return NULL;
+    if (init==SDS_NOINIT)
+        init = NULL;
+    else if (!init)
+        memset(sh, 0, hdrlen+initlen+1);
+    s = (char*)sh+hdrlen;
+    fp = ((unsigned char*)s)-1;
+    usable = usable-hdrlen-1;
+    if (usable > sdsTypeMaxSize(type))
+        usable = sdsTypeMaxSize(type);
+    switch(type) {
+        case SDS_TYPE_5: {
+            *fp = type | (initlen << SDS_TYPE_BITS);
+            break;
+        }
+        case SDS_TYPE_8: {
+            SDS_HDR_VAR(8,s);
+            sh->len = initlen;
+            sh->alloc = usable;
+            *fp = type;
+            break;
+        }
+        case SDS_TYPE_16: {
+            SDS_HDR_VAR(16,s);
+            sh->len = initlen;
+            sh->alloc = usable;
+            *fp = type;
+            break;
+        }
+        case SDS_TYPE_32: {
+            SDS_HDR_VAR(32,s);
+            sh->len = initlen;
+            sh->alloc = usable;
+            *fp = type;
+            break;
+        }
+        case SDS_TYPE_64: {
+            SDS_HDR_VAR(64,s);
+            sh->len = initlen;
+            sh->alloc = usable;
+            *fp = type;
+            break;
+        }
+    }
+    if (initlen && init)
+        memcpy(s, init, initlen);
+    s[initlen] = '\0';
+    return s;
+}
+```
+
+##### sdsfree
+
+```c
+void sdsfree(sds s) {
+    if (s == NULL) return;
+    s_free((char*)s-sdsHdrSize(s[-1]));
+}
+```
+
+##### sdscatlen
+
+```c
+sds sdscatlen(sds s, const void *t, size_t len) {
+    size_t curlen = sdslen(s);
+
+    s = sdsMakeRoomFor(s,len); // 判断拼接后的字符串是否需要扩容
+    if (s == NULL) return NULL;
+    memcpy(s+curlen, t, len);
+    sdssetlen(s, curlen+len);
+    s[curlen+len] = '\0';
+    return s;
+}
+
+```
+
+##### sdsMakeRoomFor
+字符串扩容
+
+1. 活动当前sds可用空间avail，若大于等于新增长度addlen则无需扩容，直接返回
+2. 若avali小于addlen，len + addlen < 1M,则2倍扩容
+3. 若avali小于addlen，len + addlen >= 1M,则 +1M扩容
+4. 根据新长度选择sds类型，如果sds类型和原类型相同，则通过realloc扩大柔性数组
+5. 如果sds类型和原类型不相同，则malloc重新申请内存，并把原buf内容移动到新位置
+
+```c
+sds _sdsMakeRoomFor(sds s, size_t addlen, int greedy) {
+    void *sh, *newsh;
+    size_t avail = sdsavail(s);
+    size_t len, newlen, reqlen;
+    char type, oldtype = s[-1] & SDS_TYPE_MASK;
+    int hdrlen;
+    size_t usable;
+
+    /* Return ASAP if there is enough space left. */
+    if (avail >= addlen) return s;
+
+    len = sdslen(s);
+    sh = (char*)s-sdsHdrSize(oldtype);
+    reqlen = newlen = (len+addlen);
+    assert(newlen > len);   /* Catch size_t overflow */
+    if (greedy == 1) {
+        if (newlen < SDS_MAX_PREALLOC)
+            newlen *= 2;
+        else
+            newlen += SDS_MAX_PREALLOC;
+    }
+
+    type = sdsReqType(newlen);
+
+    /* Don't use type 5: the user is appending to the string and type 5 is
+     * not able to remember empty space, so sdsMakeRoomFor() must be called
+     * at every appending operation. */
+    if (type == SDS_TYPE_5) type = SDS_TYPE_8;
+
+    hdrlen = sdsHdrSize(type);
+    assert(hdrlen + newlen + 1 > reqlen);  /* Catch size_t overflow */
+    if (oldtype==type) {
+        newsh = s_realloc_usable(sh, hdrlen+newlen+1, &usable);
+        if (newsh == NULL) return NULL;
+        s = (char*)newsh+hdrlen;
+    } else {
+        /* Since the header size changes, need to move the string forward,
+         * and can't use realloc */
+        newsh = s_malloc_usable(hdrlen+newlen+1, &usable);
+        if (newsh == NULL) return NULL;
+        memcpy((char*)newsh+hdrlen, s, len+1);
+        s_free(sh);
+        s = (char*)newsh+hdrlen;
+        s[-1] = type;
+        sdssetlen(s, len);
+    }
+    usable = usable-hdrlen-1;
+    if (usable > sdsTypeMaxSize(type))
+        usable = sdsTypeMaxSize(type);
+    sdssetalloc(s, usable);
+    return s;
+}
+```
+
+
+#### SDS的编码
+
+1. OBJ_ENCODING_EMBSTR 短字串编码
+2. OBJ_ENCODING_RAW 普通字串编码
+3. OBJ_ENCODING_INT 整型数字编码
+
+```c
+#define OBJ_ENCODING_EMBSTR_SIZE_LIMIT 44
+robj *createStringObject(const char *ptr, size_t len) {
+    if (len <= OBJ_ENCODING_EMBSTR_SIZE_LIMIT)
+        return createEmbeddedStringObject(ptr,len);
+    else
+        return createRawStringObject(ptr,len);
+}
+```
+
+
+```c
+/* Try to encode a string object in order to save space */
+robj *tryObjectEncoding(robj *o) {
+    long value;
+    sds s = o->ptr;
+    size_t len;
+
+    /* Make sure this is a string object, the only type we encode
+     * in this function. Other types use encoded memory efficient
+     * representations but are handled by the commands implementing
+     * the type. */
+    serverAssertWithInfo(NULL,o,o->type == OBJ_STRING);
+
+    /* We try some specialized encoding only for objects that are
+     * RAW or EMBSTR encoded, in other words objects that are still
+     * in represented by an actually array of chars. */
+    if (!sdsEncodedObject(o)) return o;
+
+    /* It's not safe to encode shared objects: shared objects can be shared
+     * everywhere in the "object space" of Redis and may end in places where
+     * they are not handled. We handle them only as values in the keyspace. */
+     if (o->refcount > 1) return o;
+
+    /* Check if we can represent this string as a long integer.
+     * Note that we are sure that a string larger than 20 chars is not
+     * representable as a 32 nor 64 bit integer. */
+    len = sdslen(s);
+    if (len <= 20 && string2l(s,len,&value)) {
+        /* This object is encodable as a long. Try to use a shared object.
+         * Note that we avoid using shared integers when maxmemory is used
+         * because every object needs to have a private LRU field for the LRU
+         * algorithm to work well. */
+        if ((server.maxmemory == 0 ||
+            !(server.maxmemory_policy & MAXMEMORY_FLAG_NO_SHARED_INTEGERS)) &&
+            value >= 0 &&
+            value < OBJ_SHARED_INTEGERS)
+        {
+            decrRefCount(o);
+            incrRefCount(shared.integers[value]);
+            return shared.integers[value];
+        } else {
+            if (o->encoding == OBJ_ENCODING_RAW) {
+                sdsfree(o->ptr);
+                o->encoding = OBJ_ENCODING_INT;
+                o->ptr = (void*) value;
+                return o;
+            } else if (o->encoding == OBJ_ENCODING_EMBSTR) {
+                decrRefCount(o);
+                return createStringObjectFromLongLongForValue(value);
+            }
+        }
+    }
+
+    /* If the string is small and is still RAW encoded,
+     * try the EMBSTR encoding which is more efficient.
+     * In this representation the object and the SDS string are allocated
+     * in the same chunk of memory to save space and cache misses. */
+    if (len <= OBJ_ENCODING_EMBSTR_SIZE_LIMIT) {
+        robj *emb;
+
+        if (o->encoding == OBJ_ENCODING_EMBSTR) return o;
+        emb = createEmbeddedStringObject(s,sdslen(s));
+        decrRefCount(o);
+        return emb;
+    }
+
+    /* We can't encode the object...
+     *
+     * Do the last try, and at least optimize the SDS string inside
+     * the string object to require little space, in case there
+     * is more than 10% of free space at the end of the SDS string.
+     *
+     * We do that only for relatively large strings as this branch
+     * is only entered if the length of the string is greater than
+     * OBJ_ENCODING_EMBSTR_SIZE_LIMIT. */
+    trimStringObjectIfNeeded(o);
+
+    /* Return the original object. */
+    return o;
+}
+
+```
+
+
+#### SDS的一些优势
+
+1. 获得len、free、alloc的时间为O(1)
+2. 二进制安全，可以存储二进制数据
+3. 在可能造成缓冲区溢出时会自动重新分配内存，杜绝了buf[]溢出
 
 ### Lists
 
@@ -168,18 +441,20 @@ typedef struct list{
 ```c
 /* ZSETs use a specialized version of Skiplists */
 typedef struct zskiplistNode {
-    sds ele;
-    double score;
-    struct zskiplistNode *backward;
+    sds ele; // 字符串
+    double score; // 得分
+    struct zskiplistNode *backward; // 上一个元素的指针
     struct zskiplistLevel {
-        struct zskiplistNode *forward;
-        unsigned long span;
+        struct zskiplistNode *forward; // 下一个元素的指针
+        unsigned long span; // 本节点到下个节点跳过的节点数量
     } level[];
 } zskiplistNode;
 
 typedef struct zskiplist {
     struct zskiplistNode *header, *tail;
+    // 元素数量
     unsigned long length;
+    // 最高层数
     int level;
 } zskiplist;
 
@@ -189,6 +464,187 @@ typedef struct zset {
 } zset;
 ```
 
+
+#### 创建跳跃表
+`t_zset.c`文件
+```c
+/* Create a new skiplist. */
+zskiplist *zslCreate(void) {
+    int j;
+    zskiplist *zsl;
+
+    zsl = zmalloc(sizeof(*zsl)); // 分配内存
+    zsl->level = 1;
+    zsl->length = 0;
+    zsl->header = zslCreateNode(ZSKIPLIST_MAXLEVEL,0,NULL);
+    for (j = 0; j < ZSKIPLIST_MAXLEVEL; j++) {
+        zsl->header->level[j].forward = NULL;
+        zsl->header->level[j].span = 0;
+    }
+    zsl->header->backward = NULL;
+    zsl->tail = NULL;
+    return zsl;
+}
+```
+
+#### zslGetRank
+
+```c
+/* Find the rank for an element by both score and key.
+ * Returns 0 when the element cannot be found, rank otherwise.
+ * Note that the rank is 1-based due to the span of zsl->header to the
+ * first element. */
+unsigned long zslGetRank(zskiplist *zsl, double score, sds ele) {
+    zskiplistNode *x;
+    unsigned long rank = 0;
+    int i;
+
+    x = zsl->header;
+    for (i = zsl->level-1; i >= 0; i--) {
+        while (x->level[i].forward &&
+            (x->level[i].forward->score < score ||
+                (x->level[i].forward->score == score &&
+                sdscmp(x->level[i].forward->ele,ele) <= 0))) {
+            rank += x->level[i].span;
+            x = x->level[i].forward;
+        }
+
+        /* x might be equal to zsl->header, so test if obj is non-NULL */
+        if (x->ele && x->score == score && sdscmp(x->ele,ele) == 0) {
+            return rank;
+        }
+    }
+    return 0;
+}
+```
+
+#### zslGetElementByRank
+```c
+/* Finds an element by its rank. The rank argument needs to be 1-based. */
+zskiplistNode* zslGetElementByRank(zskiplist *zsl, unsigned long rank) {
+    zskiplistNode *x;
+    unsigned long traversed = 0;
+    int i;
+
+    x = zsl->header;
+    for (i = zsl->level-1; i >= 0; i--) {
+        while (x->level[i].forward && (traversed + x->level[i].span) <= rank)
+        {
+            traversed += x->level[i].span;
+            x = x->level[i].forward;
+        }
+        if (traversed == rank) {
+            return x;
+        }
+    }
+    return NULL;
+}
+```
+
+
+#### zslInsert
+```c
+/* Insert a new node in the skiplist. Assumes the element does not already
+ * exist (up to the caller to enforce that). The skiplist takes ownership
+ * of the passed SDS string 'ele'. */
+zskiplistNode *zslInsert(zskiplist *zsl, double score, sds ele) {
+    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;
+    unsigned long rank[ZSKIPLIST_MAXLEVEL];
+    int i, level;
+
+    serverAssert(!isnan(score));
+    x = zsl->header;
+    for (i = zsl->level-1; i >= 0; i--) {
+        /* store rank that is crossed to reach the insert position */
+        rank[i] = i == (zsl->level-1) ? 0 : rank[i+1];
+        while (x->level[i].forward &&
+                (x->level[i].forward->score < score ||
+                    (x->level[i].forward->score == score &&
+                    sdscmp(x->level[i].forward->ele,ele) < 0)))
+        {
+            rank[i] += x->level[i].span;
+            x = x->level[i].forward;
+        }
+        update[i] = x;
+    }
+    /* we assume the element is not already inside, since we allow duplicated
+     * scores, reinserting the same element should never happen since the
+     * caller of zslInsert() should test in the hash table if the element is
+     * already inside or not. */
+    level = zslRandomLevel();
+    if (level > zsl->level) {
+        for (i = zsl->level; i < level; i++) {
+            rank[i] = 0;
+            update[i] = zsl->header;
+            update[i]->level[i].span = zsl->length;
+        }
+        zsl->level = level;
+    }
+    x = zslCreateNode(level,score,ele);
+    for (i = 0; i < level; i++) {
+        x->level[i].forward = update[i]->level[i].forward;
+        update[i]->level[i].forward = x;
+
+        /* update span covered by update[i] as x is inserted here */
+        x->level[i].span = update[i]->level[i].span - (rank[0] - rank[i]);
+        update[i]->level[i].span = (rank[0] - rank[i]) + 1;
+    }
+
+    /* increment span for untouched levels */
+    for (i = level; i < zsl->level; i++) {
+        update[i]->level[i].span++;
+    }
+
+    x->backward = (update[0] == zsl->header) ? NULL : update[0];
+    if (x->level[0].forward)
+        x->level[0].forward->backward = x;
+    else
+        zsl->tail = x;
+    zsl->length++;
+    return x;
+}
+```
+
+
+#### zsldelete
+```c
+/* Delete an element with matching score/element from the skiplist.
+ * The function returns 1 if the node was found and deleted, otherwise
+ * 0 is returned.
+ *
+ * If 'node' is NULL the deleted node is freed by zslFreeNode(), otherwise
+ * it is not freed (but just unlinked) and *node is set to the node pointer,
+ * so that it is possible for the caller to reuse the node (including the
+ * referenced SDS string at node->ele). */
+int zslDelete(zskiplist *zsl, double score, sds ele, zskiplistNode **node) {
+    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;
+    int i;
+
+    x = zsl->header;
+    for (i = zsl->level-1; i >= 0; i--) {
+        while (x->level[i].forward &&
+                (x->level[i].forward->score < score ||
+                    (x->level[i].forward->score == score &&
+                     sdscmp(x->level[i].forward->ele,ele) < 0)))
+        {
+            x = x->level[i].forward;
+        }
+        update[i] = x;
+    }
+    /* We may have multiple elements with the same score, what we need
+     * is to find the element with both the right score and object. */
+    x = x->level[0].forward;
+    if (x && score == x->score && sdscmp(x->ele,ele) == 0) {
+        zslDeleteNode(zsl, x, update);
+        if (!node)
+            zslFreeNode(x);
+        else
+            *node = x;
+        return 1;
+    }
+    return 0; /* not found */
+}
+```
 
 ### Streams
 
@@ -200,6 +656,66 @@ typedef struct zset {
 
 
 ### Bitfields
+
+### ziplist
+`ziplist.c`
+
+```c
+
+
+/* We use this function to receive information about a ziplist entry.
+ * Note that this is not how the data is actually encoded, is just what we
+ * get filled by a function in order to operate more easily. */
+typedef struct zlentry {
+    unsigned int prevrawlensize; /* Bytes used to encode the previous entry len*/
+    unsigned int prevrawlen;     /* Previous entry len. */
+    unsigned int lensize;        /* Bytes used to encode this entry type/len.
+                                    For example strings have a 1, 2 or 5 bytes
+                                    header. Integers always use a single byte.*/
+    unsigned int len;            /* Bytes used to represent the actual entry.
+                                    For strings this is just the string length
+                                    while for integers it is 1, 2, 3, 4, 8 or
+                                    0 (for 4 bit immediate) depending on the
+                                    number range. */
+    unsigned int headersize;     /* prevrawlensize + lensize. */
+    unsigned char encoding;      /* Set to ZIP_STR_* or ZIP_INT_* depending on
+                                    the entry encoding. However for 4 bits
+                                    immediate integers this can assume a range
+                                    of values and must be range-checked. */
+    unsigned char *p;            /* Pointer to the very start of the entry, that
+                                    is, this points to prev-entry-len field. */
+} zlentry;
+```
+
+
+`<zlbytes> <zltail> <zllen> <entry> <entry> ... <entry> <zlend>`
+- NOTE: all fields are stored in little endian, if not specified otherwise.
+
+- zlbytes, uint32_t, is an unsigned integer to hold the number of bytes that the ziplist occupies including the four bytes of the zlbytes field itself.
+- zltail,uint32_t, is the offset to the last entry in the list, base 0
+- zllen,uint16_t,is the number of entries, When there are more than 2^16-2 entries, this value is set to 2^16-1 and we need to traverse the entire list to know how many items it holds.
+- zlend,uint8_t,is a special entry representing the end of the ziplist.Is encoded as a single byte equal to 255. No other normal entry starts with a byte set to the value of 255.
+
+每个`entry`的内部结构
+`<prevlen> <encoding> <entry-data>`
+
+
+来一个实际的例子:
+
+```txt
+[0f 00 00 00] [0c 00 00 00] [02 00] [00 f3] [02 f6] [ff]
+      |             |          |       |       |     |
+   zlbytes        zltail    entries   "2"     "5"   end
+```
+
+
+### ziplistNew
+
+### ziplistInsert
+
+### ziplistDelete
+
+### ziplistFind
 
 
 ## key过期
