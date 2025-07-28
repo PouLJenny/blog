@@ -435,6 +435,8 @@ typedef struct list{
 ### Hashes
 
 
+
+
 ### Sorted sets
 跳表实现的
 `server.h`
@@ -709,13 +711,552 @@ typedef struct zlentry {
 ```
 
 
-### ziplistNew
+#### ziplistNew
 
-### ziplistInsert
+#### ziplistInsert
 
-### ziplistDelete
+#### ziplistDelete
 
-### ziplistFind
+#### ziplistFind
+
+#### 设计思想和优势
+1. 主要思想就是压缩内存
+2. 连续的内存，元素与元素之间没有空隙
+3. encoding即存类别也存长度
+4. 典型的时间换空间的思想
+
+## 数据结构
+
+### SDS
+
+### ZipList
+
+### 字典
+
+应用：
+1. Redis主存储
+2. hash数据类型的实现
+3. 过期时间的key、zset中value和score的映射关系
+
+源码文件`dict.h`,`dict.c`
+
+
+```c
+struct dict {
+    dictType *type;
+
+    dictEntry **ht_table[2];
+    unsigned long ht_used[2];
+
+    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+
+    /* Keep small vars at end for optimal (minimal) struct padding */
+    int16_t pauserehash; /* If >0 rehashing is paused (<0 indicates coding error) */
+    signed char ht_size_exp[2]; /* exponent of size. (size = 1<<exp) */
+};
+
+
+typedef struct dictType {
+    uint64_t (*hashFunction)(const void *key);
+    void *(*keyDup)(dict *d, const void *key);
+    void *(*valDup)(dict *d, const void *obj);
+    int (*keyCompare)(dict *d, const void *key1, const void *key2);
+    void (*keyDestructor)(dict *d, void *key);
+    void (*valDestructor)(dict *d, void *obj);
+    int (*expandAllowed)(size_t moreMem, double usedRatio);
+    /* Allow a dictEntry to carry extra caller-defined metadata.  The
+     * extra memory is initialized to 0 when a dictEntry is allocated. */
+    size_t (*dictEntryMetadataBytes)(dict *d);
+} dictType;
+
+typedef struct dictEntry {
+    void *key;
+    union {
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    } v;
+    struct dictEntry *next;     /* Next entry in the same hash bucket. */
+    void *metadata[];           /* An arbitrary number of bytes (starting at a
+                                 * pointer-aligned address) of size as returned
+                                 * by dictType's dictEntryMetadataBytes(). */
+} dictEntry;
+```
+
+#### hash函数
+
+1. 客户端： murmurhash
+2. 服务端： siphash
+
+
+#### dictCreate
+```c
+/* Create a new hash table */
+dict *dictCreate(dictType *type)
+{
+    dict *d = zmalloc(sizeof(*d));
+
+    _dictInit(d,type);
+    return d;
+}
+
+/* Initialize the hash table */
+int _dictInit(dict *d, dictType *type)
+{
+    _dictReset(d, 0);
+    _dictReset(d, 1);
+    d->type = type;
+    d->rehashidx = -1;
+    d->pauserehash = 0;
+    return DICT_OK;
+}
+```
+
+#### dictFind
+```c
+dictEntry *dictFind(dict *d, const void *key)
+{
+    dictEntry *he;
+    uint64_t h, idx, table;
+
+    if (dictSize(d) == 0) return NULL; /* dict is empty */
+    if (dictIsRehashing(d)) _dictRehashStep(d);
+    h = dictHashKey(d, key);
+    for (table = 0; table <= 1; table++) {
+        idx = h & DICTHT_SIZE_MASK(d->ht_size_exp[table]);
+        he = d->ht_table[table][idx];
+        while(he) {
+            if (key==he->key || dictCompareKeys(d, key, he->key))
+                return he;
+            he = he->next;
+        }
+        if (!dictIsRehashing(d)) return NULL;
+    }
+    return NULL;
+}
+```
+
+
+#### dictAdd
+```c
+/* Add an element to the target hash table */
+int dictAdd(dict *d, void *key, void *val)
+{
+    dictEntry *entry = dictAddRaw(d,key,NULL);
+
+    if (!entry) return DICT_ERR;
+    dictSetVal(d, entry, val);
+    return DICT_OK;
+}
+/* Low level add or find:
+ * This function adds the entry but instead of setting a value returns the
+ * dictEntry structure to the user, that will make sure to fill the value
+ * field as they wish.
+ *
+ * This function is also directly exposed to the user API to be called
+ * mainly in order to store non-pointers inside the hash value, example:
+ *
+ * entry = dictAddRaw(dict,mykey,NULL);
+ * if (entry != NULL) dictSetSignedIntegerVal(entry,1000);
+ *
+ * Return values:
+ *
+ * If key already exists NULL is returned, and "*existing" is populated
+ * with the existing entry if existing is not NULL.
+ *
+ * If key was added, the hash entry is returned to be manipulated by the caller.
+ */
+dictEntry *dictAddRaw(dict *d, void *key, dictEntry **existing)
+{
+    long index;
+    dictEntry *entry;
+    int htidx;
+
+    if (dictIsRehashing(d)) _dictRehashStep(d);
+
+    /* Get the index of the new element, or -1 if
+     * the element already exists. */
+    if ((index = _dictKeyIndex(d, key, dictHashKey(d,key), existing)) == -1)
+        return NULL;
+
+    /* Allocate the memory and store the new entry.
+     * Insert the element in top, with the assumption that in a database
+     * system it is more likely that recently added entries are accessed
+     * more frequently. */
+    htidx = dictIsRehashing(d) ? 1 : 0;
+    size_t metasize = dictMetadataSize(d);
+    entry = zmalloc(sizeof(*entry) + metasize);
+    if (metasize > 0) {
+        memset(dictMetadata(entry), 0, metasize);
+    }
+    entry->next = d->ht_table[htidx][index];
+    d->ht_table[htidx][index] = entry;
+    d->ht_used[htidx]++;
+
+    /* Set the hash entry fields. */
+    dictSetKey(d, entry, key);
+    return entry;
+}
+```
+#### dictReplace
+
+#### dictDelete
+
+```c
+/* Remove an element, returning DICT_OK on success or DICT_ERR if the
+ * element was not found. */
+int dictDelete(dict *ht, const void *key) {
+    return dictGenericDelete(ht,key,0) ? DICT_OK : DICT_ERR;
+}
+
+/* Search and remove an element. This is a helper function for
+ * dictDelete() and dictUnlink(), please check the top comment
+ * of those functions. */
+static dictEntry *dictGenericDelete(dict *d, const void *key, int nofree) {
+    uint64_t h, idx;
+    dictEntry *he, *prevHe;
+    int table;
+
+    /* dict is empty */
+    if (dictSize(d) == 0) return NULL;
+
+    if (dictIsRehashing(d)) _dictRehashStep(d);
+    h = dictHashKey(d, key);
+
+    for (table = 0; table <= 1; table++) {
+        idx = h & DICTHT_SIZE_MASK(d->ht_size_exp[table]);
+        he = d->ht_table[table][idx];
+        prevHe = NULL;
+        while(he) {
+            if (key==he->key || dictCompareKeys(d, key, he->key)) {
+                /* Unlink the element from the list */
+                if (prevHe)
+                    prevHe->next = he->next;
+                else
+                    d->ht_table[table][idx] = he->next;
+                if (!nofree) {
+                    dictFreeUnlinkedEntry(d, he);
+                }
+                d->ht_used[table]--;
+                return he;
+            }
+            prevHe = he;
+            he = he->next;
+        }
+        if (!dictIsRehashing(d)) break;
+    }
+    return NULL; /* not found */
+}
+```
+
+#### 渐进式rehash
+redis设计了一种rehash的流程是分步骤的，并不会在第一次出发rehash的时候把所有的bucket都处理完毕，而是每次访问字典的时候处理。这样做的好处是如果dict非常大的时候，整个rehash的处理时间都分摊开了。并不会
+阻塞redis的单线程。非常漂亮的处理逻辑。
+```c
+/* Performs N steps of incremental rehashing. Returns 1 if there are still
+ * keys to move from the old to the new hash table, otherwise 0 is returned.
+ *
+ * Note that a rehashing step consists in moving a bucket (that may have more
+ * than one key as we use chaining) from the old to the new hash table, however
+ * since part of the hash table may be composed of empty spaces, it is not
+ * guaranteed that this function will rehash even a single bucket, since it
+ * will visit at max N*10 empty buckets in total, otherwise the amount of
+ * work it does would be unbound and the function may block for a long time. */
+int dictRehash(dict *d, int n) {
+    int empty_visits = n*10; /* Max number of empty buckets to visit. */
+    if (dict_can_resize == DICT_RESIZE_FORBID || !dictIsRehashing(d)) return 0;
+    if (dict_can_resize == DICT_RESIZE_AVOID && 
+        (DICTHT_SIZE(d->ht_size_exp[1]) / DICTHT_SIZE(d->ht_size_exp[0]) < dict_force_resize_ratio))
+    {
+        return 0;
+    }
+
+    while(n-- && d->ht_used[0] != 0) {
+        dictEntry *de, *nextde;
+
+        /* Note that rehashidx can't overflow as we are sure there are more
+         * elements because ht[0].used != 0 */
+        assert(DICTHT_SIZE(d->ht_size_exp[0]) > (unsigned long)d->rehashidx);
+        while(d->ht_table[0][d->rehashidx] == NULL) {
+            d->rehashidx++;
+            if (--empty_visits == 0) return 1;
+        }
+        de = d->ht_table[0][d->rehashidx];
+        /* Move all the keys in this bucket from the old to the new hash HT */
+        while(de) {
+            uint64_t h;
+
+            nextde = de->next;
+            /* Get the index in the new hash table */
+            h = dictHashKey(d, de->key) & DICTHT_SIZE_MASK(d->ht_size_exp[1]);
+            de->next = d->ht_table[1][h];
+            d->ht_table[1][h] = de;
+            d->ht_used[0]--;
+            d->ht_used[1]++;
+            de = nextde;
+        }
+        d->ht_table[0][d->rehashidx] = NULL;
+        d->rehashidx++;
+    }
+
+    /* Check if we already rehashed the whole table... */
+    if (d->ht_used[0] == 0) {
+        zfree(d->ht_table[0]);
+        /* Copy the new ht onto the old one */
+        d->ht_table[0] = d->ht_table[1];
+        d->ht_used[0] = d->ht_used[1];
+        d->ht_size_exp[0] = d->ht_size_exp[1];
+        _dictReset(d, 1);
+        d->rehashidx = -1;
+        return 0;
+    }
+
+    /* More to rehash... */
+    return 1;
+}
+
+/* Resize the table to the minimal size that contains all the elements,
+ * but with the invariant of a USED/BUCKETS ratio near to <= 1 */
+int dictResize(dict *d)
+{
+    unsigned long minimal;
+
+    if (dict_can_resize != DICT_RESIZE_ENABLE || dictIsRehashing(d)) return DICT_ERR;
+    minimal = d->ht_used[0];
+    if (minimal < DICT_HT_INITIAL_SIZE)
+        minimal = DICT_HT_INITIAL_SIZE;
+    return dictExpand(d, minimal);
+}
+```
+
+#### 字典的遍历
+
+```c
+/* If safe is set to 1 this is a safe iterator, that means, you can call
+ * dictAdd, dictFind, and other functions against the dictionary even while
+ * iterating. Otherwise it is a non safe iterator, and only dictNext()
+ * should be called while iterating. */
+typedef struct dictIterator {
+    dict *d;
+    long index;
+    int table, safe;
+    dictEntry *entry, *nextEntry;
+    /* unsafe iterator fingerprint for misuse detection. */
+    unsigned long long fingerprint;
+} dictIterator;
+```
+
+#### 设计思想和优势
+
+### intset
+```c
+typedef struct intset {
+    uint32_t encoding;
+    uint32_t length;
+    int8_t contents[];
+} intset;
+```
+
+#### intsetNew
+```c
+/* Create an empty intset. */
+intset *intsetNew(void) {
+    intset *is = zmalloc(sizeof(intset));
+    is->encoding = intrev32ifbe(INTSET_ENC_INT16);
+    is->length = 0;
+    return is;
+}
+```
+
+#### intsetFind
+
+```c
+/* Determine whether a value belongs to this set */
+uint8_t intsetFind(intset *is, int64_t value) {
+    uint8_t valenc = _intsetValueEncoding(value);
+    return valenc <= intrev32ifbe(is->encoding) && intsetSearch(is,value,NULL);
+}
+
+/* Search for the position of "value". Return 1 when the value was found and
+ * sets "pos" to the position of the value within the intset. Return 0 when
+ * the value is not present in the intset and sets "pos" to the position
+ * where "value" can be inserted. */
+static uint8_t intsetSearch(intset *is, int64_t value, uint32_t *pos) {
+    int min = 0, max = intrev32ifbe(is->length)-1, mid = -1;
+    int64_t cur = -1;
+
+    /* The value can never be found when the set is empty */
+    if (intrev32ifbe(is->length) == 0) {
+        if (pos) *pos = 0;
+        return 0;
+    } else {
+        /* Check for the case where we know we cannot find the value,
+         * but do know the insert position. */
+        if (value > _intsetGet(is,max)) {
+            if (pos) *pos = intrev32ifbe(is->length);
+            return 0;
+        } else if (value < _intsetGet(is,0)) {
+            if (pos) *pos = 0;
+            return 0;
+        }
+    }
+
+    while(max >= min) {
+        mid = ((unsigned int)min + (unsigned int)max) >> 1;
+        cur = _intsetGet(is,mid);
+        if (value > cur) {
+            min = mid+1;
+        } else if (value < cur) {
+            max = mid-1;
+        } else {
+            break;
+        }
+    }
+
+    if (value == cur) {
+        if (pos) *pos = mid;
+        return 1;
+    } else {
+        if (pos) *pos = min;
+        return 0;
+    }
+}
+```
+
+#### intsetAdd
+
+```c
+/* Insert an integer in the intset */
+intset *intsetAdd(intset *is, int64_t value, uint8_t *success) {
+    uint8_t valenc = _intsetValueEncoding(value);
+    uint32_t pos;
+    if (success) *success = 1;
+
+    /* Upgrade encoding if necessary. If we need to upgrade, we know that
+     * this value should be either appended (if > 0) or prepended (if < 0),
+     * because it lies outside the range of existing values. */
+    if (valenc > intrev32ifbe(is->encoding)) {
+        /* This always succeeds, so we don't need to curry *success. */
+        return intsetUpgradeAndAdd(is,value);
+    } else {
+        /* Abort if the value is already present in the set.
+         * This call will populate "pos" with the right position to insert
+         * the value when it cannot be found. */
+        if (intsetSearch(is,value,&pos)) {
+            if (success) *success = 0;
+            return is;
+        }
+
+        is = intsetResize(is,intrev32ifbe(is->length)+1);
+        if (pos < intrev32ifbe(is->length)) intsetMoveTail(is,pos,pos+1);
+    }
+
+    _intsetSet(is,pos,value);
+    is->length = intrev32ifbe(intrev32ifbe(is->length)+1);
+    return is;
+}
+
+/* Upgrades the intset to a larger encoding and inserts the given integer. */
+static intset *intsetUpgradeAndAdd(intset *is, int64_t value) {
+    uint8_t curenc = intrev32ifbe(is->encoding);
+    uint8_t newenc = _intsetValueEncoding(value);
+    int length = intrev32ifbe(is->length);
+    int prepend = value < 0 ? 1 : 0;
+
+    /* First set new encoding and resize */
+    is->encoding = intrev32ifbe(newenc);
+    is = intsetResize(is,intrev32ifbe(is->length)+1);
+
+    /* Upgrade back-to-front so we don't overwrite values.
+     * Note that the "prepend" variable is used to make sure we have an empty
+     * space at either the beginning or the end of the intset. */
+    while(length--)
+        _intsetSet(is,length+prepend,_intsetGetEncoded(is,length,curenc));
+
+    /* Set the value at the beginning or the end. */
+    if (prepend)
+        _intsetSet(is,0,value);
+    else
+        _intsetSet(is,intrev32ifbe(is->length),value);
+    is->length = intrev32ifbe(intrev32ifbe(is->length)+1);
+    return is;
+}
+```
+
+#### intsetRemove
+```c
+/* Delete integer from intset */
+intset *intsetRemove(intset *is, int64_t value, int *success) {
+    uint8_t valenc = _intsetValueEncoding(value);
+    uint32_t pos;
+    if (success) *success = 0;
+
+    if (valenc <= intrev32ifbe(is->encoding) && intsetSearch(is,value,&pos)) {
+        uint32_t len = intrev32ifbe(is->length);
+
+        /* We know we can delete */
+        if (success) *success = 1;
+
+        /* Overwrite value with tail and update length */
+        if (pos < (len-1)) intsetMoveTail(is,pos+1,pos);
+        is = intsetResize(is,len-1);
+        is->length = intrev32ifbe(len-1);
+    }
+    return is;
+}
+```
+
+### quickList
+list的底层实现
+
+```c
+typedef struct quicklist {
+    quicklistNode *head;
+    quicklistNode *tail;
+    unsigned long count;        /* total count of all entries in all listpacks */
+    unsigned long len;          /* number of quicklistNodes */
+    signed int fill : QL_FILL_BITS;       /* fill factor for individual nodes */
+    unsigned int compress : QL_COMP_BITS; /* depth of end nodes not to compress;0=off */
+    unsigned int bookmark_count: QL_BM_BITS;
+    quicklistBookmark bookmarks[];
+} quicklist;
+
+typedef struct quicklistNode {
+    struct quicklistNode *prev;
+    struct quicklistNode *next;
+    unsigned char *entry;
+    size_t sz;             /* entry size in bytes */
+    unsigned int count : 16;     /* count of items in listpack */
+    unsigned int encoding : 2;   /* RAW==1 or LZF==2 */
+    unsigned int container : 2;  /* PLAIN==1 or PACKED==2 */
+    unsigned int recompress : 1; /* was this node previous compressed? */
+    unsigned int attempted_compress : 1; /* node can't compress; too small */
+    unsigned int dont_compress : 1; /* prevent compression of entry that will be used later */
+    unsigned int extra : 9; /* more bits to steal for future usage */
+} quicklistNode;
+
+typedef struct quicklistEntry {
+    const quicklist *quicklist;
+    quicklistNode *node;
+    unsigned char *zi;
+    unsigned char *value;
+    long long longval;
+    size_t sz;
+    int offset; // ziplist的第几个节点
+} quicklistEntry;
+
+
+typedef struct quicklistIter {
+    quicklist *quicklist;
+    quicklistNode *current;
+    unsigned char *zi; /* points to the current element */
+    long offset; /* offset in current listpack */
+    int direction;
+} quicklistIter;
+```
+#### 压缩与解压缩
+
 
 
 ## key过期

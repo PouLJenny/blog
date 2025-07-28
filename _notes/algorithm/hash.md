@@ -124,3 +124,10 @@ print(f"\n总共迁移了 {moved} 个键，占比 {moved / len(keys) * 100:.2f}%
 Distributed Caching Protocols for Relieving Hot Spots on the World Wide Web](https://www.cs.princeton.edu/courses/archive/fall09/cos518/papers/chash.pdf) 麻省理工学院的 David Karger 等人在 1997 年发表了一篇里程碑式的论文
 - [Dynamo: Amazon’s Highly Available Key-value Store](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) 提出了副本、冲突解决与 Gossip 协议，基于一致性哈希构建高可用系统
 - [Cassandra - A Decentralized Structured Storage System](https://www.cs.cornell.edu/projects/ladis2009/papers/lakshman-ladis2009.pdf) 在 Dynamo 基础上优化了数据模型和读写路径，依然使用一致性哈希
+
+## Murmurhash
+
+[源码](https://github.com/aappleby/smhasher)
+
+
+# EOF
