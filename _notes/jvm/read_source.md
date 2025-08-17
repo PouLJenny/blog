@@ -15,6 +15,62 @@ toc: true
 [openjdk-projects](https://openjdk.org/projects/jdk/)
 [openjdk8-github](https://github.com/openjdk/jdk8)
 
+## JDK17
+### Linux 编译源码
+
+1. 下载源码
+
+```shell
+git clone https://github.com/openjdk/jdk17u.git
+cd jdk17u
+```
+
+2. 阅读文件`./doc/building.md`里面有详细的编译步骤和要求
+
+3. 执行配置
+```shell
+## 由于boot-jdk需要16或17的，这里因为本机有个17的，就直接用了
+bash configure --with-boot-jdk=/home/poul/workspace/software/jdk/jdk-17.0.12  --with-debug-level=slowdebug --disable-warnings-as-errors --with-native-debug-symbols=internal
+```
+
+上述命令执行成功之后，能看到类似下面的输出
+```
+A new configuration has been successfully created in
+/home/poul/workspace/src/jdk17u/build/linux-x86_64-server-slowdebug
+using configure arguments '--with-boot-jdk=/home/poul/workspace/software/jdk/jdk-17.0.12 --with-debug-level=slowdebug'.
+
+Configuration summary:
+* Name:           linux-x86_64-server-slowdebug
+* Debug level:    slowdebug
+* HS debug level: debug
+* JVM variants:   server
+* JVM features:   server: 'cds compiler1 compiler2 epsilongc g1gc jfr jni-check jvmci jvmti management nmt parallelgc serialgc services shenandoahgc vm-structs zgc'
+* OpenJDK target: OS: linux, CPU architecture: x86, address length: 64
+* Version string: 17.0.16-internal+0-adhoc.poul.jdk17u (17.0.16-internal)
+
+Tools summary:
+* Boot JDK:       java version "17.0.12" 2024-07-16 LTS Java(TM) SE Runtime Environment (build 17.0.12+8-LTS-286) Java HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing) (at /home/poul/workspace/software/jdk/jdk-17.0.12)
+* Toolchain:      gcc (GNU Compiler Collection)
+* C Compiler:     Version 15.1.1 (at /usr/bin/gcc)
+* C++ Compiler:   Version 15.1.1 (at /usr/bin/g++)
+
+Build performance summary:
+* Cores to use:   32
+* Memory limit:   63494 MB
+```
+
+4. 编译
+```shell
+make images
+## 如果编译过程中出现错误可以执行下面的命令清理，然后从头开始编译
+make dist-clean
+```
+
+5. 测试
+```shell
+make run-test-tier1
+```
+
 ## JDK 11
 ### Linux 编译源码
 

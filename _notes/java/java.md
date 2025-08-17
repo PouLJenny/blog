@@ -1,3 +1,4 @@
+
 # Java
 
 ## 官方文档
@@ -10,6 +11,7 @@
 
 [官方教程文档](https://docs.oracle.com/javase/tutorial/index.html)
 [jar manifest](https://docs.oracle.com/javase/tutorial/deployment/jar/manifestindex.html )
+[JEP](https://openjdk.org/jeps/0)
 
 ## 各个版本的官方支持情况
 

@@ -24,6 +24,8 @@ onlyoffice有三个版本的服务端
   - `docker pull onlyoffice/documentserver-ee`
 
 docker安装
-`docker run -it --name onlyoffice -p 30000:80 -d onlyoffice/documentserver-de`
+`docker pull onlyoffice/documentserver-de:9.0.4.1`
+`docker run -it  --name onlyoffice -p 30000:80 -d -e ALLOW_PRIVATE_IP_ADDRESS=true -e USE_UNAUTHORIZED_STORAGE=true -e NODE_TLS_REJECT_UNAUTHORIZED=0 -e JWT_ENABLED=false onlyoffice/documentserver-de:9.0.4.1`
+
 
 **访问的时候需要使用本机的ip地址+端口号，不然编辑文档的时候会报错**

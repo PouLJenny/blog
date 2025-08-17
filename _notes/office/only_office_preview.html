@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>OnlyOffice预览</title>
+    <script src="/web-apps/apps/api/documents/api.js"></script>
+  <style>
+    /* 让 html 和 body 充满全屏且没有间距 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden; /* 防止滚动条 */
+    }
+    /* 让 iframe 占满整个屏幕 */
+    iframe {
+      width: 100vw;   /* 视口宽度 */
+      height: 100vh;  /* 视口高度 */
+      border: none;   /* 去掉边框 */
+      display: block; /* 避免默认的 inline 导致间隙 */
+    }
+  </style>
+</head>
+<body>
+    <div id="placeholder"></div>
+</body>    
+<script>
+        // 获取 query 参数
+    function getQueryParam(name) {
+        let urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // 从文件扩展名推断类型
+    function getFileType(url) {
+        let ext = url.split('.').pop().toLowerCase();
+        if (["doc", "docx", "odt", "rtf", "txt"].includes(ext)) return "word";
+        if (["xls", "xlsx", "ods", "csv"].includes(ext)) return "cell";
+        if (["ppt", "pptx", "odp"].includes(ext)) return "slide";
+        return "word"; // 默认
+    }
+
+
+
+    function getFileNameFromUrl(url) {
+        try {
+            const parsedUrl = new URL(url);
+            const pathname = parsedUrl.pathname;
+            const filename = pathname.split('/').pop() || '';
+            // 去掉查询参数或hash，比如 file.docx?v=123 -> file.docx
+            return filename.split('?')[0].split('#')[0];
+        } catch {
+            const filename = url.split('/').pop() || '';
+            return filename.split('?')[0].split('#')[0];
+        }
+    }
+
+    function getFileExtension(filename) {
+        const lastDotIndex = filename.lastIndexOf('.');
+        if (lastDotIndex === -1) return ''; // 没有后缀
+        return filename.slice(lastDotIndex + 1).toLowerCase(); // 转小写更统一
+    }
+
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+            return "mobile"; // 手机
+        } else if (/iPad|Tablet/i.test(ua)) {
+            return "tablet"; // 平板
+        } else {
+            return "desktop"; // 电脑
+        }
+    }
+
+    function hashUrl(url) {
+        let hash = 0;
+        for (let i = 0; i < url.length; i++) {
+            hash = (hash << 5) - hash + url.charCodeAt(i);
+            hash |= 0; // 转为 32 位整数
+        }
+        return hash.toString(16); // 十六进制字符串
+    }
+
+    let fileUrl = getQueryParam("url");
+    
+    if (!fileUrl) {
+        document.body.innerHTML = "<h3>请在 URL 中提供 ?url= 文件地址</h3>";
+        throw new Error("缺少文件 URL");
+    }
+    // debugger
+    let fileName = decodeURIComponent(getFileNameFromUrl(fileUrl))
+    let fileType = getFileExtension(fileName)
+    let uniqStr = hashUrl(fileUrl)
+    var docEditor = new DocsAPI.DocEditor("placeholder", {
+        type: 'desktop',
+        "token": "",  // 如果需要 JWT 鉴权，这里填写 token，否则留空
+        location: "cn",        // 地区设置（影响度量单位、日期格式等）
+        region: "zh-CN",       // 语言区域设置
+        "document": {
+            "title": fileName,
+            "url": fileUrl,
+            "fileType": fileType,
+            "key": uniqStr // 文档唯一标识，刷新后要保持不变
+        },
+        "permissions": {
+            "edit": false,          // 只读，不允许编辑
+            "download": true,       // 是否允许下载
+            "print": true,
+            "copy": true
+        },
+        "user": {
+            "id": "guest",
+            "name": "游客"
+        },
+        editorConfig: {
+            mode: "view",              // 编辑模式，可选 "edit" 或 "view"
+            lang: "zh",
+        }
+    });
+</script>
+</html>

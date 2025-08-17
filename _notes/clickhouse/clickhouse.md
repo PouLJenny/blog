@@ -449,6 +449,10 @@ ALTER TABLE trips ADD PROJECTION trip_id_projection(
 
 -- 创建投影后，历史数据并不能生效，需要手动触发一下
 ALTER TABLE trips MATERIALIZE PROJECTION trip_id_projection;
+
+
+-- 因为投影是异步创建的，可以通过下面的sql查询投影是否创建完毕
+SELECT * FROM system.mutations WHERE table = 'trips'
 ```
 
 创建投影之后的文件目录
@@ -592,7 +596,7 @@ RIGHT JOIN
         any(engine) AS engine,
         sum(bytes) AS bytes_size
     FROM system.parts
-    WHERE active and table = 'keywordAsinRec'
+    WHERE active and table = 'asinVariant'
     GROUP BY
         database,
         table
@@ -608,7 +612,7 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
-WHERE active and database = 'ssb'
+WHERE active and database = 'default' and table = 'asinVariant'
 GROUP BY
     database,
     table
@@ -625,8 +629,7 @@ SELECT
     formatReadableSize(data_uncompressed_bytes) AS uncompressed_size,
     round(data_compressed_bytes / data_uncompressed_bytes, 2) AS compression_ratio
 FROM system.columns
-WHERE database = 'd
-efault' 
+WHERE database = 'default' 
   AND table = 'product2RepairTest3'
 ORDER BY data_compressed_bytes DESC;
 
