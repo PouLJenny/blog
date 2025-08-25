@@ -376,3 +376,12 @@ Thank you.
 
 ### 结果
 复试结果及拟录取公示将于3月26日前在北京航空航天大学经济管理学院网站（http://sem.buaa.edu.cn）、北京航空航天大学MBA教育中心网站（http://mba.buaa.edu.cn）、北京航空航天大学MBA微信公众号进行公示，公示期不少于7日。
+
+
+## 网址导航
+
+- [导师双选系统](https://dssx.buaa.edu.cn/)
+- [校园付](https://pay.buaa.edu.cn/)
+- [研究生信息管理系统](https://gsmis.buaa.edu.cn/)
+
+# EOF

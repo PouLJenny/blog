@@ -3346,6 +3346,7 @@ var rules = [
             "meshrep.com",
             "mesotw.com",
             "messenger.com",
+            "metabase.com",
             "metacafe.com",
             "metafilter.com",
             "metart.com",
