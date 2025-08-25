@@ -63,7 +63,7 @@ POSIX中有两个名词，其定义为：
 
 ## I/O多路复用
 
-### select
+### select/pselect
 ```c
 #include <sys/select.h>
 
