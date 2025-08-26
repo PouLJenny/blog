@@ -383,5 +383,7 @@ Thank you.
 - [导师双选系统](https://dssx.buaa.edu.cn/)
 - [校园付](http://pay.buaa.edu.cn/)
 - [研究生信息管理系统](https://gsmis.buaa.edu.cn/)
+- [i北航](https://www.buaa.edu.cn/index/ibh.htm)
+- [统一身份认证系统](https://ucs.buaa.edu.cn/)
 
 # EOF

@@ -2472,6 +2472,7 @@ var rules = [
             "here.com",
             "heritage.org",
             "heroku.com",
+            "herokuapp.com",
             "heungkongdiscuss.com",
             "hexieshe.com",
             "hexieshe.xyz",
