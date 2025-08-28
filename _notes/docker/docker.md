@@ -22,9 +22,9 @@ Docker容器的能力：
 
 ## 配置
 
-## 修改默认的root dir
+### 修改默认的root dir
 
-## 方法1
+#### 方法1
 查询当前的配置,默认情况下在 `/var/lib/docker` 目录下面
 `sudo docker info | grep "Docker Root Dir"`
 
@@ -43,7 +43,7 @@ Docker容器的能力：
 启动Docker服务
 `sudo systemctl start docker`
 
-## 方法2
+#### 方法2
 edit the `/etc/docker/daemon.json` file to contain the line
 ```json
 {
@@ -55,6 +55,25 @@ edit the `/etc/docker/daemon.json` file to contain the line
 `sudo systemctl restart docker`
 
 `docker info`
+
+
+### 配置代理
+
+[官方配置文档](https://docs.docker.com/engine/daemon/proxy/#daemon-configuration)
+
+添加文件`/etc/systemd/system/docker.service.d/http-proxy.conf`
+
+```conf
+[Service]
+Environment="HTTP_PROXY=http://127.0.0.1:8118"
+Environment="HTTPS_PROXY=http://127.0.0.1:8118"
+```
+
+然后执行`systemctl daemon-reload`
+
+再执行`systemctl restart docker`重启一下docker服务
+
+> 这里注意一下，需要把本地的代理服务开启域名的翻墙 `.docker.io`和`.docker.com`
 
 ## Dockerfile
 [Reference文档](https://docs.docker.com/engine/reference/builder/ '')
@@ -78,3 +97,5 @@ To use the BuildKit backend, you need to set an environment variable `DOCKER_BUI
 - 复制文件从container到宿主机 `docker cp $DOCKER_ID:/path/target /path/source`
 - 访问宿主机IP https://jingsam.github.io/2018/10/16/host-in-docker.html
 - docker container启动后修改 端口映射 https://cloud.tencent.com/developer/article/2170898
+
+# EOF

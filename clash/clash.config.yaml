@@ -130,6 +130,5 @@ rules:
   - RULE-SET,reject,REJECT
   - RULE-SET,tld-not-cn,PROXY
   - RULE-SET,gfw,PROXY
-  - RULE-SET,gfw-cust,PROXY
   - RULE-SET,telegramcidr,PROXY
   - MATCH,DIRECT

@@ -27,5 +27,14 @@ docker安装
 `docker pull onlyoffice/documentserver-de:9.0.4.1`
 `docker run -it  --name onlyoffice -p 30000:80 -d -e ALLOW_PRIVATE_IP_ADDRESS=true -e USE_UNAUTHORIZED_STORAGE=true -e NODE_TLS_REJECT_UNAUTHORIZED=0 -e JWT_ENABLED=false onlyoffice/documentserver-de:9.0.4.1`
 
+#### 网络限制问题
+
+由于onlyoffice需要访问office.poul666.top,file.poul666.top这两个域名。这里配置了内网ip，然后让nginx走ip白名单。
+```shell
+sudo docker run --add-host file.poul666.top:172.27.224.1 --add-host office.poul666.top:172.27.224.1 
+```
+
+
+
 
 **访问的时候需要使用本机的ip地址+端口号，不然编辑文档的时候会报错**
