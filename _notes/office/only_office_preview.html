@@ -93,7 +93,7 @@
     let fileType = getFileExtension(fileName)
     let uniqStr = hashUrl(fileUrl)
     var docEditor = new DocsAPI.DocEditor("placeholder", {
-        type: 'desktop',
+        type: getDeviceType(),
         "token": "",  // 如果需要 JWT 鉴权，这里填写 token，否则留空
         location: "cn",        // 地区设置（影响度量单位、日期格式等）
         region: "zh-CN",       // 语言区域设置
