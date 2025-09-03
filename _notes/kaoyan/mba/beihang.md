@@ -386,6 +386,8 @@ Thank you.
 - [i北航](https://www.buaa.edu.cn/index/ibh.htm)
 - [统一身份认证系统](https://ucs.buaa.edu.cn/)
 - [研究生新生缴费及银行卡信息采集说明](https://jcb.buaa.edu.cn/info/1029/3408.htm)
+- [选课系统](https://yjsxk.buaa.edu.cn/)
+- [VPN](https://vpn.buaa.edu.cn/)
 
 ## 老师列表
 
@@ -394,5 +396,9 @@ Thank you.
 - 班继晨老师 辅导员
 - 白明老师 《财务会计》
 - 马琳老师 《人力资源开发与管理》
+
+## 企业决策大赛
+
+[系统](https://www.ibizsim.cn/)
 
 # EOF

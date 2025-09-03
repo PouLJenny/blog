@@ -1,19 +1,30 @@
 # 展哥
 
-## 第一天 性肌群强化训练
-
-盆底肌/PC肌/凯格尔肌
-
-收紧 - 停一秒 - 放松
+## 性肌群强化训练
 
 
-[绝伦深蹲](https://www.youtube.com/watch?v=aHbgQg9Ksu8) 性爱之前做效果会更好
-[厕式深蹲](https://www.bilibili.com/video/BV1b14y137Cr/?vd_source=973c7d5ced4869eb290f9a3842143b40)
-https://www.bilibili.com/video/BV1ax4y1x74J/?spm_id_from=333.337.search-card.all.click&vd_source=973c7d5ced4869eb290f9a3842143b40
+
+
+- [厕式深蹲 3 x 10](https://www.bilibili.com/video/BV1b14y137Cr/?vd_source=973c7d5ced4869eb290f9a3842143b40)
+
+- [绝伦深蹲 3 x 15 性爱之前做效果会更好](https://www.youtube.com/watch?v=aHbgQg9Ksu8) 
+
+- [箭式深蹲 3 x 10 左右腿各10个](https://wx1017d3991966e73e.cjyf.citv.cn/kpv2p/36oqvz/#/homePage/column/columnDetail?extId=171803&ckFrom=9)
+
+[额外的训练，b站的一个视频](https://www.bilibili.com/video/BV1ax4y1x74J/?spm_id_from=333.337.search-card.all.click&vd_source=973c7d5ced4869eb290f9a3842143b40)
 
 蹲下吸气，起身呼气
 
-10 x 3 组
+## 硬度强化训练
+
+
+- 盆底肌/PC肌/凯格尔肌 4 x 15
+用挑毛巾的方式找到
+收紧 - 停一秒 - 放松
+
+
+- 臀桥的方式练习PC肌 4 x 15
+
 
 ## 第二天 脱敏训练
 
@@ -86,3 +97,6 @@ ok提拉 20次
   - 正阳之门 无名指跟手掌的关节处 握固
   - 正阴之门 涌泉穴 
   - 精门 会阴区
+
+
+# EOF

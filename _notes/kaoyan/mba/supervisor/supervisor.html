@@ -1,0 +1,1997 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>北京航空航天大学经济管理学院教师信息</title>
+        <style>
+            body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+            h1 { text-align: center; padding: 20px; }
+            .search-box { text-align: center; margin-bottom: 20px; }
+            .search-box input { width: 300px; padding: 8px; font-size: 16px; }
+            .faculty-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+            .faculty-card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 250px; padding: 15px; text-align: center; transition: transform 0.2s; }
+            .faculty-card:hover { transform: scale(1.05); }
+            .faculty-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+            .faculty-card h3 { margin: 10px 0 5px; font-size: 18px; }
+            .faculty-card p { font-size: 14px; margin: 5px 0; }
+            .faculty-card a { color: #1a73e8; text-decoration: none; }
+            .faculty-card a:hover { text-decoration: underline; }
+            .department { font-weight: bold; color: #333; }
+        </style>
+        <script>
+            // 页面加载时恢复输入框内容
+            window.onload = function() {
+                var savedValue = localStorage.getItem("searchInputValue");
+                if (savedValue) {
+                    document.getElementById("searchInput").value = savedValue;
+                    filterFaculty(); // 恢复时自动过滤
+                }
+            }
+
+            function filterFaculty() {
+                var input = document.getElementById("searchInput");
+                var filter = input.value.toLowerCase();
+
+                // 保存当前输入到 localStorage
+                localStorage.setItem("searchInputValue", input.value);
+
+                var cards = document.getElementsByClassName("faculty-card");
+                for (var i = 0; i < cards.length; i++) {
+                    var text = cards[i].innerText.toLowerCase();
+                    if (text.indexOf(filter) > -1) {
+                        cards[i].style.display = "";
+                    } else {
+                        cards[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <h1>北京航空航天大学经济管理学院教师信息</h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="filterFaculty()" placeholder="输入关键词搜索教师...">
+        </div>
+        <div class="faculty-container">
+    
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/80/1A/8C7E6714CD3CDA68D4EE9E65ED0_6A44ED02_A48A.jpg" alt="黄海军">
+            <h3>黄海军</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：交通运输规划与管理，交通行为建模分析</p>
+            <p>Email: <a href="mailto:haijunhuang@buaa.edu.cn">haijunhuang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10592.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/4D/93/DBC95176C4245C191AA0148FE65_CD92EF51_3F246.jpg" alt="张宁">
+            <h3>张宁</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：企业成长及组织效率研究，随机条件下的物流问题，跨文化冲突及管理，统计优化</p>
+            <p>Email: <a href="mailto:nzhang@buaa.edu.cn">nzhang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10591.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/34/14/EE0E49FCEE52F16B618CCF98414_975354D8_3444.jpg" alt="徐哲">
+            <h3>徐哲</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:xuzhebuaa@163.com">xuzhebuaa@163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10590.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/41/25/3926FCCD164AA79EB883AA18EF6_9290348F_E157D.jpg" alt="田琼">
+            <h3>田琼</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：城市运输经济学、航空经济学、运输管理、物流系统分析。综合运用微观经济学、行为科学、优化理论、统计学等多学科理论，研究与城市、区域经济学相关的运输系统、空间布局及物流系统的优化问题。</p>
+            <p>Email: <a href="mailto:tianqiong@buaa.edu.cn">tianqiong@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10589.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,项目管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：善于沟通，具有较强责任心，学习态度端正，能够积极主动与导师联系。
+优先考虑计划从事与实际工作结合的定量研究的同学。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/AC/00/AF6F78DB18B1A711946A0BD18D2_4EE4CD78_C791F.png" alt="郭仁拥">
+            <h3>郭仁拥</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：主讲城市交通管理理论与方法、现代管理科学方法、概率论与数理统计、运筹学等。</p>
+            <p>Email: <a href="mailto:guorenyong@buaa.edu.cn">guorenyong@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10588.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：做事踏实、严谨、认真，有上进心；主要利用一些管理科学方法来处理工商管理问题。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/76/E2/37CDA2C44610B40A3CE83E57128_EFB60D0D_ACFE.jpg" alt="刘天亮">
+            <h3>刘天亮</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：交通行为与运输经济、交通运输系统分析与运营、物流优化与供应链管理。兴趣聚焦理论模型与数据驱动交叉融合的研究主题，注重问题导向，拥抱所有的研究方法与技术。</p>
+            <p>Email: <a href="mailto:liutianliang@buaa.edu.cn">liutianliang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10587.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,信息管理</p>
+            <p>剩余名额：1 报名学生：0</p>
+            <p>对学生要求：具有一定的项目管理、服务运营、供应链运作或物流与交通运输行业经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/47/48/1A260ACC13EEE8549F338AB38C9_AD62A467_170D7.jpg" alt="宋文燕">
+            <h3>宋文燕</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：数字化转型、产业链供应链韧性、智能产品/服务系统、质量4.0与创新、人机融合与智能决策、创新管理与创新方法
+
+</p>
+            <p>Email: <a href="mailto:songwenyan@buaa.edu.cn">songwenyan@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10586.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,创新与创业管理</p>
+            <p>剩余名额：8 报名学生：12</p>
+            <p>对学生要求：具有理工科背景和一定的实际项目经验；具有较强的沟通能力和逻辑思维能力；学习能力强，有明确的职业发展规划。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/02/EF/07EDB64CAE8B2543631E5D9D077_5F317A23_112FCC.jpg" alt="吴昊">
+            <h3>吴昊</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向： 企业复杂性、企业战略、国有企业改革</p>
+            <p>Email: <a href="mailto:wuhao801@buaa.edu.cn">wuhao801@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10274.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/34/B7/4599F3B56A51A977DF416F426C6_D6723298_6FF1.jpg" alt="高远洋">
+            <h3>高远洋</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：企业运营管理、物流与供应链管理、通用航空产业发展</p>
+            <p>Email: <a href="mailto:gyy@vip.sina.com">gyy@vip.sina.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10049.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/92/97/727152B05D7E310294AD09247B2_5013D3E8_775EA.png" alt="谢杨">
+            <h3>谢杨</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：健康经济学、全球健康、气候变化应对和空气污染健康影响以及社会可持续发展</p>
+            <p>Email: <a href="mailto:siyudi1215@hotmail.com">siyudi1215@hotmail.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10026.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,创新与创业管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：健康管理相关领域</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/C0/DD/60FAA26E46B91CF31581F5A5482_1B171BAB_FD82B.png" alt="张少辉">
+            <h3>张少辉</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副研究员</p>
+            <p>研究方向：主要研究方向：能源-资源-环境系统综合评估模型；大气污染与气候变化政策评估；协同/费用效益分析等</p>
+            <p>Email: <a href="mailto:s_zhang@buaa.edu.cn">s_zhang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/10024.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/A0/99/A67E390231300268E7912469842_24809E01_10CEE5.jpg" alt="刘鹏">
+            <h3>刘鹏</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：综合交通运输管理、物流系统运作与优化、城市与区域经济分析</p>
+            <p>Email: <a href="mailto:p.liu@buaa.edu.cn">p.liu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/9682.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,营销管理</p>
+            <p>剩余名额：1 报名学生：2</p>
+            <p>对学生要求：欢迎积极认真的同学。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/06/F3/A6AF59BCC13209CCC21A79CFAC8_E797E852_B2C4E.jpg" alt="吴春林">
+            <h3>吴春林</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：数字经济与企业转型，智慧城市与基础设施韧性，数字供应链与智能制造，职业风险与健康、安全管理，商业伦理与企业社会责任，组织行为建模与仿真，知识管理与知识共享</p>
+            <p>Email: <a href="mailto:wuchunlin@buaa.edu.cn；wuchunlin_1990@163.com">wuchunlin@buaa.edu.cn；wuchunlin_1990@163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/9534.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,组织行为与人力资源管理,运营管理,战略管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：能吃苦耐劳，具有一定的文笔写作能力，对自己要求高，对如何开展学术研究有一定认识。对毕业论文不是浅尝辄止，而是能听从老师的要求，写一篇具有较高水平的优秀论文。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/4D/B7/9AD7851452505942F01DD107696_42DCA898_11D80.png" alt="张赞">
+            <h3>张赞</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:zanzhang@buaa.edu.cn">zanzhang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/9489.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,运营管理,营销管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：1）具有良好的经济学、数理分析基础；（2）踏实认真、有责任心。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/04/29/BCA00D8804A1734AE6C69857519_5EE30AA5_CC5A0.jpg" alt="王晨岚">
+            <h3>王晨岚</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:chenlanwang@buaa.edu.cn">chenlanwang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/8381.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/77/79/6D0067869B826719C3E1CBF624B_B50E3FE2_ED68.png" alt="李欣蔚">
+            <h3>李欣蔚</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：动态交通中的用户行为分析，交通经济，共享经济</p>
+            <p>Email: <a href="mailto:lixinwei01@buaa.edu.cn">lixinwei01@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/8001.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：态度认真，能很好的与导师沟通交流。具有较好的写作能力和基本的数据处理能力。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/47/98/8B9A84CFA363B58B7C7E7600002_97FEDE23_323ABB.jpg" alt="张源凯">
+            <h3>张源凯</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：主要研究领域：数智服务运营优化；
+研究方向：未来城市物流、智慧电商物流、航空应急管理、数据驱动的智能决策等。</p>
+            <p>Email: <a href="mailto:Ykzhang@buaa.edu.cn; ykzhang6635@126.com">Ykzhang@buaa.edu.cn; ykzhang6635@126.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/15037.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,项目管理,信息管理</p>
+            <p>剩余名额：3 报名学生：0</p>
+            <p>对学生要求：欢迎踏实认真、具备良好数理基础和逻辑思维能力的同学加入。需对数据分析感兴趣，有一定数据分析基础并能主动学习的优先。期待与你共同探索管理研究的实践与应用。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/B9/75/B018E7D7C1D7233A1A7EEF8332E_A62D9888_33F41.png" alt="李明全">
+            <h3>李明全</h3>
+            <p class="department">行为与运作管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：能源系统与公共政策、能源系统优化、能源政策评估</p>
+            <p>Email: <a href="mailto:mingquanli@buaa.edu.cn">mingquanli@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1084/7992.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xwyyzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,项目管理</p>
+            <p>剩余名额：5 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/5F/0D/94793D145AAF25A600324424107_8F650BED_F7284.jpg" alt="姚忠">
+            <h3>姚忠</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:iszhyao@buaa.edu.cn">iszhyao@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10605.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理,战略管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：具有较好的自我管理能力，同学工作背景中包含信息技术应用（IT项目实施、战略、风险、质量、治理、数字化转型）、人工智能技术应用（采用机器学习算法对企业行为和用户行为进行各种分析）、各种项目管理（生产、建筑、IT实施等）市场营销、战略管理为主要工作背景，库存、物流、产品质量管理。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/17/88/6C94668028EC4CADD39A5F012D5_1BD306D7_10D020.jpg" alt="王君">
+            <h3>王君</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：知识管理与知识系统工程、商务智能与管理决策、复杂网络分析与复杂系统建模等。</p>
+            <p>Email: <a href="mailto:king.wang@buaa.edu.cn">king.wang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10604.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：热诚欢迎有信息系统专业、管理科学与工程专业、计算机专业、数学专业和统计专业背景的同学加入到我们的团队，共同开展研究工作。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/65/4B/9F2039FC0D375AFA2361251AF3E_582E6264_FF76F.jpg" alt="闪四清">
+            <h3>闪四清</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:shansiqing@buaa.edu.cn">shansiqing@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10603.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,营销管理,项目管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：有IT背景，从事应急管理、项目管理、安全管理、数据治理、信息管理、信息战略、数字化转型、IT项目管理、智能管理等研究的报名。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/F0/14/E8BB94FDBA6ABBD85CCF8985363_7E421F3A_AD480.jpg" alt="吴俊杰">
+            <h3>吴俊杰</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:wujj@buaa.edu.cn">wujj@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10602.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理</p>
+            <p>剩余名额：2 报名学生：3</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/0/C5/1D/E79D634B1018C121AD952286B58_6AA9F3C8_2ED748.jpg" alt="王理">
+            <h3>王理</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：管理信息系统，决策支持，知识管理，系统仿真，项目管理，人工智能，智能制造。</p>
+            <p>Email: <a href="mailto:wlbh@vip.163.com">wlbh@vip.163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10601.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,项目管理</p>
+            <p>剩余名额：16 报名学生：16</p>
+            <p>对学生要求：从事数字经济、智能制造、信息化相关方面的工作，具有项目管理经验的同学。
+毕业论文是非案例论文。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/4D/C8/346ED404D84AB7A31F2858727C0_2B9F0AED_135985.jpg" alt="郝金星">
+            <h3>郝金星</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：知识和创新管理、物联网与商务智能、旅游技术管理、电子商务等。讲授《信息系统理论与方法》、《离散数学》、《项目管理》等课程。</p>
+            <p>Email: <a href="mailto:hao@buaa.edu.cn">hao@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10600.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,营销管理,组织行为与人力资源管理,项目管理</p>
+            <p>剩余名额：3 报名学生：0</p>
+            <p>对学生要求：IT行业或者数据分析背景优先</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/C9/94/78D62922EB0584138316EBA1FC9_C5A2CB78_6622.jpg" alt="赵吉昌">
+            <h3>赵吉昌</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：社交网络与社会计算，商务智能与大数据分析，人工智能与数字经济</p>
+            <p>Email: <a href="mailto:jichang@buaa.edu.cn">jichang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10599.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理,金融管理</p>
+            <p>剩余名额：2 报名学生：1</p>
+            <p>对学生要求：具备良好的沟通能力，有信心协调并平衡工作与论文压力。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/0C/B1/64773E8F09179F3B0F7E3E516D5_D26322F1_25655.jpg" alt="韩潇">
+            <h3>韩潇</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：教授、博士生导师</p>
+            <p>研究方向：主要研究方向：数据要素安全、AI模型安全共享、多方协同建模决策等</p>
+            <p>Email: <a href="mailto:xh_bh@buaa.edu.cn">xh_bh@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/15283.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/3E/6D/61B886B1151A892BF91E01822B3_00FB9D3D_1D280E.jpg" alt="王强">
+            <h3>王强</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：信息系统与信息管理、电子商务、IT项目管理。</p>
+            <p>Email: <a href="mailto:wang6965@sina.com">wang6965@sina.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10598.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/B0/D7/692AA33C890610C9577B5B8A76D_B992B3B1_193058.jpg" alt="李红">
+            <h3>李红</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：数据挖掘与商务智能,社会计算与社会化商务,大数据建模与计算</p>
+            <p>Email: <a href="mailto:Hong_Lee@buaa.edu.cn">Hong_Lee@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10597.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,项目管理,营销管理</p>
+            <p>剩余名额：8 报名学生：1</p>
+            <p>对学生要求：偏向信息工程和软件项目管理的学生；（1）能够结合自己的工作实践，选择论文题目
+
+（2）论文研究肯下功夫，投入一定量的时间</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/1D/7B/D5796AC4E4D8C744EC4C09F08E3_A42282A7_839CA.jpg" alt="杜文宇">
+            <h3>杜文宇</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:duwenyu@buaa.edu.cn">duwenyu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10596.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理,战略管理,创新与创业管理</p>
+            <p>剩余名额：3 报名学生：0</p>
+            <p>对学生要求：勤奋，具有自主能动性，逻辑表达能力强。在数字技术赋能的危机响应、可持续发展、组织变革方面有相关工作经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/9/2E/4B/239449633DBE09D88F44DFE81F8_9465588D_171B1.jpg" alt="刘冠男">
+            <h3>刘冠男</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：数据挖掘，商务智能，社会化媒体营销</p>
+            <p>Email: <a href="mailto:liugn@buaa.edu.cn">liugn@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10595.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/13/0F/224699DFBCB25D0463EB96AAFC6_E7E99716_73E5.jpg" alt="左源">
+            <h3>左源</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：数据挖掘、深度学习、文本挖掘、社交网络分析</p>
+            <p>Email: <a href="mailto:zuoyuan@buaa.edu.cn">zuoyuan@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10594.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/A3/36/3577211504DFA1790DF8C45CE5D_25A3AA42_21ED6B.jpg" alt="林浩">
+            <h3>林浩</h3>
+            <p class="department">信息系统系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:haolin@buaa.edu.cn">haolin@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1085/10593.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/xxxtx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/2D/8D/A94E89E6D9A52B772BC75A8C46F_F0EB4FEE_27E393.png" alt="周泓">
+            <h3>周泓</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：管理系统的优化理论与仿真</p>
+            <p>Email: <a href="mailto:h_zhou@buaa.edu.cn">h_zhou@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10638.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：6 报名学生：2</p>
+            <p>对学生要求：学生应具备较好的数理基础和定量分析能力，从事项目管理、生产管理、物流管理等相关领域的工作，具有一定的管理工作经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/80/E1/07D9B9E04CB8B00DB00A3BBC621_F6980ECB_20CE79.jpg" alt="方卫国">
+            <h3>方卫国</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：供应链管理、复杂系统的优化与决策、军事运筹学</p>
+            <p>Email: <a href="mailto:wgfang@buaa.edu.cn">wgfang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10635.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,项目管理</p>
+            <p>剩余名额：5 报名学生：1</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/9C/EB/0F6A1B900487E6B752BA58D5F07_0F8EBE62_157A36.jpg" alt="贾国柱">
+            <h3>贾国柱</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：生产与运作管理，供应链管理，流程管理</p>
+            <p>Email: <a href="mailto:jiaguozhu@buaa.edu.cn">jiaguozhu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10632.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/DC/21/1D4C7093441A8061B280EE070C1_AF471054_181D4B.jpg" alt="赵秋红">
+            <h3>赵秋红</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:qhzhao@buaa.edu.cn">qhzhao@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10629.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,项目管理,战略管理,财务管理,创新与创业管理,营销管理,信息管理</p>
+            <p>剩余名额：1 报名学生：5</p>
+            <p>对学生要求：学习态度认真、做事责任心强。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/80/72/4F42673B48CF18EFC764ED1069E_6954814D_19DF65.jpg" alt="张人千">
+            <h3>张人千</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：生产服务系统运营、供应链管理、运筹优化与管理决策</p>
+            <p>Email: <a href="mailto:zhangrenqian@buaa.edu.cn">zhangrenqian@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10626.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,战略管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/AC/EF/43B27FED3B57CEF12A7E4F190A1_9A1C6E12_32ADA6.jpg" alt="周荣刚">
+            <h3>周荣刚</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：人因工程、工程心理学、决策行为、智能人机交互、客户体验</p>
+            <p>Email: <a href="mailto:zhrg@buaa.edu.cn">zhrg@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10623.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理,项目管理,运营管理</p>
+            <p>剩余名额：6 报名学生：1</p>
+            <p>对学生要求：围绕人因工程、行为决策、人机协作、体验管理等方面选题。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/7F/B7/AA161C8D5589BF738E72044E09C_A7287AB0_3BB1C4.jpg" alt="单伟">
+            <h3>单伟</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:shanwei@buaa.edu.cn">shanwei@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10620.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：学术素养好，身心健康，具有较好的数学和数据分析能力。能够获取研究所需要的资料和数据，科研态度认真，具有积极主动的学习能力和论文研究动力。年轻有活力、具有较好的学历背景，擅长使用统计分析工具，热爱思考，动手能力强。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/04/64/2021E61D650DE24C7EAFBC5FDC2_B5C83166_CE9FC.jpg" alt="邓修权">
+            <h3>邓修权</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:dengxiuquan@126.com">dengxiuquan@126.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10618.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,运营管理,项目管理,财务管理,信息管理,创新与创业管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：本科基础好，能够投入时间做论文，在将来的选题方向上有基础。欢迎有条件，愿意做研究型案例的同学。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/92/01/85A66EAE76953EF104B5B9DF1F0_9F1AB36D_199A12.jpg" alt="王珊珊">
+            <h3>王珊珊</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：数据驱动的优化；鲁棒优化；机器学习；优化算法；物流与供应链管理。
+
+</p>
+            <p>Email: <a href="mailto:shanshanwang@buaa.edu.cn">shanshanwang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/15128.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：欢迎具有较好数理基础、编程能力，对不确定性数据驱动决策优化、机器学习及其在交通、物流供应链、企业运营管理的应用等方向感兴趣的学生邮件联系。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/3C/EF/44A400834421242D01779843BA3_78EC4736_A131C.jpg" alt="王立文">
+            <h3>王立文</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:wanglw@buaa.edu.cn">wanglw@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10617.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/F4/99/5866E3EFC430C613BA1C94BCAB4_D7F42C04_25E5FB.jpg" alt="郑筠">
+            <h3>郑筠</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:yunzh@buaa.edu.cn">yunzh@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10616.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/E7/6C/1BC292468692DFA7CFF105F21D5_1869F39B_186825.jpg" alt="杨敏">
+            <h3>杨敏</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：Agent-Based Modeling方法及应用；项目管理与价值工程；经济管理复杂性研究等。</p>
+            <p>Email: <a href="mailto:yangminxp@buaa.edu.cn">yangminxp@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10614.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：具有工程项目实际经验的学员，目前从事工程项目相关工作。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/AF/12/FB8F6EAFDB821E3DE7D2B9C7BD6_664A57D6_11CD3E.jpg" alt="王赫鑫">
+            <h3>王赫鑫</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：供应链契约设计与优化；需求预测与库存控制</p>
+            <p>Email: <a href="mailto:wanghexin@buaa.edu.cn">wanghexin@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10613.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,创新与创业管理</p>
+            <p>剩余名额：5 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/54/82/DCB29EFA613F768DF0BA2F61F77_990E3D3A_19EF63.jpg" alt="罗开平">
+            <h3>罗开平</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:kaipingluo@buaa.edu.cn">kaipingluo@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10612.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,项目管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：对学生没特殊要求</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/EC/2B/FFA8708AC88A46106394D75C967_46815A45_BF007.png" alt="李亚帅">
+            <h3>李亚帅</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：可持续建筑废弃物预测与管理，装配式建筑供应链，工程项目融资</p>
+            <p>Email: <a href="mailto:liyashuai@buaa.edu.cn">liyashuai@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10611.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：4 报名学生：3</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/39/D8/0FF7C1EBB0E50E06FCBCA1545CB_F7E330B3_8D0AC.png" alt="颜迎晨">
+            <h3>颜迎晨</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:ychyan@buaa.edu.cn">ychyan@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10610.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/89/E6/3893CFFCA956FB4B8FD1C63A750_7F461107_42B00.png" alt="刘慧慧">
+            <h3>刘慧慧</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：运营管理、供应链管理、低碳供应链、电商平台、能源经济政策研究</p>
+            <p>Email: <a href="mailto:liuhuihui@buaa.edu.cn">liuhuihui@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10609.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,营销管理,运营管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：要求学生在企业运营管理方面有一定的工作经验，对企业面临的实际问题有深入思考和个人见解。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/66/6B/E8FBF3C770BD069B89DA30E78C0_A39DA9DD_712389.jpg" alt="张楚">
+            <h3>张楚</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：市场营销与生产运作交叉领域、供应链渠道管理与信息共享等</p>
+            <p>Email: <a href="mailto:zhangchu@buaa.edu.cn">zhangchu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10607.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/A0/A2/072BCB831FEDE7274D72BFA3C3F_6753D057_1D8D81.jpg" alt="王天宇">
+            <h3>王天宇</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：调度理论、计算复杂度分析、路径规划、网络优化、决策优化，主要应用领域包括风险管理、共享交通、人工智能和数据分析</p>
+            <p>Email: <a href="mailto:10753@buaa.edu.cn">10753@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10606.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/93/82/CBE5FF04343439AD40FC13805BD_7E7CC232_10B5C7.jpg" alt="陈喆">
+            <h3>陈喆</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:zhechen@buaa.edu.cn">zhechen@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/10608.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,信息管理,营销管理</p>
+            <p>剩余名额：2 报名学生：1</p>
+            <p>对学生要求：1.请定期与指导老师讨论论文进展，保证至少每2周1次的讨论频率；
+2.请保证论文研究的原创性；
+3.请在平时投入足够的时间和精力开展论文研究；
+4.论文研究中遇到困难，请及时与指导老师沟通，共同解决问题；
+5.请把握论文研究中的关键时间节点，提前完成相应工作，并留出充裕的论文修改时间。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/D0/C4/335601E1D1C2706C867F28D9F62_6FE73E9B_232C94.jpg" alt="曹明">
+            <h3>曹明</h3>
+            <p class="department">管理科学与工程系</p>
+            <p>职位：助理研究员</p>
+            <p>研究方向：主要研究方向：复杂系统的优化与决策、深度学习理论及应用</p>
+            <p>Email: <a href="mailto:caoming@buaa.edu.cn">caoming@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1086/13014.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/glkxygcx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理,信息管理,创新与创业管理</p>
+            <p>剩余名额：1 报名学生：0</p>
+            <p>对学生要求：对企业供应链的运营管理、各类型企业的信息管理和信息化应用管理、国内外创新与创业管理等经管类研究方向有兴趣；工作中善于总结与思考，善于发现工作中的问题并提出解决方案；遇到困难能面对不退缩尤其不要情绪化。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/EC/C4/08A055771C508EB335570CA222C_01F0B31D_84BDA3.png" alt="范英">
+            <h3>范英</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：能源经济学、能源市场与碳市场、能源-环境-经济系统建模、气候变化政策</p>
+            <p>Email: <a href="mailto:yfan1123@buaa.edu.cn / ying_fan@263.net">yfan1123@buaa.edu.cn / ying_fan@263.net</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10659.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,项目管理,运营管理</p>
+            <p>剩余名额：5 报名学生：6</p>
+            <p>对学生要求：对双碳、碳中和、碳市场、能源管理感兴趣的同学。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/0C/2B/8FE024277A6E56FC5FFF039D352_65CF2CB5_C4624.jpg" alt="朱磊">
+            <h3>朱磊</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：能源投资评价与低碳政策研究</p>
+            <p>Email: <a href="mailto:leizhu@buaa.edu.cn">leizhu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10655.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理,战略管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：具有一定数学建模基础，熟悉企业运作管理的同学优先。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/E7/83/D9D5570A9822E9FB7D10F47F79D_C83EA42B_2193B.jpeg" alt="田东文">
+            <h3>田东文</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:dwtianbuaa@163.com">dwtianbuaa@163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10654.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 创新与创业管理,项目管理,运营管理</p>
+            <p>剩余名额：12 报名学生：1</p>
+            <p>对学生要求：踏实认真、勤于思考，计划性强、目标导向，善于沟通与协作。
+具备一定的行研分析基础，以及项目管理、运营管理、创新创业管理实践或经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/0/76/AE/03950BDDF219F76139FBA3C57EC_7E9150EF_306D.jpg" alt="刘莹">
+            <h3>刘莹</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:liuying@buaa.edu.cn">liuying@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10653.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/57/0D/71E2AF7BD78D81E491DAEA9DDEC_86E81AB2_87B25.jpeg" alt="喻雪莹">
+            <h3>喻雪莹</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:xueying@buaa.edu.cn">xueying@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10652.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：考生应具备较好的理论和实证经济学基础，并对探索解决环境问题有兴趣。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/AD/78/3D85CC636055A37B5898729D936_133E2999_43101.png" alt="钟铧">
+            <h3>钟铧</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：环境与资源经济学; 环境政策与福利分析；应用一般均衡理论；资源与发展</p>
+            <p>Email: <a href="mailto:hua.zhong.beijing@outlook.com">hua.zhong.beijing@outlook.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10651.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：从事节能减排、低碳技术、新能源技术投资项目等领域相关工作学生优先。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/9/50/E8/5AB2FFFC80410351C6C52BA3EBD_50CFDD94_FD9DB.jpg" alt="魏亿钢">
+            <h3>魏亿钢</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：能源政策评估与大数据分析、技术经济与创新管理</p>
+            <p>Email: <a href="mailto:10005@buaa.ed.cn；xiaobei_915@163.com">10005@buaa.ed.cn；xiaobei_915@163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10650.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：信息、能源与双碳、绿色金融、ESG行业</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/0E/8E/243356637C470F3D1C2A0744DCB_E2322242_10303.jpg" alt="王楚男">
+            <h3>王楚男</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：航空经济与管理、交通碳减排、低空经济；Air transport economics and management, decarbonization of transport industry, low-altitude economy</p>
+            <p>Email: <a href="mailto:chnwang@buaa.edu.cn">chnwang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10648.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,运营管理,营销管理,项目管理,创新与创业管理</p>
+            <p>剩余名额：10 报名学生：2</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/D3/0A/1FD3385029DD4C49D7DD31222A4_6A27D847_5D38E.png" alt="衣博文">
+            <h3>衣博文</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:ybw2018@buaa.edu.cn">ybw2018@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10647.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：学习态度认真，具有足够的时间进行相关研究，在能源环境行业相关单位工作者优先。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/60/1F/700E2BF46DA9ED2641074B569F2_DBB76718_E9E2.jpeg" alt="同凡">
+            <h3>同凡</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：能源系统可持续性转型系统评估，低碳能源技术综合评价，能源系统的气候变化与环境健康影响，公司绿色治理大数据分析</p>
+            <p>Email: <a href="mailto:fantong@buaa.edu.cn">fantong@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10646.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,信息管理,运营管理,创新与创业管理</p>
+            <p>剩余名额：3 报名学生：0</p>
+            <p>对学生要求：希望学生愿意花时间好好写论文。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/0A/65/229A624C175E22FECD7B214C4AA_06972FEE_782B.jpg" alt="刘寅鹏">
+            <h3>刘寅鹏</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：碳交易机制设计、行为大数据建模分析、智能决策关键技术</p>
+            <p>Email: <a href="mailto:liuyinpeng@buaa.edu.cn">liuyinpeng@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/13066.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：数学功底，有编程能力，有大数据相关经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/B2/A2/4CCCAB4EE1294ACA5C550864D87_A7E6D041_212258.jpg" alt="李卫">
+            <h3>李卫</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:liwei001@hotmail.com">liwei001@hotmail.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10644.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/87/88/D8C178EC1C019D3AC21950E1EC7_14BCD6B8_AEFBA.jpg" alt="杨捷">
+            <h3>杨捷</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:"></a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10643.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,营销管理,创新与创业管理,财务管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：学习态度端正、认真，能保证充足的科研时间投入，有一定的数学或统计学基础。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/84/1A/C24CF0A27E5CC591E2C7AA743FA_5BADDB84_1004.jpg" alt="胡盛梅">
+            <h3>胡盛梅</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:hushengmei@buaa.edu.cn">hushengmei@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10645.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/58/CE/1F829B4FB2E4D66B8C630093353_EA1EB6A5_2372E.jpg" alt="申通远">
+            <h3>申通远</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：契约理论、博弈论、行为经济学、公司金融</p>
+            <p>Email: <a href="mailto:shenty@buaa.edu.cn">shenty@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/10641.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/5D/73/41F3F18302F78035C7F7A2DDA34_4D4E1317_B567.jpg" alt="姚星">
+            <h3>姚星</h3>
+            <p class="department">应用经济系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：能源经济与管理，能源系统建模</p>
+            <p>Email: <a href="mailto:yaoxing@buaa.edu.cn">yaoxing@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1087/12741.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/yyjjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,运营管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：具备良好的方法论基础及研究主动性，能够合理平衡时间安排，投入必要的时间精力，严格遵循学术规范高质量完成学位论文研究工作，具有能源低碳领域背景的优先。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/2C/D5/4B5883DCFA894DE9B0F56D2FBDF_88B2A369_19E2C7.jpg" alt="柏满迎">
+            <h3>柏满迎</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：金融风险管理；公司金融；金融市场与金融计量；养老保险与宏观政策</p>
+            <p>Email: <a href="mailto:baimy@buaa.edu.cn">baimy@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10679.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/11/9C/E848E56D3B075C6CA561F73D624_B5B72805_17409.jpg" alt="秦中峰">
+            <h3>秦中峰</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：系统建模与优化、不确定决策、投资组合优化、风险管理、区间数据分析等</p>
+            <p>Email: <a href="mailto:qin@buaa.edu.cn">qin@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10676.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,项目管理,运营管理,金融管理</p>
+            <p>剩余名额：12 报名学生：15</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/77/29/A380A45C5DDB2819E0668861D42_04360E18_8D8D.jpg" alt="郑海涛">
+            <h3>郑海涛</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：经济预测与运行风险评估,金融风险测度与预警机制，社会保险与公共债务风险。</p>
+            <p>Email: <a href="mailto:zhenghaitao@buaa.edu.cn">zhenghaitao@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10673.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,金融管理,财务管理</p>
+            <p>剩余名额：3 报名学生：0</p>
+            <p>对学生要求：从事的工作，尽量与论文方向一致。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/00/E8/98A39412D6F765FCA38BFC2ED75_8E0FA678_26ECC.jpg" alt="蒋虹">
+            <h3>蒋虹</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：宏观经济理论与政策；金融风险管理；金融机构经营管理；人身保险；再保险；</p>
+            <p>Email: <a href="mailto:hong.jiang@sina.com">hong.jiang@sina.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10672.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/3A/C2/C9BC0448A02A11C7B05FDDC98FE_656EA36D_1D1D9E.jpg" alt="周建涛">
+            <h3>周建涛</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：行为经济学、行为金融学、行为保险学，行为主体心理维度测量及行为异象机理研究；还研究金融市场微观结构、公司融投资决策、金融衍生产品定价；信用风险、征信体系的经济理论研究；商业银行风险管理、保险理论与政策等领域。</p>
+            <p>Email: <a href="mailto:zhoujiantaoA1032@buaa.edu.cn">zhoujiantaoA1032@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10671.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/89/A4/5200218D964756C6C9E6E109BFD_5D98368C_1EB86B.jpg" alt="马杰">
+            <h3>马杰</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:majie_buaa08@126.com">majie_buaa08@126.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10670.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,项目管理,金融管理,营销管理,财务管理</p>
+            <p>剩余名额：8 报名学生：2</p>
+            <p>对学生要求：不限背景，要求积极上进、做事认真、勤奋好学。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/E/04/DD/3048FD4125EDB2E9B1AD74F57A0_3134B855_A1FC.jpg" alt="康雁飞">
+            <h3>康雁飞</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:yanfeikang@buaa.edu.cn">yanfeikang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10669.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/D8/C5/D54DA14BC1F05279DD7094AA2C1_1DC96A9A_B2F51.png" alt="马莹莹">
+            <h3>马莹莹</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:mayingying@buaa.edu.cn">mayingying@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10668.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/3C/4B/2CC404BC6150F26A5016A7CA17F_F31FE6E6_1B888C.jpg" alt="王珊珊">
+            <h3>王珊珊</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:sswang@buaa.edu.cn">sswang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10667.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 运营管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：欢迎具有较好数理基础、编程能力，对不确定性数据驱动决策优化、机器学习及其在交通、物流供应链、企业运营管理的应用等方向感兴趣的学生邮件联系。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/81/18/7D79529F3FFE46E5C7A4EF9E89A_8EAF3308_20A518.jpg" alt="赵墨非">
+            <h3>赵墨非</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：经济理论、产业组织、数字经济、金融学</p>
+            <p>Email: <a href="mailto:zhaomf@buaa.edu.cn">zhaomf@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10666.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/BA/B5/951586B880E418021937C053F95_9E6DED46_19215.jpg" alt="刘炳越">
+            <h3>刘炳越</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:"></a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10665.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理</p>
+            <p>剩余名额：5 报名学生：0</p>
+            <p>对学生要求：踏实认真肯干，能够获得较好的数据资料，具有良好的英语阅读、金融数量分析及写作能力。 </p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/BE/21/5BE7EB832F8A6474D61B42C588E_D8B4717E_91913.png" alt="郝壮">
+            <h3>郝壮</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：应用微观经济学、健康经济学、劳动经济学和教育经济学</p>
+            <p>Email: <a href="mailto:haozhuang@buaa.edu.cn">haozhuang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10663.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理,金融管理,战略管理,营销管理,创新与创业管理</p>
+            <p>剩余名额：16 报名学生：1</p>
+            <p>对学生要求：对经济管理问题感兴趣，有探索精神。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/E0/83/1EE798380FD68B7505D6CB9E992_5AEE89A5_58F46.png" alt="刘宁">
+            <h3>刘宁</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：个人和群体决策，重点关注风险与不确定性及公平观念</p>
+            <p>Email: <a href="mailto:nliu2018@buaa.edu.cn">nliu2018@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10664.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 营销管理,金融管理,组织行为与人力资源管理,创新与创业管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：在论文写作期间有均匀充足的时间投入到论文设计和写作中（每周六小时），切勿临期突击。论文有明确的目标，可以在300字内阐述论文贡献，一页A4纸内写明简要内容。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/68/44/284294BF18378EB571A020988F3_04E13044_860F5.png" alt="崔文昊">
+            <h3>崔文昊</h3>
+            <p class="department">数量经济与商务统计系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：金融计量，时间序列</p>
+            <p>Email: <a href="mailto:wenhaocui1992@buaa.edu.cn">wenhaocui1992@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1088/10662.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/sljjyswtjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,信息管理</p>
+            <p>剩余名额：4 报名学生：0</p>
+            <p>对学生要求：对金融、经济和统计相关领域具有研究兴趣。具备一定的统计/计量经济学基础，例如熟练掌握多元线性回归分析方法。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/5D/95/E6552FF5E9652811A676543E46B_42CD069F_2B6070.png" alt="赵尚梅">
+            <h3>赵尚梅</h3>
+            <p class="department">金融系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：从事货币金融理论与货币政策、金融机构公司治理与监管、保险产业理论与产业政策等领域的研究。</p>
+            <p>Email: <a href="mailto:zsm@buaa.edu.cn">zsm@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10710.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/FA/A9/5FDAF3F437BAFF411FC4F0869CA_681EF283_24E065.png" alt="刘善存">
+            <h3>刘善存</h3>
+            <p class="department">金融系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：证券组合投资，金融市场微观结构分析</p>
+            <p>Email: <a href="mailto:liushancun@buaa.edu.cn">liushancun@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10707.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/EB/F4/D49D482B94A171D27A302057DA4_F021DDDA_2C64E7.png" alt="杨继平">
+            <h3>杨继平</h3>
+            <p class="department">金融系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：（1）风险决策方法和应用，金融投资分析、风险投资决策等；
+
+（2）参数、非参数及半参数金融计量建模，金融风险管理，以及货币政策对股市波动的影响等；
+
+（3）科研项目和政府部门预算绩效评估等。</p>
+            <p>Email: <a href="mailto:yangjp@buaa.edu.cn">yangjp@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10701.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/EF/FE/C203152AFD31C6CD8043A2AD7BB_64E1E2AB_1E3B1.jpg" alt="谭小芬">
+            <h3>谭小芬</h3>
+            <p class="department">金融系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：国际金融市场，跨境资本流动，汇率市场变化，金融风险，国际大宗商品，企业杠杆率</p>
+            <p>Email: <a href="mailto:xiaofentan@buaa.edu.cn；xiaofent@163.com">xiaofentan@buaa.edu.cn；xiaofent@163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10698.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：16 报名学生：8</p>
+            <p>对学生要求：认真，严谨，执行力强，逻辑严密，对宏观经济和金融感兴趣</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/AE/19/5BA77C8A24048B3ECBAFB1A0984_A9CA7FE5_E1F4D.jpg" alt="杨海军">
+            <h3>杨海军</h3>
+            <p class="department">金融系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:navy@buaa.edu.cn">navy@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10695.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,金融管理,信息管理,财务管理</p>
+            <p>剩余名额：6 报名学生：0</p>
+            <p>对学生要求：方向一致的学生选报</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/E3/76/1AD97AF5F442173DB836C38333D_FC700EE9_8CC93.jpg" alt="部慧">
+            <h3>部慧</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：实证资产定价, 金融市场和期货市场，预测，风险管理，金融科技和监管科技</p>
+            <p>Email: <a href="mailto:buhui@buaa.edu.cn">buhui@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10694.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/C0/CF/645FA0BB17ADBF0819D99C53C3C_E028426D_AE46B.png" alt="张军欢">
+            <h3>张军欢</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：智能金融与区块链金融，金融科技与监管科技，算法交易与高频交易，行为与计算金融，数字资产定价与交易</p>
+            <p>Email: <a href="mailto:junhuan_zhang@buaa.edu.cn，junhuan.zhang@gmail.com">junhuan_zhang@buaa.edu.cn，junhuan.zhang@gmail.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10693.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理,信息管理</p>
+            <p>剩余名额：2 报名学生：2</p>
+            <p>对学生要求：具有较强的数学、编程背景，对人工智能和区块链技术在金融应用感兴趣。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/C8/3E/6B6F4027A5AFF0515CE556A91FC_0149A51E_13DA3.jpg" alt="宋晓东">
+            <h3>宋晓东</h3>
+            <p class="department">金融系</p>
+            <p>职位：副高</p>
+            <p>研究方向：主要研究方向：不确定性决策、资产配置、数据挖掘、思政教育</p>
+            <p>Email: <a href="mailto:09395@buaa.edu.cn">09395@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10692.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,金融管理,营销管理,财务管理</p>
+            <p>剩余名额：10 报名学生：6</p>
+            <p>对学生要求：思想上，道德品质好，积极乐观，富有进取心，满满正能量；
+学业上，有一定的主动性，愿意接受老师的督促指导，具有按时、顺利完成学业的自觉追求；
+生活中，乐于沟通，愿意和老师多沟通、多交流，共同构建和谐融洽、教学相长的亦师亦友关系。
+</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/CF/DA/C4D1A5BEC82969E432A5ABE750D_B59687B8_47366.png" alt="吴德祥">
+            <h3>吴德祥</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:dexter@buaa.edu.cn">dexter@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10691.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,运营管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：无</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/4C/A2/FDCAC301FE93E1EABA89D880EBB_6B43007F_43AEA.png" alt="陈靖楠">
+            <h3>陈靖楠</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:jchen@buaa.edu.cn">jchen@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10690.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/0/5F/CE/BF32950D11D1737EBB0805CCF61_A4494710_6A5B.jpg" alt="吴蕾">
+            <h3>吴蕾</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：金融市场微观结构、计量经济学、国际金融</p>
+            <p>Email: <a href="mailto:L.Wu@buaa.edu.cn">L.Wu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10689.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：了解金融学科的基本理论、基础知识；
+了解银行、证券与投资等方面业务；
+了解国家有关金融的方针、政策和法规；
+了解金融学科的理论前沿与发展动态；
+掌握文献检索、资料查询的基本方法，具备一定的数据分析能力。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/9A/E3/90C4DD17CD3402D65077E62D919_1019FAF9_102BE.png" alt="洪洁瑛">
+            <h3>洪洁瑛</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：公司金融、行为金融和金融科技</p>
+            <p>Email: <a href="mailto:hong@buaa.edu.cn">hong@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10688.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：5 报名学生：0</p>
+            <p>对学生要求：对公司金融类的研究感兴趣，有数据分析和处理的能力。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/59/09/0F92759518A8363A8E1DB1354CB_B98A27B0_832B9.png" alt="金昊">
+            <h3>金昊</h3>
+            <p class="department">金融系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：宏观经济学、国际金融学、宏观经济政策（财政政策,货币政策,宏观审慎政策）。</p>
+            <p>Email: <a href="mailto:haojin.econ@gmail.com">haojin.econ@gmail.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10687.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：对待学业严肃认真，不弄虚作假。定期与导师沟通，有一定的自主学习能力</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/29/96/63D23A0B7674D52C6C2AD263A30_6DFC5FD3_3D869.png" alt="李伟">
+            <h3>李伟</h3>
+            <p class="department">金融系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：国际金融，宏观经济学 次要方向：应用计量，跨国企业创新</p>
+            <p>Email: <a href="mailto:"></a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10686.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理,金融管理,创新与创业管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：希望学生对数据分析感兴趣，回答现实中的经济问题</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/5/24/F8/910EA6D4B177F4E22BB0611C476_3CBA124E_14230.jpeg" alt="石丽娜">
+            <h3>石丽娜</h3>
+            <p class="department">金融系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:shilina@buaa.edu.cn">shilina@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1089/10685.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/jrx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：望学生有充足时间和精力认真学习，撰写毕业论文</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/C7/6D/3CFFBDCF25977DDBABEE9F8E34E_E6B7186A_28FA6C.png" alt="刘志新">
+            <h3>刘志新</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：公司融投资决策，实物期权理论，资本运作，金融市场分析，金融工具定价</p>
+            <p>Email: <a href="mailto:liuzhixin@buaa.edu.cn">liuzhixin@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10737.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理,项目管理</p>
+            <p>剩余名额：6 报名学生：0</p>
+            <p>对学生要求：（空）</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/26/02/E700D85D777161F859E090F20C5_F5DA611B_E9016.jpg" alt="张海兰">
+            <h3>张海兰</h3>
+            <p class="department">会计系</p>
+            <p>职位：研究员</p>
+            <p>研究方向：主要研究方向：财务管理、会计信息系统、内控、审计。</p>
+            <p>Email: <a href="mailto:zhl@buaa.edu.cn">zhl@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10736.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/A1/54/46CF4D1EAC85D46AEF0851A88FB_146F8709_2586D0.png" alt="邹艳">
+            <h3>邹艳</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：智力资本与创新管理、CSR与治理、研发项目管理</p>
+            <p>Email: <a href="mailto:zouy@buaa.edu.cn">zouy@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10733.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,创新与创业管理</p>
+            <p>剩余名额：4 报名学生：1</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/E2/67/4AA670C2B25E92A774E4233A42B_F551A3E0_1CC1E.jpg" alt="周宁">
+            <h3>周宁</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：财务会计、管理会计、绩效考核、科研管理及财务管理政策。</p>
+            <p>Email: <a href="mailto:zning80@buaa.edu.cn">zning80@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10730.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/2A/2C/D9CAA5E6B9F2870DB59A943C08A_510A95BB_2C498F.png" alt="韩小汀">
+            <h3>韩小汀</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：会计信息的智能感知和评价、商务智能分析在管理会计中的应用、云财务共享中心、行为会计与决策等。</p>
+            <p>Email: <a href="mailto:hanxiaoting@buaa.edu.cn">hanxiaoting@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10727.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/E3/B5/4E7B0A4977030B2A10EDBA827A9_13C81741_21E948.jpg" alt="邓路">
+            <h3>邓路</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：公司财务与资本市场、会计信息与公司治理等相关领域</p>
+            <p>Email: <a href="mailto:denglu@buaa.edu.cn">denglu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10724.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： </p>
+            <p>剩余名额：8 报名学生：1</p>
+            <p>对学生要求：对公司财务与资本市场相关领域具有较高的研究兴趣，具有较强的案例论文写作能力或丰富的财务战略和资本市场实践能力。愿意付出足够的学习时间投入自己的学位论文写作，并期待能在工商管理、会计和金融三大教指委组织的国家级优秀案例评选中获奖。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/A2/FF/476587E3D982524B2436DE70B65_153D8702_19197.jpg" alt="潘立新">
+            <h3>潘立新</h3>
+            <p class="department">会计系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：（1）围绕会计信息的决策行为研究，主要兴趣是将财务会计与心理学相结合，进行会计信息呈报方式、利用会计信息的投资决策行为等研究。（2）企业和非营利机构风险与内部控制研究，主要研究兴趣是体现行业特征和组织特点的内部控制有效性问题研究。（3）审计市场问题与会计师事务所竞争战略研究等等。</p>
+            <p>Email: <a href="mailto:panlixin@126.com">panlixin@126.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10722.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理,创新与创业管理,项目管理</p>
+            <p>剩余名额：7 报名学生：6</p>
+            <p>对学生要求：（1）勤谨认真，希望通过研究生学习提高自身的理论水平与识别问题、分析问题、解决问题的能力，并愿意为之付出努力；
+（2）有一定的从业经验，并对所从事的工作、所从业的领域的管理问题有疑惑、有思考，并具备较强的写作能力。
+  </p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/2/4F/85/FFFC7FE4D233D4748C0C443B62A_69DA2A3F_9A44.jpg" alt="白明">
+            <h3>白明</h3>
+            <p class="department">会计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：公司金融和成本管理。</p>
+            <p>Email: <a href="mailto:baimingbm@buaa.edu.cn">baimingbm@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10720.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：1 报名学生：2</p>
+            <p>对学生要求：无特殊要求。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/EE/4F/C699259216ECB9A9C81D3159A13_6B6F2DA0_218803.jpg" alt="谢岚">
+            <h3>谢岚</h3>
+            <p class="department">会计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：公司理财、投资</p>
+            <p>Email: <a href="mailto:xie_lan@buaa.edu.cn">xie_lan@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10719.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理,金融管理</p>
+            <p>剩余名额：6 报名学生：0</p>
+            <p>对学生要求：具备一定专业知识基础和工作实践经验，具有较高的自我要求和积极向上，选题方向最好能与学生的工作（经历、经验等）内容相结合</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/38/B8/06F8D8764CC3BFC9DA04E21C206_DFF11F7B_18DE7B.jpg" alt="牟晖">
+            <h3>牟晖</h3>
+            <p class="department">会计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：金融资产定价；
+财务报表分析；
+投融资项目决策；
+职业生涯规划；</p>
+            <p>Email: <a href="mailto:mouhui@buaa.edu.cn">mouhui@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10718.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理,创新与创业管理,项目管理,金融管理</p>
+            <p>剩余名额：6 报名学生：3</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/C/AB/14/64879B2B3DEB95BC605E24E32A2_DAFB25BA_7554A.jpg" alt="徐扬">
+            <h3>徐扬</h3>
+            <p class="department">会计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：资产定价，国际金融，外汇市场，大宗商品，公司金融，企业数字化转型</p>
+            <p>Email: <a href="mailto:yang_xu@buaa.edu.cn">yang_xu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10717.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 金融管理,财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：（1）资产定价、国际金融、公司金融领域的实证研究，需具备一定的数理统计和编程能力（Stata, Matlab, R 或 python等）；（2）企业数字化转型方向的案例研究。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/9/9D/98/C3E883C03780D1D7EA694544CE8_CE5262CB_17C1AA.jpeg" alt="闫伟宸">
+            <h3>闫伟宸</h3>
+            <p class="department">会计系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：财务会计、财务管理、公司治理、公司金融，包括：国有企业、数字化转型、ESG治理、企业创新等</p>
+            <p>Email: <a href="mailto:Dr_Yan@buaa.edu.cn">Dr_Yan@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10716.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：欢迎专业基础扎实且有一定的管理经验，认真勤奋的学生加入研究团队。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/DD/0F/DD0F2FF5CFCD8A6CBBC1B36A173_00A0CAE5_61B9D.png" alt="贾子超">
+            <h3>贾子超</h3>
+            <p class="department">会计系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：公司财务与资本市场；融投资决策；房地产经济与金融；城乡可持续发展；城市环境与健康；数据挖掘与统计预测；项目管理；企业社会责任与可持续发展；创新创业方法论；思政教育。</p>
+            <p>Email: <a href="mailto:"></a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10715.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：[]</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/0/D9/38/75A6BCE1DA1947AE26E535726D5_38A4A668_22D2.jpg" alt="郝梦姝">
+            <h3>郝梦姝</h3>
+            <p class="department">会计系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：公司自愿信息披露、公司治理、分析师预测</p>
+            <p>Email: <a href="mailto:achms@buaa.edu.cn">achms@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10714.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：本科为会计专业，或学习过会计学基础和中级财务会计等会计课程。
+拟开展大样本实证研究，并能够熟练运用统计软件（如Stata，SPSS等）进行数据处理分析。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/A0/EC/0E6EF43AD3BA41A3DDF3C8CFF84_AB2C8157_F823C.png" alt="冯帆">
+            <h3>冯帆</h3>
+            <p class="department">会计系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：财务报告与披露，机构投资者与金融分析师，税收和商业决策，公司文化，公司治理</p>
+            <p>Email: <a href="mailto:fanfeng@buaa.edu.cn">fanfeng@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1090/10713.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/hjx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 财务管理</p>
+            <p>剩余名额：1 报名学生：0</p>
+            <p>对学生要求：重视论文写作，明确其目的、意义和要求，严格遵守学校针对学位论文的有关规定和要求，保质保量地完成毕业论文任务。能够独立地完成论文选题、文献阅读和论文撰写等工作，做好阶段总结，定期向指导教师汇报论文工作的进展情况。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/75/F9/05A1139E6C28CACE593A476E432_D5BC9143_70211.png" alt="刘霖">
+            <h3>刘霖</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：数字平台和平台经济、数字信息搜索行为和赋能、营销学模型、航空管理科学、企业数字化转型、竞争与政府政策分析、运筹管理和营销学交叉领域</p>
+            <p>Email: <a href="mailto:linliubh@buaa.edu.cn">linliubh@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/10742.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 营销管理,运营管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：欢迎对经济管理感兴趣的MBA学生一起来探索科学研究并享受其中的乐趣，科研是一件好玩儿的事儿，希望你努力认真。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/8B/16/80B5C50DB7C8AA929E223569B05_C412D63F_275F3E.png" alt="张明立">
+            <h3>张明立</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：市场营销理论、营销战略与策略、价值营销、顾客价值、品牌管理、服务营销、关系营销、顾客资产、消费者行为</p>
+            <p>Email: <a href="mailto:znang1234@sina.com">znang1234@sina.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/10748.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/3F/AF/7C0A254CB834295FF11905A0D0C_C0C7D07F_2B1B2C.png" alt="黄劲松">
+            <h3>黄劲松</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：数字营销和智能营销、品牌管理与整合营销传播、企业数字化转型
+
+对企业案例开发、营销数据分析有丰富经验</p>
+            <p>Email: <a href="mailto:huangjs@buaa.edu.cn">huangjs@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/10745.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 项目管理,营销管理,战略管理,信息管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：创业成功，或者在知名企业工作，或者本科为211以上大学，同时掌握可以进行毕业论文研究的一手数据，或者可以进行案例研究的一手材料。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/BC/14/1CBF83E71860D2593231B830211_8DD956CD_B0485.jpg" alt="许文媞">
+            <h3>许文媞</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：零售市场结构；
+
+顾客服务、顾客满意度对于企业的成功；
+
+呼叫中心管理策略；
+
+学术诚信与商业道德
+
+礼品卡与假日消费；</p>
+            <p>Email: <a href="mailto:xuwenti@buaa.edu.cn">xuwenti@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/12471.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 营销管理,战略管理</p>
+            <p>剩余名额：7 报名学生：0</p>
+            <p>对学生要求：有市场营销或客户沟通的相关背景，良好的沟通能力和学习态度。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/7/96/75/EB6E7054481337BFDA884EBB05F_0C881972_A6C48.jpg" alt="姚唐">
+            <h3>姚唐</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：营销科技、服务营销、数字化营销、消费者行为、营销战略等</p>
+            <p>Email: <a href="mailto:yaot@buaa.edu.cn">yaot@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/10740.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 营销管理,战略管理,项目管理,运营管理,创新与创业管理</p>
+            <p>剩余名额：6 报名学生：1</p>
+            <p>对学生要求：无特定要求</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/14/04/B41597759805514613C28186D44_ECE4284A_5A51C.jpg" alt="李晨溪">
+            <h3>李晨溪</h3>
+            <p class="department">市场与数字化营销系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：大数据消费者行为分析、数字化营销、数字化转型、消费决策、可持续营销战略、电子商务等</p>
+            <p>Email: <a href="mailto:chenxili@buaa.edu.cn">chenxili@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1091/10739.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/scyszhyxx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 营销管理,战略管理</p>
+            <p>剩余名额：2 报名学生：0</p>
+            <p>对学生要求：</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/A9/DC/ED034738822D8B8ED65EBC057AD_123AFA74_265A6C.png" alt="程志超">
+            <h3>程志超</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：组织行为学、人力资源管理。</p>
+            <p>Email: <a href="mailto:cheng97815@vip.163.com">cheng97815@vip.163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10765.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/B/43/38/6FBDE5196C93FF8C60D0237FBBE_56903AEF_36428F.png" alt="欧阳桃花">
+            <h3>欧阳桃花</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：战略管理、技术创新与核心竞争力提升，持续追踪航空航天、盾构机等企业案例，关注“国之重器”卡脖子技术与突破的创新过程；持续研究海尔、小米等企业转型升级以及瓷茶丝酒传统企业的文化数字双融创新</p>
+            <p>Email: <a href="mailto:taohuaouyang@buaa.edu.cn">taohuaouyang@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10762.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,组织行为与人力资源管理,创新与创业管理</p>
+            <p>剩余名额：5 报名学生：4</p>
+            <p>对学生要求：期待有以下背景的学生选我为导师，并做案例论文。1.具有航空型号工程研制经验；2.具有航天型号研制经验比如火星号祝融工程、天宫1号工程、嫦娥五号探月工程、神舟飞船航天工程、北斗系统开发与应用工程与管理经验。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/72/7C/A4D50E51201F88312B2EC94877D_3F8FE69B_62929D.jpg" alt="唐方成">
+            <h3>唐方成</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：教授、博士生导师</p>
+            <p>研究方向：主要研究方向：平台战略、创新生态、共享经济、组织行为与人力资源管理等</p>
+            <p>Email: <a href="mailto:11655@buaa.edu.cn">11655@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/15095.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,创新与创业管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：勤勉务实，上进心强，对战略管理、创新创业管理方向感兴趣。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/C9/6E/7EBE3B326B0AF7173580CD33EFC_E339ADF5_19E18.jpg" alt="王楠">
+            <h3>王楠</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：教授、博士生导师</p>
+            <p>研究方向：主要研究方向：创新与战略管理、数字化管理、科技创新与知识管理、数字平台与创新网络</p>
+            <p>Email: <a href="mailto:wangnanbuaa@buaa.edu.cn">wangnanbuaa@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/15581.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/3/3A/3C/6B5B04421E080AEFC543FEDF58F_6BF93F75_20B91.jpg" alt="苏文平">
+            <h3>苏文平</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：教授</p>
+            <p>研究方向：主要研究方向：人力资源管理、管理沟通、职业生涯规划，本科生职业生涯规划、学业规划等专业课程</p>
+            <p>Email: <a href="mailto:swps27@buaa.edu.cn">swps27@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10760.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理,创新与创业管理</p>
+            <p>剩余名额：1 报名学生：1</p>
+            <p>对学生要求：1）具有较好的教育背景、学习能力与沟通能力，做事认真、踏实；
+2）有志于在人力资源管理及人才开发领域有进一步的学习、研究（不要求人力资源管理专业背景）；
+3）每学期至少能够参加导师组织的学术交流会议3次以上。
+</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/D/21/00/6E463CB6FBE28BB202F0866F4ED_DF7E00CB_19903.jpeg" alt="韩德强">
+            <h3>韩德强</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副研究员</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:gymn@vip.163.com">gymn@vip.163.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10759.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/A/0E/0D/3C4A265E68369ADD7BFA7A38A67_C7319EDD_314465.jpg" alt="武欣">
+            <h3>武欣</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:wuxin@buaa.edu.cn">wuxin@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10758.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理</p>
+            <p>剩余名额：12 报名学生：4</p>
+            <p>对学生要求：优先选择打算写组织行为学或者人力资源管理方向论文的同学，有剩余名额才会考虑战略管理、项目管理、创新创业方向。所有学生在系统中提交申请之前务必先与老师电话13426226767（可以加微信）或者邮件wuxin@buaa.edu.cn联系一下。邮件发送个人简历（包含不过度P图的照片）。
+邮件如果没有回复，说明被拦截了，请直接打电话。
+建议同学们先去北航图书馆网站“数字资源”里找到“北航硕博论文库”浏览一些论文。
+
+**MBA学生：
+#本年度优先考虑的论文方向#
+有兴趣和能力做以下选题论文的同学优先接收。
+（1）AI的应用对工作重塑及对员工影响：所在企业已经比较普遍和深入的使用AI，对原有的工作流程和工作方式有显著影响，员工之间在AI使用的态度和行为上存在差异。企业规模较大，有能力在企业中开展调研（例如问卷、访谈），能够采集工作系统中客观数据更好（例如使用AI的时长、方式等伴随工作自动生成的数据）。
+（2）员工主动健康行为及企业对员工主动健康的支持措施研究：要求公司规模较大，企业对员工健康比较关注。主要研究工作可能包括开发员工主动健康行为量表，分析员工主动健康行为现状，提出企业促进员工主动健康的策略。
+（3）上下班通勤对员工工作绩效、敬业度、职业倦怠的影响：要求公司规模较大，有考勤要求，员工居住较为分散，部分员工明显感知到通勤的痛苦。要求有能力采集一定时间的跟踪数据，比如200名左右不同通勤难易程度的员工持续两周每天在上下班通勤后填写一份问卷（3-5分钟）。
+ 
+#MBA学生常规要求#
+1．希望学生在某个具有一定规模的公司从事人力资源管理工作，最好是某行业中著名的企业或者典型性的企业；或者，不从事人力资源管理工作，但是对有关人的管理或者组织管理相关问题感兴趣。
+2．具有针对自己的选题搜集信息资料的能力，包括但不限于对特定人群进行访谈和问卷调研、获取企业内部相关资料等。
+3．良好的写作能力。对自己有较高要求，希望完成比较优秀的论文。
+
+**MEM学生：
+1. 在采用项目管理模式的企业或组织中工作，所在组织在项目管理模式下的人力资源或组织管理方面有具有研究价值的内容。
+2．具有针对自己的选题搜集信息资料的能力，包括但不限于对特定人群进行访谈和问卷调研、获取企业内部相关资料等。
+3．良好的写作能力。对自己有较高要求，希望完成比较优秀的论文。
+</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/C5/2F/EDCB4A2A153FD988FA1CD129EC3_96BE9497_E7D5.jpg" alt="马琳">
+            <h3>马琳</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：人才发展、团队协作与组织创新</p>
+            <p>Email: <a href="mailto:malin2014@buaa.edu.cn">malin2014@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10757.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理,创新与创业管理</p>
+            <p>剩余名额：12 报名学生：15</p>
+            <p>对学生要求：勤思考、勤观察，做事认真、踏实、有责任心。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/9/F8/23/BA0851945122659E5B3DB5E1D9E_EB52D5A0_A4A6B.png" alt="解蕴慧">
+            <h3>解蕴慧</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：1、 数智时代的领导行为
+
+2、 员工对机器人使用的应对
+
+3、 服务业员工的情绪劳动
+
+4、 民航安全相关的管理制度和员工行为</p>
+            <p>Email: <a href="mailto:xieyh@buaa.edu.cn">xieyh@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10756.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理</p>
+            <p>剩余名额：5 报名学生：1</p>
+            <p>对学生要求：学生认真对待毕业论文，愿意付出时间和精力。 
+</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/8/7B/57/77CB3C72157A7538ED519781816_7F1FBB9F_12F54A.jpg" alt="陈婧">
+            <h3>陈婧</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:jechen@buaa.edu.cn">jechen@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10755.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 战略管理,信息管理,创新与创业管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：欢迎对企业数智化转型、基于数字技术的商业创新等相关议题感兴趣的同学联络。</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/F/51/F5/069A44139DD4299A2B6A392BFFD_C0F5DB84_55102.jpeg" alt="董雅楠">
+            <h3>董雅楠</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：领导力，工作重塑，职业管理</p>
+            <p>Email: <a href="mailto:dongyn_15@126.com">dongyn_15@126.com</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10754.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理</p>
+            <p>剩余名额：0 报名学生：0</p>
+            <p>对学生要求：对组织行为与人力资源管理方向感兴趣，有企业调研资源，有一定数据分析基础</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/6/ED/C9/1896F86AE0EB2E1A589B651C5A9_E4012945_B5CA7.jpeg" alt="徐琳娜">
+            <h3>徐琳娜</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：副教授</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:xulinna@buaa.edu.cn">xulinna@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10753.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>指导方向： 组织行为与人力资源管理</p>
+            <p>剩余名额：4 报名学生：1</p>
+            <p>对学生要求：1. 倾向于组织行为与人力资源管理领域的研究
+
+2. 具有较强的主动性，做事踏实诚恳</p>
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/4/B7/2D/9F9A7ECF43E9AAD8D764715C4F8_7EA7714D_2FCC1.jpeg" alt="刘焱宇">
+            <h3>刘焱宇</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：</p>
+            <p>Email: <a href="mailto:"></a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10752.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        <div class="faculty-card">
+            <img src="https://sem.buaa.edu.cn/__local/1/FB/30/2B349D12F3FB3AAC1F0F44856CF_071E5775_3207F3.jpg" alt="童小平">
+            <h3>童小平</h3>
+            <p class="department">领导力与组织管理系</p>
+            <p>职位：讲师</p>
+            <p>研究方向：主要研究方向：人力资源开发和管理、组织行为，重点包括培训与发展、组织管理和变革、社交媒体以及领导力等</p>
+            <p>Email: <a href="mailto:txp_sibu@buaa.edu.cn">txp_sibu@buaa.edu.cn</a></p>
+            <p><a href="https://sem.buaa.edu.cn/info/1092/10751.htm" target="_blank">个人主页</a></p>
+            <p><a href="https://sem.buaa.edu.cn/szll/szdw/yx1/ldlyzzglx.htm" target="_blank">院系主页</a></p>
+            <p>非指导老师</p>
+            
+            
+        </div>
+        
+        </div>
+    </body>
+    </html>
+    

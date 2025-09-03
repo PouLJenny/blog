@@ -1174,6 +1174,7 @@ var rules = [
             "culture.tw",
             "cumlouder.com",
             "curvefish.com",
+            "cursor.com",
             "cusp.hk",
             "cusu.hk",
             "cutscenes.net",

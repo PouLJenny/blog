@@ -1,0 +1,74 @@
+{
+    "status": 200,
+    "timestamp": "2025-09-02 09:57:42",
+    "message": null,
+    "error": null,
+    "path": null,
+    "body": {
+        "code": 1,
+        "data": {
+            "surplusStudentNumber": 0,
+            "enterStudentNumber": 0,
+            "mjwiseTeacherInfo": {
+                "remark": "注册用户操作",
+                "createUserId": "ff80818181fc8dd50181ff07d18f0007",
+                "createUserAccount": "93374",
+                "createUserName": "叶雪",
+                "createDateTime": "2023-09-04 17:30:09",
+                "updateUserId": "ff80818181fc8dd50181ff0249fd0001",
+                "updateUserAccount": "93383",
+                "updateUserName": "党春艳",
+                "updateDateTime": "2023-12-22 17:43:17",
+                "id": "ff8081818a3ad35e018a5f872bde1540",
+                "userId": "ff8081818a3ad35e018a5f872bad153f",
+                "employeeCode": "08652",
+                "employeeName": "吴俊杰",
+                "department": "2",
+                "departmentDisplay": "信息系统系",
+                "title": "1",
+                "titleDisplay": "教授",
+                "team": "",
+                "teamDisplay": "",
+                "researchDirection": "信息管理",
+                "researchDirectionList": [
+                    "信息管理"
+                ],
+                "teacherType": "1",
+                "teacherTypeDisplay": "博导",
+                "otherInfo": "[{\"name\":\"个人研究方向\",\"numSort\":1,\"value\":\"数据挖掘，商务智能，机器学习，社会计算，金融计算，城市计算\"},{\"name\":\"导师简介\",\"numSort\":2,\"value\":\"男，教授，国家杰青、教育部青年长江学者。现任北京航空航天大学经济管理学院研究员、博士生导师，兼任北航网络空间安全学院、人工智能学院联合教授。担任北航“数据智能研究中心”主任、“城市运行应急保障模拟技术北京市重点实验室”副主任、“大数据与脑机智能北京市高精尖中心”高级研究员、清华大学“现代管理研究中心”研究员。中国管理科学与工程学会常务理事、国家自然科学基金委“大数据驱动的管理与决策研究”重大研究计划常务专家组成员、上海大数据金融创新中心副理事长、北航网络空间安全学院和人工智能研究院发起委员会成员。\\n邮箱：wujj@buaa.edu.cn\\n\"},{\"name\":\"个人主页\",\"numSort\":3,\"value\":\"https://shi.buaa.edu.cn/wujunjie/zh_CN/index.htm\"},{\"name\":\"对学生的要求\",\"numSort\":4,\"value\":\"\"}]",
+                "officeAddress": "新主楼",
+                "telephone": "",
+                "userPhone": null,
+                "mjwiseUnit": {
+                    "remark": "注册用户操作",
+                    "createUserId": "ff80818181dbd8870181dbd92a30032f",
+                    "createUserAccount": "MANJINGZHIXIN",
+                    "createUserName": "平台管理员",
+                    "createDateTime": "2022-07-08 13:40:05",
+                    "updateUserId": "ff80818181dbd8870181dbd92a30032f",
+                    "updateUserAccount": "MANJINGZHIXIN",
+                    "updateUserName": "平台管理员",
+                    "updateDateTime": "2022-07-14 19:12:25",
+                    "id": "ff80818181dbd8870181dc5288de034a",
+                    "unitName": "经济管理学院",
+                    "code": "010",
+                    "contactPerson": "党老师",
+                    "contactNumber": "010-82339359",
+                    "contactEmail": "82025613@qq.com",
+                    "accessUrl": null,
+                    "unitAllJson": {
+                        "unitName": "经济管理学院",
+                        "id": "ff80818181dbd8870181dc5288de034a"
+                    }
+                },
+                "email": null,
+                "status": true,
+                "statusStr": null,
+                "userImage": null
+            },
+            "status": false
+        },
+        "msg": null
+    },
+    "requestId": null
+}

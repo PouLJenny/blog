@@ -20,5 +20,13 @@
   "less.validate": false,
   // Stylint extension settings
   "stylelint.snippet": ["css", "less", "postcss", "scss"],
-  "stylelint.validate": ["css", "less", "postcss", "scss"]
+  "stylelint.validate": [
+    "css",
+    "less",
+    "postcss",
+    "scss"
+  ],
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }

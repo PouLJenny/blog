@@ -1,0 +1,75 @@
+{
+    "status": 200,
+    "timestamp": "2025-09-02 09:56:48",
+    "message": null,
+    "error": null,
+    "path": null,
+    "body": {
+        "code": 1,
+        "data": {
+            "surplusStudentNumber": 10,
+            "enterStudentNumber": 1,
+            "mjwiseTeacherInfo": {
+                "remark": "注册用户操作",
+                "createUserId": "ff80818181dbd8870181dc552305036e",
+                "createUserAccount": "JINGGUAN",
+                "createUserName": "默认管理员",
+                "createDateTime": "2022-07-16 00:35:13",
+                "updateUserId": "ff8081818201a8f8018202b6d3fb0059",
+                "updateUserAccount": "08966",
+                "updateUserName": "许文媞",
+                "updateDateTime": "2025-08-31 10:42:17",
+                "id": "ff8081818201a8f8018202b6d421005a",
+                "userId": "ff8081818201a8f8018202b6d3fb0059",
+                "employeeCode": "08966",
+                "employeeName": "许文媞",
+                "department": "8",
+                "departmentDisplay": "市场与数字化营销系",
+                "title": "2",
+                "titleDisplay": "副教授",
+                "team": "",
+                "teamDisplay": "",
+                "researchDirection": "营销管理$$战略管理",
+                "researchDirectionList": [
+                    "营销管理",
+                    "战略管理"
+                ],
+                "teacherType": "2",
+                "teacherTypeDisplay": "硕导",
+                "otherInfo": "[{\"name\":\"个人研究方向\",\"numSort\":1,\"value\":\"数字化背景下的市场营销策略、客户体验与客户关系管理\"},{\"name\":\"导师简介\",\"numSort\":2,\"value\":\"女，博士，副教授。2007年毕业于美国普渡大学消费者与零售系（硕士、博士），曾任美国宾州Wilkes 大学商学院助理教授讲授市场营销类课程。2009年加入北航经管，现任北航经管学院数字化营销系副教授。从事数字化营销、客户关系管理、客户体验、绿色营销与企业责任等领域的研究工作，曾承担和参与了各类科研课题多项，除外文专著，在国内外学术期刊和会议上发表论文多篇。目前讲授课程包括市场营销策略、客户关系管理、商务沟通和商务英语。已指导毕业研究生百余人，曾获北航优秀硕士论文指导教师荣誉称号，所指导学生曾获北京市优秀毕业生。企业工作背景包括曾任ICD中国有限公司CEO助理、SONY中国有限公司华北区客户关系主管、美国BenchmarkPortal 公司研究员。\\n\"},{\"name\":\"个人主页\",\"numSort\":3,\"value\":\"\"},{\"name\":\"对学生的要求\",\"numSort\":4,\"value\":\"有市场营销或客户沟通的相关背景，良好的沟通能力和学习态度。\"}]",
+                "officeAddress": "北京航空航天大学经济管理学院",
+                "telephone": "",
+                "userPhone": null,
+                "mjwiseUnit": {
+                    "remark": "注册用户操作",
+                    "createUserId": "ff80818181dbd8870181dbd92a30032f",
+                    "createUserAccount": "MANJINGZHIXIN",
+                    "createUserName": "平台管理员",
+                    "createDateTime": "2022-07-08 13:40:05",
+                    "updateUserId": "ff80818181dbd8870181dbd92a30032f",
+                    "updateUserAccount": "MANJINGZHIXIN",
+                    "updateUserName": "平台管理员",
+                    "updateDateTime": "2022-07-14 19:12:25",
+                    "id": "ff80818181dbd8870181dc5288de034a",
+                    "unitName": "经济管理学院",
+                    "code": "010",
+                    "contactPerson": "党老师",
+                    "contactNumber": "010-82339359",
+                    "contactEmail": "82025613@qq.com",
+                    "accessUrl": null,
+                    "unitAllJson": {
+                        "unitName": "经济管理学院",
+                        "id": "ff80818181dbd8870181dc5288de034a"
+                    }
+                },
+                "email": "xuwenti@buaa.edu.cn",
+                "status": true,
+                "statusStr": null,
+                "userImage": "/user/894592ced18f4a4e99e090681bee957e.jpg"
+            },
+            "status": true
+        },
+        "msg": null
+    },
+    "requestId": null
+}
