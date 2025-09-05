@@ -51,6 +51,7 @@ var rules = [
             "nmvttc.gov.tw",
             "northguan-nsa.gov.tw",
             "npm.gov.tw",
+            "npmjs.com",
             "nstm.gov.tw",
             "ntdmh.gov.tw",
             "ntl.gov.tw",

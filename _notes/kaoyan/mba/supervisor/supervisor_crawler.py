@@ -3,9 +3,9 @@ import requests
 import json
 import time
 
-session_id = '2a68f73f-3761-4b45-9633-ddb483ef06f2'
+session_id = '1ce0c67c-1be2-4286-a40c-f799da586504'
 
-yixiang_tearchers = ['宋文燕']
+yixiang_tearchers = ['姚唐']
 
 def teacher_list_download():
     url = "https://dssx.buaa.edu.cn/api/pc/v1/selection/management/student/current-activity/teacher/list"
@@ -204,12 +204,12 @@ def generate_html():
                 teacher_yq = teacher_yq.get('value')
             if research_d is None:
                 research_d = ''
-            chuangxin_p = f"<p>指导方向： {research_d.replace('$$',',')}</p>"
-
             remain = tinfo.get('surplusStudentNumber')
             expect = tinfo.get('enterStudentNumber')
-            minge = f"<p>剩余名额：{remain} 报名学生：{expect}</p>"
-            yaoqiu = f"<p>对学生要求：{teacher_yq}</p>"
+            if remain - expect > 0:
+                chuangxin_p = f"<p>指导方向： {research_d.replace('$$',',')}</p>"
+                minge = f"<p>剩余名额：{remain} 报名学生：{expect}</p>"
+                yaoqiu = f"<p>对学生要求：{teacher_yq}</p>"
         return f"""
         <div class="faculty-card">
             <img src="{faculty['img']}" alt="{faculty['name']}">
