@@ -25,3 +25,21 @@
 
 总之，微积分是一门强大的工具，它不仅用于解决实际问题，还用于深入理解自然和社会现象的数学基础。它在科学、工程、经济学、统计学等众多领域都有着广泛的应用。
 
+## 概念/术语中英对照表
+
+|英文|中文|说明|
+|--|--|--|
+|function|函数||
+|domain|域||
+|polynomial|多项式||
+|coefficient|系数||
+|degree of the polynmial|多项式次数||
+|quadratic function||
+|inverse function||
+|parabola||
+|||
+|||
+|||
+|||
+# EOF
+

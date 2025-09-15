@@ -384,6 +384,7 @@ var rules = [
             "angularjs.org",
             "animecrazy.net",
             "aniscartujo.com",
+            "annas-archive.org",
             "annatam.com",
             "anobii.com",
             "anontext.com",
