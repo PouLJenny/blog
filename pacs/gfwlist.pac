@@ -1766,6 +1766,7 @@ var rules = [
             "flagsonline.it",
             "flecheinthepeche.fr",
             "fleshbot.com",
+            "flexclip.com",
             "fleursdeslettres.com",
             "flgg.us",
             "flgjustice.org",

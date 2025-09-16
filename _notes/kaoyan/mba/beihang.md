@@ -388,6 +388,7 @@ Thank you.
 - [研究生新生缴费及银行卡信息采集说明](https://jcb.buaa.edu.cn/info/1029/3408.htm)
 - [选课系统](https://yjsxk.buaa.edu.cn/)
 - [VPN](https://vpn.buaa.edu.cn/)
+- [自助服务平台](https://zfw.buaa.edu.cn/)
 
 ## 老师列表
 
