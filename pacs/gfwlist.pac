@@ -4432,6 +4432,7 @@ var rules = [
             "scmpchinese.com",
             "scramble.io",
             "scribd.com",
+            "scribdassets.com",
             "scriptspot.com",
             "search.com",
             "search.xxx",

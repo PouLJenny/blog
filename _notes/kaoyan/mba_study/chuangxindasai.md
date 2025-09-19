@@ -1,7 +1,51 @@
 # 中国研究生企业创新大赛
 
 
+## 9月17号直播
 
+2025年8月国务院发布的《关于深入实施“人工智能+”行动的意见》
+
+背景与初衷：
+1. 从教育服务入手，让同学跟得上时代
+2. 数字不再是一个技术术语、而是时代标签
+3. 真正了解企业、行业的需求
+
+赛道和专项说明
+1. 赛道
+2. 评审
+3. 辅导
+4. AI
+5. 创新
+6. 提升
+
+
+1. 知名企业与机构
+2. 行业广度
+3. 资源支持
+4. 就业导向
+5. 专业评审
+6. 以赛代练
+7. 奖励设置
+
+赛程：
+报名： 8 ～ 9月19日10：00
+
+1. 搭载什么技术
+2. 构建什么场景
+3. 实现了什么目的
+
+4. 可以把解决的命题做延伸，是否可以应用到更多的场景中，更大的地方。
+
+
+高校是否有资源
+
+
+
+![](/assets/notes/kaoyan/mba_study/chuangxindasai/01.jpg)
+![](/assets/notes/kaoyan/mba_study/chuangxindasai/02.jpg)
+![](/assets/notes/kaoyan/mba_study/chuangxindasai/03.jpg)
+![](/assets/notes/kaoyan/mba_study/chuangxindasai/04.jpg)
+![](/assets/notes/kaoyan/mba_study/chuangxindasai/05.jpg)
 
 ## AI赛道 
 
@@ -14,8 +58,29 @@
 - AR/VR
 - 数字藏品 NFT
 - 数字孪生
+- 去中心化身份
 
 
+## 赛道群重要消息
+
+群公告
+欢迎大家，2025企创大赛 AI与数字技术应用专项：
+
+1.【参赛须知】
+《规程与报名指南》查看，https://share.weiyun.com/zCbxAkan
+[文件] AI与数字技术应用专项规程及报名指南.pdf
+2.【赛题速递】
+《企业命题手册》总览，https://share.weiyun.com/IrdUjXvZ
+[文件] AI与数字技术应用专项企业命题-总.pdf
+3.【命题讲解】
+关注视频号“虹宇数智技术”，查看企业命题直播（有回放）
+4.【Q&A支持】
+常见问题解答：
+https://mp.weixin.qq.com/s/yCgFMx-Q7Flh2Ul33Kb4lQ
+5.【校园宣讲会PPT】
+[文件] AI与数字技术应用专项介绍-250911 (4).pdf
+问题咨询与帮助：
+可以在群里留言，@群里工作人员，也可以私聊本群工作人员
 
 
 

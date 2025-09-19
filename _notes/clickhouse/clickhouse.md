@@ -985,13 +985,13 @@ SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicros
        count(*) as sqlNum,
        substring(query, 1, 70)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-07-04 16:01:00')) AND (event_time <= toDateTime('2025-07-04 16:05:00'))
+where (event_time >= toDateTime('2025-09-18 15:36:00')) AND (event_time <= toDateTime('2025-09-18 15:38:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 
 
-select * from system.query_log where query like 'select sum(bytes_on_disk) as used_space from system.parts where disk_name = %'
-and event_time >= toDateTime('2025-06-18 09:00:00')
+select * from system.query_log where query like 'select nicheId from default.deAmzNicheSearchTerm%'
+and event_time >= toDateTime('2025-09-18 16:30:00')
 limit 10 \G
 ```
 

@@ -36,3 +36,11 @@
 
 
 ## [学习路线](https://github.com/loveunk/machine-learning-deep-learning-notes?tab=readme-ov-file)
+
+
+## 国家政策
+
+- [国务院关于深入实施“人工智能+”行动的意见](https://www.gov.cn/zhengce/content/202508/content_7037861.htm)
+
+
+# EOF
