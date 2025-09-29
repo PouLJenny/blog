@@ -856,6 +856,9 @@ select * from default.my_table where id='abc' settings min_bytes_to_use_direct_i
 示例查询：
 ```sql
 SELECT * FROM system.parts WHERE table = 'your_table';
+
+-- 查询表的分区数量
+SELECT partition,count()  FROM system.parts WHERE table = 'keywordSearchAsinScoreWeek_20250928' group by partition order by partition
 ```
 #### 2. system.mutations
 作用：包含所有正在进行或已经完成的变更操作（如 ALTER 和 DELETE）。
@@ -972,6 +975,14 @@ SELECT * FROM system.dictionaries;
 SELECT * FROM system.replicated_fetches;
 ```
 
+#### 21. system.merges
+作用： 当前正在进行的merge
+示例查询
+```sql
+-- 查询当前进行的merge
+select table,sum(elapsed),count() from system.merges group by table order by sum(elapsed) desc
+```
+
 这些 system 表提供了对ClickHouse服务器和数据库状态的深刻洞察，帮助管理员和用户监控系统性能、调试查询和管理数据库配置。
 
 ### 限制
@@ -983,15 +994,17 @@ SELECT * FROM system.replicated_fetches;
 SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicroseconds')])   AS userCPU,
        sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'SystemTimeMicroseconds')]) AS systemCPU,
        count(*) as sqlNum,
-       substring(query, 1, 70)                                                               as q
+       substring(query, 1, 100)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-09-18 15:36:00')) AND (event_time <= toDateTime('2025-09-18 15:38:00'))
+where (event_time >= toDateTime('2025-09-29 11:21:00')) AND (event_time <= toDateTime('2025-09-29 11:21:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 
 
-select * from system.query_log where query like 'select nicheId from default.deAmzNicheSearchTerm%'
-and event_time >= toDateTime('2025-09-18 16:30:00')
+select * from system.query_log where query like 'SELECT
+            campaign_id as campaignId,
+            uniqExactMerge(asin_set) AS asinNum%'
+and event_time >= toDateTime('2025-09-29 10:30:00')
 limit 10 \G
 ```
 

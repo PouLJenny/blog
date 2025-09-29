@@ -389,6 +389,12 @@ Thank you.
 - [选课系统](https://yjsxk.buaa.edu.cn/)
 - [VPN](https://vpn.buaa.edu.cn/)
 - [自助服务平台](https://zfw.buaa.edu.cn/)
+- [ihome](https://i.buaa.edu.cn/web/#/)
+- 管理实践学分管理系统（测试版）学生端查询方式：
+    网址：https://mbacss.buaa.edu.cn/xuefen/
+    选择个人查询
+    用户名：学号
+    密码：123456
 
 ## 老师列表
 
@@ -447,7 +453,6 @@ Thank you.
 - [命题9 绿色能源](https://mp.weixin.qq.com/s/30F5vZnhLybL2F0mFtrefQ)
     - 钙钛矿电池稳定性预测
     - 这个有点扯感觉
-- 
  
 这么看什么AI+大数据+LLM+web3.0各种技术，只是一种能力。
 还是需要结合商业知识，把这些能力贯穿起来。 
