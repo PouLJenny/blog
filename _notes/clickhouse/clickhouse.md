@@ -805,7 +805,7 @@ SELECT
     partition,
     count()
 FROM system.parts
-WHERE (database = 'default') AND (`table` = 'keywordAsinAdAgg_week')
+WHERE (database = 'default') AND (`table` = 'keywordAsinAd')
 GROUP BY
     `table`,
     partition
@@ -889,6 +889,8 @@ SELECT * FROM system.query_log WHERE type = 'QueryFinish' ORDER BY event_time DE
 示例查询：
 ```sql
 SELECT * FROM system.processes;
+-- 
+select query from system.processes
 ```
 #### 7. system.metrics
 作用：提供各种运行时指标，包括内存使用、CPU使用等。

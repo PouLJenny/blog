@@ -1830,6 +1830,7 @@ var rules = [
             "freechina.news",
             "freechinaforum.org",
             "freechinaweibo.com",
+            "freeconvert.com",
             "freeddns.com",
             "freeddns.org",
             "freedomchina.info",
