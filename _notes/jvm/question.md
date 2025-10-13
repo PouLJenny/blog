@@ -22,6 +22,12 @@ perf record -g -p 1394
 
 perf report -i perf.data
 
+```log
+Exception in thread "OTSDao_read_9" java.lang.OutOfMemoryError: Metaspace
+Exception in thread "pool-5-thread-1" java.lang.OutOfMemoryError: Metaspace
+Exception in thread "PullMessageService" java.lang.OutOfMemoryError: Metaspace
+```
+
 ## CPU飙升问题定位
 
 https://blog.csdn.net/crazymakercircle/article/details/128805374?spm=1000.2115.3001.6382&utm_medium=distribute.pc_feed_v2.none-task-blog-personrec_tag-7-128805374-null-null.pc_personrec&depth_1-utm_source=distribute.pc_feed_v2.none-task-blog-personrec_tag-7-128805374-null-null.pc_personrec

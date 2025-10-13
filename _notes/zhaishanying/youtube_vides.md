@@ -677,3 +677,13 @@ console.log(result)
 川二和习大默契的“共赢游戏”:https://www.youtube.com/watch?v=LWtEylO70o0
 中共战舰沉没预兆，以及不该让中共知道的信息:https://www.youtube.com/watch?v=Zfw0hIqz7XM&t=6s
 敢恋爱的中国男人都成“憨批”了:https://www.youtube.com/watch?v=byD8poadwJE
+
+
+## 笔记
+
+### [20大“五中全会”即将召开](https://www.youtube.com/watch?v=5PuTsx5CQP0)
+
+- 买黄金听我的赚了
+- 买比特币听我的赚了
+
+# EOF

@@ -4651,6 +4651,7 @@ var rules = [
             "sokmil.com",
             "solidaritetibet.org",
             "solidfiles.com",
+            "solutioninn.com",
             "somee.com",
             "sonatype.com",
             "songjianjun.com",
