@@ -5417,6 +5417,7 @@ var rules = [
             "usc.edu",
             "usembassy.gov",
             "usenix.org",
+            "serapi.com",
             "usfk.mil",
             "usma.edu",
             "usmc.mil",
