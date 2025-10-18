@@ -59,6 +59,10 @@ pyenv local 3.6.15  # 在当前项目目录下设置Python版本为3.6.15
 `pyenv versions`
 1. 查看可安装的版本
 `pyenv install -l`
+1. 本地安装python
+`wget https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz`
+1. 安装socks代理
+`pip install PySocks`
 
 ## pip安装加速
 

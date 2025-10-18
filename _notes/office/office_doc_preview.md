@@ -24,8 +24,8 @@ onlyoffice有三个版本的服务端
   - `docker pull onlyoffice/documentserver-ee`
 
 docker安装
-`docker pull onlyoffice/documentserver-de:9.0.4.1`
-`docker run -it  --name onlyoffice -p 30000:80 -d -e ALLOW_PRIVATE_IP_ADDRESS=true -e USE_UNAUTHORIZED_STORAGE=true -e NODE_TLS_REJECT_UNAUTHORIZED=0 -e JWT_ENABLED=false onlyoffice/documentserver-de:9.0.4.1`
+`docker pull onlyoffice/documentserver:9.0.4.1`
+`docker run -it --add-host file.poul666.top:172.27.224.1 --add-host office.poul666.top:172.27.224.1   --name onlyoffice-cm -p 30000:80 -d -e ALLOW_PRIVATE_IP_ADDRESS=true -e USE_UNAUTHORIZED_STORAGE=true -e NODE_TLS_REJECT_UNAUTHORIZED=0 -e JWT_ENABLED=false onlyoffice/documentserver:9.0.4.1`
 
 #### 网络限制问题
 
