@@ -998,7 +998,7 @@ SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicros
        count(*) as sqlNum,
        substring(query, 1, 100)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-09-29 11:21:00')) AND (event_time <= toDateTime('2025-09-29 11:21:00'))
+where (event_time >= toDateTime('2025-10-20 15:22:00')) AND (event_time <= toDateTime('2025-10-20 15:24:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 
