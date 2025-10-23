@@ -325,6 +325,7 @@ var rules = [
             "alljackpotscasino.com",
             "allmovie.com",
             "allowed.org",
+            "allweone.com",
             "almasdarnews.com",
             "almostmy.com",
             "alphaporno.com",
