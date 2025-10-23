@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.6 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36" version="28.0.6" pages="9">
   <diagram id="FaCELNgpj_Kdma7chnfl" name="持久化机制">
-    <mxGraphModel dx="4017" dy="1073" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+    <mxGraphModel dx="3765" dy="912" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -188,7 +188,7 @@
           <mxGeometry x="-1880" y="1510" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="NTesFIyAmnmlhCvLhte8-3" value="RDB文件结构" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="-1219" y="1440" width="100" height="30" as="geometry" />
+          <mxGeometry x="-1219" y="1420" width="100" height="30" as="geometry" />
         </mxCell>
         <mxCell id="NTesFIyAmnmlhCvLhte8-4" value="AUX_FIELDS" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-1570" y="1510" width="120" height="60" as="geometry" />
