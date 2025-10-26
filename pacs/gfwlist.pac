@@ -1943,6 +1943,7 @@ var rules = [
             "gamer.com.tw",
             "gamerp.jp",
             "gamez.com.tw",
+            "gamma.app",
             "gamousa.com",
             "ganges.com",
             "gaoming.net",
