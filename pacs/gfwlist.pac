@@ -310,6 +310,7 @@ var rules = [
             "alicejapan.co.jp",
             "aliengu.com",
             "alive.bar",
+            "aljazeera.net",
             "alkasir.com",
             "all4mom.org",
             "allcoin.com",
