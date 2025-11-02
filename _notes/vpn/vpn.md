@@ -148,3 +148,29 @@ PersistentKeepalive = 25
 ```
 
 
+## tailscale
+
+[官网](https://tailscale.com/)
+
+安装脚本
+`curl -fsSL https://tailscale.com/install.sh | sh`
+
+https://login.tailscale.com/admin/machines
+
+查看当前在线的
+
+
+卸载：
+
+```shell
+sudo systemctl stop tailscaled
+sudo systemctl disable tailscaled
+sudo dnf remove -y tailscale
+
+sudo rm -rf /etc/tailscale
+sudo rm -rf /var/lib/tailscale
+sudo rm -rf /usr/local/bin/tailscale
+sudo rm -rf /var/lib/systemd/system/tailscaled.service
+```
+
+# EOF
