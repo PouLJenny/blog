@@ -998,7 +998,7 @@ SELECT sum(`ProfileEvents.Values`[indexOf(`ProfileEvents.Names`, 'UserTimeMicros
        count(*) as sqlNum,
        substring(query, 1, 100)                                                               as q
 FROM system.query_log
-where (event_time >= toDateTime('2025-10-20 15:22:00')) AND (event_time <= toDateTime('2025-10-20 15:24:00'))
+where (event_time >= toDateTime('2025-11-07 09:30:00')) AND (event_time <= toDateTime('2025-11-07 09:38:00'))
 group by q
 ORDER BY userCPU DESC limit 30;
 
@@ -1006,8 +1006,8 @@ ORDER BY userCPU DESC limit 30;
 select * from system.query_log where query like 'SELECT
             campaign_id as campaignId,
             uniqExactMerge(asin_set) AS asinNum%'
-and event_time >= toDateTime('2025-09-29 10:30:00')
-limit 10 \G
+and event_time >= toDateTime('2025-11-07 09:30:00')
+limit 30 \G
 ```
 
 
