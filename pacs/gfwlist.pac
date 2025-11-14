@@ -2729,6 +2729,7 @@ var rules = [
             "ifanqiang.com",
             "ifcss.org",
             "ifjc.org",
+            "iflydown.com",
             "ifreewares.com",
             "ift.tt",
             "igcd.net",
