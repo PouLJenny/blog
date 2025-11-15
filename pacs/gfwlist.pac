@@ -3802,6 +3802,7 @@ var rules = [
             "nzchinese.com",
             "nzchinese.net.nz",
             "oaistatic.com",
+            "oaiusercontent.com",
             "oauth.net",
             "observechina.net",
             "obsproject.com",
