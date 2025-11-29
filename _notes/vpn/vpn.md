@@ -67,7 +67,7 @@ wg genkey | tee private.key | wg pubkey > public.key
 ```conf
 [Interface]
 # 服务端私钥
-PrivateKey = gO0NaG+3YxHvkFS7lKn8Bs9md4XL50632xAhhZuH/mg=
+PrivateKey = mIwVUWKLyd08UXV/uRxrMsjjOagLSjqLAn0LmdI8EE4=
 # 服务端ip
 Address = 10.0.1.1/24
 # 服务端监听的端口号，因为走的是udp的协议，所以telnet是不通的！
@@ -76,7 +76,7 @@ PostUp = iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE
 
 [Peer]
-# Host home
+# Host home manjaro
 # 客户端公钥
 PublicKey = 8PvlyrlZoHWL+DuJ/sRbl/UKwVVtlcCusCTCfRX0Sjg=
 # 客户端ip
