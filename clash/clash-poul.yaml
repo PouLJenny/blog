@@ -45,7 +45,7 @@ proxies:
     name: Poul
     type: trojan
     server: hostdare.poul666.top
-    port: 6443
+    port: 9443
     password: "r$GP>Wi5!0=9g'/tIk;~@;zq67()^ot<"
     alpn:
       - h2

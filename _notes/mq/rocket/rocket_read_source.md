@@ -6,11 +6,20 @@
 ### 源码环境准备
 
 1. 下载源码
-    ```shell
-    git clone -b rocketmq-all-4.9.6 https://github.com/apache/rocketmq.git
-    ```
+```shell
+git clone -b rocketmq-all-4.9.8 https://github.com/apache/rocketmq.git
+```
 2. 配置java 1.8的开发环境
 3. idea导入项目
+4. 编译
+```shell
+## 临时切换到java8环境
+export JAVA_HOME=/home/poul/workspace/software/jdk/jdk-8.0.421/
+mvn clean compile -s ~/workspace/software/maven/settings-ali.xml -T 1C
+mvn clean package -s ~/workspace/software/maven/settings-ali.xml -T 1C -Dmaven.test.skip=true
+```
+
+
 
 
 
