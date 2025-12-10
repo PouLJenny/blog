@@ -5100,6 +5100,7 @@ var rules = [
             "tigervpn.com",
             "tiktok.com",
             "tiktokcdn-us.com",
+            "tiktokw.us",
             "tiktokv.com",
             "tiltbrush.com",
             "timdir.com",

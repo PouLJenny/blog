@@ -108,7 +108,7 @@
         
         查看已经开启的端口： firewall-cmd --list-ports 
         开启端口
-        firewall-cmd --zone=public --add-port=9443/tcp --permanent
+        firewall-cmd --zone=public --add-port=7443/tcp --permanent
         命令含义：
         --zone #作用域
         --add-port=80/tcp  #添加端口，格式为：端口/通讯协议
