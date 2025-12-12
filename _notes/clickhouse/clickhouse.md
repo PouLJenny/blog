@@ -612,7 +612,8 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS compressed_size,
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
-WHERE active and database = 'default' and table = 'asinVariant'
+WHERE active 
+-- and database = 'default' and table = 'asinVariant'
 GROUP BY
     database,
     table

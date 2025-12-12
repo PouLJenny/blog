@@ -461,6 +461,7 @@ var rules = [
             "army.mil",
             "art4tibet1998.org",
             "arte.tv",
+            "artlist.io",
             "artofpeacefoundation.org",
             "artstation.com",
             "artsy.net",
