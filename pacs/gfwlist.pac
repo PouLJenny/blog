@@ -3866,6 +3866,7 @@ var rules = [
             "open.com.hk",
             "openai.com",
             "openallweb.com",
+            "openart.ai",
             "opendemocracy.net",
             "opendn.xyz",
             "openervpn.in",
