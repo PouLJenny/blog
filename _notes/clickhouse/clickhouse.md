@@ -448,7 +448,7 @@ ALTER TABLE trips ADD PROJECTION trip_id_projection(
 );
 
 -- 创建投影后，历史数据并不能生效，需要手动触发一下
-ALTER TABLE trips MATERIALIZE PROJECTION trip_id_projection;
+ALTER TABLE sif_asin_keyword_prod.us_ads_sp_sb_asin_campaign_relation MATERIALIZE PROJECTION us_ads_sp_sb_asin_campaign_relation_campaign_view;
 
 
 -- 因为投影是异步创建的，可以通过下面的sql查询投影是否创建完毕
@@ -491,6 +491,47 @@ select * from trips where trip_id = 1201418711
    └────────────────────────────────────────────┘
 ```
 能看到走投影了
+
+## 数据分区
+
+### 分区直接替换
+```sql
+CREATE TABLE test_partition_replace
+(
+    id UInt32,
+    dt Date,
+    value String
+)
+ENGINE = MergeTree
+PARTITION BY dt
+ORDER BY id;
+
+INSERT INTO test_partition_replace VALUES
+(1, '2025-11-01', 'old_a'),
+(2, '2025-11-01', 'old_b'),
+(3, '2025-11-02', 'keep_c');
+
+SELECT * FROM test_partition_replace ORDER BY dt, id;
+
+
+CREATE TABLE test_partition_replace_tmp
+AS test_partition_replace
+ENGINE = MergeTree
+PARTITION BY dt
+ORDER BY id;
+
+
+INSERT INTO test_partition_replace_tmp VALUES
+(1, '2025-11-01', 'new_a'),
+(2, '2025-11-01', 'new_b');
+
+ALTER TABLE test_partition_replace
+REPLACE PARTITION '2025-11-01'
+FROM test_partition_replace_tmp;
+
+
+SELECT * FROM test_partition_replace ORDER BY dt, id;
+```
 
 ## 安装
 
@@ -549,11 +590,69 @@ Start clickhouse-client with:
 ```
 
 
-## MergeTree引擎的
+## MergeTree引擎
 
 主键索引/一级索引： 每隔8192条数据之后，写入一条索引值，稀疏索引.
 
 MarkRange数据结构
+
+## Redis 外表引擎
+```sql
+CREATE TABLE test.redis_test_table1
+(
+    `k` String,   
+    `v1` String,     
+    `v2` String          
+)
+ENGINE = Redis('r-wz9a00v5k2v0b48llj.tairpdb.rds.aliyuncs.com:6379', 0, 'password', 15)
+PRIMARY KEY k;
+
+INSERT INTO test.redis_test_table1 (k, v1, v2) VALUES
+('k1', 'v1_1', 'v2_1'),
+('k2', 'v1_2', 'v2_2'),
+('k3', 'v1_3', 'v2_3'),
+('k4', 'v1_4', 'v2_4'),
+('k5', 'v1_5', 'v2_5'),
+('k6', 'v1_6', 'v2_6');
+
+
+CREATE TABLE test.redis_test_table2
+(
+    `k` String,   
+    `v1` String,     
+    `v2` String          
+)
+ENGINE = Redis('r-wz9a00v5k2v0b48llj.tairpdb.rds.aliyuncs.com:6379', 0, 'password', 15)
+PRIMARY KEY k;
+
+INSERT INTO test.redis_test_table2 VALUES
+('user:1', 'a', 'x'),
+('user:1', 'b', 'y'),
+('user:2', 'c', 'z'),
+('user:3', 'd', 'm'),
+('user:3', 'e', 'n'),
+('user:4', 'f', 'o');
+
+
+CREATE TABLE test.redis_test_table3
+(
+    `k` String,   
+    `v1` String,     
+    `v2` String          
+)
+ENGINE = Redis('r-wz9a00v5k2v0b48llj.tairpdb.rds.aliyuncs.com:6379', 1, 'password', 15)
+PRIMARY KEY k;
+INSERT INTO test.redis_test_table3 VALUES
+('3user:1', 'a', 'x'),
+('3user:1', 'b', 'y'),
+('3user:2', 'c', 'z'),
+('3user:3', 'd', 'm'),
+('3user:3', 'e', 'n'),
+('3user:4', 'f', 'o');
+```
+
+1. clickhouse 的redis引擎表依赖的是某个db，如果truncate table，是直接执行的flush某个db
+2. drop table 不会删除数据，相同db的表会共享数据
 
 
 ## 常用的SQL
@@ -613,7 +712,8 @@ SELECT
     round((sum(data_compressed_bytes) / sum(data_uncompressed_bytes)) * 100, 2) AS compression_ratio_percent
 FROM system.parts
 WHERE active 
--- and database = 'default' and table = 'asinVariant'
+-- and database = 'test' and table = 'us_ads_sp_sb_campaign_exposure_weekly_json'
+and table in ('us_ads_asin_summary_compare_daily_float2long','us_ads_asin_summary_compare_daily_float')
 GROUP BY
     database,
     table
@@ -630,11 +730,9 @@ SELECT
     formatReadableSize(data_uncompressed_bytes) AS uncompressed_size,
     round(data_compressed_bytes / data_uncompressed_bytes, 2) AS compression_ratio
 FROM system.columns
-WHERE database = 'default' 
-  AND table = 'product2RepairTest3'
+WHERE database = 'test' 
+  AND table = 'us_ads_asin_summary_compare_daily_float2long'
 ORDER BY data_compressed_bytes DESC;
-
-
 ```
 
 
@@ -859,7 +957,8 @@ select * from default.my_table where id='abc' settings min_bytes_to_use_direct_i
 SELECT * FROM system.parts WHERE table = 'your_table';
 
 -- 查询表的分区数量
-SELECT partition,count()  FROM system.parts WHERE table = 'keywordSearchAsinScoreWeek_20250928' group by partition order by partition
+SELECT partition,count()  FROM system.parts WHERE table = 'keywordSearchAsinScoreWeek_20250928' group by partition order by partition;
+
 ```
 #### 2. system.mutations
 作用：包含所有正在进行或已经完成的变更操作（如 ALTER 和 DELETE）。
@@ -1195,6 +1294,8 @@ limit 30 \G
 
 ## 源码编译
 
+
+### 源码下载
 阅读github中的build文件`https://github.com/ClickHouse/ClickHouse/blob/master/docs/en/development/build.md`,参见“Building on Any Linux”部分
 
 1. 环境准备
@@ -1204,16 +1305,148 @@ sudo pacman -S git cmake ccache python3 ninja nasm yasm gawk lsb-release wget gn
 
 1. 下载源码
 ```shell
-git clone --recursive --shallow-submodules https://github.com/ClickHouse/ClickHouse.git
-
-## 
-git clone -b v20.8.17.25-lts http://github.com/ClickHouse/ClickHouse.git ClickHouse-v20.8.17.25-lts
-
-git clone -b v23.7.5.30-stable http://github.com/ClickHouse/ClickHouse.git ClickHouse-v23.7.5.30-stable
-
+## 下载源码
+git clone http://github.com/ClickHouse/ClickHouse.git
+## 切换到制定版本
+git checkout v24.8.14.39-lts
+## 下载依赖的框架源码
 git submodule update --init --recursive
 ```
 
+### clion中编译+调试(最推荐)
+
+
+Git (used to checkout the sources, not needed for the build)
+CMake 3.20 or newer
+Compiler: clang-18 or newer
+Linker: lld-17 or newer
+Ninja
+Yasm
+Gawk
+rustc
+
+1. 安装cmake 3.20
+
+```shell
+wget https://cmake.org/files/v3.20/cmake-3.20.6-linux-x86_64.tar.gz
+```
+
+
+2. [安装clang18](/_notes/compile/llvm.md)
+
+
+3. 这个用起来是最舒服的
+
+
+
+
+
+### docker编译+vscode调试
+本地编译环境问题很大，用docker编译会更稳定
+
+1. 在 ClickHouse 仓库根目录：
+```shell
+mkdir -p build-debug
+
+sudo docker run --name ckdev -dit \
+  --cap-add=SYS_PTRACE \
+  --security-opt seccomp=unconfined \
+  -e DEB_ARCH=amd64 -e CC=clang-18 -e CXX=clang++-18 -e BUILD_TYPE=Debug -e CMAKE_FLAGS="-DDEBUG_O_LEVEL="0" -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 -DCOMPILER_CACHE=disabled" \
+  -p 8123:8123 -p 9000:9000 \
+  -v "/home/poul/workspace/src/ClickHouse":/workspace/clickhouse \
+  -v "/home/poul/workspace/src/ClickHouse/build-debug":/workspace/build-debug \
+  -w /workspace/build-debug \
+  clickhouse/binary-builder:dd5e777b6745-amd64 \
+  bash
+
+```
+
+2. 进入docker容器
+```shell
+ cmake /workspace/clickhouse -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DDEBUG_O_LEVEL=0 \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DENABLE_THINLTO=OFF \
+  -DENABLE_TESTS=OFF \
+  -DCOMPILER_CACHE=disabled \
+  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+
+ninja clickhouse-server clickhouse-client
+```
+
+
+3. 容器内启动 clickhouse-server（前台跑，方便 attach）
+```shell
+## 修改配置，可以让server跑起来
+
+## 修改 /workspace/clickhouse/programs/server/config.xml 里面的配置
+<listen_host>0.0.0.0</listen_host>
+
+## 添加文件 /workspace/clickhouse/programs/server/users.xml
+<?xml version="1.0"?>
+<clickhouse>
+    <users>
+        <default>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+        </default>
+    </users>
+    <profiles>
+        <default>
+        </default>
+    </profiles>
+</clickhouse>
+
+## 
+sudo -u clickhouse /workspace/build-debug/programs/clickhouse-server   -C /workspace/clickhouse/programs/server/config.xml
+```
+
+4. VS Code 配置：用 pipeTransport attach 到容器进程
+安装 VS Code 扩展：C/C++ (ms-vscode.cpptools)
+
+docker内没有gdb,需要安装新的gdb，`apt-get update && apt-get install -y gdb `
+
+把当前用户添加到docker用户组中，方便执行docker命令的时候不用sudo权限,
+
+在仓库根目录创建 `.vscode/launch.json`：
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach ClickHouse (Docker)",
+      "type": "cppdbg",
+      "request": "attach",
+      "program": "/workspace/build-debug/programs/clickhouse-server",
+      "processId": "${command:pickRemoteProcess}", // 这种方式就是在弹出来的选择框中选择
+      "MIMode": "gdb",
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeArgs": ["exec", "-i", "ckdev", "/bin/bash", "-lc"],
+        "debuggerPath": "/opt/gdb/bin/gdb"
+      },
+      "sourceFileMap": {
+        "/workspace/clickhouse": "${workspaceFolder}"
+      },
+      // gdb 初始化命令（非常适合 ClickHouse 这种多线程服务）
+      "setupCommands": [
+        { "text": "handle SIGPIPE nostop noprint pass" },
+        { "text": "handle SIGALRM nostop noprint pass" },
+        { "text": "handle SIGUSR1 nostop noprint pass" },
+        { "text": "handle SIGUSR2 nostop noprint pass" },
+        { "text": "set breakpoint pending on" },
+        { "text": "set print thread-events off" }
+      ]
+    }
+  ]
+}
+```
+
+### 本地编译
 1. 版本 v20.8.17.25-lts 编译过程
 
 
@@ -1308,6 +1541,84 @@ run_cmake() {
   fi
 }
 ```
+
+
+## 查询优化
+
+### 查询优化需要结构化/方法论
+
+[explain语法](https://clickhouse.com/docs/sql-reference/statements/explain)
+
+1. 禁用文件系统缓存
+```sql
+-- Disable filesystem cache
+set enable_filesystem_cache = 0;
+
+EXPLAIN PIPELINE; -- 查看sql执行的次数
+EXPLAIN indexes = 1; -- 查看sql执行的索引命中情况
+EXPLAIN plan actions = 1; -- 查看sql执行的条件过滤情况和具体的步骤
+```
+2. 通过`system.query_log.normalized_query_hash`来警惕异常的定期执行的查询
+3. 分析型数据库管理系统 (DBMS)，针对大规模聚合查询进行了优化。它在处理此类查询时，性能的关键在于**最小化磁盘 I/O**
+
+
+### 示例
+
+```sql
+-- Disable filesystem cache
+set enable_filesystem_cache = 0;
+
+-- Run query 1
+WITH
+  dateDiff('s', pickup_datetime, dropoff_datetime) as trip_time,
+  trip_distance / trip_time * 3600 AS speed_mph
+SELECT
+  quantiles(0.5, 0.75, 0.9, 0.99)(trip_distance)
+FROM
+  nyc_taxi.trips_small_no_pk
+WHERE
+  speed_mph > 30;
+
+
+-- Run query 2
+SELECT
+    payment_type,
+    COUNT() AS trip_count,
+    formatReadableQuantity(SUM(trip_distance)) AS total_distance,
+    AVG(total_amount) AS total_amount_avg,
+    AVG(tip_amount) AS tip_amount_avg
+FROM
+    nyc_taxi.trips_small_inferred
+WHERE
+    pickup_datetime >= '2009-01-01' AND pickup_datetime < '2009-04-01'
+GROUP BY
+    payment_type
+ORDER BY
+    trip_count DESC;
+
+
+-- Run query 3
+SELECT
+  avg(dateDiff('s', pickup_datetime, dropoff_datetime))
+FROM nyc_taxi.trips_small_pk
+WHERE passenger_count = 1 or passenger_count = 2;
+
+```
+
+### 低基数类型 LowCardinality
+
+最好是针对string类型
+
+An easy rule of thumb for determining which columns are good candidates for LowCardinality 
+is that any column with less than 10,000 unique values is a perfect candidate
+
+比如
+`vendor_id String` -> `vendor_id LowCardinality(String),`
+
+
+### 主键索引结构Primary Index
+他是一种稀疏索引，Sparse Index
+
 
 
 # EOF

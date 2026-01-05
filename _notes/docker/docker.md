@@ -97,5 +97,5 @@ To use the BuildKit backend, you need to set an environment variable `DOCKER_BUI
 - 复制文件从container到宿主机 `docker cp $DOCKER_ID:/path/target /path/source`
 - 访问宿主机IP https://jingsam.github.io/2018/10/16/host-in-docker.html
 - docker container启动后修改 端口映射 https://cloud.tencent.com/developer/article/2170898
-
+- 把当前用户加入docker组，就不用每次使用docker命令加sudo了`sudo usermod -aG docker $USER`
 # EOF

@@ -2911,6 +2911,7 @@ var rules = [
             "jcpenney.com",
             "jdwsy.com",
             "jeanyim.com",
+            "jetbrains.ai",
             "jetbrains.com",
             "jetos.com",
             "jex.com",
