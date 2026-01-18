@@ -4738,6 +4738,7 @@ var rules = [
             "starp2p.com",
             "startpage.com",
             "startuplivingchina.com",
+            "staruml.io",
             "stat.gov.tw",
             "state.gov",
             "static.rust-lang.org",
