@@ -528,6 +528,11 @@ Zabbix、OpenFalcon、Ganglia
 
 
 
+### 指针压缩
+
+TODO 
+
+
 ### 分析工具
 
 - jmap    堆内存分析工具
@@ -633,6 +638,8 @@ Java代码中具体的类加载是通过,`Class`类中的`loadClass`方法来完
 
 一些开源组件，为了达到一定的目的，破坏了tomcat的双亲委派模型，
 比如 [tomcat](/tomcat/tomcat#类加载机制)
+
+
 
 
 ## 市面上的一些JVM实现

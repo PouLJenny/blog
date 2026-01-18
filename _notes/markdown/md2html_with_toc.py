@@ -655,8 +655,8 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
 # 示例调用
 if __name__ == "__main__":
     # 替换为你的Markdown文件路径
-    md_file = "/home/poul/workspace/src/private_log/mba_study/chuangyejichuyuwushi/chuangyejichuyuwushi.md"
+    md_file = "/home/poul/workspace/src/private_log/mba_study/zuzhixingwei/zuzhixingwei.md"
     # 可选：指定输出HTML路径，不指定则默认同目录同名
-    html_file = "/home/poul/workspace/src/private_log/mba_study/chuangyejichuyuwushi/chuangyejichuyuwushi.html"
+    html_file = "/home/poul/workspace/src/private_log/mba_study/zuzhixingwei/zuzhixingwei.html"
     # 转换
-    md_to_html_with_toc(md_file, html_file, title="创业基础与务实")
+    md_to_html_with_toc(md_file, html_file, title="组织行为")

@@ -71,6 +71,21 @@ make dist-clean
 make run-test-tier1
 ```
 
+### CLion 导入，查看源码
+
+1. 生成编译数据库，在jdk根目录下
+```shell
+bash configure --with-boot-jdk=/home/poul/workspace/software/jdk/jdk-17.0.12  --with-debug-level=slowdebug --disable-warnings-as-errors --with-native-debug-symbols=internal
+make CONF=linux-x86_64-server-slowdebug compile-commands
+```
+
+2. 完成后，在 build/.../ 目录下找到 compile_commands.json。
+
+3. 导入到 CLion： File -> Open 选择这个 JSON 文件。
+
+4. 可以愉快的看源码了，还能点击跳转
+
+
 ## JDK 11
 ### Linux 编译源码
 
