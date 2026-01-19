@@ -381,17 +381,17 @@ synchronized(myObject) {
 synchronized能保证可见性和原子性、有序性
 
 ![](/assets/notes/jvm/mark-word.png)
-对象头的具体数据结构在源码中的`markOop.hpp`文件中
+对象头的具体数据结构在源码中的`markWord.hpp`文件中
 
 
 JDK1.6之后，JVM对synchronized做了一系列优化,这些技术都是为了在线程之间更高效地共享数据及解决竞争问题，从而提高程序的执行效率。其中包括
-1. 适应性自旋（Adaptive Spinning）
+1. 自适应自旋（Adaptive Spinning） 
 
-自旋锁的定义： 为了让线程等待，我们只须让线程执行一个忙循环(自旋)，这项技术就是所谓的自 旋锁。
+自旋锁的定义： 为了让线程等待，我们只须让线程执行一个忙循环(自旋)，这项技术就是所谓的自旋锁。
 自旋锁在JDK 1.4.2中就已经引入，只不过默认是关闭的，可以使用-XX:+UseSpinning参数来开 启，在JDK 6中就已经改为默认开启了。
 自旋的默认次数是10次,可以通过`-XX:PreBlockSpin` 来修改
 
-JDK1.6引入的自适应自旋，指自旋的时间不是固定的，而是有前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定的。
+JDK1.6引入的**自适应自旋**，指自旋的时间不是固定的，而是有前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定的。
 
 2. 锁消除(Lock Elimination)
 
@@ -401,20 +401,35 @@ JDK1.6引入的自适应自旋，指自旋的时间不是固定的，而是有�
 3. 锁膨胀/锁粗化(Lock Coarsening)
 
 原则上，我们编写代码的时候，是尽量要缩小锁的范围的，这个是没有问题的。但是，如果有一系列操作反复的加锁、释放锁，
-比如在循环体内部，这个时候就需要把锁的粒度提到循环体的外部，减少锁竞争带来的性能损耗。
+比如在循环体内部，JIT时，需要把锁的粒度提到循环体的外部，减少锁竞争带来的性能损耗。
 
 4. 轻量级锁(LightWeight Locking)
 
-JDK6，新加入的锁类型，其中轻量级是相对，使用操作系统的互斥量实现的传统锁而言的。
+JDK6，新加入的锁类型，其中轻量级是相对使用操作系统的互斥量实现的传统锁而言的。
 
 轻量级锁的大概原理就是第一次加锁的时候会通过CAS的方式，如果成功的话就标记为轻量级的锁机制，如果失败的话则说明有其它线程在竞争锁，则退化为重量级锁
 
-做这个事主要是依据的是”对于绝大部份的锁，在整个同步周期内都是不存在竞争的“这一**经验**法则。
+做这个事主要是依据的是”对于绝大部份的锁，在整个同步周期内都是不存在竞争的“这一**经验**法则。    
+
+
+| 锁状态 | 偏向标志 | 锁标志位 | Mark Word 内容特征 | 备注 |
+| --- | --- | --- | --- | --- |
+| **未锁定 (Unlocked)** | 0 | 01 | HashCode (31b) + 年龄 (4b) | 对象的初始状态 |
+| **偏向锁 (Biased)** | 1 | 01 | ThreadID + Epoch + 年龄 | 锁偏向特定线程，无竞争 |
+| **轻量级锁 (Stack-locked)** | (无) | 00 | **指向栈中锁记录的指针** | 线程通过 CAS 在栈帧创建记录 |
+| **膨胀中 (Inflating)** | **(无)** | **00** | **全 0 (`0x00000000...`)** | **过渡状态，正在创建 Monitor** |
+| **重量级锁 (Inflated)** | (无) | 10 | **指向 ObjectMonitor 的指针** | 包含等待队列，由 OS 互斥量实现 |
+| **GC 标记 (Marked)** | (无) | 11 | (通常为 0 或记录转发指针) | CMS 或 GCLive 标记时使用 |
+
 
 5. 偏向锁(Biased Locking)
 
 JDK6中引入的一项锁优化措施。目的是消除数据在没有竞争的情况下的同步原语，进一步提高程序性能。
 如果说轻量级锁是在无竞争情况下使用CAS操作去消除同步使用的互斥量，那偏向锁就是在无竞争的情况下把整个同步都消除掉，连CAS都不做了。
+
+由于偏向锁的对象头会占用hashcode的位置，所以这两个出现了冲突，所以会有以下规则：
+- 当一个对象已经计算过hash值后，就再也不能进入偏向锁模式
+- 当一个对象正处于偏向锁模式，有收到需要计算hash值的请求，则会主动退出偏向锁模式,并膨胀为重量级锁
 
 
 **锁升级流程**
@@ -439,6 +454,103 @@ https://www.cnblogs.com/dennyzhangdd/p/6734638.html 这个直接分析的源码�
 
 当关闭偏向锁功能，或多个线程竞争偏向锁导致偏向锁升级为轻量级锁，会尝试获取轻量级锁，其入口位于`ObjectSynchronizer::slow_enter`
 
+
+6. 重量级锁
+
+当锁升级为重量级锁时，Mark Word 的低 2 位会变成 `10`。此时，Mark Word 的其余部分会存储一个指向 `ObjectMonitor` 对象的指针。
+
+当线程 A 尝试进入 synchronized 块但发现锁已是重量级且被线程 B 持有时：
+- 自旋优化：线程 A 不会立刻挂起，而是先进行几次“自适应自旋”。如果这时候线程 B 刚好释放了，那就直接拿锁，省去了内核切换。
+- 入队：自旋失败后，线程 A 会被封装成一个 ObjectWaiter 对象，放入 _cxq 队列。
+- 阻塞（Park）：通过操作系统的系统调用（如 Linux 的 pthread_mutex_lock 或 futex）将自己挂起。
+- 唤醒（Unpark）：当线程 B 释放锁时，会根据策略从 _EntryList 或 _cxq 中挑选一个线程唤醒。
+
+`ObjectMonitor` 的内部结构：
+在 `src/hotspot/share/runtime/objectMonitor.hpp` 中
+
+
+```c++
+class ObjectMonitor : public CHeapObj<mtObjectMonitor> {
+  static OopStorage* _oop_storage;
+  // The sync code expects the header field to be at offset zero (0).
+  // Enforced by the assert() in header_addr().
+  volatile markWord _header;        // displaced object header word - mark
+  WeakHandle _object;               // backward object pointer
+  // Separate _header and _owner on different cache lines since both can
+  // have busy multi-threaded access. _header and _object are set at initial
+  // inflation. The _object does not change, so it is a good choice to share
+  // its cache line with _header.
+  DEFINE_PAD_MINUS_SIZE(0, OM_CACHE_LINE_SIZE, sizeof(volatile markWord) +
+                        sizeof(WeakHandle));
+  // Used by async deflation as a marker in the _owner field:
+  #define DEFLATER_MARKER reinterpret_cast<void*>(-1)
+  void* volatile _owner;            // pointer to owning thread OR BasicLock
+  volatile jlong _previous_owner_tid;  // thread id of the previous owner of the monitor
+  // Separate _owner and _next_om on different cache lines since
+  // both can have busy multi-threaded access. _previous_owner_tid is only
+  // changed by ObjectMonitor::exit() so it is a good choice to share the
+  // cache line with _owner.
+  DEFINE_PAD_MINUS_SIZE(1, OM_CACHE_LINE_SIZE, sizeof(void* volatile) +
+                        sizeof(volatile jlong));
+  ObjectMonitor* _next_om;          // Next ObjectMonitor* linkage
+  volatile intx _recursions;        // recursion count, 0 for first entry
+  ObjectWaiter* volatile _EntryList;  // Threads blocked on entry or reentry.
+                                      // The list is actually composed of WaitNodes,
+                                      // acting as proxies for Threads.
+
+  ObjectWaiter* volatile _cxq;      // LL of recently-arrived threads blocked on entry.
+  JavaThread* volatile _succ;       // Heir presumptive thread - used for futile wakeup throttling
+  JavaThread* volatile _Responsible;
+
+  volatile int _Spinner;            // for exit->spinner handoff optimization
+  volatile int _SpinDuration;
+
+  jint  _contentions;               // Number of active contentions in enter(). It is used by is_busy()
+                                    // along with other fields to determine if an ObjectMonitor can be
+                                    // deflated. It is also used by the async deflation protocol. See
+                                    // ObjectMonitor::deflate_monitor().
+ protected:
+  ObjectWaiter* volatile _WaitSet;  // LL of threads wait()ing on the monitor
+  volatile jint  _waiters;          // number of waiting threads
+ private:
+  volatile int _WaitSetLock;        // protects Wait Queue - simple spinlock
+}
+
+
+class ObjectWaiter : public StackObj {
+ public:
+  // 状态枚举,含义
+  // TS_UNDEF,初始状态，未定义。
+  // TS_READY,就绪状态，准备抢锁。
+  // TS_RUN,正在运行（通常指正在尝试 CAS 抢锁）。
+  // TS_WAIT,在 WaitSet 中。对应 Java 层的 object.wait() 状态。
+  // TS_ENTER,在 EntryList 中。正在排队等待进入 synchronized 块。
+  // TS_CXQ,在 cxq 队列中。刚刚竞争失败，还没被挪到 EntryList。
+  enum TStates { TS_UNDEF, TS_READY, TS_RUN, TS_WAIT, TS_ENTER, TS_CXQ };
+  ObjectWaiter* volatile _next;
+  ObjectWaiter* volatile _prev;
+  JavaThread*   _thread;
+  jlong         _notifier_tid;
+  ParkEvent *   _event;
+  volatile int  _notified;
+  volatile TStates TState;
+  bool          _active;           // Contention monitoring is enabled
+};
+
+```
+
+
+
+
+重量级锁阻塞的逻辑：
+
+先调用 glibc 中的`pthread.h``pthread_mutex_lock`
+再调用system call `futex`
+
+
+
+
+
 JVM对Synchronized的优化。简单来说解决三种场景：
 1. 只有一个线程进入临界区，偏向锁
 2. 多个线程交替进入临界区，轻量级锁
@@ -447,6 +559,8 @@ JVM对Synchronized的优化。简单来说解决三种场景：
 ![](/assets/notes/concurrent/synchronized-%E5%8E%9F%E7%90%86.png)
 
 ![](/assets/notes/concurrent/synchronized%E9%94%81%E5%8D%87%E7%BA%A7%E8%BF%87%E7%A8%8B.png)
+
+
 
 ## Wait Sets and Notification
 Every object, in addition to having an associated monitor, has an associated wait set. A wait set is a set of threads.
@@ -648,6 +762,63 @@ AbstractQueuedSynchronizer，基于CAS的无锁化逻辑
 ```
 
 ![](/assets/notes/concurrent/CONDITION.png )
+
+
+```java
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class MyBlockingQueue {
+    private final String[] items = new String[5]; // 队列容量为 5
+    private int putIndex, takeIndex, count;
+
+    private final Lock lock = new ReentrantLock();
+    // 定义两个 Condition：精准控制“满”和“空”
+    private final Condition notFull = lock.newCondition();
+    private final Condition notEmpty = lock.newCondition();
+
+    // 生产者方法
+    public void put(String val) throws InterruptedException {
+        lock.lock(); // 获取锁
+        try {
+            while (count == items.length) {
+                System.out.println("队列满了，生产者等待...");
+                notFull.await(); // 1. 在 notFull 频道等待
+            }
+            items[putIndex] = val;
+            if (++putIndex == items.length) putIndex = 0;
+            count++;
+            
+            System.out.println("生产了: " + val);
+            notEmpty.signal(); // 2. 定向唤醒在 notEmpty 频道等的消费者
+        } finally {
+            lock.unlock(); // 释放锁
+        }
+    }
+
+    // 消费者方法
+    public String take() throws InterruptedException {
+        lock.lock();
+        try {
+            while (count == 0) {
+                System.out.println("队列空了，消费者等待...");
+                notEmpty.await(); // 3. 在 notEmpty 频道等待
+            }
+            String val = items[takeIndex];
+            if (++takeIndex == items.length) takeIndex = 0;
+            count--;
+
+            System.out.println("消费了: " + val);
+            notFull.signal(); // 4. 定向唤醒在 notFull 频道等的生产者
+            return val;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
 
 ### StampedLock
 StampedLock 并没有实现Lock接口
@@ -1229,6 +1400,6 @@ public class StreamParallelDemo {
 
 
 
-
+# EOF
 
 

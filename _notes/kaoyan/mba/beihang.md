@@ -380,6 +380,7 @@ Thank you.
 
 ## 网址导航
 
+- [资源访问系统/导航](https://d.buaa.edu.cn/)
 - [导师双选系统](https://dssx.buaa.edu.cn/)
 - [校园付](http://pay.buaa.edu.cn/)
 - [研究生信息管理系统](https://gsmis.buaa.edu.cn/)
