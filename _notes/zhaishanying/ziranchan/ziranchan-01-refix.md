@@ -1159,9 +1159,7 @@
 给我写邮件
 我的邮件
 大家应该知道吧
-laozi.VIP
-laozi.MVIP
-@gmail.com
+laozi.vip@gmail.com
 这样啊
 没有我睡不着
 那你就在头脑中幻想一个
