@@ -72,6 +72,9 @@ CFQ（Completely Fair Queuing）算法，顾名思义，绝对公平算法。
 ### 查询CPU信息
 `lscpu` 
 
+### 查询CPU温度
+`watch -n 2 sensors`
+
 ### [top](https://linux.cn/article-9937-1.html )
 [man手册](https://man7.org/linux/man-pages/man1/top.1.html )
 `PID`：进程 ID，一个用来定位进程的唯一标识符
