@@ -1167,6 +1167,7 @@ var rules = [
             "csw.org.uk",
             "ct.org.tw",
             "ctao.org",
+            "ctext.org",
             "ctfriend.net",
             "ctitv.com.tw",
             "ctowc.org",

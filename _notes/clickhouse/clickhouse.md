@@ -713,7 +713,7 @@ SELECT
 FROM system.parts
 WHERE active 
 -- and database = 'test' and table = 'us_ads_sp_sb_campaign_exposure_weekly_json'
-and table in ('us_ads_asin_summary_compare_daily_float2long','us_ads_asin_summary_compare_daily_float')
+and table in ('keywordAsinNf','keywordAsinSp','keywordAsinSb2','keywordAsinRec')
 GROUP BY
     database,
     table
