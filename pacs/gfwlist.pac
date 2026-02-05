@@ -2894,6 +2894,7 @@ var rules = [
             "jav68.tv",
             "javakiba.org",
             "javbus.com",
+            "javdb.com",
             "javfor.me",
             "javhd.com",
             "javhip.com",
