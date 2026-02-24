@@ -3838,6 +3838,7 @@ var rules = [
             "okk.tw",
             "olabloga.pl",
             "old-cat.net",
+            "ollama.com",
             "olumpo.com",
             "olympicwatch.org",
             "omg.org",
