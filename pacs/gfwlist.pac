@@ -1043,6 +1043,7 @@ var rules = [
             "clarionproject.org",
             "classicalguitarblog.net",
             "claude.ai",
+            "claude.com",
             "clb.org.hk",
             "cleansite.biz",
             "cleansite.info",
