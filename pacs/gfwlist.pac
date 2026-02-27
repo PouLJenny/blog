@@ -3150,6 +3150,7 @@ var rules = [
             "lfpcontent.com",
             "lhakar.org",
             "lhasocialwork.org",
+            "lianglianglee.com",
             "liangyou.net",
             "liangzhichuanmei.com",
             "lianyue.net",
