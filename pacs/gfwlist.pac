@@ -2705,6 +2705,7 @@ var rules = [
             "ibit.am",
             "iblist.com",
             "iblogserv-f.net",
+            "ibm.com",
             "ibros.org",
             "ibtimes.com",
             "ibvpn.com",
