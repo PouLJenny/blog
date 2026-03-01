@@ -7,25 +7,33 @@ log-level: silent
 external-controller: 0.0.0.0:9090
 
 proxies:
-- name: 'trojan'
-  type: trojan
-  server: hostdare.poul666.top
-  port: 9443
-  password: "r$GP>Wi5!0=9g'/tIk;~@;zq67()^ot<"
-  sni: hostdare.poul666.top
-  client-fingerprint: chrome
-  udp: true
-  alpn:
-    - h2
-    - http/1.1
-  skip-cert-verify: false
+  - 
+    name: Poul
+    type: trojan
+    server: hostdare.poul666.top
+    port: 9443
+    password: "r$GP>Wi5!0=9g'/tIk;~@;zq67()^ot<"
+    alpn:
+      - h2
+      - http/1.1
+    skip-cert-verify: true
+
 
 
 proxy-groups:
-- name: "PROXY"
-  type: select
-  proxies:
-    - "trojan"
+  - 
+    name: Proxy
+    type: select
+    proxies:
+      - Auto
+      - Poul
+  - 
+    name: Auto
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    proxies:
+      - Poul
 
 
 rule-providers:

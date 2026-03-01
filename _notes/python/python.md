@@ -85,6 +85,18 @@ trusted-host=pypi.douban.com
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple package_name
 ```
 
+## uv 让pip install 飞起来
+[github](https://github.com/astral-sh/uv)
+```shell
+# On macOS and Linux.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+再执行pip install的时候，前面加上uv命令就行
+```shell
+uv pip install package -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
 ## python 使用虚拟环境运行程序
 
 python安装包的时候会碰到各种各样的问题：
