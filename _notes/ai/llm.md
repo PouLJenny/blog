@@ -14,15 +14,24 @@
 ### 开源
 
 
-| 排名 | 模型系列 | 厂商/机构 | 官方网站/在线体验 | API 开发者入口 / 模型下载 |
-| --- | --- | --- | --- | --- |
-| **1** | **Llama 4 (Behemoth/Maverick)** | Meta | [llama.meta.com](https://llama.meta.com) | [huggingface.co/meta-llama](https://huggingface.co/meta-llama) |
-| **2** | **GLM-5 (智谱清言)** | 智谱 AI (中) | [chatglm.cn](https://chatglm.cn) | [bigmodel.cn](https://bigmodel.cn) |
-| **3** | **Qwen 3.5 (通义千问)** | 阿里巴巴 | [qwen.ai](https://qwen.ai) | [dashscope.aliyun.com](https://dashscope.aliyun.com) |
-| **4** | **DeepSeek-V3.2 / Speciale** | DeepSeek (中) | [deepseek.com](https://www.deepseek.com) | [api-docs.deepseek.com](https://api-docs.deepseek.com) |
-| **5** | **Mistral 3 Large** | Mistral AI (法) | [mistral.ai](https://mistral.ai) | [console.mistral.ai](https://console.mistral.ai) |
-| **6** | **Gemma 3** | Google | [ai.google.dev/gemma](https://ai.google.dev/gemma) | [huggingface.co/google/gemma-3](https://huggingface.co/google) |
-| **7** | **Magistral Small (Reasoning)** | Mistral AI | [mistral.ai/news/magistral](https://mistral.ai) | [github.com/mistralai](https://github.com/mistralai) |
+以下是基于2026年3月初主流开源/开放权重（open-weight）大模型的综合排名表格。我综合了多个来源的数据，包括：
+- **Hugging Face Open LLM Leaderboard**（客观基准，如MMLU-Pro、GPQA、MATH等）
+- **LMArena / Chatbot Arena Elo**（人类偏好盲测）
+- **OpenRouter 调用量 / 市占率**（实际生产使用）
+- **SWE-bench / LiveCodeBench**（编程/工程能力）
+- **其他专业榜单**（如GPQA Diamond、AIME数学等）
+当前格局：中国开源模型在多数维度（尤其是性价比、推理、编程、社区采用）全面领先，Llama 4 等 Meta 模型在长上下文有优势但整体掉队。
+
+| 排名 | 模型名称                  | 开发者/公司       | 主要参数规模（总/活跃） | 上下文长度    | 官方/下载 URL (Hugging Face 或官网)                          | 主要优势 & 依据                                                                 | 综合得分参考（Elo / 基准平均） |
+|------|---------------------------|-------------------|--------------------------|---------------|-------------------------------------------------------------|---------------------------------------------------------------------------------|--------------------------------|
+| 1    | GLM-5                     | 智谱AI (Zhipu)   | ~744B / MoE             | 200K+        | https://huggingface.co/THUDM/glm-5 (或 z.ai 官网)         | 推理/编程/SWE-bench 极强，常居开源トップ；Elo ~1450+，SWE 高分 | ~1450+ Elo, Top1-2 开源       |
+| 2    | Kimi K2.5                 | 月之暗面 (Moonshot) | ~1T / MoE               | 262K         | https://huggingface.co/moonshotai/Kimi-K2.5 (kimi.ai)       | 综合最均衡，数学/编程/人类偏好强；OpenRouter 调用量常第1，GPQA/AIME 高 | ~1445-1447 Elo, Top1-3        |
+| 3    | Qwen 3.5                  | 阿里通义千问      | 397B / ~170B active     | 262K         | https://huggingface.co/Qwen/Qwen-3.5-397B (qwen.ai)         | 下载量/社区衍生模型爆炸式增长；多模态+性价比王者，GPQA Diamond 88.4% | Top Hugging Face 下载，强基准  |
+| 4    | DeepSeek V3.2             | DeepSeek AI      | 685B / MoE              | 长上下文     | https://huggingface.co/deepseek-ai/DeepSeek-V3.2            | 数学/硬核推理最强（AIME/GPQA/FrontierMath）；性价比高 | Top 数学/推理，Elo 高         |
+| 5    | MiniMax M2.5              | MiniMax          | ~230B / MoE             | 长上下文     | https://huggingface.co/MiniMax/MiniMax-M2.5                 | 多模态/编程/Agent 强；OpenRouter 市占高 | Top5 常见，编程榜强           |
+| 6    | MiMo-V2-Flash / Step-3.5-Flash | StepFun / 其他  | ~196-309B / MoE active 小 | 128K+        | Hugging Face 搜索对应模型                                   | 超高性价比/速度；AIME 94%+，成本仅顶级闭源1/10-1/50 | 性价比/速度 Top               |
+| 7    | Llama 4 Maverick          | Meta             | ~400B / 17B active MoE  | 1M-10M       | https://huggingface.co/meta-llama/Llama-4-Maverick          | 超长上下文王者（10M tokens Scout 版更极致）；多模态原生 | 长上下文唯一强项，但 Elo/基准掉队 |
+| 8    | Llama 4 Scout             | Meta             | ~109B / 17B active MoE  | 10M tokens   | https://huggingface.co/meta-llama/Llama-4-Scout             | 同上，部署友好（单 H100 可跑） | 长文档/RAG 专用               |
 
 
 ### 闭源
@@ -41,6 +50,26 @@
 ## 定义
 
 Large language models (LLMs) are AI models that are usually (but not necessarily) derived from the Transformer architecture and are designed to understand and generate human language, code, and much more
+
+
+## AI + coding
+
+### claude code
+
+### codex
+
+### opencode
+[官网](https://opencode.ai/)
+
+### openclaw
+
+### Cline
+
+#### Cli
+
+#### jetbrain
+
+#### vs code
 
 
 ## 分类
