@@ -9,6 +9,34 @@
 [Quick Start Guide to Large Language Models](https://archive.org/details/quick-start-guide-to-large-language-models-strategies-and-best-practices-for-usi_202407/page/n5/mode/2up?view=theater)
 [quick start llms 作者主页](https://sinanozdemir.ai/#publications)
 
+## 大模型公司列表
+
+### 开源
+
+
+| 排名 | 模型系列 | 厂商/机构 | 官方网站/在线体验 | API 开发者入口 / 模型下载 |
+| --- | --- | --- | --- | --- |
+| **1** | **Llama 4 (Behemoth/Maverick)** | Meta | [llama.meta.com](https://llama.meta.com) | [huggingface.co/meta-llama](https://huggingface.co/meta-llama) |
+| **2** | **GLM-5 (智谱清言)** | 智谱 AI (中) | [chatglm.cn](https://chatglm.cn) | [bigmodel.cn](https://bigmodel.cn) |
+| **3** | **Qwen 3.5 (通义千问)** | 阿里巴巴 | [qwen.ai](https://qwen.ai) | [dashscope.aliyun.com](https://dashscope.aliyun.com) |
+| **4** | **DeepSeek-V3.2 / Speciale** | DeepSeek (中) | [deepseek.com](https://www.deepseek.com) | [api-docs.deepseek.com](https://api-docs.deepseek.com) |
+| **5** | **Mistral 3 Large** | Mistral AI (法) | [mistral.ai](https://mistral.ai) | [console.mistral.ai](https://console.mistral.ai) |
+| **6** | **Gemma 3** | Google | [ai.google.dev/gemma](https://ai.google.dev/gemma) | [huggingface.co/google/gemma-3](https://huggingface.co/google) |
+| **7** | **Magistral Small (Reasoning)** | Mistral AI | [mistral.ai/news/magistral](https://mistral.ai) | [github.com/mistralai](https://github.com/mistralai) |
+
+
+### 闭源
+
+| 排名 | 模型系列 | 厂商 | 官方网站 / 在线对话 | API 开发者入口 |
+| --- | --- | --- | --- | --- |
+| **1** | **Claude 4.6** | Anthropic | [claude.ai](https://claude.ai) | [console.anthropic.com](https://console.anthropic.com) |
+| **2** | **Gemini 3.1** | Google | [gemini.google.com](https://gemini.google.com) | [ai.google.dev](https://ai.google.dev) (AI Studio) |
+| **3** | **GPT-5 / 5.1** | OpenAI | [chatgpt.com](https://chatgpt.com) | [platform.openai.com](https://platform.openai.com) |
+| **4** | **Grok 4.20** | xAI | [grok.com](https://grok.com) | [console.x.ai](https://console.x.ai) |
+| **5** | **豆包 (Doubao)** | 字节跳动 | [doubao.com](https://www.doubao.com) | [volcengine.com](https://www.volcengine.com/product/doubao) (火山引擎) |
+| **6** | **文心一言 (ERNIE)** | 百度 | [yiyan.baidu.com](https://yiyan.baidu.com) | [qianfan.baidu.com](https://www.google.com/search?q=https://qianfan.baidu.com) (千帆平台) |
+| **7** | **通义千问 (Qwen)** | 阿里巴巴 | [tongyi.aliyun.com](https://tongyi.aliyun.com) | [dashscope.aliyun.com](https://dashscope.aliyun.com) (灵积/百炼) |
+
 
 ## 定义
 
@@ -113,3 +141,13 @@ Supervised Fine-Tuning，监督微调
 [14]: https://github.com/Hannibal046/Awesome-LLM?utm_source=chatgpt.com "Awesome-LLM: a curated list of Large Language Model - GitHub"
 [15]: https://zhuanlan.zhihu.com/p/1891444022985340495?utm_source=chatgpt.com "论文分享| 大语言模型最新进展 - 知乎专栏"
 
+
+## 榜单
+
+https://onyx.app/open-llm-leaderboard
+https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard#/
+https://artificialanalysis.ai/
+
+
+
+# EOF
