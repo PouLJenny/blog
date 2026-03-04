@@ -1053,6 +1053,7 @@ var rules = [
             "clearwisdom.net",
             "clementine-player.org",
             "clickhouse.com",
+            "cline.bot",
             "clinica-tibet.ru",
             "clipfish.de",
             "cloakpoint.com",

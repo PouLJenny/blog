@@ -52,18 +52,20 @@
 Large language models (LLMs) are AI models that are usually (but not necessarily) derived from the Transformer architecture and are designed to understand and generate human language, code, and much more
 
 
-## AI + coding
+## 工具
 
 ### claude code
 
 ### codex
 
 ### opencode
-[官网](https://opencode.ai/)
+[官网](https://opencode.ai/ )
 
 ### openclaw
+[官网](https://openclaw.ai/ )
 
 ### Cline
+[官网](https://cline.bot/ )
 
 #### Cli
 
@@ -71,6 +73,14 @@ Large language models (LLMs) are AI models that are usually (but not necessarily
 
 #### vs code
 
+
+## 概念
+
+### Agent
+
+### MCP
+
+### Skills
 
 ## 分类
 
