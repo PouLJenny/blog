@@ -85,7 +85,31 @@ trusted-host=pypi.douban.com
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple package_name
 ```
 
-## uv 让pip install 飞起来
+
+
+## uv
+
+### uv 命令自动触发虚拟环境
+
+以前用原生 Python 的方式：
+```shell
+python -m venv env          # 创建虚拟环境
+source env/bin/activate     # 激活虚拟环境
+pip install mcp             # 装依赖
+python main.py              # 运行
+deactivate                  # 退出虚拟环境
+```
+
+用 uv 之后：
+```shell
+uv init notes-server        # 1. 创建项目
+cd notes-server             # 2. 进入项目目录
+uv add mcp                  # 4. 装依赖
+uv run main.py              # 5. 运行
+```
+
+
+### uv 让pip install 飞起来
 [github](https://github.com/astral-sh/uv)
 ```shell
 # On macOS and Linux.

@@ -55,8 +55,35 @@ Large language models (LLMs) are AI models that are usually (but not necessarily
 ## 工具
 
 ### claude code
+[官网](https://claude.ai )
+[使用文档](https://code.claude.com/docs/en/overview )
+
+cli版本需要添加下面的配置
+```shell
+cat >> ~/.zshrc << 'EOF'
+
+# Proxy Configuration
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export ftp_proxy="http://127.0.0.1:7890"
+export no_proxy="localhost,127.0.0.1,::1"
+EOF
+
+source ~/.zshrc
+```
+
+macos桌面版启动需要配置
+```shell
+launchctl setenv https_proxy http://127.0.0.1:7890
+launchctl setenv http_proxy http://127.0.0.1:7890
+launchctl setenv all_proxy socks5://127.0.0.1:7890
+```
+
+
+
 
 ### codex
+[官网](https://openai.com/codex/ )
 
 ### opencode
 [官网](https://opencode.ai/ )
@@ -68,19 +95,409 @@ Large language models (LLMs) are AI models that are usually (but not necessarily
 [官网](https://cline.bot/ )
 
 #### Cli
+[官网](https://cline.bot/ )
 
-#### jetbrain
+#### jetbrains
+[官网](https://cline.bot/jetbrains )
 
 #### vs code
+[官网](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev )
 
 
 ## 概念
 
 ### Agent
 
+### Subagents
+
 ### MCP
+[官方文档](https://modelcontextprotocol.io/docs/getting-started/intro )
+
+
+#### 实现一个简单的本地MCP Server
+
+1. 环境信息：
+- OS：Manjaro Linux x86_64
+- Python：3.10
+- MCP 目录：/home/poul/workspace/software/llm_mcp
+
+2. 第一步：创建项目
+```shell
+cd /home/poul/workspace/software/llm_mcp
+uv init notes-server
+cd notes-server
+```
+
+3. 第二步：安装依赖
+```shell
+uv add mcp -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+4. 第三步：写代码
+把 `main.py` 内容替换为：
+```python
+import json
+import os
+import logging
+from mcp.server.fastmcp import FastMCP
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+log = logging.getLogger(__name__)
+
+mcp = FastMCP("笔记本")
+NOTES_FILE = os.path.join(os.path.dirname(__file__), "notes.json")
+
+log.info("MCP 笔记本服务启动中...")
+log.info(f"笔记存储路径: {NOTES_FILE}")
+
+def load_notes():
+    if os.path.exists(NOTES_FILE):
+        with open(NOTES_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            log.info(f"加载笔记成功，共 {len(data)} 条")
+            return data
+    log.info("笔记文件不存在，返回空列表")
+    return []
+
+def save_notes(notes):
+    with open(NOTES_FILE, "w", encoding="utf-8") as f:
+        json.dump(notes, f, ensure_ascii=False, indent=2)
+    log.info(f"笔记保存成功，共 {len(notes)} 条")
+
+@mcp.tool()
+def add_note(title: str, content: str) -> str:
+    """添加一条笔记"""
+    log.info(f"调用 add_note: title={title}, content={content}")
+    notes = load_notes()
+    notes.append({"id": len(notes) + 1, "title": title, "content": content})
+    save_notes(notes)
+    result = f"✅ 笔记「{title}」添加成功，当前共 {len(notes)} 条笔记"
+    log.info(f"add_note 完成: {result}")
+    return result
+
+@mcp.tool()
+def list_notes() -> str:
+    """列出所有笔记"""
+    log.info("调用 list_notes")
+    notes = load_notes()
+    if not notes:
+        log.info("list_notes: 暂无笔记")
+        return "暂无笔记"
+    lines = [f"[{n['id']}] {n['title']}: {n['content']}" for n in notes]
+    result = "\n".join(lines)
+    log.info(f"list_notes: 返回 {len(notes)} 条笔记")
+    return result
+
+@mcp.tool()
+def delete_note(note_id: int) -> str:
+    """根据 ID 删除一条笔记"""
+    log.info(f"调用 delete_note: note_id={note_id}")
+    notes = load_notes()
+    original_len = len(notes)
+    notes = [n for n in notes if n["id"] != note_id]
+    if len(notes) == original_len:
+        log.warning(f"delete_note: 未找到 ID={note_id} 的笔记")
+        return f"❌ 未找到 ID 为 {note_id} 的笔记"
+    save_notes(notes)
+    result = f"✅ 笔记 {note_id} 已删除"
+    log.info(f"delete_note 完成: {result}")
+    return result
+
+if __name__ == "__main__":
+    log.info("MCP Server 开始监听 (stdio 模式)...")
+    mcp.run()
+    log.info("MCP Server 已退出")
+```
+
+5. 第四步：测试服务能跑起来
+```shell
+uv run main.py
+```
+看到日志输出、终端阻塞没有报错，`Ctrl+C` 退出。
+
+6. 第五步：安装 Claude Code CLI
+```shell
+npm install -g @anthropic-ai/claude-code
+```
+
+7. 第六步：注册 MCP Server
+注册mcp的方式
+```
+Examples:
+  # Add HTTP server:
+  claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+
+  # Add HTTP server with headers:
+  claude mcp add --transport http corridor https://app.corridor.dev/api/mcp --header "Authorization: Bearer ..."
+
+  # Add stdio server with environment variables:
+  claude mcp add -e API_KEY=xxx my-server -- npx my-mcp-server
+
+  # Add stdio server with subprocess flags:
+  claude mcp add my-server -- my-command --some-flag arg1
+```
+
+```shell
+claude mcp add notes-server \
+  -- uv \
+  --directory /home/poul/workspace/software/llm_mcp/notes-server \
+  run main.py
+```
+
+验证注册成功：
+```shell
+claude mcp list
+```
+
+看到 `notes-server` 出现在列表里就OK。
+
+8. 第七步：使用
+```shell
+claude
+```
+
+然后直接说：
+```
+> 帮我记一条笔记，标题是「学习计划」，内容是「每天学习 MCP 一小时」
+> 列出我所有的笔记
+> 删除第 1 条笔记
+```
+
+#### MCP的调用流程
+```
+你输入："帮我记一条笔记，标题是学习计划"
+        ↓
+Claude Code CLI（MCP Client）
+        ↓ 把你的话 + 工具列表 一起发给 Claude
+Anthropic API（Claude 大模型）
+        ↓ 分析意图，决定调用哪个工具，返回结构化指令
+Claude Code CLI（MCP Client）
+        ↓ 解析指令，通过 stdio 发送 JSON-RPC 消息
+你的 main.py（MCP Server 子进程）
+        ↓ 执行 add_note() 函数
+        ↓ 返回结果
+Claude Code CLI
+        ↓ 把结果喂回给 Claude
+Claude 大模型
+        ↓ 组织成自然语言回复
+你看到："✅ 笔记「学习计划」添加成功"
+```
+
+#### 实现一个简单的远程MCP Server
+
+1. 创建项目
+```shell
+cd /home/poul/workspace/software/llm_mcp
+uv init weather-server-remote
+cd weather-server-remote
+uv add mcp httpx -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+
+2. 写代码
+`main.py`
+```python
+import logging
+import httpx
+from mcp.server.fastmcp import FastMCP
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+log = logging.getLogger(__name__)
+
+mcp = FastMCP(
+    "天气查询",
+    host="0.0.0.0",
+    port=8000,
+)
+
+# 使用 wttr.in 免费天气API，无需注册申请key
+WEATHER_API = "https://wttr.in/{city}?format=j1&lang=zh"
+
+log.info("天气查询 MCP Server 启动中...")
+
+@mcp.tool()
+async def get_weather(city: str) -> str:
+    """
+    Get current weather for a city.
+    Call this tool when the user asks about weather, temperature, or climate of a place.
+    city is the name of the city, e.g. Beijing, Shanghai, London.
+    """
+    log.info(f"调用 get_weather: city={city}")
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(WEATHER_API.format(city=city))
+            resp.raise_for_status()
+            data = resp.json()
+
+        current = data["current_condition"][0]
+        temp_c = current["temp_C"]
+        feels_like = current["FeelsLikeC"]
+        humidity = current["humidity"]
+        desc = current["lang_zh"][0]["value"] if current.get("lang_zh") else current["weatherDesc"][0]["value"]
+        wind_speed = current["windspeedKmph"]
+
+        result = (
+            f"🌤 {city} 当前天气\n"
+            f"天气：{desc}\n"
+            f"温度：{temp_c}°C（体感 {feels_like}°C）\n"
+            f"湿度：{humidity}%\n"
+            f"风速：{wind_speed} km/h"
+        )
+        log.info(f"get_weather 完成: {city} {temp_c}°C {desc}")
+        return result
+
+    except httpx.TimeoutException:
+        log.error(f"get_weather 超时: city={city}")
+        return f"❌ 查询 {city} 天气超时，请稍后再试"
+    except Exception as e:
+        log.error(f"get_weather 失败: {e}")
+        return f"❌ 查询失败：{str(e)}"
+
+
+@mcp.tool()
+async def get_weather_forecast(city: str) -> str:
+    """
+    Get 3-day weather forecast for a city.
+    Call this tool when the user asks about future weather or weather forecast.
+    city is the name of the city, e.g. Beijing, Shanghai, London.
+    """
+    log.info(f"调用 get_weather_forecast: city={city}")
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(WEATHER_API.format(city=city))
+            resp.raise_for_status()
+            data = resp.json()
+
+        forecasts = data["weather"]
+        lines = [f"📅 {city} 未来3天天气预报\n"]
+        for day in forecasts:
+            date = day["date"]
+            max_c = day["maxtempC"]
+            min_c = day["mintempC"]
+            desc = day["hourly"][4]["lang_zh"][0]["value"] if day["hourly"][4].get("lang_zh") else day["hourly"][4]["weatherDesc"][0]["value"]
+            lines.append(f"{date}：{desc}，{min_c}°C ~ {max_c}°C")
+
+        result = "\n".join(lines)
+        log.info(f"get_weather_forecast 完成: {city}")
+        return result
+
+    except httpx.TimeoutException:
+        log.error(f"get_weather_forecast 超时: city={city}")
+        return f"❌ 查询 {city} 天气预报超时，请稍后再试"
+    except Exception as e:
+        log.error(f"get_weather_forecast 失败: {e}")
+        return f"❌ 查询失败：{str(e)}"
+
+
+if __name__ == "__main__":
+    log.info("MCP Server 启动，监听 http://0.0.0.0:8000 ...")
+    mcp.run(transport="streamable-http")
+```
+
+3. 启动服务
+```shell
+uv run main.py
+```
+
+4. 注册到 Claude Code
+```shell
+claude mcp add weather-server \
+  --transport http \
+  http://localhost:8000/mcp
+```
+
+5. 使用，
+> 北京今天天气怎么样
+> Shanghai weather forecast
+> 伦敦未来三天天气
+
+> ⚠️ 不能在项目目录下使用
+
+
+#### MCP 三种Transport方式
+
+
+##### stdio（标准输入输出）
+```
+Claude Code
+    ↓ 写入 stdin
+你的 main.py 子进程
+    ↓ 写入 stdout
+Claude Code
+```
+
+- Server 就是 Claude Code 启动的一个子进程
+- 消息通过进程的标准输入输出传递
+- Claude Code 退出，Server 也跟着退出
+- 只能本地用，不能跨网络
+- 适合：个人本地工具，开发调试
+
+##### sse（Server-Sent Events）
+```
+Claude Code
+    ↓ HTTP POST 发请求
+远程 Server
+    ↓ HTTP 长连接推送响应（SSE）
+Claude Code
+```
+
+- 基于 HTTP，Server 独立运行
+- 连接是单向推送：Server 主动往 Client 推消息
+- 这是 MCP 早期的远程方案，现在已经是旧方案
+- 适合：需要兼容老版本客户端的场景
+
+##### http（Streamable HTTP）
+
+```
+Claude Code
+    ↓ HTTP POST
+远程 Server
+    ↓ HTTP 响应（支持流式）
+Claude Code
+```
+
+- 同样基于 HTTP，Server 独立运行
+- 比 SSE 更现代，双向通信，支持流式返回
+- 这是目前官方推荐的远程方案
+- 适合：生产环境，部署到服务器，多人共用
+
+#### MCP的作用域
+Claude Code 的 MCP 配置有作用域的概念。
+
+- local（默认）,只在当前目录下生效
+- project, 整个项目目录下生效
+- user, 任意目录都生效
+
+注册mcp的时候指定一下scope就行了
+```shell
+claude mcp add notes-server \
+  --scope user \
+  -- uv --directory /home/poul/workspace/software/llm_mcp/notes-server run main.py
+```
 
 ### Skills
+
+这个是Claude特有的功能，专门为Claude准备的操作手册，不是MCP，也不是给你用的功能。
+当需要LLM做什么复杂任务("生成一个 PPT"、"创建 Word 文档")的时候,我会先去读对应的`skill.md`,里面记录了经过大量试错总结出来的最佳操作步骤--用哪个库、怎么排版、踩过哪些坑--让我能生成更高质量的输出
+
+比如：
+你说"帮我写个 Word 文档" → LLM先读 `/mnt/skills/public/docx/SKILL.md` → 按最佳实践生成
+
+
+
+### System Prompt
+
+### RAG/知识库
+
+### Memory Harnesses
 
 ## 分类
 

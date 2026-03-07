@@ -144,17 +144,17 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             padding: 20px 0;
             transform: translateX(0); /* 默认显示 */
         }}
-        /* 目录隐藏状态（滑出左侧，但保留唤起按钮） */
+        /* 目录隐藏状态（完全滑出左侧） */
         .toc-wrapper.hidden {{
-            transform: translateX(-220px); /* 只隐藏主体，留60px给唤起按钮 */
+            transform: translateX(-100%);
         }}
 
         /* ========== 目录唤起按钮（隐藏后显示） ========== */
         .toc-reveal-btn {{
             position: fixed;
-            top: 50%;
-            left: 20px;
-            transform: translateY(-50%);
+            top: 20px;
+            left: 8px;
+            transform: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -368,6 +368,33 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             background-color: #f8f9fa;
         }}
 
+        /* ========== 图片放大lightbox ========== */
+        .lightbox-overlay {{
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 99999;
+            cursor: zoom-out;
+            align-items: center;
+            justify-content: center;
+        }}
+        .lightbox-overlay.active {{
+            display: flex;
+        }}
+        .lightbox-img {{
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 6px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            object-fit: contain;
+            cursor: default;
+        }}
+        .content-img {{
+            cursor: zoom-in;
+        }}
+
         /* ========== 回到顶部按钮样式 ========== */
         .back-to-top {{
             position: fixed;
@@ -500,6 +527,11 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
         </div>
     </div>
 
+    <!-- 图片放大遮罩 -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
     <!-- 回到顶部按钮 -->
     <button class="back-to-top" id="backToTop">↑</button>
 
@@ -625,6 +657,26 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             }});
         }});
 
+        // ========== 图片点击放大 ==========
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+        document.querySelectorAll('.content-img').forEach(img => {{
+            img.addEventListener('click', function() {{
+                lightboxImg.src = this.src;
+                lightboxImg.alt = this.alt;
+                lightboxOverlay.classList.add('active');
+            }});
+        }});
+        lightboxOverlay.addEventListener('click', function() {{
+            lightboxOverlay.classList.remove('active');
+        }});
+        lightboxImg.addEventListener('click', function(e) {{
+            e.stopPropagation();
+        }});
+        document.addEventListener('keydown', function(e) {{
+            if (e.key === 'Escape') lightboxOverlay.classList.remove('active');
+        }});
+
         // ========== 窗口大小变化时适配 ==========
         window.addEventListener('resize', function() {{
             if (window.innerWidth > 992) {{
@@ -652,11 +704,11 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
     print(f"转换完成！HTML文件已保存至：{html_file_path}")
 
 
-# 示例调用
 if __name__ == "__main__":
-    # 替换为你的Markdown文件路径
-    md_file = "/home/poul/workspace/src/private_log/mba_study/zuzhixingwei/zuzhixingwei.md"
-    # 可选：指定输出HTML路径，不指定则默认同目录同名
-    html_file = "/home/poul/workspace/src/private_log/mba_study/zuzhixingwei/zuzhixingwei.html"
-    # 转换
-    md_to_html_with_toc(md_file, html_file, title="组织行为")
+    import argparse
+    parser = argparse.ArgumentParser(description="将Markdown文件转换为带目录的HTML文件")
+    parser.add_argument("input", help="输入的Markdown文件路径")
+    parser.add_argument("-o", "--output", help="输出的HTML文件路径（默认同目录同名）", default=None)
+    parser.add_argument("-t", "--title", help="HTML页面标题（默认为Markdown转换结果）", default="Markdown转换结果")
+    args = parser.parse_args()
+    md_to_html_with_toc(args.input, args.output, title=args.title)

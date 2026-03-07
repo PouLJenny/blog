@@ -1379,6 +1379,7 @@ var rules = [
             "dotvpn.com",
             "doub.io",
             "doubibackup.com",
+            "doubleclick.net",
             "doubmirror.cf",
             "dougscripts.com",
             "douhokanko.net",
