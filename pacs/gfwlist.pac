@@ -1044,6 +1044,7 @@ var rules = [
             "classicalguitarblog.net",
             "claude.ai",
             "claude.com",
+            "clawhub.ai",
             "clb.org.hk",
             "cleansite.biz",
             "cleansite.info",
