@@ -2073,6 +2073,7 @@ var rules = [
             "goagentplus.com",
             "goatcounter.com",
             "gobet.cc",
+            "godaddy.com",
             "godfootsteps.org",
             "godns.work",
             "godoc.org",
