@@ -3888,6 +3888,7 @@ var rules = [
             "openervpn.in",
             "openid.net",
             "openleaks.org",
+            "openrouter.ai",
             "opensource.google",
             "openstreetmap.org",
             "opentech.fund",

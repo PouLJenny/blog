@@ -79,6 +79,10 @@ launchctl setenv http_proxy http://127.0.0.1:7890
 launchctl setenv all_proxy socks5://127.0.0.1:7890
 ```
 
+最精简、推荐的方式,直接小黑框里面执行下面的命令打开，让应用程序走代理：
+```shell
+https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 open -a Claude
+```
 
 
 
@@ -90,6 +94,12 @@ launchctl setenv all_proxy socks5://127.0.0.1:7890
 
 ### openclaw
 [官网](https://openclaw.ai/ )
+[clawhub](https://clawhub.ai/ )
+
+```shell
+npm install clawhub
+npx clawhub install <hub-id>
+```
 
 ### Cline
 [官网](https://cline.bot/ )
