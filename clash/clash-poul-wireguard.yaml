@@ -40,6 +40,13 @@ dns:
       - +.google.cn
       - +.googleapis.cn
       - +.gvt1.com
+tun:
+  enable: true              # 开启 TUN 模式
+  stack: gvisor             # 网络栈用 gvisor，兼容性最好
+  auto-route: true          # 自动设置路由表，流量自动接管
+  auto-detect-interface: true  # 自动检测网络接口，不用手动指定
+  dns-hijack:
+    - any:53                # 劫持所有 DNS 请求，防止 DNS 泄露      
 proxies:
   - 
     name: Poul
