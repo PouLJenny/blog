@@ -95,11 +95,18 @@ https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 open -a Claud
 ### openclaw
 [官网](https://openclaw.ai/ )
 [clawhub](https://clawhub.ai/ )
+[github](https://github.com/openclaw/openclaw)
 
 ```shell
 npm install clawhub
 npx clawhub install <hub-id>
 ```
+
+养龙虾
+
+
+### openrouter
+[官网](https://openrouter.ai/ )
 
 ### Cline
 [官网](https://cline.bot/ )
@@ -118,7 +125,62 @@ npx clawhub install <hub-id>
 
 ### Agent
 
+
+普通的LLM只能根据输入生成文本，本质上是一个文本生成器，它不能访问实时信息、不能操作外部系统、不能执行计算。Agent通过接入工具，让LLM突破了这些限制
+
+很多任务不是一句话能完成的。比如"帮我订一张明天去上海的机票"，这需要查航班、比价、确认时间、下单等一系列步骤。单次LLM调用做不到，但Agent可以把任务拆解并逐步执行。
+
+没有Agent的情况下，用户需要手动把一个任务拆成多个prompt，自己串联中间结果，本质上人充当了"调度器"。Agent把这个调度过程自动化了，用户只需描述目标，Agent自己想办法完成。
+
+很多场景需要LLM不只是给出建议，而是真正去执行——发邮件、写文件、查数据库、调API。Agent让LLM从"顾问"变成了"执行者"。
+
+预设的固定流程无法应对所有场景，而Agent可以根据中间结果灵活调整策略。比如搜索第一次没找到答案，它会换个关键词再试，这种适应能力是传统自动化脚本做不到的。
+
+传统程序的逻辑是开发者预先定义好的，if-else、循环、调用顺序都是确定的。而Agent的控制流是由LLM在运行时动态决定的。面对同一个任务，它可能因为中间结果不同而走完全不同的路径。这种灵活性是传统程序很难做到的
+
+
+相关论文：
+
+[ReAct: Synergizing Reasoning and Acting in Language Models（ICLR 2023）](https://arxiv.org/pdf/2210.03629)
+
+[A Survey on Large Language Model based Autonomous Agents](https://arxiv.org/pdf/2308.11432)
+
+[Large Language Model Agent: A Survey on Methodology, Applications and Challenges](arxiv.org/abs/2503.21460)
+
 ### Subagents
+
+SubAgent（子智能体）是指在一个Agent系统中，由主Agent（也叫Orchestrator或Parent Agent）调度和管理的下级Agent。
+
+核心思想很简单：把一个复杂任务拆分给多个专门的子Agent去完成，主Agent负责协调
+
+打个比方，就像一个项目经理（主Agent）把任务分配给不同的专员（SubAgent）：一个负责搜索资料，一个负责写代码，一个负责数据分析，最后项目经理汇总结果。
+
+和普通多Agent系统的区别在于层级关系。多Agent系统中的Agent可以是平等协作的，而SubAgent明确有上下级关系——它由主Agent创建、调用，完成后把结果返回给主Agent。SubAgent通常不会直接和用户交互，也不知道整体任务的全貌，只专注于自己被分配的子任务。
+
+典型的工作流程是这样的：用户给主Agent一个复杂任务，主Agent分析任务并拆解成子任务，针对每个子任务调用对应的SubAgent，SubAgent完成后返回结果，主Agent整合所有SubAgent的结果并给出最终回答。
+
+使用SubAgent的好处有几个方面。首先是专业化，每个SubAgent可以有不同的prompt、工具和能力，术业有专攻。其次是降低复杂度，主Agent不需要一次性处理所有细节，每个SubAgent只关注自己的小问题。另外还能并行执行，多个SubAgent可以同时工作，提高效率。
+
+相关论文：
+
+[MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework（2023）](https://arxiv.org/pdf/2308.00352)
+[项目开源地址](https://github.com/FoundationAgents/MetaGPT)
+
+[AgentOrchestra: A Hierarchical Multi-Agent Framework for General-Purpose Task Solving（2025）](https://arxiv.org/html/2506.12508v1)
+
+[HLA: LLM-Powered Hierarchical Language Agent for Real-time Human-AI Coordination（AAMAS 2024）](https://dl.acm.org/doi/epdf/10.5555/3635637.3662979)
+
+[Towards Effective GenAI Multi-Agent Collaboration（2024）](https://arxiv.org/html/2412.05449v1)
+
+[LLM Augmented Hierarchical Agents（CoRL Workshop 2023）](https://eehpc.ece.jhu.edu/wp-content/uploads/2023/10/LangRob_CoRL.pdf)
+
+[AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation（2023，微软）](https://arxiv.org/pdf/2308.08155)
+[项目开源地址](https://github.com/microsoft/autogen)
+
+[CAMEL: Communicative Agents for "Mind" Exploration of Large Language Model Society（2023）](https://arxiv.org/pdf/2303.17760)
+[官网](https://www.camel-ai.org/)
+
+[Lilian Weng的博客："LLM Powered Autonomous Agents"](https://lilianweng.github.io/posts/2023-06-23-agent/)
 
 ### MCP
 [官方文档](https://modelcontextprotocol.io/docs/getting-started/intro )

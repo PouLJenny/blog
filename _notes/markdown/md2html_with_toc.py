@@ -1,7 +1,92 @@
 import re
 import os
+from html import escape
 from markdown import markdown
 from bs4 import BeautifulSoup
+
+
+def _extract_fenced_blocks(md_content):
+    """
+    手动提取所有顶层围栏代码块，替换为占位符。
+    支持嵌套：```markdown 内含 ```java 也能正确识别，不会被提前截断。
+    返回: (替换后的md文本, {占位符: (lang, content)})
+    """
+    blocks = {}
+    result = []
+    lines = md_content.split('\n')
+    i = 0
+    count = 0
+
+    while i < len(lines):
+        line = lines[i]
+        m = re.match(r'^(`{3,}|~{3,})(\S*)\s*$', line)
+        if m:
+            fence_char = m.group(1)[0]
+            fence_len = len(m.group(1))
+            lang = m.group(2)
+            # 关闭围栏：相同字符、至少相同数量、行内无其他内容
+            closing = re.compile(
+                r'^' + re.escape(fence_char) + r'{' + str(fence_len) + r',}\s*$'
+            )
+            content_lines = []
+            i += 1
+            # 用栈追踪嵌套代码块，避免内层的 ``` 被误判为外层的关闭围栏
+            nest_stack = []
+            while i < len(lines):
+                current = lines[i]
+                if nest_stack:
+                    # 当前在嵌套块内，检查是否关闭嵌套块
+                    _, _, inner_closing = nest_stack[-1]
+                    if inner_closing.match(current):
+                        nest_stack.pop()
+                    else:
+                        # 嵌套块内还可以继续嵌套（理论上）
+                        nm = re.match(r'^(`{3,}|~{3,})(\S+)\s*$', current)
+                        if nm:
+                            nc, nl = nm.group(1)[0], len(nm.group(1))
+                            nest_stack.append((nc, nl, re.compile(
+                                r'^' + re.escape(nc) + r'{' + str(nl) + r',}\s*$'
+                            )))
+                    content_lines.append(current)
+                else:
+                    # 在外层块内
+                    if closing.match(current):
+                        # 真正关闭外层块
+                        i += 1
+                        break
+                    # 检查是否开启了一个嵌套块（有语言标识符，否则无法区分开启/关闭）
+                    nm = re.match(r'^(`{3,}|~{3,})(\S+)\s*$', current)
+                    if nm:
+                        nc, nl = nm.group(1)[0], len(nm.group(1))
+                        nest_stack.append((nc, nl, re.compile(
+                            r'^' + re.escape(nc) + r'{' + str(nl) + r',}\s*$'
+                        )))
+                    content_lines.append(current)
+                i += 1
+            placeholder = f'FENCED_BLOCK_PLACEHOLDER_{count}'
+            count += 1
+            blocks[placeholder] = (lang, '\n'.join(content_lines))
+            result.append(placeholder)
+        else:
+            result.append(line)
+            i += 1
+
+    return '\n'.join(result), blocks
+
+
+def _restore_fenced_blocks(html_content, blocks):
+    """将占位符还原为 <pre><code> 或 <div class="mermaid"> HTML（内容已 HTML 转义）"""
+    for placeholder, (lang, content) in blocks.items():
+        if lang == 'mermaid':
+            code_html = f'<div class="mermaid">{escape(content)}</div>'
+        else:
+            lang_attr = f' class="language-{lang}"' if lang else ''
+            code_html = f'<pre><code{lang_attr}>{escape(content)}</code></pre>'
+        # markdown 库可能把孤立的占位符包进 <p>，一并替换
+        html_content = html_content.replace(f'<p>{placeholder}</p>', code_html)
+        html_content = html_content.replace(placeholder, code_html)
+    return html_content
+
 
 def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换结果"):
     """
@@ -19,21 +104,21 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
     with open(md_file_path, 'r', encoding='utf-8') as f:
         md_content = f.read()
 
-    # 2. 将Markdown转换为HTML（启用扩展）
+    # 2. 预处理：手动提取所有围栏代码块（支持嵌套），避免 markdown 库提前截断
+    md_safe, fenced_blocks = _extract_fenced_blocks(md_content)
+
+    # 3. 将 Markdown 转换为 HTML（extra 已含 fenced_code/tables/md_in_html）
     html_content = markdown(
-        md_content,
-        extensions=[
-            'extra',       # 支持表格、列表等扩展语法
-            'toc',         # 基础TOC（备用）
-            'fenced_code', # 代码块
-            'tables',      # 表格
-            'md_in_html'   # 支持HTML混合
-        ]
+        md_safe,
+        extensions=['extra', 'toc'],
     )
 
-    # 3. 解析HTML，提取标题+处理图片懒加载
+    # 4. 还原代码块（内容已 HTML 转义，不会被浏览器渲染）
+    html_content = _restore_fenced_blocks(html_content, fenced_blocks)
+
+    # 5. 解析HTML，提取标题+处理图片懒加载
     soup = BeautifulSoup(html_content, 'html.parser')
-    
+
     # ========== 处理标题：添加锚点 + 修复跳转偏移 ==========
     headings = soup.find_all(re.compile(r'^h[1-6]$'))
     toc_items = []
@@ -102,410 +187,435 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <style>
-        /* 全局重置 + 基础样式 */
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ========== CSS 变量：#009f52 清新绿主色调 ========== */
+        :root {{
+            --accent:            #009f52;
+            --accent-dark:       #007a3f;
+            --accent-deeper:     #005c30;
+            --accent-light:      #e6f7ef;
+            --accent-light2:     #c8eeda;
+            --sidebar-bg:        #ffffff;
+            --sidebar-border:    #d4ede1;
+            --sidebar-text:      #4a7060;
+            --sidebar-heading:   #007a3f;
+            --sidebar-hover-bg:  #f0faf5;
+            --sidebar-hover-text:#009f52;
+            --page-bg:           #f4fbf7;
+            --card-bg:           #ffffff;
+            --text-primary:      #1a2e22;
+            --text-muted:        #5a7a68;
+            --border:            #d8eee3;
+            --code-bg:           #1a1527;
+            --code-text:         #e2d9f3;
+            --shadow-sm:         0 1px 4px rgba(0,159,82,0.08);
+            --shadow-md:         0 4px 20px rgba(0,159,82,0.10), 0 1px 4px rgba(0,0,0,0.04);
         }}
-        html {{
-            scroll-behavior: smooth; /* 平滑滚动 */
-            scroll-padding-top: 20px; /* 修复锚点跳转偏移 */
-        }}
+
+        /* 全局重置 */
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        html {{ scroll-behavior: smooth; scroll-padding-top: 20px; }}
+
         body {{
-            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-            line-height: 1.8;
-            color: #333;
-            background-color: #f8f9fa;
-            padding: 0;
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--page-bg);
             max-width: 100%;
             margin: 0;
-            /* 为左侧目录+唤起按钮预留空间 */
-            padding-left: 280px;
+            padding-left: 240px;
             transition: padding-left 0.3s ease;
         }}
-        /* 目录隐藏时，减少左侧预留空间（只留唤起按钮宽度） */
-        body.toc-hidden {{
-            padding-left: 60px;
-        }}
+        body.toc-hidden {{ padding-left: 50px; }}
 
-        /* ========== 左侧目录容器（核心修复） ========== */
+        /* ========== 左侧目录 ========== */
         .toc-wrapper {{
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
+            top: 0; left: 0;
+            width: 240px;
             height: 100vh;
-            background-color: #fff;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
             z-index: 999;
-            overflow-y: auto; /* 目录过长时滚动 */
+            overflow-y: auto;
             transition: transform 0.3s ease;
-            padding: 20px 0;
-            transform: translateX(0); /* 默认显示 */
+            padding: 0 0 20px;
+            transform: translateX(0);
         }}
-        /* 目录隐藏状态（完全滑出左侧） */
-        .toc-wrapper.hidden {{
-            transform: translateX(-100%);
-        }}
+        .toc-wrapper.hidden {{ transform: translateX(-100%); }}
 
-        /* ========== 目录唤起按钮（隐藏后显示） ========== */
-        .toc-reveal-btn {{
-            position: fixed;
-            top: 20px;
-            left: 8px;
-            transform: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            z-index: 998;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }}
-        /* 目录隐藏时显示唤起按钮 */
-        .toc-reveal-btn.show {{
-            opacity: 1;
-            visibility: visible;
-        }}
+        /* 目录滚动条 */
+        .toc-wrapper::-webkit-scrollbar {{ width: 4px; }}
+        .toc-wrapper::-webkit-scrollbar-track {{ background: transparent; }}
+        .toc-wrapper::-webkit-scrollbar-thumb {{ background: var(--accent-light2); border-radius: 2px; }}
 
-        /* ========== 目录头部（标题+切换按钮） ========== */
+        /* ========== 目录头部 ========== */
         .toc-header {{
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px 15px;
-            border-bottom: 2px solid #e9ecef;
-            margin-bottom: 15px;
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #e6f7ef 0%, #ffffff 100%);
         }}
         .toc-header h2 {{
-            font-size: 1.3rem;
-            color: #2c3e50;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
             margin: 0;
         }}
-        /* 目录内部隐藏按钮 */
         .toc-toggle-btn {{
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #007bff;
-            color: white;
-            border: none;
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid var(--accent-light2);
             cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
             transition: all 0.2s ease;
         }}
         .toc-toggle-btn:hover {{
-            background-color: #0056b3;
-            transform: scale(1.05);
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
         }}
 
-        /* ========== 目录列表样式 ========== */
-        .toc-list, .toc-sublist {{
-            list-style: none;
-            padding-left: 0;
-        }}
-        .toc-sublist {{
-            padding-left: 18px;
-            margin-top: 4px;
-        }}
-        .toc-item {{
-            margin: 6px 0;
-            line-height: 1.5;
-            padding: 0 20px;
-        }}
+        /* ========== 目录列表 ========== */
+        .toc-list, .toc-sublist {{ list-style: none; padding-left: 0; }}
+        .toc-sublist {{ padding-left: 12px; margin-top: 2px; }}
+        .toc-item {{ margin: 2px 0; padding: 0 8px; }}
         .toc-link {{
             text-decoration: none;
-            color: #007bff;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            color: var(--sidebar-text);
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
             display: block;
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            border-left: 2px solid transparent;
         }}
         .toc-link:hover {{
-            color: #0056b3;
-            background-color: #f0f7ff;
-            text-decoration: none;
-            padding-left: 6px;
+            color: var(--sidebar-hover-text);
+            background-color: var(--sidebar-hover-bg);
+            border-left-color: var(--accent);
+            padding-left: 10px;
         }}
-        .toc-level-1 {{
-            font-size: 1.05rem !important;
+        .toc-level-1 .toc-link {{
+            font-size: 0.9rem;
             font-weight: 600;
+            color: var(--accent-deeper);
         }}
-        .toc-level-2 {{ color: #2d3748; }}
-        .toc-level-3 {{ color: #4a5568; }}
-        .toc-level-4, .toc-level-5, .toc-level-6 {{ 
-            color: #718096;
-            font-size: 0.9rem !important;
-        }}
+        .toc-level-2 .toc-link {{ color: #2d6e4e; }}
+        .toc-level-3 .toc-link {{ color: #4e8a6a; }}
+        .toc-level-4 .toc-link,
+        .toc-level-5 .toc-link,
+        .toc-level-6 .toc-link {{ color: #7aab92; font-size: 0.82rem; }}
 
-        /* ========== 正文容器样式 ========== */
+        /* ========== 目录唤起按钮 ========== */
+        .toc-reveal-btn {{
+            position: fixed;
+            top: 20px; left: 8px;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.4);
+            z-index: 998;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }}
+        .toc-reveal-btn.show {{ opacity: 1; visibility: visible; }}
+        .toc-reveal-btn:hover {{ background: var(--accent-dark); transform: scale(1.05); }}
+
+        /* ========== 正文容器 ========== */
         .content-wrapper {{
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 20px 24px;
         }}
         .content {{
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            margin-bottom: 40px; /* 给回到顶部按钮留空间 */
+            background-color: var(--card-bg);
+            padding: 24px 32px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
         }}
 
-        /* 标题样式 + 锚点偏移修复 */
+        /* 标题 + 锚点偏移修复 */
         .anchor-heading {{
             position: relative;
-            padding-top: 80px; /* 修复跳转偏移 */
+            padding-top: 80px;
             margin-top: -80px;
         }}
         .content h1 {{
-            font-size: 2rem;
-            color: #2c3e50;
-            margin: 40px 0 20px;
-            border-bottom: 3px solid #e9ecef;
-            padding-bottom: 12px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            margin: 20px 0 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-light2);
+            position: relative;
+        }}
+        .content h1::before {{
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 56px; height: 2px;
+            background: var(--accent);
         }}
         .content h2 {{
-            font-size: 1.7rem;
-            color: #2c3e50;
-            margin: 35px 0 18px;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 10px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+            margin: 18px 0 8px;
+            padding-left: 10px;
+            position: relative;
+        }}
+        .content h2::before {{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 80px;
+            width: 3px;
+            height: calc(100% - 80px);
+            background: var(--accent);
+            border-radius: 2px;
         }}
         .content h3 {{
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin: 30px 0 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 14px 0 6px;
         }}
         .content h4, .content h5, .content h6 {{
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin: 25px 0 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 12px 0 6px;
         }}
 
-        /* 图片样式 + 懒加载过渡 */
+        /* 图片样式 */
         .content-img {{
             max-width: 100%;
             height: auto;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin: 20px auto;
-            display: block; /* 居中显示 */
-            /* 懒加载过渡效果 */
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin: 10px auto;
+            display: block;
             opacity: 0;
             transition: opacity 0.5s ease;
+            cursor: zoom-in;
         }}
-        /* 图片加载完成后显示 */
-        .content-img.loaded {{
-            opacity: 1;
+        .content-img.loaded {{ opacity: 1; }}
+
+        /* 段落/列表 */
+        .content p {{ margin: 6px 0; font-size: 1rem; line-height: 1.7; color: var(--text-primary); }}
+        .content ul, .content ol {{ padding-left: 20px; margin: 6px 0 6px 10px; }}
+        .content li {{ margin: 4px 0; }}
+        .content a {{ color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-light2); transition: all 0.15s; }}
+        .content a:hover {{ color: var(--accent-dark); border-bottom-color: var(--accent); }}
+
+        /* 行内代码 */
+        .content code {{
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+            font-size: 0.875rem;
+            background: #fff4e6;
+            color: #b45309;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #fde8c0;
         }}
 
-        /* 段落/列表样式 */
-        .content p {{
-            margin: 12px 0;
-            font-size: 1rem;
-            line-height: 1.8;
-        }}
-        .content ul, .content ol {{
-            padding-left: 25px;
-            margin: 10px 0 10px 15px;
-        }}
-        .content li {{
-            margin: 8px 0;
-        }}
-
-        /* 代码块样式（修复响应式） */
+        /* 代码块 */
         .content pre {{
-            background-color: #f8f9fa;
-            padding: 16px;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 14px 16px;
             border-radius: 8px;
             overflow-x: auto;
-            margin: 20px 0;
-            border: 1px solid #e9ecef;
-        }}
-        .content code {{
-            font-family: "Consolas", "Monaco", "Menlo", monospace;
-            font-size: 0.9rem;
+            margin: 10px 0;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-left: 3px solid #a78bfa;
+            box-shadow: 0 4px 20px rgba(26,21,39,0.25);
         }}
         .content pre code {{
             background: none;
+            color: inherit;
             padding: 0;
+            border: none;
+            font-size: 0.875rem;
         }}
 
-        /* 表格样式（修复溢出） */
+        /* 表格 */
         .content table {{
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
+            margin: 12px 0;
             overflow-x: auto;
-            display: block; /* 响应式滚动 */
+            display: block;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
         }}
         .content th, .content td {{
-            border: 1px solid #dee2e6;
-            padding: 12px 15px;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
             text-align: left;
+            font-size: 0.95rem;
         }}
         .content th {{
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, var(--accent-light), #f0faf5);
             font-weight: 600;
-            white-space: nowrap; /* 表头不换行 */
+            color: var(--accent-deeper);
+            white-space: nowrap;
         }}
-        .content tr:nth-child(even) {{
-            background-color: #f8f9fa;
+        .content tr:nth-child(even) {{ background-color: #f9fdfb; }}
+        .content tr:hover {{ background-color: var(--accent-light); }}
+
+        /* 引用块 */
+        .content blockquote {{
+            border-left: 4px solid var(--accent);
+            background: var(--accent-light);
+            margin: 10px 0;
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+            font-style: italic;
         }}
 
-        /* ========== 图片放大lightbox ========== */
+        /* ========== Mermaid ========== */
+        .mermaid {{
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            cursor: zoom-in;
+            padding: 16px;
+            background: var(--accent-light);
+            border-radius: 8px;
+            border: 1px solid var(--accent-light2);
+        }}
+
+        /* ========== Lightbox ========== */
+        .lightbox-svg {{
+            display: none;
+            width: 92vw; max-height: 88vh;
+            transform-origin: center center;
+            will-change: transform;
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            cursor: default;
+            box-sizing: border-box;
+        }}
+        .lightbox-svg svg {{ width: 100% !important; height: auto !important; min-height: 400px; display: block; }}
+        .lightbox-close {{
+            position: fixed;
+            top: 16px; right: 20px;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 15px;
+            cursor: pointer;
+            z-index: 100000;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+            backdrop-filter: blur(4px);
+        }}
+        .lightbox-close:hover {{ background: rgba(255,255,255,0.25); }}
         .lightbox-overlay {{
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,30,15,0.88);
+            backdrop-filter: blur(2px);
             z-index: 99999;
             cursor: zoom-out;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }}
-        .lightbox-overlay.active {{
-            display: flex;
-        }}
+        .lightbox-overlay.active {{ display: flex; }}
         .lightbox-img {{
-            max-width: 90vw;
-            max-height: 90vh;
-            border-radius: 6px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            max-width: 90vw; max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
             object-fit: contain;
             cursor: default;
-        }}
-        .content-img {{
-            cursor: zoom-in;
+            transform-origin: center center;
+            will-change: transform;
         }}
 
-        /* ========== 回到顶部按钮样式 ========== */
+        /* ========== 回到顶部 ========== */
         .back-to-top {{
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #007bff;
+            bottom: 24px; right: 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             color: white;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+            width: 44px; height: 44px;
+            border-radius: 10px;
             text-align: center;
-            line-height: 48px;
+            line-height: 44px;
             font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 16px rgba(0,159,82,0.35);
             transition: all 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
+            opacity: 0; visibility: hidden;
             z-index: 9999;
-            /* 修复点击区域 */
             touch-action: manipulation;
-            border: none;
-            outline: none;
+            border: none; outline: none;
         }}
-        .back-to-top.show {{
-            opacity: 1;
-            visibility: visible;
-        }}
-        .back-to-top:hover {{
-            background-color: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }}
+        .back-to-top.show {{ opacity: 1; visibility: visible; }}
+        .back-to-top:hover {{ transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,159,82,0.5); }}
 
-        /* ========== 移动端适配（≤992px） ========== */
+        /* ========== 移动端 ========== */
         @media (max-width: 992px) {{
-            body {{
-                padding-left: 0; /* 取消左侧预留空间 */
-            }}
-            body.toc-hidden {{
-                padding-left: 0; /* 移动端取消偏移 */
-            }}
-            /* 移动端目录改为悬浮层 */
-            .toc-wrapper {{
-                width: 260px;
-                transform: translateX(-100%); /* 默认隐藏 */
-                box-shadow: 4px 0 15px rgba(0,0,0,0.15);
-            }}
-            .toc-wrapper.hidden {{
-                transform: translateX(-100%); /* 移动端完全隐藏 */
-            }}
-            /* 移动端唤起按钮 */
-            .toc-mobile-trigger {{
-                display: block !important;
-            }}
-            /* 隐藏桌面端唤起按钮 */
-            .toc-reveal-btn {{
-                display: none;
-            }}
-            /* 正文容器适配 */
-            .content-wrapper {{
-                padding: 20px 15px;
-            }}
-            .content {{
-                padding: 20px;
-            }}
+            body {{ padding-left: 0; }}
+            body.toc-hidden {{ padding-left: 0; }}
+            .toc-wrapper {{ width: 260px; transform: translateX(-100%); }}
+            .toc-wrapper.hidden {{ transform: translateX(-100%); }}
+            .toc-mobile-trigger {{ display: block !important; }}
+            .toc-reveal-btn {{ display: none; }}
+            .content-wrapper {{ padding: 16px 12px; }}
+            .content {{ padding: 18px; }}
         }}
 
-        /* ========== 移动端目录触发按钮 ========== */
+        /* ========== 移动端触发按钮 ========== */
         .toc-mobile-trigger {{
             position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: #007bff;
+            top: 20px; left: 20px;
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--accent);
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 16px;
+            box-shadow: 0 2px 12px rgba(0,159,82,0.35);
             z-index: 9998;
-            display: none; /* 大屏隐藏 */
+            display: none;
         }}
 
-        /* ========== 小屏适配（≤576px） ========== */
+        /* ========== 小屏 ========== */
         @media (max-width: 576px) {{
-            .back-to-top {{
-                width: 40px;
-                height: 40px;
-                line-height: 40px;
-                font-size: 16px;
-                bottom: 15px;
-                right: 15px;
-            }}
-            .content h1 {{
-                font-size: 1.8rem;
-            }}
-            .content h2 {{
-                font-size: 1.5rem;
-            }}
-            .content h3 {{
-                font-size: 1.3rem;
-            }}
+            .back-to-top {{ width: 38px; height: 38px; line-height: 38px; font-size: 15px; bottom: 16px; right: 16px; }}
+            .content h1 {{ font-size: 1.5rem; }}
+            .content h2 {{ font-size: 1.25rem; }}
+            .content h3 {{ font-size: 1.1rem; }}
         }}
 
-        /* ========== 目录显示状态 ========== */
-        .toc-wrapper.show {{
-            transform: translateX(0);
-        }}
+        .toc-wrapper.show {{ transform: translateX(0); }}
     </style>
 </head>
 <body>
@@ -529,12 +639,15 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
 
     <!-- 图片放大遮罩 -->
     <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">✕</button>
         <img class="lightbox-img" id="lightboxImg" src="" alt="">
+        <div class="lightbox-svg" id="lightboxSvg"></div>
     </div>
 
     <!-- 回到顶部按钮 -->
     <button class="back-to-top" id="backToTop">↑</button>
 
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script>
         // ========== 核心变量 ==========
         const tocWrapper = document.getElementById('tocWrapper');
@@ -657,25 +770,146 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             }});
         }});
 
-        // ========== 图片点击放大 ==========
+        // ========== 图片 & Mermaid 点击放大 ==========
         const lightboxOverlay = document.getElementById('lightboxOverlay');
         const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxSvg = document.getElementById('lightboxSvg');
+
+        // 缩放/平移状态
+        let lbScale = 1, lbX = 0, lbY = 0, lbActiveEl = null;
+
+        function clampPan() {{
+            // 根据当前缩放和容器尺寸限制平移范围，避免内容完全移出可视区
+            if (!lbActiveEl) return;
+            const rect = lbActiveEl.getBoundingClientRect();
+            // 内容实际尺寸（未变换）
+            const elW = rect.width / lbScale;
+            const elH = rect.height / lbScale;
+            // 可视区尺寸
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            // 允许平移的最大幅度：至少保留 20% 内容在视窗内
+            const maxX = (elW * lbScale * 0.8 + vw * 0.5) / 2;
+            const maxY = (elH * lbScale * 0.8 + vh * 0.5) / 2;
+            lbX = Math.min(maxX, Math.max(-maxX, lbX));
+            lbY = Math.min(maxY, Math.max(-maxY, lbY));
+        }}
+
+        function applyTransform() {{
+            if (!lbActiveEl) return;
+            clampPan();
+            lbActiveEl.style.transform = `translate(${{lbX}}px, ${{lbY}}px) scale(${{lbScale}})`;
+        }}
+
+        function resetTransform() {{
+            lbScale = 1; lbX = 0; lbY = 0;
+            applyTransform();
+        }}
+
+        function openLightboxImg(src, alt) {{
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightboxImg.style.display = 'block';
+            lightboxSvg.style.display = 'none';
+            lightboxSvg.innerHTML = '';
+            lbActiveEl = lightboxImg;
+            resetTransform();
+            lightboxOverlay.classList.add('active');
+        }}
+
+        function openLightboxSvg(svgEl) {{
+            const clone = svgEl.cloneNode(true);
+            if (!clone.getAttribute('viewBox')) {{
+                const rect = svgEl.getBoundingClientRect();
+                const w = rect.width || parseFloat(svgEl.getAttribute('width'));
+                const h = rect.height || parseFloat(svgEl.getAttribute('height'));
+                if (w && h) clone.setAttribute('viewBox', `0 0 ${{w}} ${{h}}`);
+            }}
+            clone.removeAttribute('width');
+            clone.removeAttribute('height');
+            clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            clone.style.cssText = 'width:100%;height:auto;display:block;transform-origin:center center;will-change:transform;';
+            lightboxSvg.innerHTML = '';
+            lightboxSvg.appendChild(clone);
+            lightboxImg.style.display = 'none';
+            lightboxSvg.style.display = 'block';
+            // 变换目标是白卡内部的 svg 元素，白卡本身保持不动
+            lbActiveEl = lightboxSvg.querySelector('svg');
+            resetTransform();
+            lightboxOverlay.classList.add('active');
+        }}
+
+        function closeLightbox() {{
+            lightboxOverlay.classList.remove('active');
+            lightboxImg.style.display = 'none';
+            lightboxSvg.style.display = 'none';
+            lightboxSvg.innerHTML = '';
+            resetTransform();
+            lbActiveEl = null;
+        }}
+
+        // ===== 触控板捏合缩放 & 双指平移 =====
+        // 挂在 document 捕获阶段，lightbox 开启时拦截所有 wheel 事件
+        document.addEventListener('wheel', function(e) {{
+            if (!lightboxOverlay.classList.contains('active')) return;
+            e.preventDefault();
+            if (!lbActiveEl) return;
+            // 校正 deltaMode：0=像素(触控板), 1=行(鼠标滚轮), 2=页
+            const lineH = 16;
+            const dx = e.deltaMode === 1 ? e.deltaX * lineH : e.deltaX;
+            const dy = e.deltaMode === 1 ? e.deltaY * lineH : e.deltaY;
+            if (e.ctrlKey) {{
+                // 捏合缩放：ctrlKey + deltaY
+                const factor = dy < 0 ? 1.08 : 0.93;
+                lbScale = Math.min(Math.max(0.2, lbScale * factor), 20);
+            }} else {{
+                // 双指平移
+                lbX -= dx;
+                lbY -= dy;
+            }}
+            applyTransform();
+        }}, {{ passive: false, capture: true }});
+
+        // 双击还原
+        lightboxOverlay.addEventListener('dblclick', function(e) {{
+            if (e.target === lightboxOverlay) return;
+            resetTransform();
+        }});
+
         document.querySelectorAll('.content-img').forEach(img => {{
             img.addEventListener('click', function() {{
-                lightboxImg.src = this.src;
-                lightboxImg.alt = this.alt;
-                lightboxOverlay.classList.add('active');
+                openLightboxImg(this.src, this.alt);
             }});
         }});
-        lightboxOverlay.addEventListener('click', function() {{
-            lightboxOverlay.classList.remove('active');
+
+        // 用 MutationObserver 监听 Mermaid SVG 插入，确保渲染后再绑定
+        document.querySelectorAll('.mermaid').forEach(function(el) {{
+            // 5s 超时兜底：Mermaid 语法错误时渲染结果为文字而非 SVG，永不触发
+            const timer = setTimeout(function() {{ obs.disconnect(); }}, 5000);
+            const obs = new MutationObserver(function(mutations, observer) {{
+                const svg = el.querySelector('svg');
+                if (svg) {{
+                    clearTimeout(timer);
+                    observer.disconnect();
+                    el.addEventListener('click', function() {{
+                        const s = this.querySelector('svg');
+                        if (s) openLightboxSvg(s);
+                    }});
+                }}
+            }});
+            obs.observe(el, {{ childList: true, subtree: true }});
         }});
-        lightboxImg.addEventListener('click', function(e) {{
-            e.stopPropagation();
+
+        lightboxOverlay.addEventListener('click', function(e) {{
+            if (e.target === lightboxOverlay) closeLightbox();
         }});
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
         document.addEventListener('keydown', function(e) {{
-            if (e.key === 'Escape') lightboxOverlay.classList.remove('active');
+            if (e.key === 'Escape') closeLightbox();
         }});
+
+        // ========== Mermaid 初始化 ==========
+        mermaid.initialize({{ startOnLoad: true, theme: 'default' }});
 
         // ========== 窗口大小变化时适配 ==========
         window.addEventListener('resize', function() {{
