@@ -59,8 +59,10 @@ proxies:
     ip: 10.0.10.7/24  # 分配给你的内网IP
     private-key: "CKHu6jcAcctwCxsSg2mOD0I3Papi6M0tmCwrQgpkKEU="
     public-key: "PKNMzruckKZukzaICKh/LP1/WguK+z0Wc41PnVO57GE="
+    persistent-keepalive: 25
     allowed-ips:
       - 10.0.10.0/24           # 或者只写内网段 10.0.0.0/24
+    udp: true
 
 proxy-groups:
   - 
