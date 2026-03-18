@@ -1627,6 +1627,7 @@ var rules = [
             "ezpc.tk",
             "ezpeer.com",
             "ezua.com",
+            "f-droid.org",
             "f8.com",
             "fa.gov.tw",
             "facebook.br",
