@@ -3882,6 +3882,7 @@ var rules = [
             "openai.com",
             "openallweb.com",
             "openart.ai",
+            "openclawedu.com",
             "openclaw.ai",
             "opencode.ai",
             "opendemocracy.net",
