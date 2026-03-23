@@ -3141,6 +3141,7 @@ var rules = [
             "lematin.ch",
             "lemonde.fr",
             "lenwhite.com",
+            "leonardo.ai",
             "leorockwell.com",
             "lerosua.org",
             "lers.google",
