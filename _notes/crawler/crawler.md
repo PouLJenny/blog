@@ -49,4 +49,24 @@
 作者：韦玮
 内容：涵盖反爬机制与破解、分布式爬虫、代理池搭建等内容，适合进阶者。
 
+## 爬虫浏览器
 
+### Camoufox
+
+[官网](https://camoufox.com/)
+
+[github](https://github.com/daijro/camoufox)
+
+### Patchright
+
+[github](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright)
+
+## 自动化测试
+
+### Playwright + CDP
+
+[官网](https://playwright.dev)
+
+[GitHub](https://github.com/microsoft/playwright)
+
+# EOF

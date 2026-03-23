@@ -3393,6 +3393,7 @@ var rules = [
             "michaelmarketl.com",
             "microvpn.com",
             "middle-way.net",
+            "midjourney.com",
             "mihk.hk",
             "mihr.com",
             "mihua.org",

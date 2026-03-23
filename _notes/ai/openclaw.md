@@ -30,7 +30,23 @@
 
 类似`CLAUDE.md`文件，
 
+### `BOOT.md`文件
 
+
+### `BOOTSTRAP.md`文件
+
+
+### `HEARTBEAT.md`文件
+
+### `IDENTITY.md`文件
+
+描述AI的身份
+
+### `SOUL.md`文件
+
+### `TOOLS.md`文件
+
+### `USER.md`文件
 
 
 # EOF
