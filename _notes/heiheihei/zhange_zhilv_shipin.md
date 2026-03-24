@@ -6,197 +6,382 @@ Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like 
 
 ### 1. 树立正确的性认知（可试看）
 
-- [如何延长时间，控制敏感（理论）.MP4](https://worker-file.poul666.top/mnt/dw01/workspace/tmp/zhilv/%E5%A6%82%E4%BD%95%E5%BB%B6%E9%95%BF%E6%97%B6%E9%97%B4%EF%BC%8C%E6%8E%A7%E5%88%B6%E6%95%8F%E6%84%9F%EF%BC%88%E7%90%86%E8%AE%BA%EF%BC%89.mp4)
 
-- 如何增强硬度（理论）.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/65a4bafa3270835010649630651/v.f100230.m3u8?sign=1774137652-0NkuK2D7fd-0-e0d1b95b1375812d8dad8923a93f55b4' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 李主任讲早泄问题.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/38ecd42f1397757890845060740/v.f100220.m3u8?sign=1774137652-jberofd7Rv-0-bef452e239700084b2dbccbb1696ee9c' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 李主任讲阳痿.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/91a378bd1397757890846571566/v.f100220.m3u8?sign=1774137652-vDC9IPfrn1-0-aec84af3793710bad976bcbb43a09918' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 如何延长时间，控制敏感（理论）
+- [如何延长时间，控制敏感（理论）.MP4](https://worker-file.poul666.top/mnt/dw01/workspace/tmp/zhilv/%E5%A6%82%E4%BD%95%E5%BB%B6%E9%95%BF%E6%97%B6%E9%97%B4%EF%BC%8C%E6%8E%A7%E5%88%B6%E6%95%8F%E6%84%9F%EF%BC%88%E7%90%86%E8%AE%BA%EF%BC%89.mp4)
+- [文字](./zhilv/如何延长时间，控制敏感（理论）.txt)
+
+##### 总结
+这篇文章由“展哥”分享，核心围绕**“男人时间短的真相”**以及**“如何通过非医学手段提升持久力”**展开。
+
+以下是内容的核心观点提炼：
+
+###### 一、 厘清误区：快不代表“有病”
+* **非病理因素占多数：** 绝大多数人的“快”并非因为前列腺炎（轻度不影响时间）或器质性病变，而是由于**缺乏能力、经验不足、过于敏感**或错误的习惯。
+* **“龟头敏感”是假命题：** 敏感只是表象，本质是“后方粮草”（如心理素质、控精技巧、核心力量、性经验）跟不上，导致大脑过早发出射精信号。
+* **时长没有统一标准：** 并不是越长越好，真正的标准是**双方满意**。
+
+###### 二、 影响时间的“外周”生理因素
+* **求快习惯：** 长期为了不被发现而快速解决的“自慰习惯”，让身体形成了错误的发射记忆。
+* **肌肉力量不足：** 盆底肌（PC肌）、内收肌、臀部肌肉缺乏力量，无法有效支撑和调控。
+* **耐受力与体质：** 阴茎对挤压的耐受力差，或者因为熬夜、生活不规律导致“肾气不足”（精力亏空）。
+* **包皮问题：** 除非影响卫生或勃起疼痛，否则割包皮对延时并非必要。
+
+###### 三、 影响时间的“内神经”与心理因素
+* **交感神经过度兴奋：** 紧张、焦虑、心率加快、呼吸急促都会直接诱发射精。
+* **视听觉敏感：** 缺乏经验导致对声音和画面刺激缺乏“免疫力”。
+* **心理压力与博弈：** * **讨好型人格：** 过度在意女方反应，导致自身极度紧张。
+    * **挫败感：** 妄想通过性来“征服”强势伴侣，动机不纯粹导致动作变形。
+    * **错误认知：** 被成人片误导，认为必须“狂插乱怼”，忽略了快慢结合的节奏感。
+
+###### 四、 核心解决方案与建议
+* **脱敏训练：** 通过生理接触脱敏和心理脱敏（暴露疗法），钝化过度敏感。
+* **调控射精反射弧：** 学习在兴奋值达到临界点前（如从0到10的“9”之前）进行呼吸和动作调整，形成波浪式节奏而非直线爆发。
+* **激活副交感神经：** 通过练功和心理建设，学会**松弛感**。只有身体放松、心率平稳，才能发挥出真实水平。
+* **建立高质量互动：** 强调前戏的重要性，减少身体的“痒感”和紧张感，从“干活”转变为“交流”。
+
+#### 如何增强硬度（理论）.MP4
+
+
+
+##### 一、 重新定义：你可能不是“阳痿”
+* **医学标准：** 必须是连续三个月在任何情况下（含晨勃、夜勃、自慰）都无法勃起，且需经医院系统检查。
+* **普遍现状：** 绝大多数人属于**功能性障碍**（亚健康）或**心理性障碍**，而非器质性病变。
+
+
+##### 二、 三大成因分类
+1.  **器质性（身体病变）：** 如三高、静脉漏、离状肌综合症（久坐职业病）。这类情况比例不高，需及时就医。
+2.  **功能性（亚健康）：** * **生活习惯：** 烟酒过度、熬夜、压力大、身体素质差。
+    * **极端行为：** 长期纵欲（亏空）或长期禁欲（用进废退）。
+    * **气血循环：** 肥胖（代脉不通）、颈椎腰椎问题影响血液循环。
+3.  **心理性（占比高达85%）：** * **错误认知：** 把性等同于“尊严”和“命”，赋予阴茎过重的心理负担。
+    * **表现焦虑：** 过度追求“百分之百勃起”的完美标准，一次表现不好就自我怀疑。
+    * **环境与压力：** 排卵期备孕压力、缺乏性经验、对伴侣反馈过度敏感。
+
+
+
+##### 三、 核心观点与金句
+* **“性不是机器，需要保养”：** 35岁是男人的分水岭，身体和发动机一样需要调养。
+* **“认知决定能力”：** 赚不到钱是因为认知不足，性生活出问题往往也是因为对性科学的认知匮乏。
+* **“接纳焦虑”：** 越想对抗软掉，就越会软掉。只有认清并接纳焦虑，才能身心合一。
+* **“性是双向沟通”：** 很多问题可以通过“以爱的名义”进行深度沟通、打破讨好型人格来解决。
+
+
+
+##### 四、 解决方案路径
+* **生理训练：** 性肌群训练、促高训练（提升睾酮、增强海绵体扩张）、激活肾气与肝经拍打。
+* **心理干预：** 性感集中训练、压力释放、纠正错误脑回路、建立性自信。
+* **实战技巧：** 提升性爱经验，增加与伴侣的互动，摆脱“埋头苦干”的单调模式。
+
+
+#### 李主任讲早泄问题.mp4
+
+
+
+##### 1. 重新定义“正常标准”
+* **科研数据：** 全球正常男性的射精潜伏期大多在 **3-7分钟** 之间。
+* **去疾病化：** 很多人的问题并非生理疾病，而是由于缺乏知识、经验不足或错误的性生活模式导致的“功能失常”。
+
+##### 2. 破解“龟头敏感”的误区
+* **本质是经验不足：** 所谓的敏感往往是局部物理接触过少、性经验匮乏导致的心理过度激动。
+* **硬度影响敏感度：** 当勃起硬度不足时，海绵体体积变小，感受器相对“浓缩”，从而人为地提高了敏感度。
+* **注意力偏差：** 过度关注局部刺激（如冠状沟）会放大信号，导致过快射精。
+
+##### 3. 错误习惯与“肌肉记忆”
+* **手淫模式误导：** 长期追求“快速解决”的手淫习惯会形成错误的肌肉记忆和神经反射，导致实战时性中枢过快反应。
+* **发力方式错误：** 许多人习惯在同房时绷紧大腿、夹紧臀部，这种错误的用力方式会加速射精。
+
+##### 4. 身体控制与节奏调节
+* **呼吸是核心：** 呼吸急促、心率过快预示着交感神经极度兴奋。通过**调节呼吸和步频（节奏）**，可以有效控制兴奋度，延长射精时间。
+* **盆底肌训练（中医固精）：** 借鉴中医“肾主封藏”的理论，通过增强盆底肌力量（如凯格尔运动），提升“关门”的能力，减少因“门关不紧”导致的泄精。
+
+##### 5. 心理松弛感与身心合一
+* **放下心理包袱：** 焦虑、自卑和“我有病”的心理暗示是早泄的催化剂。
+* **建立自信与松弛感：** 只有通过系统的学习（知己知彼）和后天的行为训练，获得心理上的松弛感，才能发挥出正常的生理潜能。
+* **综合干预优于单纯药物：** 早泄多是“身心同病”，单纯靠药物难以根治，必须结合专业的健康教育、技能培训和体能训练。
+
+
+#### 李主任讲阳痿.mp4
+
+
+
+##### 一、 勃起功能障碍的三大分类
+文章将ED归纳为三种类型，帮助男性“对号入座”：
+1.  **器质性：** 身体硬件出问题。如糖尿病、高血压、血管异常或神经受损。**建议：** 必须及时就医治疗原发病。
+2.  **功能不稳定型：** 状态起伏，时好时坏。多由不良生活习惯（久坐、熬夜、压力大、缺乏运动）导致气血运行不畅。
+3.  **心理性：** “有本事用不出来”。自慰或晨勃正常，但实战时因紧张、焦虑、换姿势等因素导致疲软。
+
+
+##### 二、 核心生物学与中医逻辑
+* **生理机制：** 勃起是一个复杂的血管充血过程。大脑发出信号 $\rightarrow$ 神经指挥 $\rightarrow$ 血液大量涌入海绵体 $\rightarrow$ 静脉回流关闭。任何环节受阻都会导致功能障碍。
+* **中医观点：** 强调**“气为血帅”**。气血充足且经络通畅是勃起的基础。思虑过度、情绪不畅或久坐不动会导致“气滞血瘀”，使血液无法迅速抵达目标部位。
+
+
+
+
+##### 三、 “用进废退”与功能维护
+* **关腹综合征：** 长期缺乏性活动或练习，会导致海绵体扩张能力下降、相关肌群萎缩，甚至出现阴茎软缩变短。
+* **训练的必要性：** 适当的局部训练（如凯格尔运动、经络拍打）能改善供血“高速公路”，防止功能减退。
+
+
+
+##### 四、 心理因素的“放大效应”
+* **身心互相影响：** 几乎所有的ED都伴随心理压力。心理焦虑会放大生理问题的严重性，甚至让本可以自愈的情况恶化。
+* **“新兵理论”：** 很多功能问题源于经验不足或错误的模式积累。通过系统的**技能训练**和**认知重建**（了解性知识），可以建立信心，打破“失败—焦虑—再次失败”的恶性循环。
+
+
+
+##### 五、 专家的行动建议
+1.  **整体为主，局部为辅：** 先调理整体体质（睡眠、运动、情绪），再进行科学的局部训练。
+2.  **科学训练：** 凯格尔运动等专项练习要方法正确，避免“练废”。
+3.  **治身先治心：** 正确面对“阳痿”等词汇，消除恐慌，通过知识和技巧的学习来缓解焦虑。
+
+
 
 ### 2. 构建高质量性蓝图（可试看）
 
-- 构建高质量性爱蓝图.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/37243cbe3270835010652646366/v.f100230.m3u8?sign=1774137655-fgqW8AsT3e-0-0760bd0a8e92655f69c0a1acf0b78923' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 构建高质量性爱蓝图.MP4
+
+##### 1. 性爱的四个境界（作者个人经历）
+作者通过自身经历将男性的性成长分为四个阶段，揭示了心理状态对生理表现的决定性影响：
+* **青涩期：** 有冲动但无经验，因焦虑导致早泄。
+* **婚后压抑期：** 频繁但缺乏沟通，女性反馈差导致男性自信受损。
+* **危机/功能障碍期：** 将性视为挽救关系的工具，背负巨大的心理重担，出现勃起障碍或不射精。
+* **松弛/自由期：** 摆脱证明自己的欲望，以放松和亲密为目的，反而获得持久与高质量的体验。
+
+##### 2. 核心概念：性能量 (Sexual Energy)
+作者提出，高质量性爱的根基不是“十几厘米”或“时间长”，而是**男人的性能量**。性能量由五个维度构成：
+* **性能力：** 基础的硬度、持久度与身体健康。
+* **性经验：** 调情、互动以及引导女性打破性压抑、共同绽放的能力。
+* **情绪独立：** 不被对方的脸色或反馈所左右，不讨好，保持独立的个体价值。
+* **亲密关系：** 构建平等、接纳、舒适的关系氛围，拥有“松弛感”。
+* **活出自我：** 拒绝压抑，敢于表达真实需求，一个生动、不压抑的男人才有性魅力。
+
+##### 3. “松弛感”是高性能的关键
+文章多次强调**松弛感（Relaxation）**的重要性。紧张会激活交感神经导致早泄或阳痿；只有在放松状态下，大脑才能自如支配身体，产生高质量的互动和干货式的“表现”。
+
+##### 4. 从“索取/哀求”转为“吸引”
+作者认为，性资源往往掌握在女性手中。男人不应该通过哀求、讨好去换取性生活，而应通过修炼性能量来提升**性魅力**，从而自然地吸引女性产生链接。
+
 
 ### 3. 性肌群增强训练
 
-- 性肌群训练-1.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/7a1dcbbc3270835010646440639/v.f100230.m3u8?sign=1774138186-cfGTMqz2UE-0-4af3dc4152403cbebe6c30592be598c0' \
-  -H 'sec-ch-ua-platform: "Android"' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Mobile Safari/537.36' \
-  -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
-  -H 'sec-ch-ua-mobile: ?1'
-```
-- 性肌群训练-2.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/746b31c33270835010694089814/v.f100230.m3u8?sign=1774138186-Kh4GBIlNer-0-463eeb134aca1c70616c7073f71b3f05' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性肌群训练-3.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/d8b8f5153270835010637373510/v.f100230.m3u8?sign=1774138186-YuPpBGQ2wF-0-f4c5d4b65417cbb43bbd9d95d68eca2a' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 性肌群训练-1.MP4
+
+这段视频脚本主要围绕提升男性能耐与核心力量，介绍了由日本知名演员清水健（Ken Shimizu）推崇的**“厕式深蹲”（Sumo Squat/Toilet Squat）**。
+
+以下是内容的要点总结：
+
+
+
+##### 核心理念：锻炼“性肌群”
+视频强调，加强与三角区相连的**大腿内侧（内收肌）**及**臀部肌肉**，对男性健康有三大核心好处：
+1.  **降低敏感度**：通过肌肉控制力的增强，提高持久力。
+2.  **促进睾酮分泌**：大肌肉群训练能有效提升雄性激素水平。
+3.  **提升硬度与性欲**：血液循环的改善直接回馈到生理表现上。
+
+
+##### 动作要领：厕式深蹲
+该动作模仿如厕时的姿势，重点在于对内侧肌肉的“拉扯感”：
+
+* **站姿**：双脚分开（宽于肩膀），双手重叠。
+* **重心**：重心必须压在**脚后跟**上，背部保持挺直并微向后靠。
+* **呼吸与节奏**：
+    * **下蹲（吸气）**：用时约 2 秒，感受大腿内侧强烈的拉伸和撕裂感。
+    * **起身（呼气）**：感受臀部和腿部的发力。
+* **深度**：屁股向下压，尽可能蹲深以达到充分拉伸。
+
+
+##### 训练建议
+* **组数**：每天练习 **3 组**。
+* **次数**：每组 **10 次**。
+
+
+
+> **💡 Gemini 的小贴士**：
+> 这种深蹲本质上是“相扑深蹲”的变体。练习时一定要注意**膝盖方向与脚尖一致**，避免膝盖内扣，否则容易造成关节损伤。
+
+
+#### 性肌群训练-2.MP4
+
+
+##### 1. 核心原理：强化内收肌
+* **功能联系：** 内收肌在特定性爱姿势中起主导作用。若该肌肉力量不足，运动时产生的“酸感”会传递至神经，导致敏感度增高，甚至造成“控制不住”的情况。
+* **生理调节：** 锻炼此类性肌群可以促进**睾酮分泌**，有助于降低敏感度，增强控精能力。
+
+##### 2. 动作要领：绝伦深蹲
+* **姿势：** 双脚分开下蹲，大腿与地面保持平行。
+* **关键细节：** 手部自然放置，不可发力支撑借力。
+* **核心节奏：** 每次下蹲到底部时，需增加**“闪动”**（小幅度二次弹跳）两次，即“一、二”为一个完整动作。
+
+##### 3. 心理与体感变化
+* **改善“无力感”：** 长期训练能消除下体的空虚感和无力感，使下盘扎实。
+* **缓解心理冲动：** 作者认为，很多人想“打飞机”是因为阴茎根部有瘙痒感或尿意感（经关不固），力量增强后这种异常冲动会减少。
+
+##### 4. 训练建议
+* **强度：** 每天做 **3 组**，每组 **15 次**。
+* **适应期：** 初期会感到非常酸痛，但坚持后会转化为身体的掌控感和幸福感。
+* **灵活调整：** 如果体力跟不上，可以早晚分开练习不同的深蹲动作。
+
+
+> **💡 温馨提示：** 虽然增强腿部肌肉对男性健康有益，但在进行此类“闪动”训练时，请务必注意**膝盖安全**，避免弹跳力度过大损伤半月板。
+
+
+#### 性肌群训练-3.MP4
+
+
+##### 一、 核心锻炼目标
+* **目标肌肉**：大腿后侧肌群（腘绳肌）及臀大肌。
+* **核心理念**：将这些肌群称为“性肌群”，认为强大的下肢力量是提升性能力和各种体位耐力的基础。
+
+##### 二、 动作要领总结
+1.  **初始姿势**：双腿站立后，单腿向前跨出。
+2.  **动作标准**：
+    * 前腿大腿与地面平行（呈 **90°**）。
+    * 后腿膝盖向下压，距离地面约 **5公分** 左右，不要接触地面。
+    * 身体重心稍向后仰，保持躯干直立。
+3.  **呼吸配合**：下蹲时**吸气**，起身时**呼气**。
+
+##### 三、 训练计划
+* **频率**：左右腿交替进行，每侧 10 次为一组。
+* **组数**：每天练习 **3 组**。
+* **适用场景**：居家、公园或办公室均可练习，强调隐秘性和便捷性。
+
+##### 四、 预期效果
+* **增强硬度**：通过提升下盘力量和血液循环来改善表现。
+* **延长耐力**：增强相关肌肉的支撑力和控制力。
+* **降低敏感度**：文章声称通过锻炼可以无形中改善敏感度问题。
+
+
+
+> **Gemini 的一点小建议：**
+> 动作确实很经典，箭步蹲是公认的王牌腿部训练！不过在练习时，记得保持**核心收紧**，保护好腰椎，且**前膝盖不要过度超过脚尖**，这样能更好地保护你的膝关节。
+
 
 ### 4. 硬度强化训练
 
-- 精关稳固训练.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/7a1ee5233270835010646442689/v.f100230.m3u8?sign=1774138214-Bs1kMh58jZ-0-c02998cda9fe9daeac19fcdf862ec090' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 激发阳气-梳筋活络.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/bc685ca53270835010657804975/v.f100230.m3u8?sign=1774138214-lChU2HYIGy-0-7453b1b60c7d49016f7eeb6630097fea' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 气血循环，强化盆底肌.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/7d5434153270835010653374421/v.f100230.m3u8?sign=1774138214-pclmTVdDuZ-0-3666ff2a6646f647005c016bdb121dc5' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 精关稳固训练.MP4
+
+这篇文章主要围绕**盆底肌（PC肌）**的训练展开，将其称为男人的“幸福肌”。以下是文章核心观点的总结提炼：
+
+##### 一、 核心作用：提升性功能
+* **增加硬度：** 强有力的PC肌能像“后门开关”一样锁住海绵体内的血液，防止静脉流出，从而维持更高的硬度。
+* **增强控制力：** 训练盆底肌可以稳固“精关”，在兴奋感过高时通过收缩肌肉来控制射精冲动，延长性爱时间。
+
+
+
+##### 二、 核心技巧：精准发力
+* **辨别部位：** 排除传统的“小便中断法”，提倡**“挑毛巾想象法”**（想象用肌肉力量挑起冠状沟上的毛巾）。
+* **避免误区：** 强调发力点在会阴上方，而非夹紧臀部。正确的状态是**盆底肌收紧时，臀部肌肉应保持放松（软的）**。
+
+
+
+##### 三、 训练方法：慢收慢放
+* **基础呼吸法：** 采用“3-1-3”节奏，即吸气用3秒慢慢收紧，憋气维持1秒，呼气用3秒慢慢放松。强调**不可瞬间卸力**。
+* **训练量建议：** 每天4组，每组15次。随能力提升可增加时长（如改为5秒）或次数。
+* **进阶动作：** 结合**“臀桥”**进行训练，在身体抬起时同步收紧盆底肌，协同锻炼臀部和大腿后侧肌肉。
+
+
+##### 四、 核心目标
+通过长期、循序渐进的练习，达到提升生理机能、增强掌控力的目的。
+
+
+#### 激发阳气-梳筋活络.MP4
+
+这篇文章的核心观点是：**男性的生理功能（硬度）与“肝”及“气血循环”密切相关，通过日常的穴位拍打和生活调理可以生发阳气、改善体能。**
+
+以下是该文内容的详细提炼：
+
+##### 一、 核心中医理论
+* **肝肾同源，肝主生发：** 认为虽然“气”藏于肾，但必须通过“肝”的生发作用才能运行。肝经的通畅直接决定了男性的生理表现（硬度）。
+* **气行则血行：** 拍打经络是为了打通气路，气通了血液循环才会好，从而提升整体精气神。
+
+##### 二、 生活习惯建议
+1.  **保证充足睡眠：** 强调在深夜 **11点（子时）** 前入睡，因为此时是肝脏排毒和修复的关键时间。
+2.  **饮食调理：** 建议适量饮用**枸杞水**养肝；主张**可以喝酒但绝不可酗酒**。
+3.  **特殊手势（握固）：** 提倡采用“大拇指扣在无名指指根”的握拳方式（握固），认为这符合婴儿天然状态，有益于护肝。
+
+##### 三、 经络穴位拍打方案（建议每天5分钟）
+文章推荐了一套组合动作，主要通过拍打以下部位来生发阳气：
+* **腰背部：** 拍打**命门穴**与**肾俞穴**，旨在激发先天之本的阳气。
+* **盆腔区域：** 拍打**八髎穴**（尾骨上方）与**环跳穴**（臀部），促进盆腔血液循环。
+* **腿部经络：** 重点拍打大腿内侧的**肝经**及外侧的**胆经**，讲究“肝胆相照”。
+* **腹部关键区：** 拍打**腹股沟**及下腹部的**丹田/中筋**区域，直接作用于生殖系统循环。
+
+##### 四、 总结与心态
+* **贵在坚持：** 拍打不是“出问题才做”，而应养成一辈子的习惯。
+* **训练辅助：** 在进行针对性体能训练前先拍打经络，可以达到事半功倍的效果。
+
+
+**温馨提示：** 中医理论博大精深，文中提到的“肝排毒”与现代医学概念有所不同。如果你有具体的健康困扰，建议在尝试此类练习的同时，咨询专业的医生。
+
+
+
+
+
+#### 气血循环，强化盆底肌.MP4
+
+
+这篇文章主要介绍了一种结合了传统中医经络理论与现代盆底肌锻炼的**“吐纳功法”**。其核心观点可以概括为以下四个方面：
+
+##### 1. 核心功效：提升男性生理机能
+* **强化盆底肌：** 通过特定呼吸技巧锻炼盆底肌肉，旨在提升“稳固精关”的能力和生理硬度。
+* **改善盆腔血循：** 强调“气带动血”，通过气沉丹田引导血液下行，充盈盆腔，解决因肥胖或“带脉”不通导致的气血循环差等问题。
+* **提振精神状态：** 增强中气，改善久坐不动者的亚健康状态和面色。
+
+##### 2. 理论基础：打通任督二脉
+* **经络连接：** 认为督脉主气，任脉主血。通过“舌抵上颚”搭建桥梁（鹊桥），使任督二脉循环交汇，达到气动血流的效果。
+* **气运丹田：** 强调气从胸腔下压至丹田（肚脐下三指），通过这种深度内息来调动全身能量。
+
+##### 3. 具体操作要领（逆腹式呼吸）
+* **吸气：** 鼻吸气至胸腔，同时**收腹、提肛（收紧盆底肌）、送胯**（类似向上排尿的动作）。
+* **运化：** 憋气将气从胸腔向下压，经腹部呈“抛物线”压回丹田。此时盆底肌自然放松，臀部微翘。
+* **呼气：** 气完全到达丹田后，用鼻将浊气呼出。
+
+##### 4. 练习建议与配套
+* **时机与时长：** 建议每日早晨（阳气最旺时）练习，每次10至30分钟。
+* **组合拳：** 提倡“全身拍打 + 吐纳功法 + 醋膏使用（辅助手段）”三位一体，认为两周即可见效。
+
+
+
+**温馨提示：** 这种功法融合了气功与凯格尔运动（Kegel）的影子。如果你在练习过程中感到头晕、胸闷或身体不适，请务必停止并恢复正常呼吸。
+
+
+
 
 ### 5. 延时持久训练
 
-- 训练方案设定.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/27c53ad93270835010662801196/v.f100230.m3u8?sign=1774138216-oRsbAnVpzF-0-e430c35c45cee7f32f9831525e51098b' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 训练方案设定.MP4
+
+这段文字是展哥在课程结束前，针对学员如何制定**个人化训练方案**给出的核心指导。其核心观点可以概括为以下三个维度：
+
+##### 一、 针对不同症状的“对症下药”方案
+文章将男性常见问题分为三类，并给出了具体的训练侧重点：
+* **硬度不足（勃起功能）：** 重点在于物理基础训练，包括拍打、触高、吐纳、性激权训练及肾气激活，目标是先“硬”起来。
+* **心理性障碍：** 重点在于**性心理课**。需学习接纳焦虑、不自我对抗、提升床上注意力，并利用性经验课中的交流技巧来缓解压力。
+* **时间过快（早泄）：** * **基础：** 必须先练好性激权、触高和吐纳。
+    * **进阶：** 学习延时技巧、物理脱敏（龟头/阴茎耐受力）、射精阈值调控及“黄金三分钟”技术。
+
+##### 二、 两个“全员必修”的核心板块
+无论个人情况如何，展哥强调有两类课程是所有人的底层基础：
+* **性心理课：** 解决紧张与焦虑。运用“墨菲定律”原理，通过心理建设消除对失败的恐惧，从而阻断“越在意越不行”的恶性循环。
+* **性经验/技术课：** 纠正“不会做爱”的现状。强调性爱不只是简单的动作，更包含交流、互动和爱的含义，是提升整体性生活质量的关键。
+
+##### 三、 训练实施的三个关键原则
+1.  **节奏感与阶段性：** 训练不是一蹴而就，需按周循序渐进（如第一周练什么，第二周练什么），不可操之过急。
+2.  **拒绝拖延，实时反馈：** 遇到问题必须**当天解决**。不要闭门造车或自我摸索，否则会严重影响训练效果。
+3.  **积极利用服务资源：** 强调学员应主动、频繁地联系服务老师。利用团队处理过3000+案例的经验，针对个人进度跟不上的情况申请个性化指导。
+
+
+
+**核心总结：** **“底子要厚（硬度训练），心态要稳（心理课），技术要精（经验课），反馈要快（联系老师）。”**
+
+
+
 
 ### 6. 延时技巧（巧用发力及T位，助你快速延时）
 
-- 轻度SM的应用.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/308915e13270835010709996034/v.f100230.m3u8?sign=1774138217-zfiquOaedv-0-411c6eb58797bfd781705b02bc25a41d' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 轻度SM的应用.MP4
 
 ### 7. 床榻达人经验课（高手必学的杏爱经验）
 
@@ -204,192 +389,38 @@ curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/308915e132708350
 
 ### 8. 性心理课（视频版）链接并掌控身体
 
-- 冥想放松法.MP4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/2081223f243791575767677511/v.f100230.m3u8?sign=1774138225-mt8AhyYJBP-0-0acb42e900c42884ff06f6e053f669d5' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 冥想放松法.MP4
 
 ### 9. 机能提升训练
 
-- 疏通经络，排毒养身.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/065576e51397757902900127533/v.f100230.m3u8?sign=1774138226-027dz9qwp1-0-f065bf904d4cd073a881ec9ff0198947' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 灵活髋关节，发力有节奏.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/3f65bd4c1397757902904394431/v.f100230.m3u8?sign=1774138226-XhQ8kgu5wC-0-ce5db7c16445378acb709c2bcd498909' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 温肾固本，强壮腰背.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/63c5d8931397757902901843775/v.f100230.m3u8?sign=1774138226-KECNPMsH4Z-0-b2d38927913aa8200dd7b336b9e68088' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 固精术，控制射精.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/db424d711397757902906433782/v.f100230.m3u8?sign=1774138226-lxU2odgC7m-0-5a673bb42608f0d375a784d691fae783' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 疏通经络，排毒养身.mp4
+
+
+#### 灵活髋关节，发力有节奏.mp4
+
+
+#### 温肾固本，强壮腰背.mp4
+
+
+#### 固精术，控制射精.mp4
+
 
 ### 10. 男性机能之两性心理篇章
 
-- 性心理-勃起障碍.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/56c79d701397757903297922540/v.f100230.m3u8?sign=1774138235-Pbkj4icdf2-0-d62dfd71d19e20d3145671e511975872' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-早泄案例.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/03286db21397757903296672811/v.f100230.m3u8?sign=1774138235-BExiw6lg1L-0-ca5a1b1dedc911429d08f08a8679abba' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-带套软案例.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/a180ff551397757903298836603/v.f100230.m3u8?sign=1774138235-RMGtZWyu9B-0-d3f8c4147c69b72428fc67eeed3a0d98' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-夫妻关系.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/9a9168d31397757903298542553/v.f100230.m3u8?sign=1774138235-fIaxRetKo0-0-136163328b77fa2a86c88cf2b16b97a1' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-恋物癖.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/9cc878ed1397757903301174678/v.f100230.m3u8?sign=1774138235-9UAIvDSOlW-0-49632b155a775e218194a0b88358dff3' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-性自卑.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/4fc823b31397757903297622555/v.f100230.m3u8?sign=1774138235-2gnrz0DXPc-0-d773504fb44dc75756512e041dc57e74' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
-- 性心理-早泄改善.mp4
-```shell
-curl 'https://vcvod125.ckjr001.com/26d66110vodtranscq1252433846/9a91f0d51397757903298543446/v.f100230.m3u8?sign=1774138235-RyYWSZspdw-0-a1e8861602683b6e0063db7df1ee3402' \
-  -H 'Accept: */*' \
-  -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
-  -H 'Connection: keep-alive' \
-  -H 'Origin: https://wwwknoihgg.zhilvjk.com' \
-  -H 'Referer: https://wwwknoihgg.zhilvjk.com/' \
-  -H 'Sec-Fetch-Dest: empty' \
-  -H 'Sec-Fetch-Mode: cors' \
-  -H 'Sec-Fetch-Site: cross-site' \
-  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) MacWechat/3.8.7(0x13080712) UnifiedPCMacWechat(0xf264181c) XWEB/19024 Flue' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "macOS"'
-```
+#### 性心理-勃起障碍.mp4
+
+#### 性心理-早泄案例.mp4
+
+#### 性心理-带套软案例.mp4
+
+#### 性心理-夫妻关系.mp4
+
+#### 性心理-恋物癖.mp4
+
+#### 性心理-性自卑.mp4
+
+#### 性心理-早泄改善.mp4
+
 
 ### 11. 易筋九式
 

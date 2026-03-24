@@ -53,7 +53,7 @@ proxies:
     type: trojan
     server: hostdare.poul666.top
     port: 9443
-    password: "Kq7#mX2@pL9$wN4v"
+    password: ""
     alpn:
       - h2
       - http/1.1

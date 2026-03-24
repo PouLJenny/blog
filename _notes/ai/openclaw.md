@@ -44,9 +44,12 @@
 
 ### `SOUL.md`文件
 
+AI的灵魂
+
 ### `TOOLS.md`文件
 
 ### `USER.md`文件
 
+AI服务的对象描述
 
 # EOF
