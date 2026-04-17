@@ -73,6 +73,7 @@ source ~/.zshrc
 ```
 
 macos桌面版启动需要配置
+
 ```shell
 launchctl setenv https_proxy http://127.0.0.1:7890
 launchctl setenv http_proxy http://127.0.0.1:7890
@@ -84,6 +85,14 @@ launchctl setenv all_proxy socks5://127.0.0.1:7890
 https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 open -a Claude
 ```
 
+### Gemini CLI (开源的agent)
+
+[官网](https://geminicli.com/)
+[github](https://github.com/google-gemini/gemini-cli)
+
+
+### cursor
+[官网](https://cursor.com/home)
 
 
 ### codex
@@ -139,6 +148,19 @@ npx clawhub install <hub-id>
 
 传统程序的逻辑是开发者预先定义好的，if-else、循环、调用顺序都是确定的。而Agent的控制流是由LLM在运行时动态决定的。面对同一个任务，它可能因为中间结果不同而走完全不同的路径。这种灵活性是传统程序很难做到的
 
+
+agentic loop：
+
+一个典型的 Agent loop 大致是这样的：
+```
+while 任务未完成:
+    1. 思考（Think）：LLM 根据当前上下文，决定下一步该做什么
+    2. 行动（Act）：调用某个工具（读文件、执行命令、搜索等）
+    3. 观察（Observe）：获取工具返回的结果
+    4. 判断：任务完成了吗？
+       - 没完成 → 回到第1步，带着新信息继续思考
+       - 完成了 → 输出最终结果，退出循环
+```
 
 相关论文：
 
@@ -495,7 +517,9 @@ claude mcp add weather-server \
 > ⚠️ 不能在项目目录下使用
 
 
-#### MCP 三种Transport方式
+#### MCP(Model Context Protocol) 三种Transport方式
+[MCP自身协议](https://modelcontextprotocol.io/docs/getting-started/intro)
+
 
 
 ##### stdio（标准输入输出）
@@ -556,6 +580,12 @@ claude mcp add notes-server \
   -- uv --directory /home/poul/workspace/software/llm_mcp/notes-server run main.py
 ```
 
+### Function Call
+
+
+### Tools
+
+
 ### Skills
 
 这个是Claude特有的功能，专门为Claude准备的操作手册，不是MCP，也不是给你用的功能。
@@ -563,6 +593,76 @@ claude mcp add notes-server \
 
 比如：
 你说"帮我写个 Word 文档" → LLM先读 `/mnt/skills/public/docx/SKILL.md` → 按最佳实践生成
+
+### Hooks
+
+#### claude code支持的hook锚点：
+##### 工具执行相关
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `PreToolUse` | 工具调用执行之前，可拦截阻止 | tool name | `Bash`, `Edit\|Write`, `mcp__.*` |
+| `PostToolUse` | 工具调用成功之后 | tool name | `Bash`, `Edit\|Write`, `mcp__.*` |
+| `PostToolUseFailure` | 工具调用失败之后 | tool name | `Bash`, `Edit\|Write`, `mcp__.*` |
+| `PermissionRequest` | 权限确认框弹出时 | tool name | `Bash`, `Edit\|Write`, `mcp__.*` |
+
+##### 会话生命周期
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `SessionStart` | 会话开始或恢复时 | how the session started | `startup`, `resume`, `clear`, `compact` |
+| `SessionEnd` | 会话终止时 | why the session ended | `clear`, `resume`, `logout`, `prompt_input_exit`, `bypass_permissions_disabled`, `other` |
+| `UserPromptSubmit` | 你提交 prompt 后、Claude 处理之前 | 无 matcher | 每次触发 |
+| `Stop` | Claude 完成一轮回复时 | 无 matcher | 每次触发 |
+| `StopFailure` | 因 API 错误导致本轮结束时，输出和退出码均被忽略 | error type | `rate_limit`, `authentication_failed`, `billing_error`, `invalid_request`, `server_error`, `max_output_tokens`, `unknown` |
+| `CwdChanged` | 工作目录变更时，例如 Claude 执行了 `cd` 命令，可配合 direnv 做响应式环境管理 | 无 matcher | 每次触发 |
+
+##### 子 Agent 相关
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `SubagentStart` | 子 agent 被启动时 | agent type | `Bash`, `Explore`, `Plan`，或自定义 agent 名 |
+| `SubagentStop` | 子 agent 完成时 | agent type | 同 `SubagentStart` |
+| `TeammateIdle` | agent team 中某个协作成员即将进入空闲时 | 无 matcher | 每次触发 |
+| `TaskCreated` | 通过 `TaskCreate` 创建任务时 | 无 matcher | 每次触发 |
+| `TaskCompleted` | 任务被标记为完成时 | 无 matcher | 每次触发 |
+
+##### 通知与权限
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `Notification` | Claude Code 发出通知时 | notification type | `permission_prompt`, `idle_prompt`, `auth_success`, `elicitation_dialog` |
+| `Elicitation` | MCP server 在工具调用过程中请求用户输入时 | MCP server name | 你配置的 MCP server 名称 |
+| `ElicitationResult` | 用户响应 MCP elicitation 后、结果回传给 server 之前 | MCP server name | 同 `Elicitation` |
+
+##### 上下文压缩
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `PreCompact` | 上下文压缩开始之前 | what triggered compaction | `manual`, `auto` |
+| `PostCompact` | 上下文压缩完成之后 | what triggered compaction | `manual`, `auto` |
+
+##### 配置与文件
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `ConfigChange` | 会话期间配置文件发生变更时 | configuration source | `user_settings`, `project_settings`, `local_settings`, `policy_settings`, `skills` |
+| `InstructionsLoaded` | `CLAUDE.md` 或 `.claude/rules/*.md` 被加载进上下文时，包括会话启动和懒加载 | load reason | `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact` |
+| `FileChanged` | 被监听的文件在磁盘上发生变化时，由 matcher 指定监听哪些文件名 | filename (basename) | `.envrc`, `.env`，任意你想监听的文件名 |
+
+##### Worktree
+| 事件 | 触发时机 | Matcher 过滤字段 | 示例值 |
+|------|---------|----------------|--------|
+| `WorktreeCreate` | 通过 `--worktree` 或 `isolation: "worktree"` 创建 worktree 时，会替代默认 git 行为 | 无 matcher | 每次触发 |
+| `WorktreeRemove` | Worktree 被移除时，包括会话退出或子 agent 完成时 | 无 matcher | 每次触发 |
+
+
+
+#### Hook 执行类型
+
+| 类型 | 说明 | 适用场景 |
+|------|------|---------|
+| `command` | 执行 shell 命令，通过 stdin 接收事件 JSON，通过退出码和 stdout 返回结果 | 最常用，发通知、格式化代码、日志记录等 |
+| `http` | 将事件数据 POST 到 HTTP endpoint，返回格式与 command 相同 | 有独立服务处理 hook 逻辑时，如团队共享审计服务 |
+| `prompt` | 将 hook 输入和你的 prompt 发给 Claude 模型（默认 Haiku）做单次判断，返回 `ok: true/false` + `reason` | 需要主观判断而非确定性规则时，如判断操作是否合规；`ok: false` 时 reason 会反馈给 Claude 让它调整 |
+| `agent` | 启动一个子 agent，可读文件、搜索代码、执行命令，最多 50 次工具调用，默认超时 60 秒 | 需要检查代码库实际状态时，如验证测试是否通过再允许 Claude 停止 |
+
+
+### Plugins
 
 
 

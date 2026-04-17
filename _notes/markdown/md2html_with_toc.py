@@ -88,12 +88,13 @@ def _restore_fenced_blocks(html_content, blocks):
     return html_content
 
 
-def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换结果"):
+def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换结果", gallery_mode=False):
     """
     将Markdown文件转换为带左侧固定可折叠目录（隐藏后保留唤起按钮）、图片懒加载、回到顶部按钮的HTML文件
     :param md_file_path: Markdown文件路径
     :param html_file_path: 输出HTML文件路径（默认同目录同名）
     :param title: HTML页面标题
+    :param gallery_mode: 是否启用多图预览模式（将连续图片合并为画廊预览块）
     """
     # 默认输出路径
     if not html_file_path:
@@ -146,6 +147,97 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
         # 补充width/height（保持比例）
         if not img.get('width') and not img.get('height'):
             img['style'] = img.get('style', '') + 'object-fit: cover;'
+
+    # ========== 画廊模式：将连续图片段落合并为多图预览块 ==========
+    if gallery_mode:
+        import json as _json
+
+        def _is_img_only_p(tag):
+            """判断 <p> 标签内容是否仅含 <img> 标签和空白文本"""
+            if not hasattr(tag, 'name') or tag.name != 'p':
+                return False
+            imgs = [c for c in tag.contents if getattr(c, 'name', None) == 'img']
+            non_img = [c for c in tag.contents
+                       if not (getattr(c, 'name', None) == 'img'
+                               or (isinstance(c, str) and c.strip() == ''))]
+            return len(imgs) >= 1 and len(non_img) == 0
+
+        def _build_gallery(soup, p_tags_group):
+            """将一组图片 <p> 标签替换为画廊预览块"""
+            all_imgs_data = []
+            for p_tag in p_tags_group:
+                for img in p_tag.find_all('img'):
+                    all_imgs_data.append({
+                        "src": img.get("src", ""),
+                        "alt": img.get("alt", "")
+                    })
+            if len(all_imgs_data) < 2:
+                return
+            first_src = all_imgs_data[0]["src"]
+            first_alt = all_imgs_data[0]["alt"]
+            count = len(all_imgs_data)
+
+            gallery_div = soup.new_tag("div", attrs={
+                "class": "img-gallery-block",
+                "data-images": _json.dumps(all_imgs_data, ensure_ascii=False),
+                "data-count": str(count),
+            })
+            cover_div = soup.new_tag("div", attrs={"class": "img-gallery-cover"})
+            cover_img = soup.new_tag("img", attrs={
+                "src": first_src,
+                "alt": first_alt,
+                "loading": "lazy",
+                "class": "content-img gallery-cover-img",
+            })
+            footer = soup.new_tag("div", attrs={"class": "img-gallery-footer"})
+            icon = soup.new_tag("span", attrs={"class": "img-gallery-footer-icon"})
+            icon.string = "⊞"
+            count_span = soup.new_tag("span", attrs={"class": "img-gallery-footer-count"})
+            count_span.string = f"{count} 张图片"
+            action = soup.new_tag("span", attrs={"class": "img-gallery-footer-action"})
+            action.string = "查看全部 ›"
+            footer.append(icon)
+            footer.append(count_span)
+            footer.append(action)
+            cover_div.append(cover_img)
+            cover_div.append(footer)
+            gallery_div.append(cover_div)
+
+            # 用画廊块替换第一个 <p>，其余删除
+            p_tags_group[0].replace_with(gallery_div)
+            for p_tag in p_tags_group[1:]:
+                p_tag.decompose()
+
+        # 遍历 soup 顶层，找出「仅含图片的 <p>」并分组
+        # 情况1：单个 <p> 内含多张图片（markdown 连续行的常见渲染结果）
+        # 情况2：连续的单图 <p> 段落
+        current_group = []
+
+        for tag in list(soup.children):
+            if not hasattr(tag, 'name') or tag.name is None:
+                continue
+            if _is_img_only_p(tag):
+                imgs_in_p = tag.find_all('img')
+                if len(imgs_in_p) >= 2:
+                    # 情况1：单 <p> 多图，视为独立一组（先把前面的连续单图组提交）
+                    if len(current_group) >= 2:
+                        _build_gallery(soup, current_group)
+                    elif current_group:
+                        pass  # 单张不处理
+                    current_group = []
+                    # 直接处理这个多图 <p>
+                    _build_gallery(soup, [tag])
+                else:
+                    # 情况2：单图 <p>，加入当前连续组
+                    current_group.append(tag)
+            else:
+                # 非图片段落，提交当前组
+                if len(current_group) >= 2:
+                    _build_gallery(soup, current_group)
+                current_group = []
+        # 处理末尾剩余的连续单图组
+        if len(current_group) >= 2:
+            _build_gallery(soup, current_group)
 
     # ========== 生成目录HTML（修复嵌套缩进） ==========
     toc_html = """
@@ -570,7 +662,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             font-size: 18px;
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(0,159,82,0.35);
-            transition: all 0.3s ease;
+            transition: opacity 0.5s ease, visibility 0.3s ease, transform 0.5s ease, box-shadow 0.3s ease;
             opacity: 0; visibility: hidden;
             z-index: 9999;
             touch-action: manipulation;
@@ -589,12 +681,30 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             .toc-reveal-btn {{ display: none; }}
             .content-wrapper {{ padding: 16px 12px; }}
             .content {{ padding: 18px; }}
+
+            /* 沉睡态：缩小 + 半透明，不打扰阅读 */
+            .back-to-top.show {{
+                opacity: 0.22 !important;
+                transform: scale(0.78) !important;
+            }}
+            .toc-mobile-trigger {{
+                opacity: 0.22 !important;
+                transform: scale(0.78) !important;
+                transform-origin: left bottom;
+            }}
+            /* 点击闪亮态：短暂恢复完整外观 */
+            .back-to-top.btn-flash,
+            .toc-mobile-trigger.btn-flash {{
+                opacity: 1 !important;
+                transform: scale(1) !important;
+            }}
         }}
 
         /* ========== 移动端触发按钮 ========== */
         .toc-mobile-trigger {{
             position: fixed;
-            top: 20px; left: 20px;
+            top: 50%; left: 16px;
+            margin-top: -20px;
             width: 40px; height: 40px;
             border-radius: 8px;
             background: var(--accent);
@@ -605,7 +715,28 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             box-shadow: 0 2px 12px rgba(0,159,82,0.35);
             z-index: 9998;
             display: none;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, visibility 0.2s ease, transform 0.5s ease;
         }}
+        /* 目录打开时隐藏外部触发按钮，避免与 TOC 内部按钮冲突 */
+        .toc-mobile-trigger.toc-trigger-hidden {{
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }}
+
+        /* ========== 移动端目录遮罩 ========== */
+        .toc-backdrop {{
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 997;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            transition: opacity 0.3s ease;
+        }}
+        .toc-backdrop.active {{ display: block; }}
 
         /* ========== 小屏 ========== */
         @media (max-width: 576px) {{
@@ -616,6 +747,191 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
         }}
 
         .toc-wrapper.show {{ transform: translateX(0); }}
+
+        /* ========== 图片画廊预览块 ========== */
+        .img-gallery-block {{
+            position: relative; cursor: pointer;
+            margin: 16px auto 28px;   /* 底部留出叠层空间 */
+            max-width: 100%;
+            isolation: isolate;       /* 限制伪元素层叠上下文 */
+        }}
+        /* 第二张底片 */
+        .img-gallery-block::before {{
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 10px;
+            background: #c8c8c8;
+            transform: translate(6px, 8px) rotate(1.5deg);
+            z-index: -1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.25s ease;
+        }}
+        /* 第三张底片 */
+        .img-gallery-block::after {{
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 10px;
+            background: #dcdcdc;
+            transform: translate(12px, 16px) rotate(3deg);
+            z-index: -2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.25s ease;
+        }}
+        /* 悬停时底片微微展开 */
+        .img-gallery-block:hover::before {{
+            transform: translate(8px, 12px) rotate(2.2deg);
+        }}
+        .img-gallery-block:hover::after {{
+            transform: translate(16px, 24px) rotate(4.5deg);
+        }}
+        /* 封面区域：负责裁切和阴影 */
+        .img-gallery-cover {{
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+            transition: box-shadow 0.25s ease;
+        }}
+        .img-gallery-block:hover .img-gallery-cover {{
+            box-shadow: 0 6px 24px rgba(0,0,0,0.30);
+        }}
+        .img-gallery-cover .content-img {{
+            margin: 0; border-radius: 0; width: 100%;
+            display: block; opacity: 1;
+            transition: filter 0.25s ease;
+        }}
+        .img-gallery-block:hover .img-gallery-cover .content-img {{
+            filter: brightness(1.05);
+        }}
+        .img-gallery-footer {{
+            position: absolute; bottom: 0; left: 0; right: 0;
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 14px;
+            background: rgba(0,0,0,0.52);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            transition: background 0.2s;
+            pointer-events: none;
+        }}
+        .img-gallery-block:hover .img-gallery-footer {{
+            background: rgba(0,0,0,0.68);
+        }}
+        .img-gallery-footer-icon {{
+            font-size: 17px; line-height: 1; opacity: 0.85; flex-shrink: 0;
+        }}
+        .img-gallery-footer-count {{
+            font-size: 14px; font-weight: 500; flex: 1;
+        }}
+        .img-gallery-footer-action {{
+            font-size: 12px; white-space: nowrap;
+            background: rgba(255,255,255,0.22);
+            padding: 3px 10px; border-radius: 20px;
+            transition: background 0.2s;
+        }}
+        .img-gallery-block:hover .img-gallery-footer-action {{
+            background: rgba(255,255,255,0.35);
+        }}
+
+        /* ========== 画廊浮层 Modal ========== */
+        #imgGalleryModal {{
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.92);
+            flex-direction: column;
+        }}
+        #imgGalleryModal.active {{ display: flex; }}
+
+        /* 顶栏 */
+        .gallery-topbar {{
+            flex-shrink: 0;
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 16px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+        }}
+        .gallery-topbar-counter {{
+            font-size: 14px; opacity: 0.9; min-width: 70px; white-space: nowrap;
+        }}
+        .gallery-topbar-jump {{
+            display: flex; align-items: center; gap: 6px; flex: 1;
+        }}
+        .gallery-topbar-jump input {{
+            width: 64px; padding: 3px 8px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1); color: #fff;
+            font-size: 13px; text-align: center;
+            -moz-appearance: textfield;
+        }}
+        .gallery-topbar-jump input::-webkit-outer-spin-button,
+        .gallery-topbar-jump input::-webkit-inner-spin-button {{ -webkit-appearance: none; }}
+        .gallery-topbar-jump input::placeholder {{ color: rgba(255,255,255,0.45); }}
+        .gallery-topbar-jump button {{
+            padding: 3px 10px; border-radius: 4px; border: none; cursor: pointer;
+            background: rgba(255,255,255,0.2); color: #fff; font-size: 13px;
+        }}
+        .gallery-topbar-jump button:hover {{ background: rgba(255,255,255,0.35); }}
+        .gallery-topbar-close {{
+            width: 30px; height: 30px; line-height: 30px; text-align: center;
+            border-radius: 50%; cursor: pointer; font-size: 18px;
+            background: rgba(255,255,255,0.15); flex-shrink: 0; user-select: none;
+        }}
+        .gallery-topbar-close:hover {{ background: rgba(255,255,255,0.3); }}
+
+        /* 滚动区域 */
+        .gallery-scroll-area {{
+            flex: 1; overflow-y: auto;
+            padding: 16px 0;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 16px;
+        }}
+
+        /* 单张图片容器 */
+        .gallery-item {{
+            width: 90vw; max-width: 960px;
+            position: relative;
+        }}
+        .gallery-item img {{
+            width: 100%; display: block;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }}
+        .gallery-item img.loaded {{ opacity: 1; }}
+
+        /* 序号标签 */
+        .gallery-item-label {{
+            position: absolute; bottom: 8px; right: 10px;
+            background: rgba(0,0,0,0.55); color: #fff;
+            font-size: 12px; padding: 2px 8px; border-radius: 10px;
+            pointer-events: none;
+        }}
+
+        /* 骨架屏占位（16:9 比例，shimmer 动画） */
+        .gallery-item.placeholder::before {{
+            content: '';
+            display: block;
+            padding-top: 56.25%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #2a2a2a 25%, #3d3d3d 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+            animation: gallery-shimmer 1.4s infinite;
+        }}
+        @keyframes gallery-shimmer {{
+            0%   {{ background-position: 200% 0; }}
+            100% {{ background-position: -200% 0; }}
+        }}
+
+        /* ========== 浮层激活时隐藏悬浮按钮 ========== */
+        body.overlay-active .back-to-top,
+        body.overlay-active .toc-mobile-trigger,
+        body.overlay-active .toc-reveal-btn {{
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }}
     </style>
 </head>
 <body>
@@ -627,8 +943,11 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
     <!-- 目录唤起按钮（隐藏后显示） -->
     <button class="toc-reveal-btn" id="tocRevealBtn">≡</button>
 
-    <!-- 移动端目录触发按钮 -->
+    <!-- 移动端目录触发按钮（左下角） -->
     <button class="toc-mobile-trigger" id="tocMobileTrigger">≡</button>
+
+    <!-- 移动端目录遮罩（点击关闭 TOC） -->
+    <div class="toc-backdrop" id="tocBackdrop"></div>
 
     <!-- 正文容器 -->
     <div class="content-wrapper">
@@ -644,32 +963,81 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
         <div class="lightbox-svg" id="lightboxSvg"></div>
     </div>
 
+    <!-- 多图画廊浮层 -->
+    <div id="imgGalleryModal">
+        <div class="gallery-topbar">
+            <span class="gallery-topbar-counter" id="galleryCounter">1 / 1</span>
+            <div class="gallery-topbar-jump">
+                <input type="number" id="galleryJumpInput" min="1" placeholder="跳转到第几张">
+                <button id="galleryJumpBtn">GO</button>
+            </div>
+            <span class="gallery-topbar-close" id="galleryClose">&#10005;</span>
+        </div>
+        <div class="gallery-scroll-area" id="galleryScrollArea"></div>
+    </div>
+
     <!-- 回到顶部按钮 -->
     <button class="back-to-top" id="backToTop">↑</button>
 
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script>
+        // ========== 浮层状态：隐藏/恢复悬浮按钮 ==========
+        function showOverlayMode() {{ document.body.classList.add('overlay-active'); }}
+        function hideOverlayMode() {{ document.body.classList.remove('overlay-active'); }}
+
+        // ========== 移动端按钮点击闪亮（点击时短暂唤醒，0.8s后回归沉睡） ==========
+        (function() {{
+            var flashTimers = new WeakMap();
+            function flashBtn(el) {{
+                clearTimeout(flashTimers.get(el));
+                el.classList.add('btn-flash');
+                flashTimers.set(el, setTimeout(function() {{
+                    el.classList.remove('btn-flash');
+                }}, 800));
+            }}
+            // touchstart 比 click 更早响应，手感更即时
+            ['touchstart', 'mousedown'].forEach(function(evt) {{
+                document.addEventListener(evt, function(e) {{
+                    var btn = e.target.closest('.toc-mobile-trigger, .back-to-top');
+                    if (btn) flashBtn(btn);
+                }}, {{ passive: true }});
+            }});
+        }})();
+
         // ========== 核心变量 ==========
         const tocWrapper = document.getElementById('tocWrapper');
         const tocToggleBtn = document.getElementById('tocToggleBtn');
         const tocRevealBtn = document.getElementById('tocRevealBtn');
         const tocMobileTrigger = document.getElementById('tocMobileTrigger');
+        const tocBackdrop = document.getElementById('tocBackdrop');
         const body = document.body;
 
-        // ========== 目录切换核心逻辑（修复隐藏后唤起） ==========
+        // ========== 同步移动端触发按钮：TOC 开时隐藏，关时显示 ==========
+        function syncMobileTrigger() {{
+            if (window.innerWidth > 992) return;
+            const tocOpen = tocWrapper.classList.contains('show');
+            tocMobileTrigger.classList.toggle('toc-trigger-hidden', tocOpen);
+        }}
+
+        // ========== 目录切换核心逻辑 ==========
         function toggleToc() {{
-            // 切换目录显示/隐藏
             tocWrapper.classList.toggle('hidden');
-            // 切换body的padding（适配空间）
             body.classList.toggle('toc-hidden');
-            // 显示/隐藏唤起按钮
             tocRevealBtn.classList.toggle('show');
-            
-            // 移动端特殊处理
+
             if (window.innerWidth <= 992) {{
-                tocWrapper.classList.toggle('show');
+                const opening = !tocWrapper.classList.contains('hidden');
+                tocWrapper.classList.toggle('show', opening);
+                // 打开时显示遮罩，关闭时隐藏
+                tocBackdrop.classList.toggle('active', opening);
+                syncMobileTrigger();
             }}
         }}
+
+        // 点遮罩关闭目录
+        tocBackdrop.addEventListener('click', function() {{
+            if (tocWrapper.classList.contains('show')) toggleToc();
+        }});
 
         // 绑定点击事件
         tocToggleBtn.addEventListener('click', toggleToc); // 目录内隐藏按钮
@@ -746,6 +1114,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             }} else {{
                 tocWrapper.classList.add('hidden');
                 tocRevealBtn.classList.remove('show');
+                syncMobileTrigger(); // 初始 TOC 关闭，触发按钮可见
             }}
         }});
 
@@ -765,6 +1134,8 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
                         tocWrapper.classList.remove('show');
                         tocWrapper.classList.add('hidden');
                         body.classList.remove('toc-hidden');
+                        tocBackdrop.classList.remove('active');
+                        syncMobileTrigger();
                     }}
                 }}
             }});
@@ -815,6 +1186,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             lbActiveEl = lightboxImg;
             resetTransform();
             lightboxOverlay.classList.add('active');
+            showOverlayMode();
         }}
 
         function openLightboxSvg(svgEl) {{
@@ -837,6 +1209,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             lbActiveEl = lightboxSvg.querySelector('svg');
             resetTransform();
             lightboxOverlay.classList.add('active');
+            showOverlayMode();
         }}
 
         function closeLightbox() {{
@@ -846,6 +1219,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             lightboxSvg.innerHTML = '';
             resetTransform();
             lbActiveEl = null;
+            hideOverlayMode();
         }}
 
         // ===== 触控板捏合缩放 & 双指平移 =====
@@ -876,7 +1250,7 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             resetTransform();
         }});
 
-        document.querySelectorAll('.content-img').forEach(img => {{
+        document.querySelectorAll('.content-img:not(.gallery-cover-img)').forEach(img => {{
             img.addEventListener('click', function() {{
                 openLightboxImg(this.src, this.alt);
             }});
@@ -908,6 +1282,169 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
             if (e.key === 'Escape') closeLightbox();
         }});
 
+        // ========== 多图画廊 Modal（瀑布流滚动模式）==========
+        (function() {{
+            const modal      = document.getElementById('imgGalleryModal');
+            if (!modal) return;
+            const closeBtn   = document.getElementById('galleryClose');
+            const counter    = document.getElementById('galleryCounter');
+            const scrollArea = document.getElementById('galleryScrollArea');
+            const jumpInput  = document.getElementById('galleryJumpInput');
+            const jumpBtn    = document.getElementById('galleryJumpBtn');
+
+            let images      = [];
+            let itemEls     = [];
+            let lazyObs     = null;
+            let posObs      = null;
+            let posMap      = new Map();
+            let curGalleryId = null;
+
+            // ── 渲染所有骨架占位节点 ──
+            function renderItems(imgs) {{
+                scrollArea.innerHTML = '';
+                itemEls = [];
+                const frag = document.createDocumentFragment();
+                imgs.forEach(function(imgData, i) {{
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item placeholder';
+                    item.dataset.index = String(i);
+
+                    const img = document.createElement('img');
+                    img.dataset.src = imgData.src;
+                    img.alt = imgData.alt || '';
+
+                    const label = document.createElement('div');
+                    label.className = 'gallery-item-label';
+                    label.textContent = (i + 1) + ' / ' + imgs.length;
+
+                    item.appendChild(img);
+                    item.appendChild(label);
+                    frag.appendChild(item);
+                    itemEls.push(item);
+                }});
+                scrollArea.appendChild(frag);
+            }}
+
+            // ── 懒加载：进入视口前 400px 开始加载 ──
+            function setupLazyObs() {{
+                lazyObs = new IntersectionObserver(function(entries) {{
+                    entries.forEach(function(entry) {{
+                        if (!entry.isIntersecting) return;
+                        const item = entry.target;
+                        const img  = item.querySelector('img');
+                        if (!img || img.src) return;   // 已加载则跳过
+                        img.src = img.dataset.src;
+                        img.onload = function() {{
+                            img.classList.add('loaded');
+                            item.classList.remove('placeholder');
+                        }};
+                        if (img.complete && img.naturalWidth) {{
+                            img.classList.add('loaded');
+                            item.classList.remove('placeholder');
+                        }}
+                        lazyObs.unobserve(item);
+                    }});
+                }}, {{ root: scrollArea, rootMargin: '400px 0px' }});
+                itemEls.forEach(function(item) {{ lazyObs.observe(item); }});
+            }}
+
+            // ── 当前位置：交叉比最大的图片作为"当前" ──
+            function setupPosObs() {{
+                const visible = new Map();
+                posObs = new IntersectionObserver(function(entries) {{
+                    entries.forEach(function(entry) {{
+                        const idx = parseInt(entry.target.dataset.index);
+                        if (entry.isIntersecting) {{
+                            visible.set(idx, entry.intersectionRatio);
+                        }} else {{
+                            visible.delete(idx);
+                        }}
+                    }});
+                    if (!visible.size) return;
+                    let best = -1, bestRatio = -1;
+                    visible.forEach(function(ratio, idx) {{
+                        if (ratio > bestRatio) {{ bestRatio = ratio; best = idx; }}
+                    }});
+                    if (best >= 0) counter.textContent = (best + 1) + ' / ' + images.length;
+                }}, {{ root: scrollArea, threshold: [0, 0.25, 0.5, 0.75, 1] }});
+                itemEls.forEach(function(item) {{ posObs.observe(item); }});
+            }}
+
+            // ── 打开 ──
+            function openGallery(imgs, galleryId) {{
+                images = imgs;
+                curGalleryId = galleryId;
+                jumpInput.max   = imgs.length;
+                jumpInput.value = '';
+                counter.textContent = '1 / ' + imgs.length;
+                renderItems(imgs);
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                showOverlayMode();
+                setupLazyObs();
+                setupPosObs();
+                const savedPos = posMap.get(galleryId) || 0;
+                requestAnimationFrame(function() {{
+                    scrollArea.scrollTop = savedPos;
+                }});
+            }}
+
+            // ── 关闭 ──
+            function closeGallery() {{
+                if (curGalleryId !== null) {{
+                    posMap.set(curGalleryId, scrollArea.scrollTop);
+                }}
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                hideOverlayMode();
+                if (lazyObs) {{ lazyObs.disconnect(); lazyObs = null; }}
+                if (posObs)  {{ posObs.disconnect();  posObs  = null; }}
+                scrollArea.innerHTML = '';
+                itemEls = [];
+                images  = [];
+                curGalleryId = null;
+            }}
+
+            // ── 跳转 ──
+            function jumpTo(n) {{
+                const idx = Math.max(0, Math.min(images.length - 1, n - 1));
+                if (itemEls[idx]) {{
+                    itemEls[idx].scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+                }}
+            }}
+
+            // ── 事件绑定 ──
+            document.querySelectorAll('.img-gallery-block').forEach(function(block, idx) {{
+                block.addEventListener('click', function() {{
+                    try {{
+                        const imgs = JSON.parse(block.dataset.images || '[]');
+                        openGallery(imgs, idx);
+                    }} catch(e) {{ console.error('Gallery data parse error', e); }}
+                }});
+            }});
+
+            closeBtn.addEventListener('click', closeGallery);
+            modal.addEventListener('click', function(e) {{
+                if (e.target === modal) closeGallery();
+            }});
+
+            jumpBtn.addEventListener('click', function() {{
+                const n = parseInt(jumpInput.value);
+                if (!isNaN(n)) jumpTo(n);
+            }});
+            jumpInput.addEventListener('keydown', function(e) {{
+                if (e.key === 'Enter') {{
+                    const n = parseInt(jumpInput.value);
+                    if (!isNaN(n)) jumpTo(n);
+                }}
+            }});
+
+            document.addEventListener('keydown', function(e) {{
+                if (!modal.classList.contains('active')) return;
+                if (e.key === 'Escape') closeGallery();
+            }});
+        }})();
+
         // ========== Mermaid 初始化 ==========
         mermaid.initialize({{ startOnLoad: true, theme: 'default' }});
 
@@ -918,12 +1455,16 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
                 tocWrapper.classList.remove('hidden', 'show');
                 body.classList.remove('toc-hidden');
                 tocRevealBtn.classList.remove('show');
+                tocMobileTrigger.classList.remove('toc-trigger-hidden');
+                tocBackdrop.classList.remove('active');
             }} else {{
                 // 小屏：隐藏目录，显示移动端触发按钮
                 tocWrapper.classList.add('hidden');
                 tocWrapper.classList.remove('show');
                 body.classList.remove('toc-hidden');
                 tocRevealBtn.classList.remove('show');
+                tocBackdrop.classList.remove('active');
+                syncMobileTrigger();
             }}
         }});
     </script>
@@ -939,10 +1480,94 @@ def md_to_html_with_toc(md_file_path, html_file_path=None, title="Markdown转换
 
 
 if __name__ == "__main__":
+    # 将 Markdown 文件（或整个目录）转换为带目录的 HTML 文件。
+    #
+    # 单文件模式：
+    #     python md2html_with_toc.py note.md
+    #     python md2html_with_toc.py note.md -o out.html
+    #     python md2html_with_toc.py note.md -t "我的笔记" -g
+    #
+    # 批量模式（input 为目录时自动递归扫描所有 .md 文件）：
+    #     python md2html_with_toc.py ./notes/              # HTML 与 MD 同级
+    #     python md2html_with_toc.py ./notes/ -o ./html/  # 输出到指定目录，保留子目录结构
+    #
+    # 参数说明：
+    #     input         Markdown 文件路径，或包含 .md 文件的目录
+    #     -o/--output   单文件时：HTML 输出路径；目录时：HTML 输出根目录
+    #     -t/--title    HTML 页面标题（仅单文件模式有效，默认"Markdown转换结果"）
+    #     -g/--gallery  启用画廊模式：将连续图片（≥2张）合并为可滑动预览块
+
+    import re
     import argparse
-    parser = argparse.ArgumentParser(description="将Markdown文件转换为带目录的HTML文件")
-    parser.add_argument("input", help="输入的Markdown文件路径")
-    parser.add_argument("-o", "--output", help="输出的HTML文件路径（默认同目录同名）", default=None)
-    parser.add_argument("-t", "--title", help="HTML页面标题（默认为Markdown转换结果）", default="Markdown转换结果")
+    from pathlib import Path
+
+    def _extract_title(md_path: Path) -> str:
+        """提取 MD 文件中层级最大（# 最少）的第一个标题，找不到则返回文件名。"""
+        try:
+            text = md_path.read_text(encoding="utf-8")
+            headings = re.findall(r'^(#{1,6})\s+(.+)', text, re.MULTILINE)
+            if headings:
+                min_level = min(len(h[0]) for h in headings)
+                return next(h[1].strip() for h in headings if len(h[0]) == min_level)
+        except Exception:
+            pass
+        return md_path.stem
+
+    parser = argparse.ArgumentParser(
+        description="将 Markdown 文件（或目录）转换为带目录的 HTML 文件",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+示例：
+  单文件转换：
+    python md2html_with_toc.py note.md
+    python md2html_with_toc.py note.md -o out.html
+    python md2html_with_toc.py note.md -t "标题" -g
+
+  批量转换（递归扫描目录内所有 .md 文件）：
+    python md2html_with_toc.py ./notes/
+    python md2html_with_toc.py ./notes/ -o ./html_out/
+
+  批量转换时 -o 指定输出根目录，子目录结构与输入目录保持一致：
+    输入: notes/week1/foo.md  ->  输出: html_out/week1/foo.html
+        """,
+    )
+    parser.add_argument("input", help="输入的 Markdown 文件或目录路径")
+    parser.add_argument(
+        "-o", "--output",
+        help="输出路径。单文件模式：HTML 文件路径（默认同目录同名）；"
+             "目录模式：HTML 输出根目录（默认就近保存在各 md 文件旁）",
+        default=None,
+    )
+    parser.add_argument("-t", "--title", help='HTML 页面标题（单文件模式，默认"Markdown转换结果"）',
+                        default="Markdown转换结果")
+    parser.add_argument("-g", "--gallery", action="store_true", default=False,
+                        help="启用画廊模式：将连续图片（≥2张）合并为可滑动预览块")
     args = parser.parse_args()
-    md_to_html_with_toc(args.input, args.output, title=args.title)
+
+    input_path = Path(args.input)
+    if input_path.is_dir():
+        md_files = sorted(input_path.rglob("*.md"))
+        if not md_files:
+            print(f"目录 {input_path} 下未找到任何 .md 文件。")
+            raise SystemExit(1)
+        ok = fail = 0
+        for md_file in md_files:
+            if args.output:
+                rel = md_file.relative_to(input_path)
+                html_out = Path(args.output) / rel.with_suffix(".html")
+                html_out.parent.mkdir(parents=True, exist_ok=True)
+                html_out_str = str(html_out)
+            else:
+                html_out_str = None
+            try:
+                md_to_html_with_toc(str(md_file), html_out_str,
+                                    title=_extract_title(md_file), gallery_mode=args.gallery)
+                ok += 1
+            except Exception as e:
+                print(f"失败：{md_file}  ({e})")
+                fail += 1
+        print(f"\n共 {len(md_files)} 个文件：{ok} 成功，{fail} 失败")
+    else:
+        title = args.title if args.title != "Markdown转换结果" else _extract_title(input_path)
+        md_to_html_with_toc(args.input, args.output,
+                            title=title, gallery_mode=args.gallery)

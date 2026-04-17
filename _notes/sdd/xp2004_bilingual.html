@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile Specification-Driven Development · 中英对照</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+<style>
+:root {
+  --primary: #009f52;
+  --primary-soft: #e1f5ec;
+  --primary-dark: #007a3f;
+  --bg: #ffffff;
+  --bg-alt: #fafbfa;
+  --text: #1a2620;
+  --text-muted: #5a6b62;
+  --border: #d8e4dd;
+  --border-strong: #b3cdc0;
+  --code-bg: #f4f7f5;
+  --code-border: #d8e4dd;
+  --highlight: #fff7c2;
+  --highlight-border: #e6c84a;
+  --link: #007a3f;
+  --shadow: 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-pop: 0 6px 24px rgba(0,0,0,0.18);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #2dc77a;
+    --primary-soft: #14322a;
+    --primary-dark: #59e09a;
+    --bg: #0e1411;
+    --bg-alt: #141c18;
+    --text: #e3ece7;
+    --text-muted: #9bb0a6;
+    --border: #233029;
+    --border-strong: #2f4339;
+    --code-bg: #0f1813;
+    --code-border: #243329;
+    --highlight: #4a3e1a;
+    --highlight-border: #b18b21;
+    --link: #59e09a;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-pop: 0 6px 28px rgba(0,0,0,0.6);
+  }
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  scroll-behavior: smooth;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+.topbar .title { font-weight: 700; font-size: 15px; color: var(--primary); }
+.topbar .sub { font-size: 13px; color: var(--text-muted); }
+.topbar .spacer { flex: 1; }
+.modes { display: inline-flex; gap: 0; border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; }
+.modes button {
+  background: transparent; border: 0; padding: 6px 14px; font-size: 13px; cursor: pointer;
+  color: var(--text); font-family: inherit;
+}
+.modes button.active { background: var(--primary); color: #fff; font-weight: 600; }
+.modes button:not(.active):hover { background: var(--primary-soft); }
+.container {
+  max-width: 1400px; margin: 0 auto; padding: 24px 20px 80px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: 8px;
+  margin: 4px 0;
+  transition: background 0.18s;
+}
+.row.active-highlight { background: var(--primary-soft); }
+.cell {
+  padding: 8px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  min-width: 0;
+}
+.cell-en { border-right: 1px dashed var(--border); }
+body.mode-zh .row { grid-template-columns: 1fr; }
+body.mode-zh .cell-en { display: none; }
+body.mode-zh .cell-zh { border-right: 0; }
+body.mode-en .row { grid-template-columns: 1fr; }
+body.mode-en .cell-zh { display: none; }
+body.mode-en .cell-en { border-right: 0; }
+body.mode-bilingual .row { grid-template-columns: 1fr 1fr; }
+
+h1, h2, h3 { color: var(--primary-dark); line-height: 1.3; margin-top: 1.4em; margin-bottom: 0.5em; }
+h1 { font-size: 1.5em; border-bottom: 2px solid var(--primary); padding-bottom: 0.25em; }
+h2 { font-size: 1.25em; }
+h3 { font-size: 1.08em; }
+p { margin: 0.6em 0; }
+a { color: var(--link); text-decoration: none; border-bottom: 1px dotted var(--link); }
+a:hover { border-bottom-style: solid; }
+
+ul, ol { margin: 0.5em 0 0.6em 0; padding-left: 1.6em; }
+li { margin: 0.25em 0; }
+
+.callout {
+  background: var(--primary-soft);
+  border-left: 4px solid var(--primary);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 0.6em 0;
+  font-size: 0.97em;
+}
+
+pre.code {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  margin: 0.6em 0;
+}
+code { font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.93em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre.code code { background: transparent; padding: 0; }
+
+figure.fig {
+  margin: 1em 0;
+  padding: 14px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+}
+figure.fig.fig-captiononly { background: transparent; border: 0; padding: 4px 0; }
+figure.fig figcaption { font-size: 0.92em; color: var(--text-muted); margin-top: 8px; }
+.fig-body { cursor: zoom-in; display: block; }
+.fig-svg { max-width: 100%; height: auto; color: var(--text); }
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.93em;
+  background: var(--bg-alt);
+  border-radius: 8px;
+  overflow: hidden;
+}
+table.data caption {
+  caption-side: bottom;
+  padding-top: 8px;
+  font-size: 0.92em;
+  color: var(--text-muted);
+}
+table.data th, table.data td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+table.data thead th { background: var(--primary-soft); color: var(--primary-dark); font-weight: 700; }
+
+.ref {
+  font-size: 0.88em;
+  padding: 4px 0;
+  color: var(--text);
+  scroll-margin-top: 80px;
+}
+.ref.ref-active { background: var(--highlight); border-left: 3px solid var(--highlight-border); padding-left: 8px; border-radius: 0 4px 4px 0; }
+.ref-num { color: var(--primary-dark); font-weight: 700; margin-right: 4px; }
+
+sup.cite {
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0 1px;
+  border-radius: 3px;
+  user-select: none;
+}
+sup.cite:hover, sup.cite:focus { background: var(--primary-soft); outline: none; }
+
+.cite-pop {
+  position: absolute;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: var(--shadow-pop);
+  max-width: 380px;
+  z-index: 200;
+  color: var(--text);
+}
+.cite-pop .pop-num { color: var(--primary-dark); font-weight: 700; margin-right: 4px; }
+
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.lightbox.open { display: flex; }
+.lightbox-content {
+  width: min(95vw, 1600px);
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 20px;
+  position: relative;
+}
+.lightbox-close {
+  position: absolute; top: 10px; right: 10px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--primary); color: white;
+  border: 0; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox-content svg { width: 100%; height: auto; max-height: 80vh; color: var(--text); }
+
+.math-display {
+  text-align: center;
+  margin: 1em 0;
+  padding: 8px;
+  overflow-x: auto;
+}
+
+/* Print */
+@media print {
+  .topbar, .lightbox { display: none !important; }
+  body { background: white; color: black; }
+  .row { page-break-inside: avoid; }
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .container { padding: 16px 12px 60px; }
+  body.mode-bilingual .row { grid-template-columns: 1fr; }
+  body.mode-bilingual .cell-en {
+    border-right: 0;
+    border-bottom: 1px dashed var(--border);
+    color: var(--text-muted);
+    font-size: 0.94em;
+  }
+}
+@media (max-width: 768px) {
+  .topbar .sub { display: none; }
+  .modes button { padding: 5px 10px; font-size: 12px; }
+  .lightbox-close { width: 44px; height: 44px; border-radius: 50%; }
+  pre.code { font-size: 12px; }
+  table.data { font-size: 0.85em; }
+}
+</style>
+</head>
+<body class="mode-bilingual">
+
+<div class="topbar">
+  <div>
+    <div class="title">Agile Specification-Driven Development</div>
+    <div class="sub">敏捷的规约驱动开发 · J. S. Ostroff, D. Makalsky, R. F. Paige (2004)</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="modes" role="tablist" aria-label="Display mode">
+    <button data-mode="bilingual" class="active">双语</button>
+    <button data-mode="zh">中文</button>
+    <button data-mode="en">English</button>
+  </div>
+</div>
+
+<div class="container">
+<div class="row row-h1" data-i="0"><div class="cell cell-en" data-i="0" data-side="en"><h1>Agile Specification-Driven Development</h1></div><div class="cell cell-zh" data-i="0" data-side="zh"><h1>敏捷的规约驱动开发(Agile Specification-Driven Development)</h1></div></div>
+<div class="row row-p" data-i="1"><div class="cell cell-en" data-i="1" data-side="en"><p>Jonathan S. Ostroff¹, David Makalsky¹, and Richard F. Paige²</p></div><div class="cell cell-zh" data-i="1" data-side="zh"><p>Jonathan S. Ostroff¹、David Makalsky¹、Richard F. Paige²</p></div></div>
+<div class="row row-p" data-i="2"><div class="cell cell-en" data-i="2" data-side="en"><p>¹ Department of Computer Science, York University, Canada. {jonathan, dm}@cs.yorku.ca</p></div><div class="cell cell-zh" data-i="2" data-side="zh"><p>¹ 加拿大约克大学计算机科学系。{jonathan, dm}@cs.yorku.ca</p></div></div>
+<div class="row row-p" data-i="3"><div class="cell cell-en" data-i="3" data-side="en"><p>² Department of Computer Science, University of York, UK. paige@cs.york.ac.uk</p></div><div class="cell cell-zh" data-i="3" data-side="zh"><p>² 英国约克大学计算机科学系。paige@cs.york.ac.uk</p></div></div>
+<div class="row row-callout" data-i="4"><div class="cell cell-en" data-i="4" data-side="en"><div class="callout"><strong>Abstract.</strong> We present an agile approach to Specification-Driven Development, which combines features of Test-Driven Development and the plan-based approach of Design-by-Contract. We argue that both tests and contracts are different types of specifications, and both are useful and complementary for building high quality software. We conclude that it is useful for being able to switch between writing tests and writing contracts, and explain how Specification-Driven Development supports this capability.</div></div><div class="cell cell-zh" data-i="4" data-side="zh"><div class="callout"><strong>摘要。</strong> 我们提出一种敏捷的规约驱动开发(Specification-Driven Development)方法,它将测试驱动开发(TDD)的特性与基于计划的契约式设计(Design-by-Contract)方法结合起来。我们认为测试与契约都是不同类型的规约,二者对于构建高质量软件都是有用且互补的。结论是:能够在写测试与写契约之间自由切换是有价值的,本文阐述了规约驱动开发如何支撑这种能力。</div></div></div>
+<div class="row row-h1" data-i="5"><div class="cell cell-en" data-i="5" data-side="en"><h1>1 Introduction</h1></div><div class="cell cell-zh" data-i="5" data-side="zh"><h1>1 引言</h1></div></div>
+<div class="row row-p" data-i="6"><div class="cell cell-en" data-i="6" data-side="en"><p>Traditional software development methods stress the elicitation and documentation of a &quot;complete&quot; set of requirements, followed by architectural and high-level design, coding, inspection and testing. This general approach is sometimes described as plan-driven development. Agile methods were a reaction to these traditional &quot;documentation driven, heavyweight software development processes&quot; <sup class="cite" data-ref="2" tabindex="0" role="button" aria-label="Citation 2">[2]</sup>, focusing on an iterative design process with rapid feedback in which code appears early <sup class="cite" data-ref="15" tabindex="0" role="button" aria-label="Citation 15">[15]</sup>.</p></div><div class="cell cell-zh" data-i="6" data-side="zh"><p>传统软件开发方法强调对一份&quot;完整&quot;需求集的获取与文档化,继而进行架构与高层设计、编码、检视与测试。这一总体路线有时被称为计划驱动开发(plan-driven development)。敏捷方法是对这些传统的&quot;以文档为驱动、重量级的软件开发流程&quot;<sup class="cite" data-ref="2" tabindex="0" role="button" aria-label="Citation 2">[2]</sup>的反动,它聚焦于具有快速反馈、代码尽早出现的迭代式设计过程<sup class="cite" data-ref="15" tabindex="0" role="button" aria-label="Citation 15">[15]</sup>。</p></div></div>
+<div class="row row-p" data-i="7"><div class="cell cell-en" data-i="7" data-side="en"><p>In this paper, we describe an integrated approach, Specification-Driven Development (SDD), which combines the best features of the agile Test-Driven Development (TDD) methodology with the best features of the plan-driven approach of quality-first Design-by-Contract (DbC) <sup class="cite" data-ref="11" tabindex="0" role="button" aria-label="Citation 11">[11]</sup>. The emphasis in TDD is the production of executable tests that act as restricted emergent specifications of collaborative behaviour. DbC emphasises a concept of contract, which can be represented using constructs such as preconditions, postconditions, and class invariants for explicitly specifying expected behaviour. At first glance, TDD and DbC conflict, or, as one authority put it:</p></div><div class="cell cell-zh" data-i="7" data-side="zh"><p>本文描述一种集成方法——规约驱动开发(Specification-Driven Development, SDD),它将敏捷的测试驱动开发(TDD)方法的最佳特性与计划驱动的&quot;质量优先&quot;契约式设计(Design-by-Contract, DbC)<sup class="cite" data-ref="11" tabindex="0" role="button" aria-label="Citation 11">[11]</sup>的最佳特性结合在一起。TDD的重点是产出可执行的测试,这些测试充当协作行为的受限涌现规约。DbC则强调&quot;契约&quot;的概念,可以用前置条件(precondition)、后置条件(postcondition)、类不变式(class invariant)等构造来明确指定预期行为。乍看之下,TDD与DbC彼此冲突,正如某位权威人士所说:</p></div></div>
+<div class="row row-callout" data-i="8"><div class="cell cell-en" data-i="8" data-side="en"><div class="callout">If it&#x27;s a matter of gut feeling, then mine is that the two approaches, test first and Design by Contract, are the absolute extreme opposites with no combination possible or desirable. It&#x27;s nice once in a while to see a real irreconcilable opposition <sup class="cite" data-ref="13" tabindex="0" role="button" aria-label="Citation 13">[13]</sup>.</div></div><div class="cell cell-zh" data-i="8" data-side="zh"><div class="callout">如果谈直觉的话,我的感受是:测试先行(test first)与契约式设计(Design by Contract)这两种方法是绝对的两个极端,既不可能也不可取去做任何结合。能在难得的时刻看到一个真正不可调和的对立,也算是一件趣事<sup class="cite" data-ref="13" tabindex="0" role="button" aria-label="Citation 13">[13]</sup>。</div></div></div>
+<div class="row row-p" data-i="9"><div class="cell cell-en" data-i="9" data-side="en"><p>We attempt to show that not only are TDD and DbC compatible, but that each can enhance the other. In SDD, both unit tests and contracts are specifications, and there are advantages to using each type of specification in producing reliable systems. TDD is superior for capturing complex emergent behaviour (e.g., trace behaviour) that cannot easily be expressed statically with contracts; DbC is superior for completely specifying behaviour. The two approaches are compatible: both TDD and DbC are iterative and are based on the view that it is important to produce working code as soon as possible.</p></div><div class="cell cell-zh" data-i="9" data-side="zh"><p>我们试图说明:TDD与DbC不仅是兼容的,而且可以彼此增强。在SDD中,单元测试与契约都是规约,在构建可靠系统时,使用每一类规约都各有优势。TDD更擅长捕捉那些难以用契约静态表达的复杂涌现行为(例如轨迹行为);DbC则更擅长完整地刻画行为。两种方法是兼容的:TDD与DbC都是迭代式的,且都基于&quot;应尽快产出可工作的代码&quot;这一观点。</p></div></div>
+<div class="row row-p" data-i="10"><div class="cell cell-en" data-i="10" data-side="en"><p>We make our arguments in the context of the Eiffel language which has DbC built-in. But, DbC works in other languages such as Java as well <sup class="cite" data-ref="7" tabindex="0" role="button" aria-label="Citation 7">[7]</sup>.</p></div><div class="cell cell-zh" data-i="10" data-side="zh"><p>我们将以内置DbC的Eiffel语言为背景展开论述。但DbC在其他语言(如Java)中同样适用<sup class="cite" data-ref="7" tabindex="0" role="button" aria-label="Citation 7">[7]</sup>。</p></div></div>
+<div class="row row-h1" data-i="11"><div class="cell cell-en" data-i="11" data-side="en"><h1>2 Plan-Driven Development</h1></div><div class="cell cell-zh" data-i="11" data-side="zh"><h1>2 计划驱动开发</h1></div></div>
+<div class="row row-p" data-i="12"><div class="cell cell-en" data-i="12" data-side="en"><p>The conventional, systematic plan-driven approach to software development is inherited from systems engineering. Plan-driven development approaches, such as DbC, stress the elicitation and documentation of a complete set of requirements, followed by architectural and high-level design. Code and tests often appear at the tail end of the process. The gap between requirements and code is thus bridged by specifications, which describe constraints on behaviour shared between the physical world and the system. Iterations between writing specifications and coding are often encouraged. Incremental approaches to plan-driven development have been adopted, but all still emphasise documentation and traceability between requirements, specification, and code.</p></div><div class="cell cell-zh" data-i="12" data-side="zh"><p>常规的、系统化的计划驱动软件开发方法承袭自系统工程。计划驱动开发方法(例如DbC)强调对一份完整需求集的获取与文档化,继而进行架构与高层设计。代码与测试往往出现在流程的尾端。需求与代码之间的鸿沟由规约(specification)来弥合,规约描述的是物理世界与系统所共享的行为约束。通常鼓励在编写规约与编码之间反复迭代。计划驱动开发也存在增量式的变体,但这些变体都仍然强调文档以及需求、规约与代码之间的可追溯性。</p></div></div>
+<div class="row row-p" data-i="13"><div class="cell cell-en" data-i="13" data-side="en"><p>Plans can be written in a variety of ways, including structured natural language, UML class and sequence diagrams, and formal methods. There is an associated cost with applying mathematical techniques; in general, it is much more than testing with the benefit of obtaining higher quality <sup class="cite" data-ref="3" tabindex="0" role="button" aria-label="Citation 3">[3]</sup>. The economic reality is that for most software development, testing and inspections trump formal specifications.</p></div><div class="cell cell-zh" data-i="13" data-side="zh"><p>计划可以以多种方式书写,包括结构化自然语言、UML类图与时序图,以及形式化方法。应用数学化技术是有代价的;一般而言其代价远高于测试,但好处是能获得更高的质量<sup class="cite" data-ref="3" tabindex="0" role="button" aria-label="Citation 3">[3]</sup>。经济现实是:对绝大多数软件开发而言,测试与检视(testing and inspections)胜过形式化规约。</p></div></div>
+<div class="row row-p" data-i="14"><div class="cell cell-en" data-i="14" data-side="en"><p>In plan-driven approaches, complete documentation brings with it two main problems. First, there is the problem of keeping the documentation consistent with changes in the design and code. And second, there is the sheer volume of documentation that must be produced. Analysts must document the requirements, designers must create the design specifications, and programmers must document their code. At each stage, additional detail must be added as we do not know who will be reading the documentation; it may therefore be safer to err on the side of caution.</p></div><div class="cell cell-zh" data-i="14" data-side="zh"><p>在计划驱动方法中,完整的文档带来两个主要问题。其一,如何让文档与设计、代码的演变保持一致;其二,需要产出的文档体量极为庞大。分析师必须文档化需求,设计师必须撰写设计规约,程序员必须为代码写文档。每一阶段都必须补充更多细节,因为不知道未来的读者是谁,因此往往不得不&quot;宁多勿少&quot;以求保险。</p></div></div>
+<div class="row row-h2" data-i="15"><div class="cell cell-en" data-i="15" data-side="en"><h2>2.1 Design by Contract</h2></div><div class="cell cell-zh" data-i="15" data-side="zh"><h2>2.1 契约式设计(Design by Contract)</h2></div></div>
+<div class="row row-p" data-i="16"><div class="cell cell-en" data-i="16" data-side="en"><p>DbC is a form of plan-driven development that naturally lends itself to agile development because of the way in which its documentation is expressed. It also has almost all the benefits of mathematical methods – and these are formidable for emphasising software quality first – without the associated cost. Contracts on software are written using preconditions, postconditions and class invariants, providing mathematical specifications. These contracts are written in the assertion language of the programming language itself, and are therefore executable; contracts are thus a form of the best kind of documentation, that which executes with the code, and which is always guaranteed to be consistent with the code (otherwise an assertion violation would arise at run-time).</p></div><div class="cell cell-zh" data-i="16" data-side="zh"><p>DbC是一种计划驱动的开发形式,其文档表达方式天然契合敏捷开发。它几乎拥有数学化方法的全部好处——这些好处在强调&quot;软件质量优先&quot;方面是无可匹敌的——却没有相应的代价。软件中的契约用前置条件、后置条件与类不变式书写,从而提供数学化的规约。这些契约用编程语言自身的断言语言书写,因此是可执行的;契约因而是最佳形式的文档之一,即随代码一同执行的文档,并且可以保证始终与代码一致(否则会在运行期触发断言违反)。</p></div></div>
+<div class="row row-p" data-i="17"><div class="cell cell-en" data-i="17" data-side="en"><p>Suppose we need to calculate the square root of a real number to four decimal places. Fig. 1 provides an example illustrating how this might be done using contracts.</p></div><div class="cell cell-zh" data-i="17" data-side="zh"><p>假设我们需要把一个实数的平方根计算到小数点后四位精度,图1给出了用契约表达这一逻辑的示例。</p></div></div>
+<div class="row row-code" data-i="18"><div class="cell cell-en" data-i="18" data-side="en"><pre class="code"><code class="lang-eiffel">class MATH feature
+  square_root(x: DOUBLE): DOUBLE is
+    require x &gt;= 0
+    do -- your algorithm goes here, e.g., Newton&#x27;s method
+    ensure
+      (Result*Result - x).abs &lt;= epsilon;
+      epsilon = old epsilon
+    end
+  epsilon: DOUBLE -- accuracy
+invariant
+  0 &lt; epsilon and epsilon &lt;= 0.001
+end -- MATH</code></pre></div><div class="cell cell-zh" data-i="18" data-side="zh"><pre class="code"><code class="lang-eiffel">class MATH feature
+  square_root(x: DOUBLE): DOUBLE is
+    require x &gt;= 0
+    do -- your algorithm goes here, e.g., Newton&#x27;s method
+    ensure
+      (Result*Result - x).abs &lt;= epsilon;
+      epsilon = old epsilon
+    end
+  epsilon: DOUBLE -- accuracy
+invariant
+  0 &lt; epsilon and epsilon &lt;= 0.001
+end -- MATH</code></pre></div></div>
+<div class="row row-fig" data-i="19"><div class="cell cell-en" data-i="19" data-side="en"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 1.</strong> Example of a contract for class MATH</figcaption></figure></div><div class="cell cell-zh" data-i="19" data-side="zh"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 1.</strong> 类MATH的契约示例</figcaption></figure></div></div>
+<div class="row row-p" data-i="20"><div class="cell cell-en" data-i="20" data-side="en"><p>There are many benefits to using contracts to document software: contracts are checked every time the code is executed (and violations are immediately flagged); components are self-documenting because the contracts are part the documentation (and inconsistency between code and contracts is impossible). And The benefits of using contracts to document software are as follows: contracts provide design rules for maintaining and modifying the behaviour of components, cf., behavioural subtyping, and a basis for formal verification.</p></div><div class="cell cell-zh" data-i="20" data-side="zh"><p>使用契约来文档化软件的好处很多:契约会在每次代码执行时被检查(违反会立刻被标记);组件是自文档化的,因为契约本身就是文档的一部分(且代码与契约不一致是不可能的)。使用契约文档化软件的好处可总结如下:契约提供了用于维护与修改组件行为的设计规则,参见行为子类型(behavioural subtyping);契约也是形式化验证的基础。</p></div></div>
+<div class="row row-p" data-i="21"><div class="cell cell-en" data-i="21" data-side="en"><p>In <sup class="cite" data-ref="11" tabindex="0" role="button" aria-label="Citation 11">[11]</sup> Meyer describes the &quot;quality-first&quot; DbC design method. Meyer implements quality-first DbC using Eiffel and the BON visual modelling language, both of which support contracts, and for which integrated tool support exists. A brief summary of quality-first DbC in BON/Eiffel follows.</p></div><div class="cell cell-zh" data-i="21" data-side="zh"><p>在文献<sup class="cite" data-ref="11" tabindex="0" role="button" aria-label="Citation 11">[11]</sup>中,Meyer描述了&quot;质量优先(quality-first)&quot;的DbC设计方法。Meyer用Eiffel与BON可视化建模语言实现质量优先的DbC,二者都支持契约,且具备集成的工具支持。BON/Eiffel下质量优先DbC的简要总结如下。</p></div></div>
+<div class="row row-ol" data-i="22"><div class="cell cell-en" data-i="22" data-side="en"><ol><li>Write Eiffel code or produce BON diagrams as soon as possible, because then supporting tools immediately do syntax, type, and consistency checking.</li><li>Get the current unit of functionality working before starting the next. Deal with abnormal cases, e.g., violated preconditions, right away.</li><li>Intertwine analysis, design, and implementation.</li><li>Always have a working system.</li><li>Get cosmetics and style right.</li></ol></div><div class="cell cell-zh" data-i="22" data-side="zh"><ol><li>尽早写出Eiffel代码或绘出BON图,因为这样支持工具就可以立即进行语法、类型与一致性检查。</li><li>在开始下一个功能单元(unit of functionality)之前,先把当前的功能单元做到可工作的状态。立即处理异常情形,例如违反前置条件。</li><li>把分析、设计与实现交织起来。</li><li>始终保持一个可工作的系统。</li><li>把外观与代码风格做到位。</li></ol></div></div>
+<div class="row row-p" data-i="23"><div class="cell cell-en" data-i="23" data-side="en"><p>DbC can be seen as an instance of plan-driven development, but unlike some approaches it does not suffer from the &quot;big design up front&quot; problem, in part because the plans in DbC are validated code. There are two vague steps in the quality-first DbC approach: (a) in step (2) we must get the current unit of functionality working, but how do we progress from informal requirements to a contract or a BON diagram? (b) in step (4) we are told to constantly compile, execute, and test the system but how the testing is to be performed is not explained. These two problems can at least partially be alleviated with the use of TDD techniques.</p></div><div class="cell cell-zh" data-i="23" data-side="zh"><p>DbC可被视为计划驱动开发的一种实例,但与某些方法不同的是,它不会陷入&quot;巨型前期设计(big design up front)&quot;问题,部分原因在于DbC中的&quot;计划&quot;本身就是经过验证的代码。质量优先DbC方法中有两个步骤是模糊的:(a) 在第(2)步中我们必须把当前功能单元做到可工作,但如何从非形式化的需求过渡到契约或BON图?(b) 在第(4)步中我们被告知要不断地编译、执行并测试系统,但测试究竟该如何进行,文中并未阐明。这两个问题至少可以借助TDD技术得到部分缓解。</p></div></div>
+<div class="row row-h1" data-i="24"><div class="cell cell-en" data-i="24" data-side="en"><h1>3 Test-Driven Development</h1></div><div class="cell cell-zh" data-i="24" data-side="zh"><h1>3 测试驱动开发</h1></div></div>
+<div class="row row-p" data-i="25"><div class="cell cell-en" data-i="25" data-side="en"><p>Test Driven Development (TDD) is one of the popular evolving agile methods <sup class="cite" data-ref="1" tabindex="0" role="button" aria-label="Citation 1">[1]</sup>; it emphasises testing first as a replacement for up-front design. Like all agile methods, TDD stresses the development of working code over documentation, models and plans. The TDD cycle proceeds as follows: (1) write the test first (without worrying if it does not compile); (2) write enough code to make the test pass; (3) refactor the code to eliminate redundancies and other design flaws introduced by making the test pass.</p></div><div class="cell cell-zh" data-i="25" data-side="zh"><p>测试驱动开发(Test Driven Development, TDD)是当下流行且持续演进的敏捷方法之一<sup class="cite" data-ref="1" tabindex="0" role="button" aria-label="Citation 1">[1]</sup>;它强调以&quot;测试先行&quot;取代前期设计。与所有敏捷方法一样,TDD强调可工作代码的开发优先于文档、模型与计划。TDD的循环过程如下:(1) 先写测试(无需在意它是否能编译);(2) 写出刚好足以让测试通过的代码;(3) 重构(refactor)代码,以消除为通过测试而引入的冗余以及其他设计缺陷。</p></div></div>
+<div class="row row-p" data-i="26"><div class="cell cell-en" data-i="26" data-side="en"><p>A striking aspects of this approach is the idea that the code that is implemented may not be behaviorally correct: it just has to pass the test. Correctness means passing all the tests. The test is therefore the specification. Another striking aspect is refactoring as a replacement for up-front design (sometimes pejoratively called a &quot;big up front design&quot;) <sup class="cite" data-ref="5" tabindex="0" role="button" aria-label="Citation 5">[5]</sup>. Testing, with tool support, occurs all the time: before and after refactoring, and whenever new functionality is implemented.</p></div><div class="cell cell-zh" data-i="26" data-side="zh"><p>这一方法引人注目的一点是:被实现出来的代码未必行为正确,只要能通过测试即可。&quot;正确性&quot;意味着&quot;通过所有测试&quot;。因此,测试就是规约。另一引人注目的一点是把重构作为前期设计的替代品(前期设计有时被贬称为&quot;巨型前期设计&quot;)<sup class="cite" data-ref="5" tabindex="0" role="button" aria-label="Citation 5">[5]</sup>。在工具支持下,测试是无时无刻不在进行的:重构前后、每次实现新功能时,皆然。</p></div></div>
+<div class="row row-p" data-i="27"><div class="cell cell-en" data-i="27" data-side="en"><p>Tests are a form of specification, typically (though not exclusively) dealing with normal and expected behaviour. Tests do not provide precise documentation of class interfaces. Thus, they are useful in capturing traces of valid behaviour for scenarios of the system, but may miss the big picture, i.e., the architecture and component views. Thus tests cannot be described as complete requirements. Tests encompass both unit and regression tests, and also what we call collaborative tests. These latter tests are related to UML sequence and collaboration diagrams in that they show the messages (method calls) sent between a number of specific objects within a use case. A good example of a collaborative test is shown below, in Fig. 2, for a simple banking system. An account is initialised and withdrawal is made, with the expected result of the account checked for correctness.</p></div><div class="cell cell-zh" data-i="27" data-side="zh"><p>测试是一种规约形式,通常(但不限于)处理正常的、预期的行为。测试不能精确地刻画类的接口文档。因此,它们擅长捕捉系统场景下的合法行为轨迹,但可能错过&quot;全景图&quot;,即架构与组件视图。所以测试不能被视为完整的需求。测试涵盖单元测试与回归测试,以及我们所称的&quot;协作测试(collaborative tests)&quot;。后者与UML时序图、协作图相关,它们展示的是某个用例下若干特定对象之间所收发的消息(方法调用)。一个简单银行系统的良好协作测试示例见下方图2。先初始化一个账户,然后发起取款,并核对账户的预期结果以验证正确性。</p></div></div>
+<div class="row row-code" data-i="28"><div class="cell cell-en" data-i="28" data-side="en"><pre class="code"><code class="lang-eiffel">test_teller_withdrawal_request: BOOLEAN is
+  local a: ACCOUNT; t: TELLER_TRANSACTION
+  do
+    -- initial balance $900 in John&#x27;s account
+    create a.make(&quot;John Doe&quot;, 900)
+    check a.balance = 900 end
+    create t
+    -- test scenario
+    t.request(a, 500)
+    t.withdrawal_request
+    result := a.balance = 400 and t.succeeded
+  end</code></pre></div><div class="cell cell-zh" data-i="28" data-side="zh"><pre class="code"><code class="lang-eiffel">test_teller_withdrawal_request: BOOLEAN is
+  local a: ACCOUNT; t: TELLER_TRANSACTION
+  do
+    -- initial balance $900 in John&#x27;s account
+    create a.make(&quot;John Doe&quot;, 900)
+    check a.balance = 900 end
+    create t
+    -- test scenario
+    t.request(a, 500)
+    t.withdrawal_request
+    result := a.balance = 400 and t.succeeded
+  end</code></pre></div></div>
+<div class="row row-fig" data-i="29"><div class="cell cell-en" data-i="29" data-side="en"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 2.</strong> Collaborative test for banking system</figcaption></figure></div><div class="cell cell-zh" data-i="29" data-side="zh"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 2.</strong> 银行系统的协作测试</figcaption></figure></div></div>
+<div class="row row-p" data-i="30"><div class="cell cell-en" data-i="30" data-side="en"><p>The benefits of TDD are many. For one, the cost of verification is spread across the development process. The TDD process also provides low-level information about test failures, on the operation or even statement level, thus making debugging easier. Experience has shown that designs driven by tests tend to exhibit high cohesion and loose coupling, perhaps possibly due to the frequent refactoring and the requirement to keep the design as simple as possible. TDD also allows predictive specification of what code will do, independent of the existence of the code itself. Finally, the tests produced using TDD provide documentation of the design and the design process. The latter, in particular, will be essential for any requisite auditing and review.</p></div><div class="cell cell-zh" data-i="30" data-side="zh"><p>TDD的好处很多。其一,验证成本被分摊到整个开发流程中。TDD流程也提供了关于测试失败的低层次信息——细到操作甚至语句级——从而让调试更轻松。经验表明,由测试驱动出来的设计往往呈现出高内聚与松耦合,这或许源于频繁的重构以及&quot;尽量保持设计简洁&quot;的要求。TDD还允许对代码&quot;将做什么&quot;进行预测性规约,且这种规约独立于代码本身的存在。最后,通过TDD产生的测试为设计与设计过程提供了文档。后者尤其在任何必需的审计与评审中是不可或缺的。</p></div></div>
+<div class="row row-p" data-i="31"><div class="cell cell-en" data-i="31" data-side="en"><p>The limitations of TDD come in part from the incompleteness of tests: requirements cannot be completely captured by tests in general without enumerating all scenarios. Further, tests cannot deal with phenomena that are in the environment of the system, whereas contracts can express constraints on such constructs.</p></div><div class="cell cell-zh" data-i="31" data-side="zh"><p>TDD的局限部分来自测试本身的不完备性:如果不枚举所有场景,需求一般而言无法被测试完整地捕捉。此外,测试无法处理位于系统环境(environment)中的现象,而契约可以表达对此类构造的约束。</p></div></div>
+<div class="row row-h2" data-i="32"><div class="cell cell-en" data-i="32" data-side="en"><h2>3.1 Collaborative vs Contractual Specifications</h2></div><div class="cell cell-zh" data-i="32" data-side="zh"><h2>3.1 协作式规约 vs 契约式规约</h2></div></div>
+<div class="row row-p" data-i="33"><div class="cell cell-en" data-i="33" data-side="en"><p>Test-based unit and collaborative specifications are incomplete, because they consider only specific scenarios. Consider the following unit test, written in Eiffel.</p></div><div class="cell cell-zh" data-i="33" data-side="zh"><p>基于测试的单元规约与协作规约是不完备的,因为它们只考虑特定场景。考虑下面这段用Eiffel写的单元测试。</p></div></div>
+<div class="row row-code" data-i="34"><div class="cell cell-en" data-i="34" data-side="en"><pre class="code"><code class="lang-eiffel">test_integers_sorted: BOOLEAN is
+  local sa1, sa2: SORTABLE_ARRAY[INTEGER]
+  do
+    sa1 := &lt;&lt;4, 1, 3&gt;&gt;; sa2 := &lt;&lt;1, 3, 4&gt;&gt;;
+    sa1.sort;
+    Result := equal(sa1, sa2)
+  end</code></pre></div><div class="cell cell-zh" data-i="34" data-side="zh"><pre class="code"><code class="lang-eiffel">test_integers_sorted: BOOLEAN is
+  local sa1, sa2: SORTABLE_ARRAY[INTEGER]
+  do
+    sa1 := &lt;&lt;4, 1, 3&gt;&gt;; sa2 := &lt;&lt;1, 3, 4&gt;&gt;;
+    sa1.sort;
+    Result := equal(sa1, sa2)
+  end</code></pre></div></div>
+<div class="row row-p" data-i="35"><div class="cell cell-en" data-i="35" data-side="en"><p>in which we create an unsorted array <code>sa1</code>, execute routine <code>sort</code>, and then assert that the array is <code>equal</code> to the expected sorted array <code>sa2</code>. The unit test does three things for us. The test is a precise specification of a unit of functionality (the sort function in the special case of array <code>&lt;&lt;4, 1, 3&gt;&gt;</code>). The test also drives the design. It induces the public interface of class <em>SORTABLE_ARRAY</em> with features such as sort. However,</p></div><div class="cell cell-zh" data-i="35" data-side="zh"><p>其中我们创建了一个未排序的数组<code>sa1</code>,执行例程<code>sort</code>,然后断言该数组与预期的已排序数组<code>sa2</code>相等(<code>equal</code>)。这个单元测试为我们做了三件事。它是某个功能单元的精确规约(在<code>&lt;&lt;4, 1, 3&gt;&gt;</code>这一特例下的sort函数)。它也驱动了设计——它促成了类<em>SORTABLE_ARRAY</em>的公共接口,例如其中的sort等特性。然而,</p></div></div>
+<div class="row row-ul" data-i="36"><div class="cell cell-en" data-i="36" data-side="en"><ul><li>The unit test specifies that array <code>&lt;&lt;4, 1, 3&gt;&gt;</code> must be sorted. But what about tests for all the other (possibly infinite) arrays of integers?</li><li>The unit test does not test arrays of REAL, or arrays of PERSON (say by age). After all, the class <code>SORTABLE_ARRAY[G]</code> has a generic parameter G.</li><li>It is hard to describe preconditions with unit tests. For example, we might want the sort routine to work only in case there is at least one non-void element in the array. (We could make the sort routine have no precondition, but that would then force us to always program defensively [10, p344].)</li></ul></div><div class="cell cell-zh" data-i="36" data-side="zh"><ul><li>这个单元测试规定了数组<code>&lt;&lt;4, 1, 3&gt;&gt;</code>必须被排序。但其他(可能无穷多)整数数组的测试呢?</li><li>这个单元测试没有测试REAL类型的数组,也没有测试PERSON的数组(比如按年龄排序)。毕竟,类<code>SORTABLE_ARRAY[G]</code>带有一个泛型参数G。</li><li>用单元测试来描述前置条件是困难的。例如,我们可能希望sort例程仅在数组中至少存在一个非空(non-void)元素时才工作。(我们当然可以让sort例程没有任何前置条件,但那就意味着我们必须始终采用防御式编程[10, p344]。)</li></ul></div></div>
+<div class="row row-p" data-i="37"><div class="cell cell-en" data-i="37" data-side="en"><p>By contrast, the contractual specification in Fig. 3 is a precise and detailed specification of the sorted array. The quantifiers can be expressed using Eiffel&#x27;s agent notation. The generic parameter G of class <em>SORTABLE_ARRAY</em> is constrained to inherit from COMPARABLE. This allows us to compare any two elements in the array, e.g., the expression <code>item(i) &lt;= item(i+1)</code> is legal whether the array holds instances of integers or people, provided the instances are from classes that inherit from COMPARABLE.</p></div><div class="cell cell-zh" data-i="37" data-side="zh"><p>相比之下,图3中的契约式规约是对&quot;已排序数组&quot;这一概念的一份精确而详尽的规约。其中的量词可以用Eiffel的agent记法来表达。类<em>SORTABLE_ARRAY</em>的泛型参数G被约束为继承自COMPARABLE。这就让我们可以比较数组中的任意两个元素,例如<code>item(i) &lt;= item(i+1)</code>这一表达式是合法的——无论数组里装的是整数还是人,只要对应的类继承自COMPARABLE即可。</p></div></div>
+<div class="row row-p" data-i="38"><div class="cell cell-en" data-i="38" data-side="en"><p>Routine sort is specified via preconditions and postconditions. The preconditions state that there must be at least one non-void element to sort. The unit test did not specify this, nor is it generally easy for unit tests to specify preconditions. The postcondition states that the array must be sorted and is unchanged. This postcondition specifies this property for all possible arrays, holding elements of any type. Again, only an infinite number of unit tests could capture this property.</p></div><div class="cell cell-zh" data-i="38" data-side="zh"><p>例程sort通过前置条件与后置条件来规约。前置条件指出必须至少有一个非空元素可供排序。这一点单元测试并未规定,且通常单元测试也不易表达前置条件。后置条件则指出数组必须被排序且(元素个数)未变。该后置条件对所有可能的、装载任意类型元素的数组都成立。同样,只有无穷多的单元测试才能捕捉到这一性质。</p></div></div>
+<div class="row row-code" data-i="39"><div class="cell cell-en" data-i="39" data-side="en"><pre class="code"><code class="lang-eiffel">class SORTABLE_ARRAY [G -&gt; COMPARABLE] inherit ARRAY[G]
+feature
+  sort is
+    require
+      count_positive: count &gt; 0
+      elements_not_void: ∀ i | lower ≤ i ≤ upper • item(i) ≠ Void
+    do
+      ...
+    ensure
+      sorted: ∀ i | lower ≤ i ≤ upper • item(i) ≤ item(i+1)
+      count_unchanged: count = old count
+    end
+end</code></pre></div><div class="cell cell-zh" data-i="39" data-side="zh"><pre class="code"><code class="lang-eiffel">class SORTABLE_ARRAY [G -&gt; COMPARABLE] inherit ARRAY[G]
+feature
+  sort is
+    require
+      count_positive: count &gt; 0
+      elements_not_void: ∀ i | lower ≤ i ≤ upper • item(i) ≠ Void
+    do
+      ...
+    ensure
+      sorted: ∀ i | lower ≤ i ≤ upper • item(i) ≤ item(i+1)
+      count_unchanged: count = old count
+    end
+end</code></pre></div></div>
+<div class="row row-fig" data-i="40"><div class="cell cell-en" data-i="40" data-side="en"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 3.</strong> Class SORTABLE_ARRAY</figcaption></figure></div><div class="cell cell-zh" data-i="40" data-side="zh"><figure class="fig fig-captiononly"><figcaption><strong>Fig. 3.</strong> 类SORTABLE_ARRAY</figcaption></figure></div></div>
+<div class="row row-p" data-i="41"><div class="cell cell-en" data-i="41" data-side="en"><p>Since contracts and tests are both specifications (the contract being more general), they can both serve to drive development of the code.</p></div><div class="cell cell-zh" data-i="41" data-side="zh"><p>既然契约和测试都是规约(契约更具一般性),那么二者都可以驱动代码的开发。</p></div></div>
+<div class="row row-p" data-i="42"><div class="cell cell-en" data-i="42" data-side="en"><p>Unit tests can be used to automatically check that the code satisfies its specification – just run the tests. Can code be checked against the contracts? One approach would be program verification which provides strong assurance but requires qualitatively more time and effort than testing. The simpler approach is to turn assertion checking on in the programming language. But, unit tests will now be required to execute the code so that contracts can be checked. However, there is a <em>test amplification</em> effect, which we discuss in the next section.</p></div><div class="cell cell-zh" data-i="42" data-side="zh"><p>单元测试可以被用来自动检查代码是否满足其规约——只需运行测试。那么代码能否针对契约进行检查?一种方式是程序验证(program verification),它能提供强保证,但所需时间与精力比测试要多上一个量级。更简单的方式是在编程语言中开启断言检查。但此时仍需借助单元测试来执行代码,才能让契约得到检查。不过这里存在一种&quot;测试放大(test amplification)&quot;效应,我们将在下一节讨论。</p></div></div>
+<div class="row row-p" data-i="43"><div class="cell cell-en" data-i="43" data-side="en"><p>While contractual specifications are detailed and complete, they have disadvantages. Consider a class <em>STACK[G]</em> with routines given by <em>push(x : G)</em> and <em>pop</em>. While contracts can fully specify the effects of <em>push</em> and <em>pop</em> individually, they cannot directly describe the last-in-first-out (LIFO) property of stacks which asserts that</p></div><div class="cell cell-zh" data-i="43" data-side="zh"><p>虽然契约式规约详尽且完整,但它也有缺点。考虑一个类<em>STACK[G]</em>,其中给出了例程<em>push(x : G)</em> 与 <em>pop</em>。契约可以完全规约<em>push</em>与<em>pop</em>各自的效果,却无法直接刻画栈的&quot;后进先出(LIFO)&quot;性质,即:</p></div></div>
+<div class="row row-p" data-i="44"><div class="cell cell-en" data-i="44" data-side="en"><div class="math-display">$$ \forall s : STACK, x : G \bullet pop(push(x, s)) = s $$</div></div><div class="cell cell-zh" data-i="44" data-side="zh"><div class="math-display">$$ \forall s : STACK, x : G \bullet pop(push(x, s)) = s $$</div></div></div>
+<div class="row row-p" data-i="45"><div class="cell cell-en" data-i="45" data-side="en"><p>By contrast, the LIFO behaviour can easily be captured using test-based collaborative specifications.</p></div><div class="cell cell-zh" data-i="45" data-side="zh"><p>相比之下,LIFO行为则可以很容易地用基于测试的协作规约捕捉到。</p></div></div>
+<div class="row row-h1" data-i="46"><div class="cell cell-en" data-i="46" data-side="en"><h1>4 Specification-Driven Development</h1></div><div class="cell cell-zh" data-i="46" data-side="zh"><h1>4 规约驱动开发</h1></div></div>
+<div class="row row-p" data-i="47"><div class="cell cell-en" data-i="47" data-side="en"><p>Clearly there are benefits to plan-driven development based on DbC, and test-driven development. Choosing between the value offered by the approaches will equally clearly depend on the project at hand. There are surprising commonalities between TDD and DbC, particularly: both contracts and tests are specifications; both TDD and DbC seek to transform requirements to compilable constructs as soon as possible; both TDD and DbC are lightweight verification methods; both methods are incremental; and both emphasise quality first in terms of units of functionality. We claim that it is not necessary to choose between the two approaches <em>a priori</em>, and that there are substantial benefits to using TDD and DbC together in a project.</p></div><div class="cell cell-zh" data-i="47" data-side="zh"><p>显然,基于DbC的计划驱动开发与测试驱动开发各有其价值。在二者之间如何取舍,显然要看具体项目而定。TDD与DbC之间存在一些令人惊讶的共同点,特别是:契约与测试都是规约;TDD与DbC都力图将需求尽快转化为可编译的构造;TDD与DbC都是轻量级的验证方法;两者都是增量式的;两者都在功能单元层面强调&quot;质量优先&quot;。我们主张:无需&quot;先验地(<em>a priori</em>)&quot;在两种方法之间做出二选一的选择,在一个项目中将TDD与DbC结合使用会带来实质性的好处。</p></div></div>
+<div class="row row-p" data-i="48"><div class="cell cell-en" data-i="48" data-side="en"><p>Specification-Driven Development (SDD) provides the ability to use TDD and DbC techniques in the same development. It assumes (a) the availability of a contract-aware programming language (e.g., Eiffel, or Java with a suitable pre-processor), and (b) a suitable testing framework (e.g., JUnit or ETester). The statechart of Fig. 4 describes the approach. It does not dictate where to start – it is the developer&#x27;s choice whether to start with TDD or DbC based on project context. However, the emphasis is always on transforming customer requirements into compilable and executable code.</p></div><div class="cell cell-zh" data-i="48" data-side="zh"><p>规约驱动开发(SDD)使我们能够在同一开发活动中同时使用TDD与DbC技术。它假定:(a) 存在支持契约的编程语言(例如Eiffel,或加上合适预处理器的Java);(b) 存在合适的测试框架(例如JUnit或ETester)。图4的状态图描述了该方法。它并不规定从哪里起步——开发者可以根据项目情境自行选择从TDD还是DbC开始。但其重点始终是:把客户需求转化为可编译、可执行的代码。</p></div></div>
+<div class="row row-fig" data-i="49"><div class="cell cell-en" data-i="49" data-side="en"><figure class="fig" data-figid="FIG4"><div class="fig-body"><svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" class="fig-svg" role="img" aria-label="SDD statechart">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+    </marker>
+  </defs>
+  <!-- Outer SDD region -->
+  <rect x="20" y="20" width="680" height="320" rx="14" ry="14"
+        fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="40" y="44" font-size="15" font-weight="700" fill="currentColor">SDD</text>
+
+  <!-- Left state: Write test based Collaborative Specifications -->
+  <rect x="60" y="90" width="190" height="80" rx="40" ry="40"
+        fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="155" y="125" text-anchor="middle" font-size="12" fill="currentColor">Write test based</text>
+  <text x="155" y="143" text-anchor="middle" font-size="12" fill="currentColor">Collaborative</text>
+  <text x="155" y="160" text-anchor="middle" font-size="12" fill="currentColor">Specifications</text>
+
+  <!-- Middle TDD compound state -->
+  <rect x="290" y="60" width="200" height="240" rx="14" ry="14"
+        fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="310" y="82" font-size="13" font-weight="700" fill="currentColor">TDD</text>
+
+  <rect x="310" y="100" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="130" text-anchor="middle" font-size="12" fill="currentColor">Write a unit test</text>
+
+  <rect x="310" y="170" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="194" text-anchor="middle" font-size="12" fill="currentColor">Write simplest</text>
+  <text x="390" y="210" text-anchor="middle" font-size="12" fill="currentColor">code</text>
+
+  <rect x="310" y="240" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="270" text-anchor="middle" font-size="12" fill="currentColor">Refactor</text>
+
+  <!-- Arrows inside TDD -->
+  <path d="M390,150 L390,168" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <path d="M390,220 L390,238" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <!-- Refactor back up to write a unit test (right-side loop) -->
+  <path d="M470,265 C530,265 530,125 470,125" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+  <!-- Right state: Do Quality First Design by Contract -->
+  <rect x="510" y="90" width="170" height="80" rx="40" ry="40"
+        fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="595" y="120" text-anchor="middle" font-size="12" fill="currentColor">Do</text>
+  <text x="595" y="137" text-anchor="middle" font-size="12" fill="currentColor">Quality First</text>
+  <text x="595" y="154" text-anchor="middle" font-size="12" fill="currentColor">Design by Contract</text>
+
+  <!-- Cross-state arrows -->
+  <path d="M250,130 L308,125" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <path d="M488,125 L510,130" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <!-- Bottom return arrow from refactor across to left state -->
+  <path d="M310,265 C220,265 175,210 175,170" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+</svg></div><figcaption><strong>Fig. 4.</strong> SDD: Specification-Driven Development</figcaption></figure></div><div class="cell cell-zh" data-i="49" data-side="zh"><figure class="fig" data-figid="FIG4"><div class="fig-body"><svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" class="fig-svg" role="img" aria-label="SDD statechart">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+    </marker>
+  </defs>
+  <!-- Outer SDD region -->
+  <rect x="20" y="20" width="680" height="320" rx="14" ry="14"
+        fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="40" y="44" font-size="15" font-weight="700" fill="currentColor">SDD</text>
+
+  <!-- Left state: Write test based Collaborative Specifications -->
+  <rect x="60" y="90" width="190" height="80" rx="40" ry="40"
+        fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="155" y="125" text-anchor="middle" font-size="12" fill="currentColor">Write test based</text>
+  <text x="155" y="143" text-anchor="middle" font-size="12" fill="currentColor">Collaborative</text>
+  <text x="155" y="160" text-anchor="middle" font-size="12" fill="currentColor">Specifications</text>
+
+  <!-- Middle TDD compound state -->
+  <rect x="290" y="60" width="200" height="240" rx="14" ry="14"
+        fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="310" y="82" font-size="13" font-weight="700" fill="currentColor">TDD</text>
+
+  <rect x="310" y="100" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="130" text-anchor="middle" font-size="12" fill="currentColor">Write a unit test</text>
+
+  <rect x="310" y="170" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="194" text-anchor="middle" font-size="12" fill="currentColor">Write simplest</text>
+  <text x="390" y="210" text-anchor="middle" font-size="12" fill="currentColor">code</text>
+
+  <rect x="310" y="240" width="160" height="50" rx="25" ry="25"
+        fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="390" y="270" text-anchor="middle" font-size="12" fill="currentColor">Refactor</text>
+
+  <!-- Arrows inside TDD -->
+  <path d="M390,150 L390,168" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <path d="M390,220 L390,238" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <!-- Refactor back up to write a unit test (right-side loop) -->
+  <path d="M470,265 C530,265 530,125 470,125" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+  <!-- Right state: Do Quality First Design by Contract -->
+  <rect x="510" y="90" width="170" height="80" rx="40" ry="40"
+        fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="595" y="120" text-anchor="middle" font-size="12" fill="currentColor">Do</text>
+  <text x="595" y="137" text-anchor="middle" font-size="12" fill="currentColor">Quality First</text>
+  <text x="595" y="154" text-anchor="middle" font-size="12" fill="currentColor">Design by Contract</text>
+
+  <!-- Cross-state arrows -->
+  <path d="M250,130 L308,125" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <path d="M488,125 L510,130" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  <!-- Bottom return arrow from refactor across to left state -->
+  <path d="M310,265 C220,265 175,210 175,170" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+</svg></div><figcaption><strong>Fig. 4.</strong> SDD:规约驱动开发</figcaption></figure></div></div>
+<div class="row row-p" data-i="50"><div class="cell cell-en" data-i="50" data-side="en"><p>SDD provides more than TDD or DbC individually, as it eliminates some of the limitations with each approach. But SDD is more than the sum of TDD and DbC, as there are synergies between the approaches. In particular, contracts act as test amplifiers. When writing a contract, it is easy to make mistakes, or write a contract that is simply too weak and which underconstrains the system. Some of these flaws will be caught by executing the system; but this is not sufficient in general. Writing tests to exercise the contracts (i.e., which validate and invalidate each pre- and postcondition) can help validate the tests, and can also help drive the production of tests.</p></div><div class="cell cell-zh" data-i="50" data-side="zh"><p>SDD所提供的价值超过单独使用TDD或DbC,因为它消除了二者各自的部分局限。但SDD并不仅是TDD与DbC的简单加和——两种方法之间存在协同作用(synergies)。特别地,契约充当了&quot;测试放大器(test amplifiers)&quot;。撰写契约时,容易出错,或者写出过弱、对系统约束不足的契约。其中一些缺陷可以通过执行系统而被发现,但这一般还不够。编写测试以&quot;练习&quot;契约(即对每个前置/后置条件分别去验证与反验证)有助于检验测试本身,也能驱动测试的产出。</p></div></div>
+<div class="row row-h2" data-i="51"><div class="cell cell-en" data-i="51" data-side="en"><h2>4.1 Some observations</h2></div><div class="cell cell-zh" data-i="51" data-side="zh"><h2>4.1 一些观察</h2></div></div>
+<div class="row row-p" data-i="52"><div class="cell cell-en" data-i="52" data-side="en"><p>SDD can start with writing tests (as illustrated by the left-most state in the statechart), or with writing contracts. However, there are two reasons to prefer writing unit tests before contracts:</p></div><div class="cell cell-zh" data-i="52" data-side="zh"><p>SDD既可以从写测试开始(如状态图中最左侧的状态所示),也可以从写契约开始。不过,有两个理由让我们倾向于先写单元测试,再写契约:</p></div></div>
+<div class="row row-callout" data-i="53"><div class="cell cell-en" data-i="53" data-side="en"><div class="callout"><strong>Closure:</strong> A unit test provides a precise description of a unit of functionality and hence also a clear stopping point – you write just enough clean code to get the test to pass. Contracts do not provide clear stopping points for units of functionality in quite the same way, thus allowing for the possibility of unnecessary design.</div></div><div class="cell cell-zh" data-i="53" data-side="zh"><div class="callout"><strong>闭合性(Closure):</strong> 单元测试给出对某个功能单元的精确描述,因而也给出明确的停止点——你只需写出&quot;刚刚好能让测试通过的&quot;干净代码。契约并不能以同样清晰的方式给出功能单元的停止点,这就为不必要的设计留下了可能。</div></div></div>
+<div class="row row-callout" data-i="54"><div class="cell cell-en" data-i="54" data-side="en"><div class="callout"><strong>Collaborative specification friendly:</strong> tests can formalize instances of collaborative specifications more easily than contracts, as illustrated by the last-in-first-out property of stacks.</div></div><div class="cell cell-zh" data-i="54" data-side="zh"><div class="callout"><strong>对协作规约友好(Collaborative specification friendly):</strong> 测试比契约更容易把协作规约的具体实例形式化下来,正如栈的LIFO性质所展示的那样。</div></div></div>
+<div class="row row-p" data-i="55"><div class="cell cell-en" data-i="55" data-side="en"><p>Contracts, of course, can provide precise documentation of the complete behaviour of code in a way that tests cannot (as illustrated in Fig. 3). Contracts also provide preconditions; tests cannot document or check for preconditions. Finally, contracts can supply a qualitative level of assurance for code beyond that of testing in the case of program verification, and can act as an automatic test amplifier in the case that assertion checking is turned on.</p></div><div class="cell cell-zh" data-i="55" data-side="zh"><p>当然,契约能够以测试无法做到的方式精确文档化代码的完整行为(如图3所示)。契约还提供了前置条件,而测试既无法文档化也无法检查前置条件。最后,在程序验证的情境下,契约可以为代码提供超越测试的、更高质量层级的保证;在开启断言检查的情境下,契约还能充当自动化的测试放大器。</p></div></div>
+<div class="row row-p" data-i="56"><div class="cell cell-en" data-i="56" data-side="en"><p>In summary:</p></div><div class="cell cell-zh" data-i="56" data-side="zh"><p>总结如下:</p></div></div>
+<div class="row row-ol" data-i="57"><div class="cell cell-en" data-i="57" data-side="en"><ol><li>Contracts are good for fleshing out the design while making underlying assumptions explicit.</li><li>Contracts spell out the logical assumptions underlying a design more completely and concisely than unit tests.</li><li>Tests are good for writing collaborative specifications; as such, they are likely to be more appropriate early in the development process when scenarios are being refined to executable constructs. Contracts are good for constraining the design to meet the requirements.</li></ol></div><div class="cell cell-zh" data-i="57" data-side="zh"><ol><li>契约擅长把设计&quot;打磨成形&quot;的同时,把底层假设显式化。</li><li>契约比单元测试更完整、更简洁地表达出设计背后的逻辑假设。</li><li>测试擅长撰写协作规约;因此在开发流程的早期、当场景正被精化为可执行构造时,测试更为合适。契约则擅长约束设计以满足需求。</li></ol></div></div>
+<div class="row row-h1" data-i="58"><div class="cell cell-en" data-i="58" data-side="en"><h1>5 Conclusions</h1></div><div class="cell cell-zh" data-i="58" data-side="zh"><h1>5 结论</h1></div></div>
+<div class="row row-p" data-i="59"><div class="cell cell-en" data-i="59" data-side="en"><p>We have investigated the compatibility and complementarity of TDD and DbC, in producing a new agile approach called Specification-Driven Development. Our conclusion is that TDD and DbC are complementary technologies and can be used synergistically, but also to supplement limitations: contracts make design decisions explicit that may only be implicit in tests; and tests can better capture requirements (such as the LIFO property on stacks) than contracts.</p></div><div class="cell cell-zh" data-i="59" data-side="zh"><p>我们考察了TDD与DbC的兼容性与互补性,得出了一种新的敏捷方法——规约驱动开发(SDD)。我们的结论是:TDD与DbC是互补的技术,可以协同地使用,也可以彼此弥补不足:契约把那些在测试中可能仅是隐含的设计决策显式化;测试则比契约更能捕捉某些需求(例如栈的LIFO性质)。</p></div></div>
+<div class="row row-p" data-i="60"><div class="cell cell-en" data-i="60" data-side="en"><p>We are providing tool support for the Eiffel language that allows TDD and DbC to be used together. This support comes via the ETester framework, documented elsewhere <sup class="cite" data-ref="8" tabindex="0" role="button" aria-label="Citation 8">[8]</sup>. ETester is specifically designed to make it easy to write unit tests and tests involving contracts. Additional work on an Eiffel plug-in for Eclipse will also make use of ETester.</p></div><div class="cell cell-zh" data-i="60" data-side="zh"><p>我们正在为Eiffel语言提供工具支持,使TDD与DbC能够并用。该支持通过ETester框架提供,详见他文<sup class="cite" data-ref="8" tabindex="0" role="button" aria-label="Citation 8">[8]</sup>。ETester专为方便撰写单元测试以及涉及契约的测试而设计。还有一项面向Eclipse的Eiffel插件工作也将使用ETester。</p></div></div>
+<div class="row row-p" data-i="61"><div class="cell cell-en" data-i="61" data-side="en"><p>Our work has similarities to that of Feldman <sup class="cite" data-ref="4" tabindex="0" role="button" aria-label="Citation 4">[4]</sup>; his work focused particularly on the relationship between contracts and refactoring, whereas we have focused on the assistance that contracts provide to the TDD process. Feldman in particular makes the point that using contracts can reduce the amount of tests that need to be written because contracts cover the correctness of methods. We disagree on this point as tests must still be written to exercise the contracts, and to particularly deal with contracts that underspecify behaviour. However, we do agree with Feldman&#x27;s findings that contracts work synergistically with refactoring.</p></div><div class="cell cell-zh" data-i="61" data-side="zh"><p>我们的工作与Feldman<sup class="cite" data-ref="4" tabindex="0" role="button" aria-label="Citation 4">[4]</sup>的工作有相似之处;他的工作特别关注契约与重构的关系,而我们的关注点是契约对TDD流程所提供的助益。Feldman特别指出:使用契约可以减少需要写的测试量,因为契约本就覆盖了方法的正确性。我们在这一点上与他存在分歧:测试仍然必须被写出来,以便去&quot;练习&quot;契约,尤其要应对那些对行为规约不足的契约。但我们同意Feldman的发现:契约与重构存在协同效应。</p></div></div>
+<div class="row row-p" data-i="62"><div class="cell cell-en" data-i="62" data-side="en"><p>The table below summarises our conclusions.</p></div><div class="cell cell-zh" data-i="62" data-side="zh"><p>下面这张表对我们的结论做了汇总。</p></div></div>
+<div class="row row-table" data-i="63"><div class="cell cell-en" data-i="63" data-side="en"><table class="data"><caption><strong>Table.</strong> SDD synergies – SDD &gt; max(TDD, DbC)</caption><thead><tr><th>TDD lacks</th><th>Quality First DbC has</th></tr></thead><tbody><tr><td>Good Design Documentation</td><td>✓ Self-Documenting Design (automated using seamless and reversible BON)</td></tr><tr><td>Detailed interface specifications of normal and abnormal behaviours</td><td>✓ Contracts and contractual specifications</td></tr><tr><td><strong>TDD has</strong></td><td><strong>Quality First DbC lacks</strong></td></tr><tr><td>✓ Collaborative specifications</td><td>Units of functionality for Quality First</td></tr><tr><td>✓ Automated Tests (JUnit/ETester)</td><td>Systematic regression tools for exercising contracts</td></tr><tr><td><strong>Synergies</strong></td><td>✓ Contracts are test amplifiers</td></tr><tr><td></td><td>✓ Contractual and collaborative specifications provide lightweight verification of the design</td></tr></tbody></table></div><div class="cell cell-zh" data-i="63" data-side="zh"><table class="data"><caption><strong>Table.</strong> SDD的协同效应 – SDD &gt; max(TDD, DbC)</caption><thead><tr><th>TDD所缺</th><th>质量优先DbC所有</th></tr></thead><tbody><tr><td>良好的设计文档</td><td>✓ 自文档化的设计(借助seamless且可逆的BON实现自动化)</td></tr><tr><td>关于正常与异常行为的详尽接口规约</td><td>✓ 契约与契约式规约</td></tr><tr><td><strong>TDD所有</strong></td><td><strong>质量优先DbC所缺</strong></td></tr><tr><td>✓ 协作规约</td><td>面向&quot;质量优先&quot;的功能单元</td></tr><tr><td>✓ 自动化测试(JUnit/ETester)</td><td>用于练习契约的系统化回归工具</td></tr><tr><td><strong>协同效应</strong></td><td>✓ 契约是测试放大器</td></tr><tr><td></td><td>✓ 契约式与协作式规约共同提供对设计的轻量级验证</td></tr></tbody></table></div></div>
+<div class="row row-h1" data-i="64"><div class="cell cell-en" data-i="64" data-side="en"><h1>References</h1></div><div class="cell cell-zh" data-i="64" data-side="zh"><h1>参考文献</h1></div></div>
+<div class="row row-ref" data-i="65"><div class="cell cell-en" data-i="65" data-side="en"><div class="ref" id="ref-en-1" data-refnum="1"><span class="ref-num">[1]</span> <span class="ref-body">Beck, K. Test-driven Development: by example, Addison-Wesley, 2003.</span></div></div><div class="cell cell-zh" data-i="65" data-side="zh"><div class="ref" id="ref-zh-1" data-refnum="1"><span class="ref-num">[1]</span> <span class="ref-body">Beck, K. Test-driven Development: by example, Addison-Wesley, 2003.</span></div></div></div>
+<div class="row row-ref" data-i="66"><div class="cell cell-en" data-i="66" data-side="en"><div class="ref" id="ref-en-2" data-refnum="2"><span class="ref-num">[2]</span> <span class="ref-body">Beck, K., A. Cockburn, R. Jeffries, and J. Highsmith. Agile Manifesto <a href="https://www.agilemanifesto.org/history.html." target="_blank" rel="noopener">www.agilemanifesto.org/history.html.</a> 2001.</span></div></div><div class="cell cell-zh" data-i="66" data-side="zh"><div class="ref" id="ref-zh-2" data-refnum="2"><span class="ref-num">[2]</span> <span class="ref-body">Beck, K., A. Cockburn, R. Jeffries, and J. Highsmith. Agile Manifesto <a href="https://www.agilemanifesto.org/history.html." target="_blank" rel="noopener">www.agilemanifesto.org/history.html.</a> 2001.</span></div></div></div>
+<div class="row row-ref" data-i="67"><div class="cell cell-en" data-i="67" data-side="en"><div class="ref" id="ref-en-3" data-refnum="3"><span class="ref-num">[3]</span> <span class="ref-body">Berry, D.M. Formal methods: the very idea — Some thoughts about why they work when they work. Science of Computer Programming, 42(1): p11–27, 2002.</span></div></div><div class="cell cell-zh" data-i="67" data-side="zh"><div class="ref" id="ref-zh-3" data-refnum="3"><span class="ref-num">[3]</span> <span class="ref-body">Berry, D.M. Formal methods: the very idea — Some thoughts about why they work when they work. Science of Computer Programming, 42(1): p11–27, 2002.</span></div></div></div>
+<div class="row row-ref" data-i="68"><div class="cell cell-en" data-i="68" data-side="en"><div class="ref" id="ref-en-4" data-refnum="4"><span class="ref-num">[4]</span> <span class="ref-body">Feldman, Y. Extreme Design by Contract. In Proc. XP 2003, LNCS, Springer-Verlag, 2003.</span></div></div><div class="cell cell-zh" data-i="68" data-side="zh"><div class="ref" id="ref-zh-4" data-refnum="4"><span class="ref-num">[4]</span> <span class="ref-body">Feldman, Y. Extreme Design by Contract. In Proc. XP 2003, LNCS, Springer-Verlag, 2003.</span></div></div></div>
+<div class="row row-ref" data-i="69"><div class="cell cell-en" data-i="69" data-side="en"><div class="ref" id="ref-en-5" data-refnum="5"><span class="ref-num">[5]</span> <span class="ref-body">Fowler, M. and K. Beck. Refactoring, Addison-Wesley, 1999.</span></div></div><div class="cell cell-zh" data-i="69" data-side="zh"><div class="ref" id="ref-zh-5" data-refnum="5"><span class="ref-num">[5]</span> <span class="ref-body">Fowler, M. and K. Beck. Refactoring, Addison-Wesley, 1999.</span></div></div></div>
+<div class="row row-ref" data-i="70"><div class="cell cell-en" data-i="70" data-side="en"><div class="ref" id="ref-en-6" data-refnum="6"><span class="ref-num">[6]</span> <span class="ref-body">Gamma, E. and K. Beck. JUnit: A cook&#x27;s tour. Java Report, p27-38, 1999.</span></div></div><div class="cell cell-zh" data-i="70" data-side="zh"><div class="ref" id="ref-zh-6" data-refnum="6"><span class="ref-num">[6]</span> <span class="ref-body">Gamma, E. and K. Beck. JUnit: A cook&#x27;s tour. Java Report, p27-38, 1999.</span></div></div></div>
+<div class="row row-ref" data-i="71"><div class="cell cell-en" data-i="71" data-side="en"><div class="ref" id="ref-en-7" data-refnum="7"><span class="ref-num">[7]</span> <span class="ref-body">Leavens, G.T., K.R.M. Leino, E. Poll, C. Ruby, and B. Jacobs. JML: notations and tools supporting detailed design in Java. In OOPSLA 2000 Companion, ACM, 2000.</span></div></div><div class="cell cell-zh" data-i="71" data-side="zh"><div class="ref" id="ref-zh-7" data-refnum="7"><span class="ref-num">[7]</span> <span class="ref-body">Leavens, G.T., K.R.M. Leino, E. Poll, C. Ruby, and B. Jacobs. JML: notations and tools supporting detailed design in Java. In OOPSLA 2000 Companion, ACM, 2000.</span></div></div></div>
+<div class="row row-ref" data-i="72"><div class="cell cell-en" data-i="72" data-side="en"><div class="ref" id="ref-en-8" data-refnum="8"><span class="ref-num">[8]</span> <span class="ref-body">Makalsky, D. ETester Unit Testing Framework. Available at sourceforge.net/projects/etester, 2003.</span></div></div><div class="cell cell-zh" data-i="72" data-side="zh"><div class="ref" id="ref-zh-8" data-refnum="8"><span class="ref-num">[8]</span> <span class="ref-body">Makalsky, D. ETester Unit Testing Framework. Available at sourceforge.net/projects/etester, 2003.</span></div></div></div>
+<div class="row row-ref" data-i="73"><div class="cell cell-en" data-i="73" data-side="en"><div class="ref" id="ref-en-9" data-refnum="9"><span class="ref-num">[9]</span> <span class="ref-body">Martin, R.C. Agile software development, Pearson Education, 2003.</span></div></div><div class="cell cell-zh" data-i="73" data-side="zh"><div class="ref" id="ref-zh-9" data-refnum="9"><span class="ref-num">[9]</span> <span class="ref-body">Martin, R.C. Agile software development, Pearson Education, 2003.</span></div></div></div>
+<div class="row row-ref" data-i="74"><div class="cell cell-en" data-i="74" data-side="en"><div class="ref" id="ref-en-10" data-refnum="10"><span class="ref-num">[10]</span> <span class="ref-body">Meyer, B. Object-Oriented Software Construction. Prentice Hall, 1997.</span></div></div><div class="cell cell-zh" data-i="74" data-side="zh"><div class="ref" id="ref-zh-10" data-refnum="10"><span class="ref-num">[10]</span> <span class="ref-body">Meyer, B. Object-Oriented Software Construction. Prentice Hall, 1997.</span></div></div></div>
+<div class="row row-ref" data-i="75"><div class="cell cell-en" data-i="75" data-side="en"><div class="ref" id="ref-en-11" data-refnum="11"><span class="ref-num">[11]</span> <span class="ref-body">Meyer, B. Practice to Perfect: the Quality-First Model. IEEE Computer 30(5), 1997.</span></div></div><div class="cell cell-zh" data-i="75" data-side="zh"><div class="ref" id="ref-zh-11" data-refnum="11"><span class="ref-num">[11]</span> <span class="ref-body">Meyer, B. Practice to Perfect: the Quality-First Model. IEEE Computer 30(5), 1997.</span></div></div></div>
+<div class="row row-ref" data-i="76"><div class="cell cell-en" data-i="76" data-side="en"><div class="ref" id="ref-en-12" data-refnum="12"><span class="ref-num">[12]</span> <span class="ref-body">Meyer, B. Towards practical proofs of class correctness. In Proc. ZB 2003, Springer-Verlag, LNCS 2651, p359-387, 2003.</span></div></div><div class="cell cell-zh" data-i="76" data-side="zh"><div class="ref" id="ref-zh-12" data-refnum="12"><span class="ref-num">[12]</span> <span class="ref-body">Meyer, B. Towards practical proofs of class correctness. In Proc. ZB 2003, Springer-Verlag, LNCS 2651, p359-387, 2003.</span></div></div></div>
+<div class="row row-ref" data-i="77"><div class="cell cell-en" data-i="77" data-side="en"><div class="ref" id="ref-en-13" data-refnum="13"><span class="ref-num">[13]</span> <span class="ref-body">Meyer, B. Personal communication, June 2003.</span></div></div><div class="cell cell-zh" data-i="77" data-side="zh"><div class="ref" id="ref-zh-13" data-refnum="13"><span class="ref-num">[13]</span> <span class="ref-body">Meyer, B. Personal communication, June 2003.</span></div></div></div>
+<div class="row row-ref" data-i="78"><div class="cell cell-en" data-i="78" data-side="en"><div class="ref" id="ref-en-14" data-refnum="14"><span class="ref-num">[14]</span> <span class="ref-body">Paige, R. and J.S. Ostroff. The Single Model Principle. Journal of Object Oriented Technology, 1(5): 2002.</span></div></div><div class="cell cell-zh" data-i="78" data-side="zh"><div class="ref" id="ref-zh-14" data-refnum="14"><span class="ref-num">[14]</span> <span class="ref-body">Paige, R. and J.S. Ostroff. The Single Model Principle. Journal of Object Oriented Technology, 1(5): 2002.</span></div></div></div>
+<div class="row row-ref" data-i="79"><div class="cell cell-en" data-i="79" data-side="en"><div class="ref" id="ref-en-15" data-refnum="15"><span class="ref-num">[15]</span> <span class="ref-body">Williams, L. and A. Cockburn. Agile Software Development: It&#x27;s about Feedback. Computer, 36(6): p39-43, 2003.</span></div></div><div class="cell cell-zh" data-i="79" data-side="zh"><div class="ref" id="ref-zh-15" data-refnum="15"><span class="ref-num">[15]</span> <span class="ref-body">Williams, L. and A. Cockburn. Agile Software Development: It&#x27;s about Feedback. Computer, 36(6): p39-43, 2003.</span></div></div></div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Figure zoom">
+  <div class="lightbox-content" id="lightbox-content">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">×</button>
+  </div>
+</div>
+
+<script>
+const REFS = {"en": {"1": "Beck, K. Test-driven Development: by example, Addison-Wesley, 2003.", "2": "Beck, K., A. Cockburn, R. Jeffries, and J. Highsmith. Agile Manifesto <a href=\"https://www.agilemanifesto.org/history.html.\" target=\"_blank\" rel=\"noopener\">www.agilemanifesto.org/history.html.</a> 2001.", "3": "Berry, D.M. Formal methods: the very idea \u2014 Some thoughts about why they work when they work. Science of Computer Programming, 42(1): p11\u201327, 2002.", "4": "Feldman, Y. Extreme Design by Contract. In Proc. XP 2003, LNCS, Springer-Verlag, 2003.", "5": "Fowler, M. and K. Beck. Refactoring, Addison-Wesley, 1999.", "6": "Gamma, E. and K. Beck. JUnit: A cook&#x27;s tour. Java Report, p27-38, 1999.", "7": "Leavens, G.T., K.R.M. Leino, E. Poll, C. Ruby, and B. Jacobs. JML: notations and tools supporting detailed design in Java. In OOPSLA 2000 Companion, ACM, 2000.", "8": "Makalsky, D. ETester Unit Testing Framework. Available at sourceforge.net/projects/etester, 2003.", "9": "Martin, R.C. Agile software development, Pearson Education, 2003.", "10": "Meyer, B. Object-Oriented Software Construction. Prentice Hall, 1997.", "11": "Meyer, B. Practice to Perfect: the Quality-First Model. IEEE Computer 30(5), 1997.", "12": "Meyer, B. Towards practical proofs of class correctness. In Proc. ZB 2003, Springer-Verlag, LNCS 2651, p359-387, 2003.", "13": "Meyer, B. Personal communication, June 2003.", "14": "Paige, R. and J.S. Ostroff. The Single Model Principle. Journal of Object Oriented Technology, 1(5): 2002.", "15": "Williams, L. and A. Cockburn. Agile Software Development: It&#x27;s about Feedback. Computer, 36(6): p39-43, 2003."}, "zh": {"1": "Beck, K. Test-driven Development: by example, Addison-Wesley, 2003.", "2": "Beck, K., A. Cockburn, R. Jeffries, and J. Highsmith. Agile Manifesto <a href=\"https://www.agilemanifesto.org/history.html.\" target=\"_blank\" rel=\"noopener\">www.agilemanifesto.org/history.html.</a> 2001.", "3": "Berry, D.M. Formal methods: the very idea \u2014 Some thoughts about why they work when they work. Science of Computer Programming, 42(1): p11\u201327, 2002.", "4": "Feldman, Y. Extreme Design by Contract. In Proc. XP 2003, LNCS, Springer-Verlag, 2003.", "5": "Fowler, M. and K. Beck. Refactoring, Addison-Wesley, 1999.", "6": "Gamma, E. and K. Beck. JUnit: A cook&#x27;s tour. Java Report, p27-38, 1999.", "7": "Leavens, G.T., K.R.M. Leino, E. Poll, C. Ruby, and B. Jacobs. JML: notations and tools supporting detailed design in Java. In OOPSLA 2000 Companion, ACM, 2000.", "8": "Makalsky, D. ETester Unit Testing Framework. Available at sourceforge.net/projects/etester, 2003.", "9": "Martin, R.C. Agile software development, Pearson Education, 2003.", "10": "Meyer, B. Object-Oriented Software Construction. Prentice Hall, 1997.", "11": "Meyer, B. Practice to Perfect: the Quality-First Model. IEEE Computer 30(5), 1997.", "12": "Meyer, B. Towards practical proofs of class correctness. In Proc. ZB 2003, Springer-Verlag, LNCS 2651, p359-387, 2003.", "13": "Meyer, B. Personal communication, June 2003.", "14": "Paige, R. and J.S. Ostroff. The Single Model Principle. Journal of Object Oriented Technology, 1(5): 2002.", "15": "Williams, L. and A. Cockburn. Agile Software Development: It&#x27;s about Feedback. Computer, 36(6): p39-43, 2003."}};
+
+// --- Mode switching ---
+document.querySelectorAll('.modes button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    document.body.classList.remove('mode-bilingual', 'mode-zh', 'mode-en');
+    document.body.classList.add('mode-' + mode);
+    document.querySelectorAll('.modes button').forEach(b => b.classList.toggle('active', b === btn));
+  });
+});
+
+// On small screens, default to mode-zh
+if (window.matchMedia('(max-width: 768px)').matches) {
+  document.body.classList.remove('mode-bilingual');
+  document.body.classList.add('mode-zh');
+  document.querySelectorAll('.modes button').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === 'zh');
+  });
+}
+
+// --- Cell highlight pairing ---
+document.querySelectorAll('.cell').forEach(cell => {
+  cell.addEventListener('click', (e) => {
+    // Don't trigger when clicking interactive elements
+    if (e.target.closest('a, sup.cite, .fig-body, button')) return;
+    const i = cell.dataset.i;
+    document.querySelectorAll('.row.active-highlight').forEach(r => r.classList.remove('active-highlight'));
+    const row = document.querySelector(`.row[data-i="${i}"]`);
+    if (row) row.classList.add('active-highlight');
+  });
+});
+
+// --- Citation popovers ---
+let currentPop = null;
+function closePop() {
+  if (currentPop) { currentPop.remove(); currentPop = null; }
+}
+function showPop(citeEl) {
+  closePop();
+  const n = citeEl.dataset.ref;
+  // Determine side from ancestor cell
+  const cell = citeEl.closest('.cell');
+  const side = cell ? cell.dataset.side : 'en';
+  const refText = (REFS[side] && REFS[side][n]) || (REFS.en && REFS.en[n]) || '';
+  if (!refText) return;
+  const pop = document.createElement('div');
+  pop.className = 'cite-pop';
+  pop.innerHTML = `<span class="pop-num">[${n}]</span> ${refText}`;
+  document.body.appendChild(pop);
+  // Position
+  const r = citeEl.getBoundingClientRect();
+  const popW = Math.min(380, window.innerWidth - 24);
+  pop.style.maxWidth = popW + 'px';
+  // Place below; if no room, place above
+  let top = window.scrollY + r.bottom + 6;
+  let left = window.scrollX + r.left;
+  // Clamp horizontally
+  const popRect = pop.getBoundingClientRect();
+  if (left + popRect.width > window.scrollX + window.innerWidth - 12) {
+    left = window.scrollX + window.innerWidth - popRect.width - 12;
+  }
+  if (left < window.scrollX + 12) left = window.scrollX + 12;
+  // Vertical flip
+  if (r.bottom + popRect.height + 12 > window.innerHeight) {
+    top = window.scrollY + r.top - popRect.height - 6;
+  }
+  pop.style.top = top + 'px';
+  pop.style.left = left + 'px';
+  currentPop = pop;
+}
+
+const isTouch = window.matchMedia('(hover: none)').matches;
+
+document.querySelectorAll('sup.cite').forEach(c => {
+  if (!isTouch) {
+    c.addEventListener('mouseenter', () => showPop(c));
+    c.addEventListener('mouseleave', () => closePop());
+    c.addEventListener('focus', () => showPop(c));
+    c.addEventListener('blur', () => closePop());
+    c.addEventListener('click', (e) => {
+      e.preventDefault();
+      jumpToRef(c);
+    });
+  } else {
+    // Touch: 1st tap shows popover; 2nd tap (already shown) jumps
+    c.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (currentPop && currentPop.dataset.for === c.dataset.ref) {
+        jumpToRef(c);
+        closePop();
+      } else {
+        showPop(c);
+        if (currentPop) currentPop.dataset.for = c.dataset.ref;
+      }
+    });
+  }
+});
+
+function jumpToRef(citeEl) {
+  const n = citeEl.dataset.ref;
+  const cell = citeEl.closest('.cell');
+  const side = cell ? cell.dataset.side : 'en';
+  // Try to find ref on the same side first; fall back to other side.
+  let target = document.getElementById(`ref-${side}-${n}`);
+  if (!target) target = document.getElementById(`ref-en-${n}`) || document.getElementById(`ref-zh-${n}`);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.querySelectorAll('.ref.ref-active').forEach(r => r.classList.remove('ref-active'));
+    target.classList.add('ref-active');
+    setTimeout(() => target.classList.remove('ref-active'), 2400);
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (currentPop && !e.target.closest('sup.cite') && !e.target.closest('.cite-pop')) {
+    closePop();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closePop(); closeLightbox(); }
+});
+
+// --- Lightbox for figure SVGs ---
+const lb = document.getElementById('lightbox');
+const lbContent = document.getElementById('lightbox-content');
+const lbClose = document.getElementById('lightbox-close');
+
+function openLightbox(svgEl) {
+  // Clone, strip width/height, ensure 100% width
+  const clone = svgEl.cloneNode(true);
+  clone.removeAttribute('width');
+  clone.removeAttribute('height');
+  clone.style.width = '100%';
+  clone.style.height = 'auto';
+  clone.style.maxHeight = '80vh';
+  // Clear and add
+  while (lbContent.children.length > 1) lbContent.removeChild(lbContent.lastChild);
+  lbContent.appendChild(clone);
+  lb.classList.add('open');
+}
+function closeLightbox() { lb.classList.remove('open'); }
+
+document.querySelectorAll('.fig-body').forEach(fb => {
+  fb.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const svg = fb.querySelector('svg');
+    if (svg) openLightbox(svg);
+  });
+});
+lbClose.addEventListener('click', closeLightbox);
+lb.addEventListener('click', (e) => {
+  if (e.target === lb) closeLightbox();
+});
+</script>
+
+</body>
+</html>

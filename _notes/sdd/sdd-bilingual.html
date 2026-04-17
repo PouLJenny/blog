@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>规约驱动开发：在 AI 编程助手时代，从代码到契约 · 双语对照</title>
+<style>
+:root {
+  --primary: #009f52;
+  --primary-soft: #e1f5ec;
+  --primary-dark: #04342c;
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --border: #e5e5e0;
+  --code-bg: #f1efe8;
+  --quote-bg: #f4faf7;
+  --quote-border: #9fd8bc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #5dcaa5;
+    --primary-soft: #0f4032;
+    --primary-dark: #e1f5ec;
+    --bg: #1a1a1a;
+    --surface: #222220;
+    --text: #eaeaea;
+    --text-muted: #999;
+    --border: #333330;
+    --code-bg: #2c2c2a;
+    --quote-bg: #1f2a24;
+    --quote-border: #2d5e48;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.75;
+  font-size: 15px;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.topbar h1 {
+  font-size: 16px; font-weight: 500; margin: 0;
+  color: var(--text);
+}
+.topbar h1 .sub { color: var(--text-muted); font-weight: 400; margin-left: 8px; font-size: 13px; }
+.controls { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--text-muted); }
+.controls button {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 12px; font-size: 13px; cursor: pointer;
+  font-family: inherit;
+}
+.controls button:hover { border-color: var(--primary); color: var(--primary); }
+.controls button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+@media (prefers-color-scheme: dark) {
+  .controls button.active { color: var(--bg); }
+}
+main { max-width: 1400px; margin: 0 auto; padding: 20px 24px 80px; }
+.hint {
+  font-size: 13px; color: var(--text-muted);
+  padding: 10px 14px; background: var(--surface);
+  border-radius: 8px; border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.container {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 6px 8px;
+}
+.row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  padding: 2px 6px;
+}
+.cell {
+  padding: 10px 14px; border-radius: 6px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.cell:hover { background: var(--code-bg); }
+.cell.active {
+  background: var(--primary-soft);
+  border-left-color: var(--primary);
+  color: var(--primary-dark);
+}
+.cell.en { border-right: 1px dashed var(--border); padding-right: 16px; }
+/* layout modes */
+body.mode-zh .cell.en { display: none; }
+body.mode-zh .row { grid-template-columns: 1fr; }
+body.mode-en .cell.zh { display: none; }
+body.mode-en .row { grid-template-columns: 1fr; }
+
+/* Kinds */
+.row.h1 .cell {
+  font-size: 22px; font-weight: 500; margin-top: 28px;
+  color: var(--text);
+}
+.row.h2 .cell {
+  font-size: 18px; font-weight: 500; margin-top: 20px;
+  color: var(--text);
+}
+.row.h3 .cell {
+  font-size: 16px; font-weight: 500; margin-top: 12px;
+  color: var(--text);
+}
+.row.quote .cell {
+  background: var(--quote-bg);
+  border-left-color: var(--quote-border);
+  font-style: normal;
+}
+.row.quote .cell.active {
+  background: var(--primary-soft);
+  border-left-color: var(--primary);
+}
+code {
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.92em;
+}
+strong { font-weight: 500; }
+
+.row.fig1 .cell, .row.fig2 .cell, .row.fig3 .cell {
+  padding: 16px; cursor: default;
+  background: transparent;
+}
+.row.fig1 .cell:hover, .row.fig2 .cell:hover, .row.fig3 .cell:hover {
+  background: var(--code-bg);
+}
+.row.fig1 .cell.active, .row.fig2 .cell.active, .row.fig3 .cell.active {
+  background: var(--primary-soft);
+  border-left-color: var(--primary);
+}
+.fig-wrap {
+  width: 100%; overflow-x: auto;
+  margin-bottom: 10px;
+  text-align: center;
+  cursor: zoom-in;
+  border-radius: 8px;
+  transition: background 0.15s;
+  padding: 8px;
+}
+.fig-wrap:hover { background: var(--code-bg); }
+.fig-wrap svg { max-width: 100%; height: auto; font-family: inherit; }
+.fig-caption {
+  font-size: 13px; color: var(--text-muted);
+  text-align: center; line-height: 1.5;
+  padding: 0 8px;
+}
+
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(10, 10, 10, 0.88);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 40px;
+  cursor: zoom-out;
+}
+.lightbox.open { display: flex; }
+.lightbox-inner {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 40px 48px;
+  width: min(95vw, 1600px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-inner svg {
+  width: 100%;
+  height: auto;
+  max-height: 85vh;
+  display: block;
+}
+.lightbox-close {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: transparent; border: none;
+  color: #fff; font-size: 36px; line-height: 1;
+  cursor: pointer; padding: 8px 16px;
+  font-family: inherit;
+  opacity: 0.8;
+  z-index: 101;
+}
+.lightbox-close:hover { opacity: 1; }
+@media print {
+  .lightbox { display: none !important; }
+}
+.row.ref .cell {
+  font-size: 13px; line-height: 1.5;
+  padding: 6px 12px;
+  color: var(--text-muted);
+  word-break: break-word;
+}
+.row.ref .cell a {
+  color: var(--primary); text-decoration: none;
+  word-break: break-all;
+}
+.row.ref .cell a:hover { text-decoration: underline; }
+
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 0;
+  font-family: "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13px; line-height: 1.55;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text);
+}
+.row.code .cell { cursor: pointer; padding: 8px 12px; }
+
+.infobox {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.infobox-row { display: block; }
+.infobox-label { font-weight: 500; color: var(--text); }
+.infobox-value { color: var(--text); }
+.row.infobox .cell { padding: 8px 14px; }
+
+/* Inline citation markers [N] */
+.cite {
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.78em;
+  vertical-align: super;
+  line-height: 1;
+  padding: 0 1px;
+  font-weight: 500;
+  border-radius: 3px;
+  transition: background 0.12s;
+  user-select: none;
+}
+.cite:hover, .cite:focus {
+  background: var(--primary-soft);
+  outline: none;
+}
+
+/* Citation popover */
+.cite-popover {
+  position: absolute;
+  z-index: 50;
+  max-width: 420px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+}
+.cite-popover .cite-num {
+  font-weight: 500;
+  color: var(--primary);
+  margin-right: 4px;
+}
+.cite-popover a {
+  color: var(--primary);
+  text-decoration: none;
+  word-break: break-all;
+}
+.cite-popover a:hover { text-decoration: underline; }
+@media (prefers-color-scheme: dark) {
+  .cite-popover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+}
+
+.table-wrap {
+  width: 100%; overflow-x: auto;
+  margin: 8px 0;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.data-table caption {
+  text-align: left;
+  font-size: 13px; color: var(--text-muted);
+  padding: 4px 0 10px;
+  caption-side: top;
+}
+.data-table th, .data-table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.data-table th {
+  font-weight: 500;
+  color: var(--text);
+  background: var(--code-bg);
+  border-bottom: 1.5px solid var(--primary);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.row.table .cell { padding: 10px 14px; cursor: pointer; }
+
+@media (max-width: 768px) {
+  /* Tighter outer spacing */
+  main { padding: 12px 14px 60px; }
+  .topbar { padding: 10px 14px; }
+  .topbar h1 { font-size: 14px; line-height: 1.3; }
+  .topbar h1 .sub { display: none; }
+  .controls button { padding: 6px 10px; font-size: 12px; }
+  .hint { font-size: 12px; padding: 8px 12px; }
+
+  /* Default to single-column stacked on mobile, but keep EN visible
+     by dimming below ZH. User can toggle via top buttons. */
+  body:not(.mode-en):not(.mode-zh) .row {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 2px 4px;
+  }
+  body:not(.mode-en):not(.mode-zh) .cell {
+    padding: 10px 12px;
+    border-left-width: 2px;
+  }
+  body:not(.mode-en):not(.mode-zh) .cell.en {
+    border-right: none;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding-top: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+  body:not(.mode-en):not(.mode-zh) .cell.zh {
+    padding-bottom: 4px;
+  }
+  /* In single-lang modes on mobile, cells fill width naturally */
+  body.mode-zh .row, body.mode-en .row {
+    grid-template-columns: 1fr;
+    padding: 2px 4px;
+  }
+
+  /* Larger touch-friendly cite markers */
+  .cite {
+    font-size: 0.82em;
+    padding: 2px 4px;
+    margin: 0 1px;
+  }
+  .cite-popover {
+    max-width: calc(100vw - 24px);
+    font-size: 13px;
+    padding: 12px 14px;
+  }
+
+  /* Figures: tighter padding, bigger tap zone */
+  .fig-wrap { padding: 12px 4px; }
+  .fig-caption { font-size: 12px; padding: 0 4px; }
+
+  /* Lightbox: fill screen, bigger close button */
+  .lightbox { padding: 12px; }
+  .lightbox-inner {
+    padding: 16px;
+    width: 100%;
+  }
+  .lightbox-close {
+    top: 8px; right: 12px;
+    font-size: 32px;
+    padding: 10px 16px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Code block: smaller font, tighter padding */
+  .code-block { font-size: 12px; padding: 10px 12px; }
+
+  /* Info box: still one unit, but tighter */
+  .infobox { padding: 10px 12px; font-size: 13px; }
+
+  /* Tables: already have overflow-x, just tighten text */
+  .data-table { font-size: 12px; }
+  .data-table th, .data-table td { padding: 6px 8px; }
+
+  /* References: smaller, URLs wrap */
+  .row.ref .cell { font-size: 12px; padding: 4px 10px; }
+
+  /* Container less padding */
+  .container { padding: 4px 2px; }
+}
+
+/* Very narrow phones (< 400px) — squeeze headings */
+@media (max-width: 400px) {
+  .row.h1 .cell { font-size: 18px; }
+  .row.h2 .cell { font-size: 16px; }
+  .row.h3 .cell { font-size: 15px; }
+}
+@media print {
+  .topbar .controls { display: none; }
+  .hint { display: none; }
+  .cell { cursor: default; }
+  .container { border: none; padding: 0; }
+  body { background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>规约驱动开发：在 AI 编程助手时代，从代码到契约 <span class="sub">· Spec-Driven Development</span></h1>
+  <div class="controls">
+    <button data-mode="both" class="active">双语</button>
+    <button data-mode="zh">中文</button>
+    <button data-mode="en">English</button>
+  </div>
+</div>
+<main>
+  <div class="hint">
+    点击任一侧的段落，两边同一编号的段落会同步高亮；点击图片可放大查看；顶部按钮可切换单语言视图。共 160 段。
+  </div>
+  <div class="container" id="doc">
+<div class="row h1"><div class="cell en" data-i="0">Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants</div><div class="cell zh" data-i="0">规约驱动开发：在 AI 编程助手时代，从代码到契约</div></div>
+<div class="row p"><div class="cell en" data-i="1">Deepak Babu Piskala — Seattle, USA — Technical Report</div><div class="cell zh" data-i="1">Deepak Babu Piskala — 美国，西雅图 — 技术报告</div></div>
+<div class="row h1"><div class="cell en" data-i="2">Abstract</div><div class="cell zh" data-i="2">摘要</div></div>
+<div class="row p"><div class="cell en" data-i="3">The rise of AI coding assistants has reignited interest in an old idea: what if specifications—not code—were the primary artifact of software development? Spec-driven development (SDD) inverts the traditional workflow by treating specifications as the source of truth and code as a generated or verified secondary artifact. This paper provides practitioners with a comprehensive guide to SDD, covering its principles, workflow patterns, and supporting tools. We present three levels of specification rigor—spec-first, spec-anchored, and spec-as-source—with clear guidance on when each applies. Through analysis of tools ranging from Behavior-Driven Development frameworks to modern AI-assisted toolkits like GitHub Spec Kit, we demonstrate how the spec-first philosophy maps to real implementations. We present case studies from API development, enterprise systems, and embedded software, illustrating how different domains apply SDD. We conclude with a decision framework helping practitioners determine when SDD provides value and when simpler approaches suffice.</div><div class="cell zh" data-i="3">AI 编程助手的兴起让一个老话题重新受到关注：如果把&quot;规约&quot;——而不是代码——当作软件开发的核心产物，会怎样？规约驱动开发（Spec-Driven Development, SDD）颠倒了传统工作流：它把规约视为&quot;事实之源（source of truth）&quot;，把代码视为由规约生成或验证而得的次级产物。本文为从业者提供一份关于 SDD 的完整指南，涵盖其原则、工作流模式以及配套工具。我们提出三种严格程度不同的规约层级——规约先行（spec-first）、规约锚定（spec-anchored）、规约即源（spec-as-source）——并清晰说明各自适用的场景。通过分析从行为驱动开发（BDD）框架到 GitHub Spec Kit 等现代 AI 辅助工具包的一系列工具，我们展示&quot;规约先行&quot;理念如何落地到真实工程实现。我们给出了来自 API 开发、企业系统和嵌入式软件的案例研究，说明不同领域如何应用 SDD。最后，我们给出一套决策框架，帮助从业者判断何时 SDD 能带来价值，何时用更简单的方法就已足够。</div></div>
+<div class="row p"><div class="cell en" data-i="4">Index Terms — Spec-Driven Development, AI-Assisted Coding, Behavior-Driven Development, Test-Driven Development, API Design First, Software Specifications</div><div class="cell zh" data-i="4">关键词 —— 规约驱动开发、AI 辅助编程、行为驱动开发、测试驱动开发、API 设计先行、软件规约。</div></div>
+<div class="row h1"><div class="cell en" data-i="5">I. Introduction</div><div class="cell zh" data-i="5">一、引言</div></div>
+<div class="row p"><div class="cell en" data-i="6">For decades, code has been the king of software development. Requirements documents exist, but they drift. Design diagrams are drawn, but they rot. Tests are written, but often after the fact. The code—whatever it actually does—becomes the de facto truth of the system.</div><div class="cell zh" data-i="6">几十年来，代码一直是软件开发中的&quot;王者&quot;。需求文档确实存在，但会漂移；设计图也会画，但会腐烂；测试会写，但常常是事后补的。最后，代码——不管它实际在做什么——事实上成了整个系统的&quot;真相&quot;。</div></div>
+<div class="row p"><div class="cell en" data-i="7">This code-centric reality has consequences. When a new developer asks &quot;what should this function do?&quot; the answer is often &quot;read the code.&quot; When a stakeholder asks &quot;does the system meet our requirements?&quot; the answer requires reverse-engineering intent from implementation. When an AI coding assistant is asked to add a feature, it must guess what the developer wants from a vague prompt.</div><div class="cell zh" data-i="7">这种&quot;以代码为中心&quot;的现实会带来后果。当新来的开发者问&quot;这个函数应该做什么？&quot;，答案往往是&quot;去读代码&quot;。当利益相关方问&quot;系统是否满足我们的需求？&quot;，回答这个问题就需要从实现中反推意图。当 AI 编程助手被要求加一个功能时，它必须从一句模糊的提示里去猜开发者想要什么。</div></div>
+<div class="row p"><div class="cell en" data-i="8">Spec-driven development (SDD) <sup class="cite" data-ref="2" tabindex="0">[2]</sup><sup class="cite" data-ref="4" tabindex="0">[4]</sup> offers an alternative: make the specification the source of truth, and let code derive from it. Instead of coding first and documenting later (or never), teams write clear specifications of intended behavior, then generate, implement, or verify code against those specifications. The spec becomes the authoritative description that both humans and machines use to understand, build, and maintain the system.</div><div class="cell zh" data-i="8">规约驱动开发（SDD）<sup class="cite" data-ref="2" tabindex="0">[2]</sup><sup class="cite" data-ref="4" tabindex="0">[4]</sup> 给出了另一种选择：让规约成为事实之源，让代码由它派生。不再是&quot;先写代码、之后补文档（或者根本不补）&quot;，而是：团队先把预期行为以清晰的规约写出来，再针对这份规约去生成、实现或验证代码。规约成了人和机器都依赖的权威描述，用来理解、构建和维护系统。</div></div>
+<div class="row h2"><div class="cell en" data-i="9">A. The AI Catalyst</div><div class="cell zh" data-i="9">A. AI 的催化作用</div></div>
+<div class="row p"><div class="cell en" data-i="10">While spec-first thinking is not new—Test-Driven Development (TDD) and Behavior-Driven Development (BDD) have advocated for it for years—the emergence of AI coding assistants <sup class="cite" data-ref="15" tabindex="0">[15]</sup><sup class="cite" data-ref="28" tabindex="0">[28]</sup> has made SDD newly relevant. The problem is simple: AI models are excellent at pattern completion but poor at mind reading.</div><div class="cell zh" data-i="10">&quot;规约先行&quot;的思路并不新——测试驱动开发（TDD）和行为驱动开发（BDD）多年来一直在倡导这一点——但 AI 编程助手 <sup class="cite" data-ref="15" tabindex="0">[15]</sup><sup class="cite" data-ref="28" tabindex="0">[28]</sup> 的出现让 SDD 重新变得紧迫。问题很简单：AI 模型非常擅长模式补全，却不擅长读心。</div></div>
+<div class="row p"><div class="cell en" data-i="11">Consider a developer who prompts an AI with: &quot;Add photo sharing to my app.&quot; The AI must guess: What format? What permissions model? What size limits? Cloud storage or local? Compression? The result is often plausible-looking code that makes dozens of unstated assumptions—many of them wrong.</div><div class="cell zh" data-i="11">设想一个开发者对 AI 说：&quot;给我的应用加一个照片分享功能。&quot;AI 必须去猜：什么格式？什么权限模型？尺寸上限多少？云端存储还是本地？要不要压缩？结果常常是一段&quot;看起来合理&quot;的代码，背后却塞进了几十条未说明的假设——其中很多是错的。</div></div>
+<div class="row p"><div class="cell en" data-i="12">This is what practitioners call &quot;vibe coding&quot;—relying on loose prompts that lead to inconsistent or erroneous outputs from LLMs. By providing AI with unambiguous, executable contracts, SDD enhances the reliability of coding agents and opens new avenues for scalable software creation.</div><div class="cell zh" data-i="12">这就是业界所说的&quot;凭感觉编程（vibe coding）&quot;——依赖松散的提示，让大模型输出前后不一致甚至错误的结果。SDD 给 AI 提供无歧义、可执行的契约，既提升了编程智能体的可靠性，也为&quot;可规模化地生产软件&quot;打开了新的路径。</div></div>
+<div class="row p"><div class="cell en" data-i="13">Now consider the same request with a specification: &quot;Users can upload JPEG or PNG photos up to 10MB. Photos are stored in S3 with user-ID-prefixed keys. Only the uploader can delete their photos. Photos are resized to 1024px max dimension on upload.&quot; The AI now has enough information to generate code that matches intent.</div><div class="cell zh" data-i="13">再看同一个请求，但这次带上规约：&#x27;用户可以上传 JPEG 或 PNG 格式的照片，大小不超过 10MB；照片存储在 S3 中，key 以用户 ID 作为前缀；只有上传者可以删除自己的照片；上传时照片会被调整到最长边 1024 像素。&#x27;这下 AI 就有足够信息生成符合意图的代码了。</div></div>
+<div class="row quote"><div class="cell en" data-i="14"><strong>Key Insight — The Core Principle:</strong> In spec-driven development, code is the implementation detail of the specification—not the other way around. The spec declares intent; the code realizes it.</div><div class="cell zh" data-i="14"><strong>核心洞见 —— 核心原则：</strong> 在规约驱动开发中，代码是规约的&quot;实现细节&quot;，而不是反过来。规约宣告意图，代码负责兑现。</div></div>
+<div class="row h2"><div class="cell en" data-i="15">B. What This Paper Provides</div><div class="cell zh" data-i="15">B. 本文提供什么</div></div>
+<div class="row p"><div class="cell en" data-i="16">This paper serves as a practitioner&#x27;s guide to spec-driven development. We begin by defining clear levels of specification rigor—spec-first, spec-anchored, and spec-as-source—and articulating when each approach applies. We then present a practical workflow for implementing SDD, examining how the approach works both with and without AI assistance. A survey of tools and frameworks follows, ranging from traditional BDD frameworks to modern AI-assisted toolkits. Case studies illustrate SDD in action across API development, enterprise systems, and embedded software domains. Finally, we provide guidance on when SDD delivers value and when simpler approaches suffice.</div><div class="cell zh" data-i="16">本文可作为规约驱动开发的一份从业者指南。我们先定义三种清晰的规约严格度层级——规约先行、规约锚定、规约即源——并说明各自的适用场景；接着给出一套实施 SDD 的实用工作流，分别考察在有 AI 辅助和没有 AI 辅助时它如何运作；随后综述相关工具与框架，从传统 BDD 框架到现代 AI 辅助工具包；再用 API 开发、企业系统和嵌入式软件三个领域的案例研究来展示 SDD 的实际应用；最后，给出关于&quot;何时 SDD 能带来价值、何时用更简单的方法就够了&quot;的判断指引。</div></div>
+<div class="row h1"><div class="cell en" data-i="17">II. The Specification Spectrum</div><div class="cell zh" data-i="17">二、规约的光谱</div></div>
+<div class="row p"><div class="cell en" data-i="18">Not all spec-driven approaches are equal. Teams adopt different levels of rigor depending on their needs, tooling, and domain constraints. Figure 1 illustrates the spectrum from traditional code-first development to fully spec-as-source approaches. Understanding where your team falls on this spectrum—and where it should be—is the first step in adopting SDD effectively.</div><div class="cell zh" data-i="18">并非所有&quot;规约驱动&quot;的做法都在同一个严格程度上。不同团队会根据自身需求、工具链和领域约束选择不同的严格度。图 1 展示了一条从传统&quot;代码先行&quot;一直到完全&quot;规约即源&quot;的光谱。搞清楚你的团队现在在这条光谱的哪个位置、以及应该在哪个位置，是有效采用 SDD 的第一步。</div></div>
+<div class="row fig1"><div class="cell en" data-i="19"><div class="fig-wrap"><svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><text x="440" y="22" text-anchor="middle" class="fig-label-muted" font-style="italic">What is the source of truth?</text><line x1="40" y1="80" x2="840" y2="80" class="fig-axis" marker-end="url(#ah)"/><text x="30" y="84" text-anchor="end" class="fig-title">Code-First</text><text x="850" y="84" text-anchor="start" class="fig-title">Spec-First</text><circle cx="130" cy="80" r="18" class="fig-gray"/><text x="130" y="55" text-anchor="middle" class="fig-title">Ad-hoc</text><text x="130" y="140" text-anchor="middle" class="fig-sub">Code first</text><text x="130" y="158" text-anchor="middle" class="fig-sub">Docs later</text><text x="130" y="176" text-anchor="middle" class="fig-sub">Drift common</text><circle cx="330" cy="80" r="18" class="fig-blue"/><text x="330" y="55" text-anchor="middle" class="fig-title">Spec-First</text><text x="330" y="140" text-anchor="middle" class="fig-sub">Spec guides</text><text x="330" y="158" text-anchor="middle" class="fig-sub">initial build</text><text x="330" y="176" text-anchor="middle" class="fig-sub">May abandon</text><circle cx="540" cy="80" r="18" class="fig-purple"/><text x="540" y="55" text-anchor="middle" class="fig-title">Spec-Anchored</text><text x="540" y="140" text-anchor="middle" class="fig-sub">Spec maintained</text><text x="540" y="158" text-anchor="middle" class="fig-sub">alongside code</text><text x="540" y="176" text-anchor="middle" class="fig-sub">Sync enforced</text><circle cx="760" cy="80" r="18" class="fig-green"/><text x="760" y="55" text-anchor="middle" class="fig-title">Spec-as-Source</text><text x="760" y="140" text-anchor="middle" class="fig-sub">Spec is the code</text><text x="760" y="158" text-anchor="middle" class="fig-sub">Generate only</text><text x="760" y="176" text-anchor="middle" class="fig-sub">Never edit code</text><rect x="40" y="240" width="800" height="12" rx="3" class="fig-gradient-bar"/><text x="440" y="282" text-anchor="middle" class="fig-label-muted" font-style="italic">Increasing specification authority →</text></svg></div><div class="fig-caption">Fig. 1. The specification spectrum. Moving right increases the authority of specifications over code, but also increases the discipline required to maintain alignment.</div></div><div class="cell zh" data-i="19"><div class="fig-wrap"><svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><text x="440" y="22" text-anchor="middle" class="fig-label-muted" font-style="italic">What is the source of truth?</text><line x1="40" y1="80" x2="840" y2="80" class="fig-axis" marker-end="url(#ah)"/><text x="30" y="84" text-anchor="end" class="fig-title">Code-First</text><text x="850" y="84" text-anchor="start" class="fig-title">Spec-First</text><circle cx="130" cy="80" r="18" class="fig-gray"/><text x="130" y="55" text-anchor="middle" class="fig-title">Ad-hoc</text><text x="130" y="140" text-anchor="middle" class="fig-sub">Code first</text><text x="130" y="158" text-anchor="middle" class="fig-sub">Docs later</text><text x="130" y="176" text-anchor="middle" class="fig-sub">Drift common</text><circle cx="330" cy="80" r="18" class="fig-blue"/><text x="330" y="55" text-anchor="middle" class="fig-title">Spec-First</text><text x="330" y="140" text-anchor="middle" class="fig-sub">Spec guides</text><text x="330" y="158" text-anchor="middle" class="fig-sub">initial build</text><text x="330" y="176" text-anchor="middle" class="fig-sub">May abandon</text><circle cx="540" cy="80" r="18" class="fig-purple"/><text x="540" y="55" text-anchor="middle" class="fig-title">Spec-Anchored</text><text x="540" y="140" text-anchor="middle" class="fig-sub">Spec maintained</text><text x="540" y="158" text-anchor="middle" class="fig-sub">alongside code</text><text x="540" y="176" text-anchor="middle" class="fig-sub">Sync enforced</text><circle cx="760" cy="80" r="18" class="fig-green"/><text x="760" y="55" text-anchor="middle" class="fig-title">Spec-as-Source</text><text x="760" y="140" text-anchor="middle" class="fig-sub">Spec is the code</text><text x="760" y="158" text-anchor="middle" class="fig-sub">Generate only</text><text x="760" y="176" text-anchor="middle" class="fig-sub">Never edit code</text><rect x="40" y="240" width="800" height="12" rx="3" class="fig-gradient-bar"/><text x="440" y="282" text-anchor="middle" class="fig-label-muted" font-style="italic">Increasing specification authority →</text></svg></div><div class="fig-caption">图 1. 规约的光谱。向右走，规约相对于代码的权威性越高，但维持对齐所需的纪律也越强。</div></div></div>
+<div class="row h2"><div class="cell en" data-i="20">A. Spec-First: Guided Initial Development</div><div class="cell zh" data-i="20">A. 规约先行（Spec-First）：引导初始开发</div></div>
+<div class="row quote"><div class="cell en" data-i="21"><strong>Definition — Spec-First:</strong> In spec-first development, a specification is written before coding to guide the initial implementation. Once code exists, the spec may or may not be maintained—the primary value is in the initial clarity it provides.</div><div class="cell zh" data-i="21"><strong>定义 —— 规约先行：</strong> 在规约先行模式中，规约是在写代码之前就写好的，用来引导最初的实现。一旦代码存在，这份规约可能会被继续维护，也可能不会——它的核心价值在于&quot;起步时提供清晰度&quot;。</div></div>
+<div class="row p"><div class="cell en" data-i="22">Spec-first represents the entry point to SDD. Before writing code, the developer or team articulates what the code should do, typically as a user story with acceptance criteria, a BDD scenario, or a detailed requirements document. The spec guides implementation, but once the code is written and tests pass, the spec may be discarded or allowed to drift.</div><div class="cell zh" data-i="22">规约先行是进入 SDD 的入口层。在动手写代码之前，开发者或团队先明确代码应该做什么，通常以&quot;带验收标准的用户故事&quot;、&quot;一段 BDD 场景&quot;或&quot;一份详细的需求文档&quot;的形式写出来。这份规约用于引导实现，但一旦代码写完、测试通过，它就可能被丢到一边，或者被允许逐渐漂移。</div></div>
+<div class="row p"><div class="cell en" data-i="23">The defining characteristic of spec-first development is that the specification is written before implementation begins, ensuring that developers have a clear target before they start coding. However, the code becomes the primary artifact post-implementation, and the spec may become outdated as the code evolves through subsequent iterations. This approach carries a lower maintenance burden than stronger specification disciplines, making it practical for teams that cannot commit to ongoing spec maintenance.</div><div class="cell zh" data-i="23">规约先行最显著的特征，是在实现开始之前就已经写好了规约——这保证开发者在动笔之前已经有了明确的靶子。但实现完成之后，代码会成为主导产物，而规约在后续迭代中可能会过时。这种做法比更强的规约纪律维护成本更低，对于那些无法持续投入维护规约的团队来说是个务实的选择。</div></div>
+<div class="row p"><div class="cell en" data-i="24">Spec-first works particularly well for initial feature development when working with AI coding assistants. The upfront spec prevents the AI from guessing at requirements, dramatically improving the quality of generated code. It is also valuable for prototypes and one-off features where the cost of maintaining a spec alongside code indefinitely is not justified. However, spec-first does not protect against drift over time—if the codebase will be maintained long-term, teams should consider spec-anchored approaches.</div><div class="cell zh" data-i="24">规约先行尤其适合&quot;在 AI 编程助手协助下做新功能的初次开发&quot;：前置的规约能阻止 AI 去&quot;猜&quot;需求，显著提升生成代码的质量。它对原型和一次性功能也有价值——这类场景下&quot;长期维护一份规约&quot;的成本并不划算。不过，规约先行并不能防止&quot;随时间漂移&quot;：如果这段代码将会长期维护，团队应该考虑改用规约锚定的做法。</div></div>
+<div class="row h2"><div class="cell en" data-i="25">B. Spec-Anchored: Living Documentation</div><div class="cell zh" data-i="25">B. 规约锚定（Spec-Anchored）：活文档</div></div>
+<div class="row quote"><div class="cell en" data-i="26"><strong>Definition — Spec-Anchored:</strong> In spec-anchored development, the specification is maintained alongside the code throughout the system&#x27;s lifecycle. Changes to behavior require updating both the spec and the code, keeping them synchronized.</div><div class="cell zh" data-i="26"><strong>定义 —— 规约锚定：</strong> 在规约锚定模式中，规约在系统的整个生命周期中都与代码并行维护。任何行为上的变更都要求同时更新规约和代码，保持二者同步。</div></div>
+<div class="row p"><div class="cell en" data-i="27">Spec-anchored development treats the spec as a living document that evolves with the codebase. When a feature changes, the spec is updated first or simultaneously with the code. Automated checks—typically in the form of tests derived from the spec—ensure that spec and code remain aligned. If they drift, tests fail, providing immediate feedback that the system&#x27;s documentation no longer reflects its behavior.</div><div class="cell zh" data-i="27">规约锚定把规约当作一份&quot;活文档&quot;，与代码库一同演化。当一个功能发生变化时，规约要么先更新，要么与代码同步更新。自动化检查——通常以&quot;从规约派生出的测试&quot;的形式——保证规约和代码始终对齐。一旦二者漂移，测试就会失败，立即反馈给团队：&quot;系统的文档已经不能再反映它的实际行为了。&quot;</div></div>
+<div class="row p"><div class="cell en" data-i="28">In this approach, the specification and code evolve together as equal partners. Tests enforce the alignment between them, with BDD scenarios commonly serving as automated tests that run on every commit. The spec serves as always-up-to-date documentation that developers and stakeholders can trust. However, maintaining this alignment requires discipline and tooling support—teams must commit to updating specs whenever behavior changes.</div><div class="cell zh" data-i="28">在这种模式下，规约和代码作为平等的搭档一同演化。测试强制它们对齐，其中 BDD 场景通常作为每次提交都会跑的自动化测试。规约扮演&quot;永远保持最新&quot;的文档，开发者和利益相关方都可以信任它。但要维持这种对齐，需要纪律和工具支撑——只要行为有变，团队就必须同步更新规约。</div></div>
+<div class="row p"><div class="cell en" data-i="29">Spec-anchored is the sweet spot for most production systems. It provides the benefits of clear documentation and verifiable requirements without demanding that code be fully generated from specifications. BDD frameworks like Cucumber exemplify this approach, enabling teams to write human-readable scenarios that execute as automated tests. For API development, OpenAPI specifications paired with contract testing tools like Specmatic achieve the same alignment between spec and implementation.</div><div class="cell zh" data-i="29">规约锚定是绝大多数生产系统的最佳落点。它既提供了清晰文档和可验证需求的好处，又不强求代码必须完全由规约生成。Cucumber 这样的 BDD 框架就是这种做法的典型，让团队能写出人类可读的场景，同时作为自动化测试执行。在 API 开发中，OpenAPI 规约搭配 Specmatic 之类的契约测试工具，也能实现&quot;规约与实现对齐&quot;的效果。</div></div>
+<div class="row h2"><div class="cell en" data-i="30">C. Spec-as-Source: Humans Edit Specs, Machines Generate Code</div><div class="cell zh" data-i="30">C. 规约即源（Spec-as-Source）：人只改规约，机器生成代码</div></div>
+<div class="row quote"><div class="cell en" data-i="31"><strong>Definition — Spec-as-Source:</strong> In spec-as-source development, the specification is the only artifact humans edit directly. Code is entirely generated from the spec and should never be manually modified. Any change to behavior means changing the spec and regenerating.</div><div class="cell zh" data-i="31"><strong>定义 —— 规约即源：</strong> 在规约即源模式中，规约是人类唯一直接编辑的产物。代码完全由规约生成，不应被手工修改。任何行为变更都意味着先改规约，再重新生成代码。</div></div>
+<div class="row p"><div class="cell en" data-i="32">Spec-as-source represents the most radical form of SDD. The specification becomes, in effect, the source code—just expressed at a higher level of abstraction. Developers think in terms of requirements and behavior; machines translate that into executable code. If you want to change functionality, you change the spec and regenerate—you never edit the generated code directly.</div><div class="cell zh" data-i="32">规约即源是 SDD 最激进的一种形态。此时规约实际上变成了&quot;源代码&quot;——只不过表达在更高的抽象层次上。开发者在需求和行为的层面思考，由机器把这些东西翻译成可执行代码。如果你想改功能，就改规约并重新生成——你永远不直接编辑生成出来的代码。</div></div>
+<div class="row p"><div class="cell en" data-i="33">This approach, drawing on Design by Contract principles <sup class="cite" data-ref="24" tabindex="0">[24]</sup>, fundamentally inverts the traditional relationship between specs and code: the specification is the primary artifact, and code is entirely derived from it. Manual code editing is either prohibited or confined to well-defined extension points. This requires mature, trusted generation tooling—developers must have confidence that generated code correctly implements the spec. In return, drift is eliminated by design: since code is regenerated rather than manually edited, spec and code are always aligned by construction.</div><div class="cell zh" data-i="33">这种做法借鉴了&quot;契约式设计（Design by Contract）&quot;的思想 <sup class="cite" data-ref="24" tabindex="0">[24]</sup>，从根本上颠倒了规约与代码的传统关系：规约是主导产物，代码完全由它派生。手工改代码要么被禁止，要么只被允许在界定清晰的扩展点上进行。这要求生成工具链足够成熟、足够可信——开发者必须相信生成出来的代码确实正确地实现了规约。作为交换，&quot;漂移&quot;被从设计上消除了：既然代码是重新生成而非手工改出来的，规约和代码就从构造上始终保持对齐。</div></div>
+<div class="row p"><div class="cell en" data-i="34">Spec-as-source is already standard practice in domains with well-defined code generation, such as generating API server stubs from OpenAPI specifications, or producing certified embedded code from Simulink models. In the automotive industry, engineers routinely build control algorithms in Simulink, verify behavior at the model level through simulation, and generate certified C code that nobody hand-edits. Emerging AI tools like Tessl aim to extend this approach to general software development, representing a future where specifications truly become &quot;the new source code.&quot; However, adopting spec-as-source requires high trust in generation quality and is currently practical only in domains where that trust has been established.</div><div class="cell zh" data-i="34">在一些代码生成已经非常成熟的领域，规约即源已是标准做法，例如根据 OpenAPI 规约生成 API 服务端桩代码，或者从 Simulink 模型产出经过认证的嵌入式代码。在汽车行业，工程师常常用 Simulink 搭建控制算法，在模型层通过仿真验证其行为，然后生成认证过的 C 代码——没人会去手改。像 Tessl 这样的新兴 AI 工具正在尝试把这种做法推广到通用软件开发，描绘出&quot;规约真正变成新的源代码&quot;的未来。但要采用规约即源，前提是对生成质量有高度信任，目前只有在这种信任已经建立的领域里才真正可行。</div></div>
+<div class="row h1"><div class="cell en" data-i="35">III. The SDD Workflow</div><div class="cell zh" data-i="35">三、SDD 的工作流</div></div>
+<div class="row p"><div class="cell en" data-i="36">How does spec-driven development work in practice? While specific tools vary, a common workflow emerges across SDD approaches. Figure 2 illustrates the four core phases. The key insight is that each phase produces an artifact that constrains and guides the next, creating a chain of accountability from intent to implementation.</div><div class="cell zh" data-i="36">规约驱动开发在实践中是怎么运作的？尽管具体工具各不相同，但各种 SDD 做法里会浮现出一条共同的工作流。图 2 展示了它的四个核心阶段。关键在于：每一个阶段都会产出一个&quot;产物&quot;，这个产物既约束又引导下一个阶段，从而构成一条&quot;从意图到实现&quot;的可追责链条。</div></div>
+<div class="row fig2"><div class="cell en" data-i="37"><div class="fig-wrap"><svg viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><style>.fig-pink{fill:#f5c4d1;stroke:#c06e89;stroke-width:1.5}@media (prefers-color-scheme:dark){.fig-pink{fill:#7a4658;stroke:#e0a4b8}}</style><text x="130" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 130 34 L 130 70" class="fig-arrow" marker-end="url(#ah)"/><text x="360" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 360 34 L 360 70" class="fig-arrow" marker-end="url(#ah)"/><text x="590" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 590 34 L 590 70" class="fig-arrow" marker-end="url(#ah)"/><text x="820" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Automated + Human</text><path d="M 820 34 L 820 70" class="fig-arrow" marker-end="url(#ah)"/><rect x="45" y="80" width="170" height="80" rx="10" class="fig-blue"/><text x="130" y="112" text-anchor="middle" class="fig-title">Specify</text><text x="130" y="134" text-anchor="middle" class="fig-sub">What to build</text><rect x="275" y="80" width="170" height="80" rx="10" class="fig-purple"/><text x="360" y="112" text-anchor="middle" class="fig-title">Plan</text><text x="360" y="134" text-anchor="middle" class="fig-sub">How to build</text><rect x="505" y="80" width="170" height="80" rx="10" class="fig-green"/><text x="590" y="112" text-anchor="middle" class="fig-title">Implement</text><text x="590" y="134" text-anchor="middle" class="fig-sub">Build it</text><rect x="735" y="80" width="170" height="80" rx="10" class="fig-pink"/><text x="820" y="112" text-anchor="middle" class="fig-title">Validate</text><text x="820" y="134" text-anchor="middle" class="fig-sub">Verify it</text><path d="M 215 120 L 271 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 445 120 L 501 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 675 120 L 731 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 820 160 Q 820 220 475 220 Q 130 220 130 162" class="fig-arrow-dashed" marker-end="url(#ah)"/><text x="475" y="244" text-anchor="middle" class="fig-label-muted" font-style="italic">Refine spec if needed</text></svg></div><div class="fig-caption">Fig. 2. The SDD workflow. Each phase produces an artifact that guides the next. Human review at each checkpoint ensures alignment with intent.</div></div><div class="cell zh" data-i="37"><div class="fig-wrap"><svg viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><style>.fig-pink{fill:#f5c4d1;stroke:#c06e89;stroke-width:1.5}@media (prefers-color-scheme:dark){.fig-pink{fill:#7a4658;stroke:#e0a4b8}}</style><text x="130" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 130 34 L 130 70" class="fig-arrow" marker-end="url(#ah)"/><text x="360" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 360 34 L 360 70" class="fig-arrow" marker-end="url(#ah)"/><text x="590" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Human review</text><path d="M 590 34 L 590 70" class="fig-arrow" marker-end="url(#ah)"/><text x="820" y="24" text-anchor="middle" class="fig-label-muted" font-style="italic">Automated + Human</text><path d="M 820 34 L 820 70" class="fig-arrow" marker-end="url(#ah)"/><rect x="45" y="80" width="170" height="80" rx="10" class="fig-blue"/><text x="130" y="112" text-anchor="middle" class="fig-title">Specify</text><text x="130" y="134" text-anchor="middle" class="fig-sub">What to build</text><rect x="275" y="80" width="170" height="80" rx="10" class="fig-purple"/><text x="360" y="112" text-anchor="middle" class="fig-title">Plan</text><text x="360" y="134" text-anchor="middle" class="fig-sub">How to build</text><rect x="505" y="80" width="170" height="80" rx="10" class="fig-green"/><text x="590" y="112" text-anchor="middle" class="fig-title">Implement</text><text x="590" y="134" text-anchor="middle" class="fig-sub">Build it</text><rect x="735" y="80" width="170" height="80" rx="10" class="fig-pink"/><text x="820" y="112" text-anchor="middle" class="fig-title">Validate</text><text x="820" y="134" text-anchor="middle" class="fig-sub">Verify it</text><path d="M 215 120 L 271 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 445 120 L 501 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 675 120 L 731 120" class="fig-arrow" marker-end="url(#ah)"/><path d="M 820 160 Q 820 220 475 220 Q 130 220 130 162" class="fig-arrow-dashed" marker-end="url(#ah)"/><text x="475" y="244" text-anchor="middle" class="fig-label-muted" font-style="italic">Refine spec if needed</text></svg></div><div class="fig-caption">图 2. SDD 的工作流。每个阶段都会产出一个引导下一阶段的产物；每个检查点上的人工评审确保与意图保持一致。</div></div></div>
+<div class="row h2"><div class="cell en" data-i="38">A. Phase 1: Specify</div><div class="cell zh" data-i="38">A. 阶段一：规约（Specify）</div></div>
+<div class="row p"><div class="cell en" data-i="39">The specify phase answers a fundamental question: What should the software do? The output is a functional specification describing behavior, requirements, and acceptance criteria—crucially, without prescribing implementation details. This separation of &quot;what&quot; from &quot;how&quot; is essential to SDD&#x27;s power.</div><div class="cell zh" data-i="39">规约阶段要回答一个根本问题：软件应该做什么？它的产出是一份功能规约，描述行为、需求与验收标准——关键是，这里不规定&quot;怎么实现&quot;。把&quot;做什么&quot;从&quot;怎么做&quot;里分离出来，是 SDD 力量的根源。</div></div>
+<div class="row p"><div class="cell en" data-i="40">During this phase, teams articulate user-facing behavior through user stories, scenarios, and acceptance criteria. They define what success looks like using Given/When/Then format or input-output examples. Business rules and constraints are captured explicitly, and edge cases and error conditions are identified upfront rather than discovered during implementation.</div><div class="cell zh" data-i="40">在这个阶段，团队通过用户故事、场景和验收标准来表达面向用户的行为；用 Given/When/Then（当/若/则）格式或输入-输出示例来定义&quot;成功是什么样&quot;。业务规则和约束被显式写下来，边界情况和错误条件也在前期就被识别，而不是在实现过程中才被发现。</div></div>
+<div class="row p"><div class="cell en" data-i="41">The quality of specifications directly determines the quality of everything that follows. Good specs share several characteristics: they are behavior-focused, describing what happens rather than how; they are testable, with each requirement being verifiable; they are unambiguous, meaning different readers reach the same interpretation; and they are complete enough to cover essential cases without over-specifying. Effective specs emphasize clarity, modularity, and self-checks that help guide AI agents during implementation.</div><div class="cell zh" data-i="41">规约的质量直接决定了后面所有环节的质量。好的规约通常具备这几个特征：聚焦行为，描述会发生什么而不是怎么发生；可测试，每条需求都可被验证；无歧义，不同读者读到的是同一个意思；足够完整，能覆盖关键情形，但不过度规定。有效的规约会强调清晰、模块化和自检点，帮助 AI 智能体在实现阶段按图施工。</div></div>
+<div class="row quote"><div class="cell en" data-i="42"><strong>Practitioner&#x27;s Tip:</strong> Write specs at the level of detail needed to remove ambiguity. If an AI or developer could interpret a requirement in multiple ways, add clarification. If there&#x27;s only one reasonable interpretation, don&#x27;t over-specify—excessive detail constrains implementation unnecessarily.</div><div class="cell zh" data-i="42"><strong>从业者建议：</strong> 把规约写到&quot;足以消除歧义&quot;的详细程度。如果一条需求 AI 或开发者可能有多种解读，就加一句澄清；如果只有一种合理解读，就别再进一步细化——过度细节会不必要地束缚实现。</div></div>
+<div class="row h2"><div class="cell en" data-i="43">B. Phase 2: Plan</div><div class="cell zh" data-i="43">B. 阶段二：规划（Plan）</div></div>
+<div class="row p"><div class="cell en" data-i="44">The plan phase answers a different question: How should we build it? Given the functional spec, this phase produces a technical plan covering architecture, data models, interfaces, and technology choices. Where the spec declares intent, the plan declares constraints on implementation.</div><div class="cell zh" data-i="44">规划阶段回答的是另一个问题：我们应该怎么把它建出来？在功能规约的基础上，本阶段产出一份技术规划，涵盖架构、数据模型、接口与技术选型。规约宣告意图，而规划则宣告对实现的&quot;约束&quot;。</div></div>
+<div class="row p"><div class="cell en" data-i="45">Planning involves selecting technologies and frameworks appropriate to the problem, defining component architecture and boundaries, designing data models and schemas, specifying interfaces including APIs, messages, and contracts, and identifying non-functional requirements around performance, security, and scalability.</div><div class="cell zh" data-i="45">规划涉及：为问题选择合适的技术与框架，定义组件架构与边界，设计数据模型与模式，规定接口（包括 API、消息和契约），以及识别围绕性能、安全和可扩展性的非功能性需求。</div></div>
+<div class="row p"><div class="cell en" data-i="46">The plan phase bridges the &quot;what&quot; and the &quot;how.&quot; It encodes constraints that the implementation must respect—for example, &quot;use PostgreSQL for persistence&quot; or &quot;all API endpoints require authentication.&quot; When using AI coding assistants, the plan provides crucial context: the AI learns not just what to build but how the system is structured and what conventions it should follow. Without this context, even a perfect functional spec may yield code that contradicts organizational standards or architectural decisions.</div><div class="cell zh" data-i="46">规划阶段是&quot;做什么&quot;与&quot;怎么做&quot;之间的桥梁。它把实现必须遵守的约束编码下来——例如&quot;用 PostgreSQL 做持久化&quot;或者&quot;所有 API 端点都要认证&quot;。在使用 AI 编程助手时，这份规划提供了关键上下文：AI 学到的不仅是&quot;要建什么&quot;，还有系统是怎么组织的、应该遵循哪些约定。没有这份上下文，即便一份完美的功能规约，也可能产出违背组织标准或架构决策的代码。</div></div>
+<div class="row h2"><div class="cell en" data-i="47">C. Phase 3: Implement</div><div class="cell zh" data-i="47">C. 阶段三：实现（Implement）</div></div>
+<div class="row p"><div class="cell en" data-i="48">The implement phase produces working code that realizes the spec according to the plan. In traditional development, this is where most effort concentrates. In SDD, particularly with AI assistance, this phase may be substantially automated—but it still requires human oversight.</div><div class="cell zh" data-i="48">实现阶段产出真正工作的代码，按照规划把规约落地。在传统开发里，大多数精力都集中在这里。在 SDD 里，尤其是在有 AI 辅助的情况下，这个阶段可以被大幅自动化——但仍然需要人的监督。</div></div>
+<div class="row p"><div class="cell en" data-i="49">Implementation begins by breaking the plan into discrete, reviewable tasks. Each task is then implemented, whether by human developers, AI assistants, or a hybrid approach. Code is reviewed against both spec and plan to verify alignment. Unit tests are written to encode spec requirements as executable assertions.</div><div class="cell zh" data-i="49">实现通常先把规划拆成一个个离散、可评审的任务；每个任务再被实现，可能由人类开发者、AI 助手，或二者混合完成。代码要对着规约和规划进行评审以验证对齐。单元测试则把规约里的需求编码成可执行的断言。</div></div>
+<div class="row p"><div class="cell en" data-i="50">A key SDD principle is working in small, validated increments. Rather than implementing the entire spec at once, teams break work into tasks where each delivers a testable piece of functionality. This enables frequent checkpoints where humans verify alignment, catching drift early before it compounds. Specifications act as &quot;super-prompts&quot; that break down complex problems into modular components aligned with agents&#x27; context windows, enabling AI systems to handle complexity that would overwhelm single-shot prompts.</div><div class="cell zh" data-i="50">SDD 的一个关键原则是&quot;以小步、带验证的增量推进&quot;。与其一口气把整份规约全部实现掉，团队更应该把工作切成任务，让每个任务都交付一块可测试的功能。这能制造出频繁的检查点，让人去核对对齐情况，早早发现漂移，避免它越积越多。规约可以被当作&quot;超级提示（super-prompt）&quot;，把复杂问题拆成与智能体上下文窗口匹配的模块化组件，让 AI 系统能处理单次提示根本应付不了的复杂度。</div></div>
+<div class="row h2"><div class="cell en" data-i="51">D. Phase 4: Validate</div><div class="cell zh" data-i="51">D. 阶段四：验证（Validate）</div></div>
+<div class="row p"><div class="cell en" data-i="52">The validate phase answers the crucial closing question: Does the code actually meet the spec? Validation closes the loop, ensuring that what was specified is what was built. This phase combines automated verification with human judgment.</div><div class="cell zh" data-i="52">验证阶段回答那个关键的收尾问题：代码真的满足规约吗？验证把回路闭合，确保&quot;规定出来的&quot;就是&quot;建出来的&quot;。这一阶段把自动化验证与人的判断结合起来。</div></div>
+<div class="row p"><div class="cell en" data-i="53">Validation encompasses running automated tests at unit, integration, and acceptance levels, executing BDD scenarios against the implementation, reviewing for adherence to non-functional requirements, and conducting stakeholder acceptance testing where appropriate.</div><div class="cell zh" data-i="53">验证涵盖：在单元、集成和验收层级上运行自动化测试，针对实现执行 BDD 场景，审查对非功能性需求的符合度，以及在合适的时候进行利益相关方验收测试。</div></div>
+<div class="row p"><div class="cell en" data-i="54">If validation reveals gaps—the code doesn&#x27;t meet the spec—the team faces a decision: fix the code or revise the spec. If the original spec was wrong or incomplete, updating it is the right choice. If the code simply doesn&#x27;t meet a valid spec, fixing the code is required. Either way, the spec remains the authority. This discipline ensures that specifications stay trustworthy—teams can rely on them because violations are detected and addressed, not ignored.</div><div class="cell zh" data-i="54">如果验证发现了缺口——代码不满足规约——团队就要做一个选择：修代码，还是改规约？如果原规约本身是错的或不完整，那么更新规约才是正确做法；如果只是代码没满足一份合理的规约，那就必须修代码。无论哪种情况，规约始终是权威。正是这种纪律让规约保持可信：团队之所以敢依赖规约，是因为违反之处会被发现和处理，而不是被忽视。</div></div>
+<div class="row h1"><div class="cell en" data-i="55">IV. How SDD Boosts AI Coding Agents</div><div class="cell zh" data-i="55">四、SDD 如何增强 AI 编程智能体</div></div>
+<div class="row p"><div class="cell en" data-i="56">Large language models like GPT-4 or Claude, when used as coding agents, benefit immensely from SDD by receiving optimized, context-rich inputs. Specifications act as super-prompts that break down complex problems into modular components aligned with agents&#x27; context windows. AI agents can generate code from specs while self-verifying against checklists for requirements adherence.</div><div class="cell zh" data-i="56">像 GPT-4 或 Claude 这样的大型语言模型，作为编程智能体使用时，通过接收优化过、语境丰富的输入，从 SDD 中获益极大。规约扮演&quot;超级提示&quot;的角色，把复杂问题拆成与智能体上下文窗口匹配的模块化组件。AI 智能体可以从规约出发生成代码，同时对照清单自检是否满足需求。</div></div>
+<div class="row p"><div class="cell en" data-i="57">Empirical studies <sup class="cite" data-ref="5" tabindex="0">[5]</sup><sup class="cite" data-ref="6" tabindex="0">[6]</sup>, though nascent, suggest that human-refined specs significantly improve LLM-generated code quality, with controlled studies showing error reductions of up to 50%. This boosting effect is particularly evident in scalable scenarios: specifications enable parallel agent execution on non-overlapping tasks, with orchestration for dependencies. Teams can partition work at the spec level, allowing multiple AI agents to implement different components simultaneously without interference.</div><div class="cell zh" data-i="57">现有的实证研究 <sup class="cite" data-ref="5" tabindex="0">[5]</sup><sup class="cite" data-ref="6" tabindex="0">[6]</sup> 虽仍处早期，但提示：人工打磨过的规约能显著提升大模型生成代码的质量——有对照实验显示错误率最多下降 50%。这种增强效应在可规模化的场景中尤为明显：规约使&quot;多个智能体并行处理彼此不重叠的任务&quot;成为可能，并配合对依赖关系的编排。团队可以在&quot;规约层&quot;切分工作，让多个 AI 智能体同时实现不同组件而互不干扰。</div></div>
+<div class="row p"><div class="cell en" data-i="58">Challenges remain, including LLM non-determinism—even structured specs can lead to varying outputs. Techniques like property-based testing (PBT) address this by automatically verifying that invariants from specs are satisfied regardless of implementation variation. In embedded systems and other safety-critical domains, SDD combines LLM generation with formal verification to ensure compliance with standards like ISO 26262 <sup class="cite" data-ref="25" tabindex="0">[25]</sup>. Overall, SDD transforms AI agents from reactive tools into proactive collaborators, enhancing efficiency particularly in brownfield projects where legacy constraints are encoded in specifications.</div><div class="cell zh" data-i="58">挑战依然存在，其中之一是大模型的非确定性——即便给了结构化规约，输出也可能每次不同。像&quot;基于属性的测试（PBT）&quot;这类技术可以缓解这一点，它会自动验证&quot;来自规约的不变式&quot;是否被满足，不论实现上有多少变化。在嵌入式系统等安全关键领域，SDD 把大模型生成与形式化验证结合起来，确保符合 ISO 26262 <sup class="cite" data-ref="25" tabindex="0">[25]</sup> 这类标准。整体而言，SDD 把 AI 智能体从&quot;被动工具&quot;转变成&quot;主动协作者&quot;，尤其在&quot;棕地项目（brownfield）&quot;里效率提升明显——在那里，历史遗留的约束会被写进规约。</div></div>
+<div class="row p"><div class="cell en" data-i="59">An emerging approach involves &quot;self-spec&quot; methods where LLMs author their own specifications before generating code. The agent first produces a spec from a high-level prompt, which is then reviewed and refined by humans before the same or another agent implements against it. This creates an explicit separation between planning and execution, catching requirement misunderstandings before code is written.</div><div class="cell zh" data-i="59">一种新兴做法是&quot;自写规约（self-spec）&quot;：让大模型在生成代码之前，先自己起草一份规约。智能体先根据高层提示产出规约，人类对其进行评审和打磨，然后让同一个或另一个智能体按这份规约去实现。这样就在&quot;规划&quot;和&quot;执行&quot;之间做出了显式区分，在写代码之前就抓住了对需求的误解。</div></div>
+<div class="row h1"><div class="cell en" data-i="60">V. Tools and Frameworks</div><div class="cell zh" data-i="60">五、工具与框架</div></div>
+<div class="row p"><div class="cell en" data-i="61">A variety of tools support spec-driven development, from traditional testing frameworks to modern AI-assisted toolkits. Table I summarizes key categories. Common approaches include phased workflows (specify, plan, tasks, implement) and tools ranging from Kiro for VS Code-based specs to spec-kit for CLI-driven projects to Tessl for spec-as-source models.</div><div class="cell zh" data-i="61">支持规约驱动开发的工具多种多样，从传统测试框架一直到现代 AI 辅助工具包。表 1 对主要类别做了总结。常见做法包括分阶段工作流（规约、规划、任务、实现），以及各式各样的工具：有基于 VS Code 写规约的 Kiro、有为命令行项目设计的 spec-kit，还有面向规约即源模型的 Tessl。</div></div>
+<div class="row table"><div class="cell en" data-i="62"><div class="table-wrap"><table class="data-table"><caption>Table I. Tools and frameworks supporting spec-driven development.</caption><thead><tr><th>Category</th><th>Examples</th><th>Role in SDD</th></tr></thead><tbody><tr><td>BDD Frameworks</td><td>Cucumber, SpecFlow, Behave</td><td>Write executable specs in plain language (Gherkin)</td></tr><tr><td>TDD Frameworks</td><td>RSpec, JUnit, pytest</td><td>Encode specifications as unit tests</td></tr><tr><td>API Specification</td><td>OpenAPI/Swagger, GraphQL SDL, Protocol Buffers</td><td>Define contracts</td><td>generate code and tests</td></tr><tr><td>Contract Testing</td><td>Pact, Specmatic</td><td>Verify implementations match specs</td></tr><tr><td>AI-Assisted SDD</td><td>GitHub Spec Kit, Amazon Kiro, Tessl</td><td>Structured AI workflows from spec to code</td></tr><tr><td>Model-Based Design <sup class="cite" data-ref="26" tabindex="0">[26]</sup></td><td>Simulink, SCADE</td><td>Visual specs that generate embedded code</td></tr></tbody></table></div></div><div class="cell zh" data-i="62"><div class="table-wrap"><table class="data-table"><caption>表 1. 支持规约驱动开发的工具与框架。</caption><thead><tr><th>类别</th><th>代表工具</th><th>在 SDD 中的角色</th></tr></thead><tbody><tr><td>BDD 框架</td><td>Cucumber、SpecFlow、Behave</td><td>用平实语言（Gherkin）写可执行规约</td></tr><tr><td>TDD 框架</td><td>RSpec、JUnit、pytest</td><td>把规约编码为单元测试</td></tr><tr><td>API 规约</td><td>OpenAPI/Swagger、GraphQL SDL、Protocol Buffers</td><td>定义契约，生成代码与测试</td></tr><tr><td>契约测试</td><td>Pact、Specmatic</td><td>验证实现是否与规约匹配</td></tr><tr><td>AI 辅助 SDD</td><td>GitHub Spec Kit、Amazon Kiro、Tessl</td><td>从规约到代码的结构化 AI 工作流</td></tr><tr><td>基于模型的设计 <sup class="cite" data-ref="26" tabindex="0">[26]</sup></td><td>Simulink、SCADE</td><td>用可视化规约生成嵌入式代码</td></tr></tbody></table></div></div></div>
+<div class="row h2"><div class="cell en" data-i="63">A. Behavior-Driven Development (BDD) Frameworks</div><div class="cell zh" data-i="63">A. 行为驱动开发（BDD）框架</div></div>
+<div class="row p"><div class="cell en" data-i="64">BDD frameworks allow teams to write specifications in near-natural language that can be executed as tests. The canonical format is Gherkin <sup class="cite" data-ref="16" tabindex="0">[16]</sup>, which uses structured scenarios with Given/When/Then clauses:</div><div class="cell zh" data-i="64">BDD 框架允许团队用接近自然语言的方式写规约，而这些规约可以作为测试执行。它的规范化格式是 Gherkin <sup class="cite" data-ref="16" tabindex="0">[16]</sup>，使用带 Given/When/Then 子句的结构化场景：</div></div>
+<div class="row code"><div class="cell en" data-i="65"><pre class="code-block">Feature: Shopping Cart
+  Scenario: Adding item to empty cart
+    Given the cart is empty
+    When I add item &quot;Widget&quot; to the cart
+    Then the cart should contain 1 item
+    And the item should be &quot;Widget&quot;</pre></div><div class="cell zh" data-i="65"><pre class="code-block">Feature: Shopping Cart
+  Scenario: Adding item to empty cart
+    Given the cart is empty
+    When I add item &quot;Widget&quot; to the cart
+    Then the cart should contain 1 item
+    And the item should be &quot;Widget&quot;</pre></div></div>
+<div class="row p"><div class="cell en" data-i="66">These scenarios serve dual purposes: documentation that stakeholders can read and automated tests that verify code. Tools like Cucumber <sup class="cite" data-ref="7" tabindex="0">[7]</sup> (Ruby, Java, JavaScript), SpecFlow <sup class="cite" data-ref="21" tabindex="0">[21]</sup> (.NET), and Behave <sup class="cite" data-ref="22" tabindex="0">[22]</sup> (Python) execute these scenarios against the application, bridging the gap between business requirements and technical implementation.</div><div class="cell zh" data-i="66">这些场景承担双重角色：既是利益相关方可读的文档，也是验证代码的自动化测试。Cucumber <sup class="cite" data-ref="7" tabindex="0">[7]</sup>（Ruby、Java、JavaScript）、SpecFlow <sup class="cite" data-ref="21" tabindex="0">[21]</sup>（.NET）、Behave <sup class="cite" data-ref="22" tabindex="0">[22]</sup>（Python）等工具会让这些场景在应用上运行，从而在业务需求和技术实现之间架起桥梁。</div></div>
+<div class="row quote"><div class="cell en" data-i="67"><strong>Practitioner&#x27;s Tip:</strong> BDD scenarios are specifications, not just tests. Write them before implementation, involve stakeholders in their creation, and treat them as the authoritative description of feature behavior. When scenarios pass, you have confidence that the system meets its documented requirements.</div><div class="cell zh" data-i="67"><strong>从业者建议：</strong> BDD 场景是规约，不只是测试。在实现之前就写好它们，让利益相关方参与编写，并把它们当作对功能行为的权威描述。当场景全部通过时，你就有信心认定：系统满足了它被记录下来的需求。</div></div>
+<div class="row h2"><div class="cell en" data-i="68">B. API Specification Tools</div><div class="cell zh" data-i="68">B. API 规约工具</div></div>
+<div class="row p"><div class="cell en" data-i="69">In API development, spec-driven approaches have been standard practice under the names &quot;design-first&quot; or &quot;API-first&quot; <sup class="cite" data-ref="23" tabindex="0">[23]</sup> for years. OpenAPI <sup class="cite" data-ref="8" tabindex="0">[8]</sup> (formerly Swagger) enables teams to define REST APIs with complete endpoint specifications, request/response schemas, and examples, then generate server stubs, client SDKs, and documentation from the spec. GraphQL SDL <sup class="cite" data-ref="17" tabindex="0">[17]</sup> allows teams to define types, queries, and mutations in a schema that becomes the contract between frontend and backend, enabling parallel development. For event-driven architectures, AsyncAPI <sup class="cite" data-ref="27" tabindex="0">[27]</sup> provides similar specification capabilities. Protocol Buffers <sup class="cite" data-ref="18" tabindex="0">[18]</sup> and gRPC <sup class="cite" data-ref="19" tabindex="0">[19]</sup> enable definition of service interfaces and message types with automatic generation of strongly-typed client and server code.</div><div class="cell zh" data-i="69">在 API 开发领域，规约驱动的做法多年来早已以&quot;设计先行（design-first）&quot;或&quot;API 先行（API-first）&quot;<sup class="cite" data-ref="23" tabindex="0">[23]</sup> 的名字成为标准实践。OpenAPI <sup class="cite" data-ref="8" tabindex="0">[8]</sup>（以前叫 Swagger）让团队可以完整定义 REST API 的端点规约、请求/响应模式和示例，然后从规约生成服务端桩代码、客户端 SDK 和文档。GraphQL SDL <sup class="cite" data-ref="17" tabindex="0">[17]</sup> 让团队用一份 schema 定义类型、查询和变更，这份 schema 就是前后端之间的契约，可以支持并行开发。对于事件驱动架构，AsyncAPI <sup class="cite" data-ref="27" tabindex="0">[27]</sup> 提供了类似的规约能力。Protocol Buffers <sup class="cite" data-ref="18" tabindex="0">[18]</sup> 和 gRPC <sup class="cite" data-ref="19" tabindex="0">[19]</sup> 则允许定义服务接口和消息类型，并自动生成强类型的客户端与服务端代码。</div></div>
+<div class="row p"><div class="cell en" data-i="70">The benefit of API specification tools is clear: once the API spec is agreed upon, frontend and backend teams can work in parallel with confidence. The spec is the contract; any implementation that matches the spec is valid by definition. Contract testing tools like Pact <sup class="cite" data-ref="20" tabindex="0">[20]</sup> and Specmatic <sup class="cite" data-ref="9" tabindex="0">[9]</sup> automate verification that implementations actually match their specs.</div><div class="cell zh" data-i="70">API 规约工具的好处很直接：一旦 API 规约达成一致，前后端团队就可以放心地并行工作。规约就是契约；任何符合规约的实现按定义都算有效。像 Pact <sup class="cite" data-ref="20" tabindex="0">[20]</sup> 和 Specmatic <sup class="cite" data-ref="9" tabindex="0">[9]</sup> 这样的契约测试工具可以自动验证&quot;实现确实与其规约匹配&quot;。</div></div>
+<div class="row h2"><div class="cell en" data-i="71">C. AI-Assisted SDD Tools</div><div class="cell zh" data-i="71">C. AI 辅助的 SDD 工具</div></div>
+<div class="row p"><div class="cell en" data-i="72">Emerging tools structure AI coding workflows explicitly around specifications, recognizing that multi-step prompting with explicit artifacts yields better results than single-shot &quot;just code this&quot; prompts.</div><div class="cell zh" data-i="72">一批新工具围绕&quot;规约&quot;明确地重塑了 AI 编程工作流，因为人们意识到：带显式产物的多步提示，比单步&quot;就把这段写了&quot;的提示，效果好得多。</div></div>
+<div class="row p"><div class="cell en" data-i="73">GitHub Spec Kit <sup class="cite" data-ref="1" tabindex="0">[1]</sup> is an open-source toolkit providing commands for spec-driven AI development. The workflow follows four explicit phases: <code>/specify</code> generates a detailed spec from a prompt, <code>/plan</code> creates technical architecture, <code>/tasks</code> breaks the plan into implementation tasks, and finally implementation generates code task by task. At each phase, humans review and refine before proceeding, maintaining alignment between intent and implementation.</div><div class="cell zh" data-i="73">GitHub Spec Kit <sup class="cite" data-ref="1" tabindex="0">[1]</sup> 是一个开源工具包，为&quot;规约驱动的 AI 开发&quot;提供命令。其工作流分四个显式阶段：<code>/specify</code> 根据提示生成详细规约，<code>/plan</code> 制定技术架构，<code>/tasks</code> 把规划拆成实现任务，最后在实现阶段按任务逐个生成代码。每个阶段人类都会先评审、打磨再继续，保持意图和实现之间的对齐。</div></div>
+<div class="row p"><div class="cell en" data-i="74">Amazon Kiro <sup class="cite" data-ref="13" tabindex="0">[13]</sup> guides users through requirements, design, and task creation stages before any code generation begins. Kiro emphasizes structured requirements capture and iterative refinement, ensuring AI has clear context before attempting implementation. The explicit staging prevents the AI from guessing at requirements that were never specified.</div><div class="cell zh" data-i="74">Amazon Kiro <sup class="cite" data-ref="13" tabindex="0">[13]</sup> 引导用户依次经过需求、设计和任务创建阶段，然后才开始生成代码。Kiro 强调结构化的需求捕获与迭代打磨，确保 AI 在尝试实现之前已经有了清晰上下文。这种显式分段能阻止 AI 去&quot;猜&quot;那些从未被指定的需求。</div></div>
+<div class="row p"><div class="cell en" data-i="75">Tessl <sup class="cite" data-ref="14" tabindex="0">[14]</sup> takes the most radical approach: spec-as-source where the specification is the maintained artifact and code is regenerated from it. Tessl represents the emerging vision of &quot;specs as the new source code,&quot; where developers never edit generated code—they edit specs and regenerate.</div><div class="cell zh" data-i="75">Tessl <sup class="cite" data-ref="14" tabindex="0">[14]</sup> 走的是最激进的路线：规约即源——规约是被维护的产物，代码由它重新生成。Tessl 代表了&quot;规约作为新的源代码&quot;这一正在出现的愿景：开发者永远不编辑生成的代码，他们编辑规约并重新生成。</div></div>
+<div class="row p"><div class="cell en" data-i="76">These tools share a common insight: separating planning from implementation allows agents to focus on execution within defined boundaries, reducing the non-determinism that plagues loosely-prompted AI coding.</div><div class="cell zh" data-i="76">这些工具都体现出一个共同洞见：把规划与实现分开，能让智能体在已界定的边界内专注执行，从而减少那种折磨着&quot;松散提示式 AI 编程&quot;的非确定性。</div></div>
+<div class="row h1"><div class="cell en" data-i="77">VI. Case Studies</div><div class="cell zh" data-i="77">六、案例研究</div></div>
+<div class="row h2"><div class="cell en" data-i="78">A. Case Study 1: API-First Microservices</div><div class="cell zh" data-i="78">A. 案例研究一：API 先行的微服务</div></div>
+<div class="row infobox"><div class="cell en" data-i="79"><div class="infobox"><div class="infobox-row"><span class="infobox-label">Domain:</span> <span class="infobox-value">Financial services microservices</span></div><div class="infobox-row"><span class="infobox-label">Pattern:</span> <span class="infobox-value">Spec-anchored with OpenAPI</span></div><div class="infobox-row"><span class="infobox-label">Outcome:</span> <span class="infobox-value">75% reduction in integration cycle time</span></div></div></div><div class="cell zh" data-i="79"><div class="infobox"><div class="infobox-row"><span class="infobox-label">领域:</span> <span class="infobox-value">金融服务业的微服务</span></div><div class="infobox-row"><span class="infobox-label">模式:</span> <span class="infobox-value">用 OpenAPI 做规约锚定</span></div><div class="infobox-row"><span class="infobox-label">结果:</span> <span class="infobox-value">API 变更的集成周期时间缩短 75%</span></div></div></div></div>
+<div class="row p"><div class="cell en" data-i="80">A financial services company struggled with what they called &quot;integration hell&quot;—microservices frequently failed when deployed together because teams made incompatible assumptions about API contracts. Each team implemented their service in isolation, and incompatibilities only surfaced during integration testing, requiring expensive rework.</div><div class="cell zh" data-i="80">一家金融服务公司深受他们自己称为&quot;集成地狱&quot;的问题困扰——多个微服务在一起部署时频繁失败，因为各团队对 API 契约做出的假设互不兼容。每个团队都在孤岛里实现自己的服务，不兼容的问题直到集成测试才浮出水面，代价高昂的返工随之而来。</div></div>
+<div class="row p"><div class="cell en" data-i="81">The company mandated API-first development as their solution. Before implementing any service, teams wrote OpenAPI specifications defining endpoints, request/response schemas, and error conditions. Consumer teams reviewed these specs and provided feedback before any coding began. This front-loaded the integration discussions that previously happened too late.</div><div class="cell zh" data-i="81">这家公司的对策是强制推行 API 先行开发。在实现任何服务之前，团队先写 OpenAPI 规约，把端点、请求/响应模式和错误条件定义清楚。消费方团队在任何代码动笔之前就先评审这份规约、给出反馈。这样一来，以前那些拖得太晚才发生的集成讨论，被提前到了项目前期。</div></div>
+<div class="row p"><div class="cell en" data-i="82">They used Specmatic <sup class="cite" data-ref="9" tabindex="0">[9]</sup> to generate mock servers from specs, allowing frontend development to proceed in parallel with backend work. More critically, Specmatic validated that implemented services matched their specs in CI. Any deviation caused the build to fail, preventing drift from accumulating.</div><div class="cell zh" data-i="82">他们使用 Specmatic <sup class="cite" data-ref="9" tabindex="0">[9]</sup> 从规约生成 mock 服务器，让前端开发可以和后端工作并行推进。更关键的是，Specmatic 在 CI 里校验实现的服务是否真的匹配规约。一旦出现偏差，构建就会失败，从而防止漂移累积。</div></div>
+<div class="row p"><div class="cell en" data-i="83">Integration failures dropped dramatically after adoption. Teams reported a 75% reduction in cycle time for API changes because incompatibilities were caught at the spec review stage rather than in production. The specs became the contract that all parties trusted, eliminating the ambiguity that had caused so much rework.</div><div class="cell zh" data-i="83">采用之后，集成失败率大幅下降。团队报告说 API 变更的周期时间缩短了 75%——因为不兼容的问题在&quot;规约评审&quot;阶段就被抓住了，而不是拖到生产环境。规约成了各方都信任的契约，消除了以往造成大量返工的歧义。</div></div>
+<div class="row h2"><div class="cell en" data-i="84">B. Case Study 2: BDD for Enterprise Features</div><div class="cell zh" data-i="84">B. 案例研究二：企业功能中的 BDD</div></div>
+<div class="row infobox"><div class="cell en" data-i="85"><div class="infobox"><div class="infobox-row"><span class="infobox-label">Domain:</span> <span class="infobox-value">Enterprise project management software</span></div><div class="infobox-row"><span class="infobox-label">Pattern:</span> <span class="infobox-value">Spec-anchored with Cucumber</span></div><div class="infobox-row"><span class="infobox-label">Outcome:</span> <span class="infobox-value">Stakeholder-verifiable requirements; reduced requirement ambiguity</span></div></div></div><div class="cell zh" data-i="85"><div class="infobox"><div class="infobox-row"><span class="infobox-label">领域:</span> <span class="infobox-value">企业级项目管理软件</span></div><div class="infobox-row"><span class="infobox-label">模式:</span> <span class="infobox-value">用 Cucumber 做规约锚定</span></div><div class="infobox-row"><span class="infobox-label">结果:</span> <span class="infobox-value">需求可被利益相关方验证；需求歧义减少</span></div></div></div></div>
+<div class="row p"><div class="cell en" data-i="86">An enterprise software team found that developers and product managers frequently disagreed on what &quot;done&quot; meant for features. Developers would implement something they believed met requirements, QA would find it didn&#x27;t match product expectations, and arguments ensued about whose interpretation was correct. The lack of a shared, authoritative definition of expected behavior caused friction and rework.</div><div class="cell zh" data-i="86">一个企业软件团队发现，开发者和产品经理经常在&quot;功能做完是什么意思&quot;上意见相左。开发者会按他们自己认为满足需求的方式去实现，随后 QA 发现这与产品的期望并不一致，于是大家就开始争论&quot;到底谁的理解才对&quot;。对预期行为缺乏一个共享且权威的定义，造成了摩擦与返工。</div></div>
+<div class="row p"><div class="cell en" data-i="87">The team adopted Cucumber for all user-facing features as their solution. Product managers wrote Gherkin scenarios describing expected behavior in plain language. Developers implemented step definitions to automate these scenarios as executable tests. A feature was only considered &quot;done&quot; when all its scenarios passed, providing an objective, verifiable definition of completion.</div><div class="cell zh" data-i="87">他们的对策是：在所有面向用户的功能上采用 Cucumber。产品经理用 Gherkin 以平实语言写场景来描述预期行为；开发者则实现步骤定义，把这些场景自动化为可执行测试。只有当一个功能的全部场景都通过时，它才算&quot;做完&quot;，从而为&quot;完成&quot;提供了一个客观、可验证的定义。</div></div>
+<div class="row p"><div class="cell en" data-i="88">The Gherkin scenarios became a shared language that both business and technical stakeholders could read and validate. Product managers could verify that scenarios captured their intent. When disputes arose, the scenario was the authority—if the scenario was wrong, it was updated with explicit agreement from stakeholders; if the code was wrong, developers fixed it. This eliminated the ambiguity that had caused so much rework and conflict.</div><div class="cell zh" data-i="88">这些 Gherkin 场景成了一种业务和技术双方都能读、都能验证的共享语言。产品经理可以核实场景是否抓住了他们的意图。出现分歧时，场景本身就是权威——如果场景写错了，就在利益相关方明确同意下更新它；如果代码写错了，开发者就去修。这就消除了以往引起大量返工和冲突的歧义。</div></div>
+<div class="row h2"><div class="cell en" data-i="89">C. Case Study 3: Model-Based Embedded Development</div><div class="cell zh" data-i="89">C. 案例研究三：基于模型的嵌入式开发</div></div>
+<div class="row infobox"><div class="cell en" data-i="90"><div class="infobox"><div class="infobox-row"><span class="infobox-label">Domain:</span> <span class="infobox-value">Automotive engine control</span></div><div class="infobox-row"><span class="infobox-label">Pattern:</span> <span class="infobox-value">Spec-as-source with Simulink</span></div><div class="infobox-row"><span class="infobox-label">Outcome:</span> <span class="infobox-value">Verified control logic; certified code generation</span></div></div></div><div class="cell zh" data-i="90"><div class="infobox"><div class="infobox-row"><span class="infobox-label">领域:</span> <span class="infobox-value">汽车发动机控制</span></div><div class="infobox-row"><span class="infobox-label">模式:</span> <span class="infobox-value">基于 Simulink 的规约即源</span></div><div class="infobox-row"><span class="infobox-label">结果:</span> <span class="infobox-value">控制逻辑得到验证；代码生成通过认证</span></div></div></div></div>
+<div class="row p"><div class="cell en" data-i="91">An automotive supplier needed to develop engine control software that met ISO 26262 safety certification requirements. Manual coding was error-prone, and certification required tracing every line of code to specific requirements—a labor-intensive process when code was hand-written.</div><div class="cell zh" data-i="91">一家汽车供应商需要开发满足 ISO 26262 安全认证要求的发动机控制软件。手工编码容易出错，而认证又要求把每一行代码追溯到具体的需求——在代码是手写的情况下，这是一项极费人力的工作。</div></div>
+<div class="row p"><div class="cell en" data-i="92">The team used MathWorks Simulink <sup class="cite" data-ref="10" tabindex="0">[10]</sup> to model control algorithms as block diagrams with state machines. The model was the specification: engineers simulated and verified behavior at the model level, catching algorithmic errors before any code existed. Once the model was verified through simulation, code was auto-generated from the model using a certified code generator.</div><div class="cell zh" data-i="92">他们的做法是使用 MathWorks Simulink <sup class="cite" data-ref="10" tabindex="0">[10]</sup>，把控制算法建模为带状态机的框图。这份模型就是规约：工程师在模型层进行仿真和验证，能在任何代码存在之前就捕获算法错误。模型通过仿真验证后，使用经过认证的代码生成器从模型自动生成代码。</div></div>
+<div class="row p"><div class="cell en" data-i="93">The model-to-code generation was itself certified, meaning the generated C code was guaranteed to behave as the model specified. Engineers never edited generated code; if control logic needed changing, they changed the model and regenerated. This ensured the verified model and deployed code remained perfectly aligned by construction.</div><div class="cell zh" data-i="93">&quot;从模型到代码&quot;这一步本身也是经过认证的，这意味着生成出的 C 代码在行为上被保证与模型所规定的一致。工程师从不编辑生成的代码；如果控制逻辑需要修改，他们去改模型，再重新生成。这从构造上保证了&quot;通过验证的模型&quot;与&quot;部署的代码&quot;始终完美对齐。</div></div>
+<div class="row p"><div class="cell en" data-i="94">This approach embodies spec-as-source at its most rigorous: the specification (Simulink model) is the only artifact humans modify, and the implementation (C code) is entirely generated. SDD in embedded systems combines LLM generation with formal verification to ensure safety-critical compliance, demonstrating how specs ensure precision in domains like automotive and aerospace where errors can be catastrophic.</div><div class="cell zh" data-i="94">这种做法体现了规约即源最严格的形态：规约（Simulink 模型）是人类唯一会修改的产物，而实现（C 代码）完全由其生成。嵌入式系统中的 SDD 把大模型生成与形式化验证结合起来，以确保安全关键场景的合规性；这也说明了在汽车、航空航天等&quot;一旦出错就可能是灾难性&quot;的领域里，规约是如何保证精度的。</div></div>
+<div class="row h1"><div class="cell en" data-i="95">VII. The Redefinition of Developer Work</div><div class="cell zh" data-i="95">七、开发者工作的重新定义</div></div>
+<div class="row p"><div class="cell en" data-i="96">SDD fundamentally reshapes what it means to be a software developer. Work is being redefined as developers shift from manual coding to orchestrating specifications, reviewing AI outputs, and focusing on high-level design. This transition potentially increases efficiency but introduces new challenges around spec maintenance, tool mastery, and the judgment required to know when AI outputs are correct.</div><div class="cell zh" data-i="96">SDD 从根本上重塑了&quot;当一个软件开发者&quot;意味着什么。开发者的工作正在被重新定义：从手工写代码，转向编排规约、评审 AI 的输出、聚焦高层设计。这一转变有可能提升效率，但也带来了新的挑战——关于规约维护、工具掌握，以及判断 AI 输出是否正确所需要的判断力。</div></div>
+<div class="row p"><div class="cell en" data-i="97">In greenfield projects, developers become architects who design systems through specifications rather than code. They focus on requirements elicitation, constraint definition, and acceptance criteria—the &quot;what&quot; rather than the &quot;how.&quot; AI agents handle the translation from spec to implementation, but humans remain responsible for ensuring specs capture actual requirements.</div><div class="cell zh" data-i="97">在&quot;绿地项目（greenfield）&quot;里，开发者成了通过规约而非代码来设计系统的架构师。他们关注需求提取、约束定义和验收标准——即&quot;做什么&quot;，而不是&quot;怎么做&quot;。从规约到实现的翻译交给 AI 智能体，但&quot;规约是否真的抓住了实际需求&quot;仍然是人的责任。</div></div>
+<div class="row p"><div class="cell en" data-i="98">In brownfield projects and legacy systems, SDD enables a different kind of work: encoding existing behavior as specifications before making changes. By extracting specs from legacy code, teams can verify that modernization efforts preserve required functionality while eliminating undocumented behaviors. The spec becomes the bridge between old and new implementations.</div><div class="cell zh" data-i="98">在棕地项目和遗留系统里，SDD 带来的是另一种工作方式：在改动之前，先把现有行为编码成规约。通过从遗留代码中抽取规约，团队可以验证现代化改造是否保留了所需功能，同时清理掉那些未被记录的行为。规约成了新旧实现之间的桥梁。</div></div>
+<div class="row p"><div class="cell en" data-i="99">Use-cases span the development spectrum: greenfield projects where specs guide initial development, feature additions to legacy systems where specs document existing behavior before modification, and embedded software where specs ensure precision in safety-critical domains. In each case, the developer&#x27;s role shifts from code producer to spec author and AI orchestrator.</div><div class="cell zh" data-i="99">用例覆盖了整个开发谱系：在绿地项目中，规约引导最初的开发；在给遗留系统加功能时，规约先记录现有行为再进行修改；在嵌入式软件中，规约保证了安全关键领域的精度。在每种情况下，开发者的角色都从&quot;代码生产者&quot;变成了&quot;规约作者&quot;和&quot;AI 编排者&quot;。</div></div>
+<div class="row h1"><div class="cell en" data-i="100">VIII. When to Use SDD</div><div class="cell zh" data-i="100">八、什么时候该用 SDD</div></div>
+<div class="row p"><div class="cell en" data-i="101">Spec-driven development is not universally applicable. Like any practice, it has costs—upfront spec effort, tooling investment, and discipline requirements—and benefits—clarity, quality, and maintainability. The decision framework in Figure 3 helps practitioners determine when SDD adds value.</div><div class="cell zh" data-i="101">规约驱动开发并非放之四海而皆准。和所有实践一样，它有成本——前期的规约投入、工具投入、纪律要求——也有收益——清晰度、质量和可维护性。图 3 的决策框架可以帮助从业者判断什么时候 SDD 能带来价值。</div></div>
+<div class="row fig3"><div class="cell en" data-i="102"><div class="fig-wrap"><svg viewBox="0 0 760 620" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><rect x="290" y="20" width="200" height="44" rx="22" class="fig-white"/><text x="390" y="47" text-anchor="middle" class="fig-title">New feature / system</text><path d="M 390 64 L 390 94" class="fig-arrow" marker-end="url(#ah)"/><path d="M 390 100 L 480 150 L 390 200 L 300 150 Z" class="fig-decision"/><text x="390" y="140" text-anchor="middle" class="fig-sub">AI assistance</text><text x="390" y="155" text-anchor="middle" class="fig-sub">or complex</text><text x="390" y="170" text-anchor="middle" class="fig-sub">requirements?</text><path d="M 300 150 L 220 150" class="fig-arrow" marker-end="url(#ah)"/><text x="260" y="142" text-anchor="middle" class="fig-label-muted">No</text><rect x="70" y="128" width="150" height="44" rx="6" class="fig-gray"/><text x="145" y="154" text-anchor="middle" class="fig-title">Ad-hoc OK</text><path d="M 390 200 L 390 240" class="fig-arrow" marker-end="url(#ah)"/><text x="402" y="224" class="fig-label-muted">Yes</text><path d="M 390 245 L 500 300 L 390 355 L 280 300 Z" class="fig-decision"/><text x="390" y="293" text-anchor="middle" class="fig-sub">Long-lived? Multiple</text><text x="390" y="310" text-anchor="middle" class="fig-sub">maintainers?</text><path d="M 280 300 L 220 300" class="fig-arrow" marker-end="url(#ah)"/><text x="250" y="292" text-anchor="middle" class="fig-label-muted">No</text><rect x="70" y="278" width="150" height="44" rx="6" class="fig-blue"/><text x="145" y="304" text-anchor="middle" class="fig-title">Spec-First</text><path d="M 390 355 L 390 395" class="fig-arrow" marker-end="url(#ah)"/><text x="402" y="379" class="fig-label-muted">Yes</text><path d="M 390 400 L 490 455 L 390 510 L 290 455 Z" class="fig-decision"/><text x="390" y="450" text-anchor="middle" class="fig-sub">Code generation</text><text x="390" y="467" text-anchor="middle" class="fig-sub">viable?</text><path d="M 290 455 L 220 455" class="fig-arrow" marker-end="url(#ah)"/><text x="255" y="447" text-anchor="middle" class="fig-label-muted">No</text><rect x="60" y="433" width="160" height="44" rx="6" class="fig-purple"/><text x="140" y="459" text-anchor="middle" class="fig-title">Spec-Anchored</text><path d="M 490 455 L 560 455" class="fig-arrow" marker-end="url(#ah)"/><text x="525" y="447" text-anchor="middle" class="fig-label-muted">Yes</text><rect x="560" y="433" width="160" height="44" rx="6" class="fig-green"/><text x="640" y="459" text-anchor="middle" class="fig-title">Spec-as-Source</text></svg></div><div class="fig-caption">Fig. 3. Decision framework for selecting SDD approach. Start with the level of rigor that matches your needs.</div></div><div class="cell zh" data-i="102"><div class="fig-wrap"><svg viewBox="0 0 760 620" xmlns="http://www.w3.org/2000/svg" role="img"><style>
+/* Shape fills — match original figure colors */
+.fig-gray { fill: #d9d9d6; stroke: #7a7a74; stroke-width: 1.5; }
+.fig-blue { fill: #bfdcf5; stroke: #4a84c0; stroke-width: 1.5; }
+.fig-purple { fill: #d6c8ee; stroke: #8a6fc0; stroke-width: 1.5; }
+.fig-green { fill: #bfe5c8; stroke: #4ea665; stroke-width: 1.5; }
+.fig-white { fill: #ffffff; stroke: #444441; stroke-width: 1.5; }
+.fig-decision { fill: #f4f4f0; stroke: #444441; stroke-width: 1.5; }
+
+.fig-title { fill: #1a1a1a; font-size: 14px; font-weight: 500; font-family: inherit; }
+.fig-sub { fill: #1a1a1a; font-size: 11px; font-family: inherit; }
+.fig-label { fill: #1a1a1a; font-size: 12px; font-family: inherit; }
+.fig-label-muted { fill: #5f5e5a; font-size: 11px; font-family: inherit; }
+.fig-arrow { stroke: #444441; stroke-width: 1.5; fill: none; }
+.fig-arrow-dashed { stroke: #444441; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; }
+.fig-axis { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+.fig-gradient-bar { fill: url(#gradBar); opacity: 0.55; }
+
+@media (prefers-color-scheme: dark) {
+  /* Slightly muted versions so they still read on dark background */
+  .fig-gray { fill: #6e6e6a; stroke: #c4c4c0; }
+  .fig-blue { fill: #2f567a; stroke: #8fb5da; }
+  .fig-purple { fill: #5a4a80; stroke: #b9a6dc; }
+  .fig-green { fill: #3a6a4b; stroke: #9ed0ae; }
+  .fig-white { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-decision { fill: #2a2a28; stroke: #d3d1c7; }
+  .fig-title, .fig-sub, .fig-label { fill: #eaeaea; }
+  .fig-label-muted { fill: #b4b2a9; }
+  .fig-arrow, .fig-arrow-dashed, .fig-axis { stroke: #d3d1c7; }
+}
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444441"/>
+  </marker>
+  <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#d9d9d6"/>
+    <stop offset="33%" stop-color="#bfdcf5"/>
+    <stop offset="66%" stop-color="#d6c8ee"/>
+    <stop offset="100%" stop-color="#bfe5c8"/>
+  </linearGradient>
+</defs><rect x="290" y="20" width="200" height="44" rx="22" class="fig-white"/><text x="390" y="47" text-anchor="middle" class="fig-title">New feature / system</text><path d="M 390 64 L 390 94" class="fig-arrow" marker-end="url(#ah)"/><path d="M 390 100 L 480 150 L 390 200 L 300 150 Z" class="fig-decision"/><text x="390" y="140" text-anchor="middle" class="fig-sub">AI assistance</text><text x="390" y="155" text-anchor="middle" class="fig-sub">or complex</text><text x="390" y="170" text-anchor="middle" class="fig-sub">requirements?</text><path d="M 300 150 L 220 150" class="fig-arrow" marker-end="url(#ah)"/><text x="260" y="142" text-anchor="middle" class="fig-label-muted">No</text><rect x="70" y="128" width="150" height="44" rx="6" class="fig-gray"/><text x="145" y="154" text-anchor="middle" class="fig-title">Ad-hoc OK</text><path d="M 390 200 L 390 240" class="fig-arrow" marker-end="url(#ah)"/><text x="402" y="224" class="fig-label-muted">Yes</text><path d="M 390 245 L 500 300 L 390 355 L 280 300 Z" class="fig-decision"/><text x="390" y="293" text-anchor="middle" class="fig-sub">Long-lived? Multiple</text><text x="390" y="310" text-anchor="middle" class="fig-sub">maintainers?</text><path d="M 280 300 L 220 300" class="fig-arrow" marker-end="url(#ah)"/><text x="250" y="292" text-anchor="middle" class="fig-label-muted">No</text><rect x="70" y="278" width="150" height="44" rx="6" class="fig-blue"/><text x="145" y="304" text-anchor="middle" class="fig-title">Spec-First</text><path d="M 390 355 L 390 395" class="fig-arrow" marker-end="url(#ah)"/><text x="402" y="379" class="fig-label-muted">Yes</text><path d="M 390 400 L 490 455 L 390 510 L 290 455 Z" class="fig-decision"/><text x="390" y="450" text-anchor="middle" class="fig-sub">Code generation</text><text x="390" y="467" text-anchor="middle" class="fig-sub">viable?</text><path d="M 290 455 L 220 455" class="fig-arrow" marker-end="url(#ah)"/><text x="255" y="447" text-anchor="middle" class="fig-label-muted">No</text><rect x="60" y="433" width="160" height="44" rx="6" class="fig-purple"/><text x="140" y="459" text-anchor="middle" class="fig-title">Spec-Anchored</text><path d="M 490 455 L 560 455" class="fig-arrow" marker-end="url(#ah)"/><text x="525" y="447" text-anchor="middle" class="fig-label-muted">Yes</text><rect x="560" y="433" width="160" height="44" rx="6" class="fig-green"/><text x="640" y="459" text-anchor="middle" class="fig-title">Spec-as-Source</text></svg></div><div class="fig-caption">图 3. 选择 SDD 做法的决策框架。从匹配你需求的那一层严格度开始。</div></div></div>
+<div class="row p"><div class="cell en" data-i="103">SDD adds clear value when using AI coding assistants, as specifications dramatically improve output quality by removing the ambiguity that forces AI to guess. Complex requirements benefit from SDD because stakeholders can validate that the system meets their needs before code is written. Systems with multiple maintainers benefit because specs serve as documentation that survives team turnover. Integration-heavy systems gain from API specs that enable parallel development and prevent integration failures. Regulated domains often mandate traceability from requirements to implementation, which SDD provides naturally. Legacy modernization efforts benefit because extracting a spec from existing behavior enables clean reimplementation with confidence.</div><div class="cell zh" data-i="103">SDD 在使用 AI 编程助手时，带来的价值非常明确：规约能消除那种逼得 AI 去&quot;猜&quot;的歧义，从而显著提高输出质量。复杂需求也能从 SDD 中获益，因为利益相关方可以在代码写下去之前就验证系统是否满足他们的需要。有多个维护者的系统能从中受益，因为规约承担着&quot;能熬过团队人员更替&quot;的文档角色。集成繁重的系统可以借助 API 规约实现并行开发、避免集成失败。受监管的领域通常要求从需求到实现可追溯，而这正是 SDD 天然提供的。遗留系统的现代化改造也能获益，因为从现有行为中抽取规约，可以让&quot;干净地重新实现&quot;变得有信心。</div></div>
+<div class="row p"><div class="cell en" data-i="104">However, SDD may be overkill in certain situations. Throwaway prototypes don&#x27;t justify spec investment that will be discarded. Solo, short-lived projects may find the overhead exceeds benefits when there&#x27;s only one developer and no long-term maintenance. Exploratory coding suffers from premature specification that constrains learning when you don&#x27;t yet know what you&#x27;re building. Simple CRUD applications with obvious requirements need minimal spec—if requirements are unlikely to be misinterpreted, elaborate specifications add cost without value.</div><div class="cell zh" data-i="104">不过，在某些情况下 SDD 就显得过度了。一次性用完就扔的原型，不值得做那种&quot;注定要丢掉&quot;的规约投入。独立开发、寿命短的项目里，当只有一个开发者且没有长期维护时，开销往往超过收益。探索式编程如果过早做规约，反而会束缚学习——你还不知道自己到底在造什么呢。那些需求显而易见的简单 CRUD 应用只需要极少的规约——如果需求基本不会被误解，精心打磨的规约就是增加成本却没有价值。</div></div>
+<div class="row quote"><div class="cell en" data-i="105"><strong>Key Insight — The Golden Rule:</strong> Use the minimum level of specification rigor that removes ambiguity for your context. Spec-first for AI-assisted initial development; spec-anchored for long-lived production systems; spec-as-source only when generation tooling is mature and trusted.</div><div class="cell zh" data-i="105"><strong>核心洞见 —— 黄金法则：</strong> 采用&quot;恰好能消除歧义&quot;的最低规约严格度。AI 辅助的初次开发用规约先行；长期运行的生产系统用规约锚定；只有在生成工具链足够成熟、足够可信时，才去用规约即源。</div></div>
+<div class="row h1"><div class="cell en" data-i="106">IX. Common Pitfalls</div><div class="cell zh" data-i="106">九、常见陷阱</div></div>
+<div class="row p"><div class="cell en" data-i="107">Teams adopting SDD often encounter predictable challenges that can undermine the approach&#x27;s benefits if not addressed.</div><div class="cell zh" data-i="107">团队在采用 SDD 的过程中，经常会遇到一些可预见的挑战；如果不加以应对，它们会把 SDD 的好处抵消掉。</div></div>
+<div class="row p"><div class="cell en" data-i="108">Over-specification occurs when teams write specs that are too detailed, essentially becoming pseudo-code. This defeats the purpose of SDD, which is to separate &quot;what&quot; from &quot;how.&quot; If your spec reads like code, you&#x27;ve gone too far—you&#x27;ve constrained implementation unnecessarily and lost the abstraction benefit that makes specs valuable.</div><div class="cell zh" data-i="108">过度规约出现在团队把规约写得太细、实际上变成了伪代码的时候。这违背了 SDD 的初衷——把&quot;做什么&quot;和&quot;怎么做&quot;分开。如果你的规约读起来像代码，那就走过头了：你不必要地束缚了实现，丢掉了那种让规约之所以有价值的抽象收益。</div></div>
+<div class="row p"><div class="cell en" data-i="109">Specification rot affects spec-anchored approaches when teams fail to update specs as code changes. The spec drifts from reality, losing its value as documentation and eroding trust. The solution is automated enforcement through tests that fail when spec and code diverge, making drift visible and painful rather than silent and accumulating.</div><div class="cell zh" data-i="109">规约腐烂是规约锚定模式下的典型问题，出现在团队没能随着代码变化去更新规约时。规约会逐渐偏离现实，失去作为文档的价值，信任也随之被侵蚀。解法是通过测试来自动化地强制执行——当规约和代码出现偏离时让测试失败，把漂移变成&quot;显眼且难受&quot;的，而不是&quot;悄悄积累&quot;的。</div></div>
+<div class="row p"><div class="cell en" data-i="110">Specification as bureaucracy emerges when specs become forms to fill out rather than tools for clarity. If the specification process adds overhead without improving understanding or quality, teams will game the system or abandon it. Specs should be the minimum needed to remove ambiguity, not comprehensive documentation exercises.</div><div class="cell zh" data-i="110">规约作为官僚程序出现在规约变成&quot;要填的表格&quot;而不是&quot;提升清晰度的工具&quot;的时候。如果规约流程只增加负担，却不改进理解或质量，团队要么会敷衍了事，要么会索性放弃它。规约应该是&quot;刚好消除歧义所需要的最少量&quot;，而不是一场全面的文档练习。</div></div>
+<div class="row p"><div class="cell en" data-i="111">Tooling complexity can overwhelm teams, particularly with AI-assisted tools that generate elaborate artifacts. Teams may drown in generated plans, task lists, and intermediate documents. The solution is to start simple and add tooling complexity only when it demonstrably helps—avoid cargo-culting elaborate workflows that add process without value.</div><div class="cell zh" data-i="111">工具复杂度也可能压垮团队，尤其是那些会生成一大堆产物的 AI 辅助工具。团队可能被生成出来的规划、任务列表和中间文档淹没。解法是从简开始，只有在工具复杂度确实能带来帮助时再增加——避免&quot;教条式&quot;地照抄那些繁复的工作流，这种流程只增加过程本身、带不来价值。</div></div>
+<div class="row p"><div class="cell en" data-i="112">False confidence is perhaps the subtlest pitfall. A passing spec test doesn&#x27;t guarantee correct software—it only guarantees that the software matches the spec. If the spec is wrong, the code will faithfully implement the wrong thing. Specifications require the same careful review as code; they are not a silver bullet that eliminates the need for human judgment about requirements.</div><div class="cell zh" data-i="112">虚假信心或许是最隐蔽的陷阱。规约测试通过并不保证软件正确——它只保证软件与规约一致。如果规约是错的，代码就会忠实地实现那个错误。规约本身和代码一样需要被仔细评审；它不是那种&quot;一劳永逸、让人再也不用对需求动脑子&quot;的银弹。</div></div>
+<div class="row h1"><div class="cell en" data-i="113">X. SDD vs Traditional Design Documents</div><div class="cell zh" data-i="113">十、SDD 与传统设计文档</div></div>
+<div class="row p"><div class="cell en" data-i="114">A natural question arises: how is SDD different from traditional High-Level Design (HLD) and Low-Level Design (LLD) documents that software engineering has always used? After all, HLD describes architecture, LLD details implementation, and requirements documents specify functionality. Aren&#x27;t these already specifications?</div><div class="cell zh" data-i="114">一个自然的问题是：SDD 和软件工程一直在用的传统高层设计（HLD）、低层设计（LLD）文档有什么不同？毕竟，HLD 描述架构，LLD 详述实现，需求文档规定功能——它们不已经是&quot;规约&quot;了吗？</div></div>
+<div class="row p"><div class="cell en" data-i="115">The answer is nuanced. Traditional design documents are specifications—the difference lies not in what is written, but in how it is used and whether it stays aligned with code. Traditional software engineering produces many specification-like artifacts: Software Requirements Specifications (SRS) for functional and non-functional requirements, High-Level Design documents for architecture and components, Low-Level Design documents for class diagrams and algorithms, and interface specifications for API contracts and IDL.</div><div class="cell zh" data-i="115">答案需要一点细分。传统的设计文档确实是规约——差别不在于写了什么，而在于它怎么被使用、以及它有没有和代码保持对齐。传统软件工程会产出许多&quot;类规约&quot;的产物：描述功能性和非功能性需求的软件需求规格说明（SRS），描述架构与组件的高层设计文档，描述类图与算法的低层设计文档，以及关于 API 契约与 IDL 的接口规约。</div></div>
+<div class="row p"><div class="cell en" data-i="116">The problem is not the absence of specs—it&#x27;s that they drift. By Sprint 3, the HLD is outdated. By release 2, the SRS no longer matches the product. The code becomes the de facto truth, and the documents become historical artifacts that nobody trusts or updates.</div><div class="cell zh" data-i="116">问题不在于&quot;没有规约&quot;——而在于它们会漂移。到第 3 个 Sprint 时，HLD 已经过时；到 2.0 版本时，SRS 已经与产品对不上。代码事实上成了真相，而这些文档则沦为没人相信、没人更新的历史档案。</div></div>
+<div class="row quote"><div class="cell en" data-i="117"><strong>Key Insight — The Core Difference:</strong> Traditional design documents are advisory—developers read them, then write code that hopefully matches. SDD specs are enforced—tests fail if code diverges, and in spec-as-source approaches, code is regenerated rather than manually edited.</div><div class="cell zh" data-i="117"><strong>核心洞见 —— 核心区别：</strong> 传统设计文档是&quot;建议性&quot;的——开发者读完它们，然后写出&quot;但愿能匹配&quot;的代码。SDD 的规约是&quot;强制执行&quot;的——一旦代码偏离规约，测试就会失败；而在规约即源的做法里，代码是重新生成出来的，而不是手工改的。</div></div>
+<div class="row p"><div class="cell en" data-i="118">What SDD actually adds is threefold. First, executable specifications: traditional specs are read by humans, while SDD specs are executed as BDD scenarios, API contract tests, or model simulations—if code doesn&#x27;t match, the build fails. Second, CI/CD integration: modern SDD embeds spec validation into continuous integration, checking every commit against the spec so drift is caught immediately rather than during quarterly reviews. Third, AI consumption: traditional design docs were written for human readers, while SDD specs are structured so AI coding assistants can consume them, generating code and tests from specs rather than guessing from vague prompts.</div><div class="cell zh" data-i="118">SDD 真正新增的东西其实有三点。第一，可执行的规约：传统规约是让人读的，而 SDD 规约以 BDD 场景、API 契约测试或模型仿真的形式被执行——一旦代码不匹配，构建就失败。第二，与 CI/CD 集成：现代 SDD 把规约验证嵌入到持续集成里，每次提交都对照规约做检查，让漂移被立刻发现，而不是在&quot;季度评审&quot;时才露出来。第三，AI 消费者：传统设计文档是为人类读者写的，而 SDD 规约的结构让 AI 编程助手也能消费它们，从规约出发生成代码和测试，而不是从模糊提示中瞎猜。</div></div>
+<div class="row p"><div class="cell en" data-i="119">SDD is not a revolution—it&#x27;s an evolution. The core insight (write specs first, let code derive from them) has been agile wisdom for decades. What&#x27;s new is better tooling that makes executable specs practical, CI/CD maturity that enables automated enforcement, and AI as consumer where spec quality directly determines output quality. As Bryan Finster observed <sup class="cite" data-ref="3" tabindex="0">[3]</sup>: &quot;SDD is not a revolution... it&#x27;s just BDD with branding.&quot; But the branding serves a purpose: it reminds practitioners that specs should be authoritative, not advisory, and that modern tooling can enforce what was previously left to human discipline.</div><div class="cell zh" data-i="119">SDD 不是一场革命——它是一场演化。它的核心洞见（先写规约，让代码由它派生）几十年来一直是敏捷智慧的一部分。真正新的东西是：更好的工具让&quot;可执行规约&quot;变得切实可行，CI/CD 的成熟让自动化强制执行成为可能，以及&quot;AI 作为消费者&quot;——在这个新角色里，规约质量直接决定输出质量。正如 Bryan Finster 所说 <sup class="cite" data-ref="3" tabindex="0">[3]</sup>：&quot;SDD 并不是什么革命……它就是贴上新牌子的 BDD。&quot;但这个新牌子有它的用处：它提醒从业者，规约应该是权威性的、而不是建议性的；而且现代工具链已经能够强制执行那些以前只能靠人类纪律去守住的东西。</div></div>
+<div class="row h1"><div class="cell en" data-i="120">XI. Relationship to Existing Practices</div><div class="cell zh" data-i="120">十一、与现有实践的关系</div></div>
+<div class="row p"><div class="cell en" data-i="121">SDD is not a replacement for existing development practices—it builds on and extends them in the context of AI-assisted development.</div><div class="cell zh" data-i="121">SDD 并不是要取代现有的开发实践——它是在 AI 辅助开发的语境下，对这些实践的延伸与扩展。</div></div>
+<div class="row p"><div class="cell en" data-i="122">Test-Driven Development (TDD) <sup class="cite" data-ref="11" tabindex="0">[11]</sup> is SDD at the unit level. Writing a test first is writing a micro-specification that defines expected behavior before implementation. SDD extends this thinking to higher levels—features, systems, and architectures—applying the same &quot;specify first&quot; discipline at broader scope.</div><div class="cell zh" data-i="122">测试驱动开发（TDD）<sup class="cite" data-ref="11" tabindex="0">[11]</sup> 就是单元层级的 SDD。先写测试，就是在实现之前写一个定义预期行为的&quot;微规约&quot;。SDD 把这种思维推广到更高层级——功能、系统和架构——在更宽的范围内应用同一种&quot;先规约&quot;的纪律。</div></div>
+<div class="row p"><div class="cell en" data-i="123">Behavior-Driven Development (BDD) <sup class="cite" data-ref="12" tabindex="0">[12]</sup> is the most direct ancestor of modern SDD. Gherkin scenarios are executable specifications that bridge business requirements and technical implementation. What AI-assisted SDD tools add is assistance in generating code from those specs, accelerating the path from scenario to working software.</div><div class="cell zh" data-i="123">行为驱动开发（BDD）<sup class="cite" data-ref="12" tabindex="0">[12]</sup> 是现代 SDD 最直接的祖先。Gherkin 场景就是一种可执行规约，它在业务需求和技术实现之间架起桥梁。AI 辅助的 SDD 工具在它之上增加的，是&quot;从这些规约生成代码&quot;的辅助能力，把&quot;从场景到可运行软件&quot;的路径加速了。</div></div>
+<div class="row p"><div class="cell en" data-i="124">Domain-Driven Design (DDD) aligns well with SDD through its emphasis on ubiquitous language—specs written in domain terms that both developers and stakeholders understand. The shared vocabulary that DDD advocates becomes the foundation for specifications that are meaningful to all parties.</div><div class="cell zh" data-i="124">领域驱动设计（DDD）与 SDD 非常契合，因为它强调&quot;通用语言（ubiquitous language）&quot;——用领域术语写出、开发者和利益相关方都能理解的规约。DDD 所倡导的共享词汇，正好成为&quot;对各方都有意义的规约&quot;的基础。</div></div>
+<div class="row p"><div class="cell en" data-i="125">Agile methodologies are compatible with SDD. User stories with acceptance criteria are specifications; the Definition of Done is a form of spec. The difference is emphasis: SDD treats these artifacts as authoritative rather than advisory, and enforces alignment through automation rather than relying on human discipline alone.</div><div class="cell zh" data-i="125">敏捷方法论与 SDD 也是兼容的。带验收标准的用户故事就是规约；&quot;完成的定义（Definition of Done）&quot;也是一种规约。差别在于侧重点：SDD 把这些产物视为权威性的，而不是建议性的；并通过自动化来强制对齐，而不是单靠人的纪律。</div></div>
+<div class="row h1"><div class="cell en" data-i="126">XII. Conclusion</div><div class="cell zh" data-i="126">十二、结论</div></div>
+<div class="row p"><div class="cell en" data-i="127">Spec-driven development inverts the traditional relationship between specifications and code. Instead of code being the source of truth with documentation as an afterthought, SDD makes specifications authoritative and code derivative. This inversion becomes increasingly important as AI coding assistants become more capable—when an AI can generate code from specifications faster than humans can type, the bottleneck shifts to specification quality.</div><div class="cell zh" data-i="127">规约驱动开发颠倒了规约与代码之间的传统关系。代码不再是事实之源、文档沦为事后补丁，而是：SDD 让规约成为权威，代码作为派生物。随着 AI 编程助手越来越强大，这种颠倒变得越来越重要——当 AI 从规约生成代码的速度，比人类打字还快时，瓶颈就转移到了规约质量上。</div></div>
+<div class="row p"><div class="cell en" data-i="128">Specifications remove ambiguity for both human developers and AI assistants, preventing the guesswork and misinterpretation that leads to costly rework. The three levels of rigor—spec-first, spec-anchored, and spec-as-source—provide options that match different project needs, from lightweight initial clarity to rigorous code generation. Mature tooling exists across the spectrum, from BDD frameworks and API specification tools to AI-assisted SDD toolkits, making spec-first workflows practical today. Teams should match rigor to need, using the minimum specification discipline that removes ambiguity for their context rather than over-engineering process.</div><div class="cell zh" data-i="128">规约对人类开发者和 AI 助手同时消除了歧义，避免那些会导致代价高昂返工的&quot;猜测&quot;和&quot;误解&quot;。三种严格度层级——规约先行、规约锚定、规约即源——给出了适配不同项目需要的选项，从&quot;轻量的初始清晰度&quot;一直覆盖到&quot;严格的代码生成&quot;。在整个光谱上都已有成熟工具——从 BDD 框架、API 规约工具，到 AI 辅助的 SDD 工具包——这让&quot;规约先行&quot;的工作流在今天就具备了可行性。团队应该让严格度匹配需求，用&quot;恰好能消除歧义&quot;的最低规约纪律来应对自身情境，而不是在流程上过度工程化。</div></div>
+<div class="row p"><div class="cell en" data-i="129">SDD builds on decades of TDD and BDD wisdom while adapting these practices for the AI era. The ideas are not new; what&#x27;s new is the tooling and AI capabilities that make specs more powerful than ever. Work is being redefined as developers shift from manual coding to orchestrating specifications, reviewing AI outputs, and focusing on high-level design.</div><div class="cell zh" data-i="129">SDD 建立在几十年 TDD 和 BDD 智慧的基础之上，同时为 AI 时代调整了这些做法。思想本身并不新；新的是那些让规约比以往任何时候都更强大的工具和 AI 能力。开发者的工作正在被重新定义：从手工写代码，转向编排规约、评审 AI 输出、聚焦高层设计。</div></div>
+<div class="row p"><div class="cell en" data-i="130">As software systems grow more complex and AI becomes more capable, the question shifts from &quot;what code should I write?&quot; to &quot;what specification should I provide?&quot; Teams that master spec-driven development will get more value from AI tools while maintaining the clarity and traceability that complex systems require. SDD offers a framework for answering that question systematically—making specifications, not code, the primary artifact of software development.</div><div class="cell zh" data-i="130">随着软件系统越来越复杂、AI 越来越强大，问题正在从&quot;我该写什么代码？&quot;转变为&quot;我该提供什么规约？&quot;。那些掌握了规约驱动开发的团队，将能在从 AI 工具获得更多价值的同时，保留复杂系统所要求的清晰度与可追溯性。SDD 提供了一套系统性回答这个问题的框架——让规约而不是代码，成为软件开发的主要产物。</div></div>
+<div class="row h1"><div class="cell en" data-i="131">References</div><div class="cell zh" data-i="131">参考文献</div></div>
+<div class="row ref"><div class="cell en" data-i="132">[1] GitHub, &quot;Spec-Driven Development with AI: Get Started with a New Open Source Toolkit,&quot; GitHub Blog, 2025. <a href="https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/" target="_blank" rel="noopener">https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/</a></div><div class="cell zh" data-i="132">[1] GitHub, &quot;Spec-Driven Development with AI: Get Started with a New Open Source Toolkit,&quot; GitHub Blog, 2025. <a href="https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/" target="_blank" rel="noopener">https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="133">[2] Thoughtworks, &quot;Spec-Driven Development,&quot; Technology Radar, Vol. 32, 2025. <a href="https://www.thoughtworks.com/radar/techniques/spec-driven-development" target="_blank" rel="noopener">https://www.thoughtworks.com/radar/techniques/spec-driven-development</a></div><div class="cell zh" data-i="133">[2] Thoughtworks, &quot;Spec-Driven Development,&quot; Technology Radar, Vol. 32, 2025. <a href="https://www.thoughtworks.com/radar/techniques/spec-driven-development" target="_blank" rel="noopener">https://www.thoughtworks.com/radar/techniques/spec-driven-development</a></div></div>
+<div class="row ref"><div class="cell en" data-i="134">[3] B. Finster, &quot;5-Minute DevOps: Spec-Driven Development Isn&#x27;t New,&quot; Medium, Nov. 2025. <a href="https://bdfinst.medium.com/5-minute-devops-spec-driven-development-isnt-new-3a5c552efc95" target="_blank" rel="noopener">https://bdfinst.medium.com/5-minute-devops-spec-driven-development-isnt-new-3a5c552efc95</a></div><div class="cell zh" data-i="134">[3] B. Finster, &quot;5-Minute DevOps: Spec-Driven Development Isn&#x27;t New,&quot; Medium, Nov. 2025. <a href="https://bdfinst.medium.com/5-minute-devops-spec-driven-development-isnt-new-3a5c552efc95" target="_blank" rel="noopener">https://bdfinst.medium.com/5-minute-devops-spec-driven-development-isnt-new-3a5c552efc95</a></div></div>
+<div class="row ref"><div class="cell en" data-i="135">[4] M. Fowler, &quot;Exploring Gen AI: Spec-Driven Development,&quot; martinfowler.com, 2025. <a href="https://martinfowler.com/articles/exploring-gen-ai.html" target="_blank" rel="noopener">https://martinfowler.com/articles/exploring-gen-ai.html</a></div><div class="cell zh" data-i="135">[4] M. Fowler, &quot;Exploring Gen AI: Spec-Driven Development,&quot; martinfowler.com, 2025. <a href="https://martinfowler.com/articles/exploring-gen-ai.html" target="_blank" rel="noopener">https://martinfowler.com/articles/exploring-gen-ai.html</a></div></div>
+<div class="row ref"><div class="cell en" data-i="136">[5] L. Griffin and R. Carroll, &quot;Spec Driven Development: When Architecture Becomes Executable,&quot; InfoQ, Jan. 2026. <a href="https://www.infoq.com/articles/spec-driven-development/" target="_blank" rel="noopener">https://www.infoq.com/articles/spec-driven-development/</a></div><div class="cell zh" data-i="136">[5] L. Griffin and R. Carroll, &quot;Spec Driven Development: When Architecture Becomes Executable,&quot; InfoQ, Jan. 2026. <a href="https://www.infoq.com/articles/spec-driven-development/" target="_blank" rel="noopener">https://www.infoq.com/articles/spec-driven-development/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="137">[6] R. Naszcyniec, &quot;How Spec-Driven Development Improves AI Coding Quality,&quot; Red Hat Developer, 2025. <a href="https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality" target="_blank" rel="noopener">https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality</a></div><div class="cell zh" data-i="137">[6] R. Naszcyniec, &quot;How Spec-Driven Development Improves AI Coding Quality,&quot; Red Hat Developer, 2025. <a href="https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality" target="_blank" rel="noopener">https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality</a></div></div>
+<div class="row ref"><div class="cell en" data-i="138">[7] Cucumber, &quot;Cucumber Documentation,&quot; cucumber.io, 2024. <a href="https://cucumber.io/docs/" target="_blank" rel="noopener">https://cucumber.io/docs/</a></div><div class="cell zh" data-i="138">[7] Cucumber, &quot;Cucumber Documentation,&quot; cucumber.io, 2024. <a href="https://cucumber.io/docs/" target="_blank" rel="noopener">https://cucumber.io/docs/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="139">[8] OpenAPI Initiative, &quot;OpenAPI Specification v3.1.0,&quot; 2024. <a href="https://spec.openapis.org/oas/v3.1.0" target="_blank" rel="noopener">https://spec.openapis.org/oas/v3.1.0</a></div><div class="cell zh" data-i="139">[8] OpenAPI Initiative, &quot;OpenAPI Specification v3.1.0,&quot; 2024. <a href="https://spec.openapis.org/oas/v3.1.0" target="_blank" rel="noopener">https://spec.openapis.org/oas/v3.1.0</a></div></div>
+<div class="row ref"><div class="cell en" data-i="140">[9] Specmatic, &quot;Contract-Driven Development with Specmatic,&quot; 2025. <a href="https://specmatic.io/" target="_blank" rel="noopener">https://specmatic.io/</a></div><div class="cell zh" data-i="140">[9] Specmatic, &quot;Contract-Driven Development with Specmatic,&quot; 2025. <a href="https://specmatic.io/" target="_blank" rel="noopener">https://specmatic.io/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="141">[10] MathWorks, &quot;Simulink: Simulation and Model-Based Design,&quot; 2024. <a href="https://www.mathworks.com/products/simulink.html" target="_blank" rel="noopener">https://www.mathworks.com/products/simulink.html</a></div><div class="cell zh" data-i="141">[10] MathWorks, &quot;Simulink: Simulation and Model-Based Design,&quot; 2024. <a href="https://www.mathworks.com/products/simulink.html" target="_blank" rel="noopener">https://www.mathworks.com/products/simulink.html</a></div></div>
+<div class="row ref"><div class="cell en" data-i="142">[11] K. Beck, Test Driven Development: By Example, Addison-Wesley, 2002.</div><div class="cell zh" data-i="142">[11] K. Beck, Test Driven Development: By Example, Addison-Wesley, 2002.</div></div>
+<div class="row ref"><div class="cell en" data-i="143">[12] D. North, &quot;Introducing BDD,&quot; dannorth.net, Mar. 2006. <a href="https://dannorth.net/introducing-bdd/" target="_blank" rel="noopener">https://dannorth.net/introducing-bdd/</a></div><div class="cell zh" data-i="143">[12] D. North, &quot;Introducing BDD,&quot; dannorth.net, Mar. 2006. <a href="https://dannorth.net/introducing-bdd/" target="_blank" rel="noopener">https://dannorth.net/introducing-bdd/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="144">[13] Amazon Web Services, &quot;Kiro: Agentic AI Development from Prototype to Production,&quot; 2025. <a href="https://kiro.dev/" target="_blank" rel="noopener">https://kiro.dev/</a></div><div class="cell zh" data-i="144">[13] Amazon Web Services, &quot;Kiro: Agentic AI Development from Prototype to Production,&quot; 2025. <a href="https://kiro.dev/" target="_blank" rel="noopener">https://kiro.dev/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="145">[14] Tessl, &quot;Tessl: Make Agents Work in Real Codebases,&quot; 2025. <a href="https://tessl.io/" target="_blank" rel="noopener">https://tessl.io/</a></div><div class="cell zh" data-i="145">[14] Tessl, &quot;Tessl: Make Agents Work in Real Codebases,&quot; 2025. <a href="https://tessl.io/" target="_blank" rel="noopener">https://tessl.io/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="146">[15] GitHub, &quot;GitHub Copilot Documentation,&quot; 2024. <a href="https://docs.github.com/en/copilot" target="_blank" rel="noopener">https://docs.github.com/en/copilot</a></div><div class="cell zh" data-i="146">[15] GitHub, &quot;GitHub Copilot Documentation,&quot; 2024. <a href="https://docs.github.com/en/copilot" target="_blank" rel="noopener">https://docs.github.com/en/copilot</a></div></div>
+<div class="row ref"><div class="cell en" data-i="147">[16] Cucumber, &quot;Gherkin Reference,&quot; 2024. <a href="https://cucumber.io/docs/gherkin/reference/" target="_blank" rel="noopener">https://cucumber.io/docs/gherkin/reference/</a></div><div class="cell zh" data-i="147">[16] Cucumber, &quot;Gherkin Reference,&quot; 2024. <a href="https://cucumber.io/docs/gherkin/reference/" target="_blank" rel="noopener">https://cucumber.io/docs/gherkin/reference/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="148">[17] GraphQL Foundation, &quot;GraphQL Specification,&quot; 2024. <a href="https://spec.graphql.org/" target="_blank" rel="noopener">https://spec.graphql.org/</a></div><div class="cell zh" data-i="148">[17] GraphQL Foundation, &quot;GraphQL Specification,&quot; 2024. <a href="https://spec.graphql.org/" target="_blank" rel="noopener">https://spec.graphql.org/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="149">[18] Google, &quot;Protocol Buffers Documentation,&quot; 2024. <a href="https://protobuf.dev/" target="_blank" rel="noopener">https://protobuf.dev/</a></div><div class="cell zh" data-i="149">[18] Google, &quot;Protocol Buffers Documentation,&quot; 2024. <a href="https://protobuf.dev/" target="_blank" rel="noopener">https://protobuf.dev/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="150">[19] gRPC Authors, &quot;gRPC Documentation,&quot; 2024. <a href="https://grpc.io/docs/" target="_blank" rel="noopener">https://grpc.io/docs/</a></div><div class="cell zh" data-i="150">[19] gRPC Authors, &quot;gRPC Documentation,&quot; 2024. <a href="https://grpc.io/docs/" target="_blank" rel="noopener">https://grpc.io/docs/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="151">[20] Pact Foundation, &quot;Pact Documentation,&quot; 2024. <a href="https://docs.pact.io/" target="_blank" rel="noopener">https://docs.pact.io/</a></div><div class="cell zh" data-i="151">[20] Pact Foundation, &quot;Pact Documentation,&quot; 2024. <a href="https://docs.pact.io/" target="_blank" rel="noopener">https://docs.pact.io/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="152">[21] Reqnroll Contributors (formerly SpecFlow), &quot;Reqnroll Documentation,&quot; 2024. <a href="https://docs.reqnroll.net/" target="_blank" rel="noopener">https://docs.reqnroll.net/</a></div><div class="cell zh" data-i="152">[21] Reqnroll Contributors (formerly SpecFlow), &quot;Reqnroll Documentation,&quot; 2024. <a href="https://docs.reqnroll.net/" target="_blank" rel="noopener">https://docs.reqnroll.net/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="153">[22] Behave, &quot;Behave: BDD for Python,&quot; 2024. <a href="https://behave.readthedocs.io/" target="_blank" rel="noopener">https://behave.readthedocs.io/</a></div><div class="cell zh" data-i="153">[22] Behave, &quot;Behave: BDD for Python,&quot; 2024. <a href="https://behave.readthedocs.io/" target="_blank" rel="noopener">https://behave.readthedocs.io/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="154">[23] SmartBear, &quot;What Is API-First Development?,&quot; Swagger.io, 2024. <a href="https://swagger.io/resources/articles/adopting-an-api-first-approach/" target="_blank" rel="noopener">https://swagger.io/resources/articles/adopting-an-api-first-approach/</a></div><div class="cell zh" data-i="154">[23] SmartBear, &quot;What Is API-First Development?,&quot; Swagger.io, 2024. <a href="https://swagger.io/resources/articles/adopting-an-api-first-approach/" target="_blank" rel="noopener">https://swagger.io/resources/articles/adopting-an-api-first-approach/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="155">[24] B. Meyer, &quot;Applying Design by Contract,&quot; IEEE Computer, vol. 25, no. 10, pp. 40–51, 1992.</div><div class="cell zh" data-i="155">[24] B. Meyer, &quot;Applying Design by Contract,&quot; IEEE Computer, vol. 25, no. 10, pp. 40–51, 1992.</div></div>
+<div class="row ref"><div class="cell en" data-i="156">[25] ISO, &quot;ISO 26262: Road vehicles – Functional safety,&quot; International Organization for Standardization, 2018.</div><div class="cell zh" data-i="156">[25] ISO, &quot;ISO 26262: Road vehicles – Functional safety,&quot; International Organization for Standardization, 2018.</div></div>
+<div class="row ref"><div class="cell en" data-i="157">[26] S. J. Mellor and M. J. Balcer, Executable UML: A Foundation for Model-Driven Architecture, Addison-Wesley, 2002.</div><div class="cell zh" data-i="157">[26] S. J. Mellor and M. J. Balcer, Executable UML: A Foundation for Model-Driven Architecture, Addison-Wesley, 2002.</div></div>
+<div class="row ref"><div class="cell en" data-i="158">[27] AsyncAPI Initiative, &quot;AsyncAPI Specification,&quot; 2024. <a href="https://www.asyncapi.com/" target="_blank" rel="noopener">https://www.asyncapi.com/</a></div><div class="cell zh" data-i="158">[27] AsyncAPI Initiative, &quot;AsyncAPI Specification,&quot; 2024. <a href="https://www.asyncapi.com/" target="_blank" rel="noopener">https://www.asyncapi.com/</a></div></div>
+<div class="row ref"><div class="cell en" data-i="159">[28] M. Chen et al., &quot;Evaluating Large Language Models Trained on Code,&quot; arXiv:2107.03374, 2021.</div><div class="cell zh" data-i="159">[28] M. Chen et al., &quot;Evaluating Large Language Models Trained on Code,&quot; arXiv:2107.03374, 2021.</div></div>
+  </div>
+</main>
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <div class="lightbox-inner" id="lightbox-inner"></div>
+  <button class="lightbox-close" aria-label="关闭">×</button>
+</div>
+<script>
+var CITATIONS = {"1": "GitHub, \"Spec-Driven Development with AI: Get Started with a New Open Source Toolkit,\" GitHub Blog, 2025. https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/", "2": "Thoughtworks, \"Spec-Driven Development,\" Technology Radar, Vol. 32, 2025. https://www.thoughtworks.com/radar/techniques/spec-driven-development", "3": "B. Finster, \"5-Minute DevOps: Spec-Driven Development Isn't New,\" Medium, Nov. 2025. https://bdfinst.medium.com/5-minute-devops-spec-driven-development-isnt-new-3a5c552efc95", "4": "M. Fowler, \"Exploring Gen AI: Spec-Driven Development,\" martinfowler.com, 2025. https://martinfowler.com/articles/exploring-gen-ai.html", "5": "L. Griffin and R. Carroll, \"Spec Driven Development: When Architecture Becomes Executable,\" InfoQ, Jan. 2026. https://www.infoq.com/articles/spec-driven-development/", "6": "R. Naszcyniec, \"How Spec-Driven Development Improves AI Coding Quality,\" Red Hat Developer, 2025. https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality", "7": "Cucumber, \"Cucumber Documentation,\" cucumber.io, 2024. https://cucumber.io/docs/", "8": "OpenAPI Initiative, \"OpenAPI Specification v3.1.0,\" 2024. https://spec.openapis.org/oas/v3.1.0", "9": "Specmatic, \"Contract-Driven Development with Specmatic,\" 2025. https://specmatic.io/", "10": "MathWorks, \"Simulink: Simulation and Model-Based Design,\" 2024. https://www.mathworks.com/products/simulink.html", "11": "K. Beck, Test Driven Development: By Example, Addison-Wesley, 2002.", "12": "D. North, \"Introducing BDD,\" dannorth.net, Mar. 2006. https://dannorth.net/introducing-bdd/", "13": "Amazon Web Services, \"Kiro: Agentic AI Development from Prototype to Production,\" 2025. https://kiro.dev/", "14": "Tessl, \"Tessl: Make Agents Work in Real Codebases,\" 2025. https://tessl.io/", "15": "GitHub, \"GitHub Copilot Documentation,\" 2024. https://docs.github.com/en/copilot", "16": "Cucumber, \"Gherkin Reference,\" 2024. https://cucumber.io/docs/gherkin/reference/", "17": "GraphQL Foundation, \"GraphQL Specification,\" 2024. https://spec.graphql.org/", "18": "Google, \"Protocol Buffers Documentation,\" 2024. https://protobuf.dev/", "19": "gRPC Authors, \"gRPC Documentation,\" 2024. https://grpc.io/docs/", "20": "Pact Foundation, \"Pact Documentation,\" 2024. https://docs.pact.io/", "21": "Reqnroll Contributors (formerly SpecFlow), \"Reqnroll Documentation,\" 2024. https://docs.reqnroll.net/", "22": "Behave, \"Behave: BDD for Python,\" 2024. https://behave.readthedocs.io/", "23": "SmartBear, \"What Is API-First Development?,\" Swagger.io, 2024. https://swagger.io/resources/articles/adopting-an-api-first-approach/", "24": "B. Meyer, \"Applying Design by Contract,\" IEEE Computer, vol. 25, no. 10, pp. 40–51, 1992.", "25": "ISO, \"ISO 26262: Road vehicles – Functional safety,\" International Organization for Standardization, 2018.", "26": "S. J. Mellor and M. J. Balcer, Executable UML: A Foundation for Model-Driven Architecture, Addison-Wesley, 2002.", "27": "AsyncAPI Initiative, \"AsyncAPI Specification,\" 2024. https://www.asyncapi.com/", "28": "M. Chen et al., \"Evaluating Large Language Models Trained on Code,\" arXiv:2107.03374, 2021."};
+(function() {
+  var doc = document.getElementById('doc');
+  var lb = document.getElementById('lightbox');
+  var lbInner = document.getElementById('lightbox-inner');
+
+  doc.addEventListener('click', function(e) {
+    // Figure click → open lightbox (don't trigger row highlight)
+    var figWrap = e.target.closest('.fig-wrap');
+    if (figWrap) {
+      e.stopPropagation();
+      var svg = figWrap.querySelector('svg');
+      if (svg) {
+        var clone = svg.cloneNode(true);
+        clone.removeAttribute('width');
+        clone.removeAttribute('height');
+        clone.style.width = '100%';
+        clone.style.height = 'auto';
+        clone.style.maxHeight = '85vh';
+        lbInner.innerHTML = '';
+        lbInner.appendChild(clone);
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden', 'false');
+      }
+      return;
+    }
+    var cell = e.target.closest('.cell');
+    if (!cell) return;
+    var i = cell.dataset.i;
+    doc.querySelectorAll('.cell.active').forEach(function(x) { x.classList.remove('active'); });
+    doc.querySelectorAll('.cell[data-i="' + i + '"]').forEach(function(x) { x.classList.add('active'); });
+  });
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbInner.innerHTML = '';
+  }
+  lb.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // On mobile, default to zh-only mode for better reading
+  var isTouch = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+  var isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    document.body.classList.add('mode-zh');
+    document.querySelectorAll('.controls button').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.mode === 'zh');
+    });
+  }
+
+  document.querySelectorAll('.controls button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.controls button').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var mode = btn.dataset.mode;
+      document.body.classList.remove('mode-en', 'mode-zh');
+      if (mode === 'en') document.body.classList.add('mode-en');
+      if (mode === 'zh') document.body.classList.add('mode-zh');
+    });
+  });
+
+  // Citation popover
+  var popover = null;
+  var popoverTimer = null;
+  function linkify(text) {
+    // escape HTML first
+    var esc = text.replace(/[&<>"']/g, function(c) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+    return esc.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  }
+  function showPopover(cite) {
+    hidePopover();
+    var num = cite.dataset.ref;
+    var text = CITATIONS[num];
+    if (!text) return;
+    popover = document.createElement('div');
+    popover.className = 'cite-popover';
+    popover.innerHTML = '<span class="cite-num">[' + num + ']</span>' + linkify(text);
+    document.body.appendChild(popover);
+    // position below the cite marker, clamp to viewport
+    var rect = cite.getBoundingClientRect();
+    var pw = popover.offsetWidth;
+    var ph = popover.offsetHeight;
+    var left = rect.left + window.scrollX;
+    var top = rect.bottom + window.scrollY + 6;
+    if (left + pw > window.innerWidth - 12) left = window.innerWidth - pw - 12;
+    if (left < 12) left = 12;
+    // if it would go off bottom, flip above
+    if (rect.bottom + ph + 12 > window.innerHeight) {
+      top = rect.top + window.scrollY - ph - 6;
+    }
+    popover.style.left = left + 'px';
+    popover.style.top = top + 'px';
+    // keep popover open while hovering the popover itself
+    popover.addEventListener('mouseenter', function() { clearTimeout(popoverTimer); });
+    popover.addEventListener('mouseleave', hidePopover);
+  }
+  function hidePopover() {
+    if (popover) { popover.remove(); popover = null; }
+  }
+  function scheduleHide() {
+    clearTimeout(popoverTimer);
+    popoverTimer = setTimeout(hidePopover, 180);
+  }
+  document.addEventListener('mouseover', function(e) {
+    var cite = e.target.closest('.cite');
+    if (cite) {
+      clearTimeout(popoverTimer);
+      showPopover(cite);
+    }
+  });
+  document.addEventListener('mouseout', function(e) {
+    var cite = e.target.closest('.cite');
+    if (cite) scheduleHide();
+  });
+  document.addEventListener('focusin', function(e) {
+    if (e.target.classList && e.target.classList.contains('cite')) showPopover(e.target);
+  });
+  document.addEventListener('focusout', function(e) {
+    if (e.target.classList && e.target.classList.contains('cite')) hidePopover();
+  });
+  // Click a cite → on touch devices, first tap opens popover; second tap (or desktop) jumps to ref
+  var activeCite = null;
+  document.addEventListener('click', function(e) {
+    var cite = e.target.closest('.cite');
+    if (!cite) {
+      // Click outside cite → close popover
+      if (popover) hidePopover();
+      activeCite = null;
+      return;
+    }
+    e.stopPropagation();
+    e.preventDefault();
+    if (isTouch && activeCite !== cite) {
+      // First tap: open popover
+      activeCite = cite;
+      clearTimeout(popoverTimer);
+      showPopover(cite);
+      return;
+    }
+    // Desktop click, or second tap on mobile → scroll to ref
+    activeCite = null;
+    hidePopover();
+    var num = cite.dataset.ref;
+    var rows = doc.querySelectorAll('.row.ref .cell');
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].textContent.trim().indexOf('[' + num + ']') === 0) {
+        var row = rows[i].parentElement;
+        row.scrollIntoView({behavior: 'smooth', block: 'center'});
+        doc.querySelectorAll('.cell.active').forEach(function(x) { x.classList.remove('active'); });
+        row.querySelectorAll('.cell').forEach(function(x) { x.classList.add('active'); });
+        break;
+      }
+    }
+  });
+  // Close popover on scroll
+  window.addEventListener('scroll', hidePopover, true);
+})();
+</script>
+</body>
+</html>

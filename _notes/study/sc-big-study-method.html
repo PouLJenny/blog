@@ -1,0 +1,1595 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown转换结果</title>
+    <style>
+        /* ========== CSS 变量：#009f52 清新绿主色调 ========== */
+        :root {
+            --accent:            #009f52;
+            --accent-dark:       #007a3f;
+            --accent-deeper:     #005c30;
+            --accent-light:      #e6f7ef;
+            --accent-light2:     #c8eeda;
+            --sidebar-bg:        #ffffff;
+            --sidebar-border:    #d4ede1;
+            --sidebar-text:      #4a7060;
+            --sidebar-heading:   #007a3f;
+            --sidebar-hover-bg:  #f0faf5;
+            --sidebar-hover-text:#009f52;
+            --page-bg:           #f4fbf7;
+            --card-bg:           #ffffff;
+            --text-primary:      #1a2e22;
+            --text-muted:        #5a7a68;
+            --border:            #d8eee3;
+            --code-bg:           #1a1527;
+            --code-text:         #e2d9f3;
+            --shadow-sm:         0 1px 4px rgba(0,159,82,0.08);
+            --shadow-md:         0 4px 20px rgba(0,159,82,0.10), 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        /* 全局重置 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--page-bg);
+            max-width: 100%;
+            margin: 0;
+            padding-left: 240px;
+            transition: padding-left 0.3s ease;
+        }
+        body.toc-hidden { padding-left: 50px; }
+
+        /* ========== 左侧目录 ========== */
+        .toc-wrapper {
+            position: fixed;
+            top: 0; left: 0;
+            width: 240px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            z-index: 999;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            padding: 0 0 20px;
+            transform: translateX(0);
+        }
+        .toc-wrapper.hidden { transform: translateX(-100%); }
+
+        /* 目录滚动条 */
+        .toc-wrapper::-webkit-scrollbar { width: 4px; }
+        .toc-wrapper::-webkit-scrollbar-track { background: transparent; }
+        .toc-wrapper::-webkit-scrollbar-thumb { background: var(--accent-light2); border-radius: 2px; }
+
+        /* ========== 目录头部 ========== */
+        .toc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #e6f7ef 0%, #ffffff 100%);
+        }
+        .toc-header h2 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0;
+        }
+        .toc-toggle-btn {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid var(--accent-light2);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .toc-toggle-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* ========== 目录列表 ========== */
+        .toc-list, .toc-sublist { list-style: none; padding-left: 0; }
+        .toc-sublist { padding-left: 12px; margin-top: 2px; }
+        .toc-item { margin: 2px 0; padding: 0 8px; }
+        .toc-link {
+            text-decoration: none;
+            color: var(--sidebar-text);
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
+            display: block;
+            padding: 4px 8px;
+            border-radius: 5px;
+            border-left: 2px solid transparent;
+        }
+        .toc-link:hover {
+            color: var(--sidebar-hover-text);
+            background-color: var(--sidebar-hover-bg);
+            border-left-color: var(--accent);
+            padding-left: 10px;
+        }
+        .toc-level-1 .toc-link {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-deeper);
+        }
+        .toc-level-2 .toc-link { color: #2d6e4e; }
+        .toc-level-3 .toc-link { color: #4e8a6a; }
+        .toc-level-4 .toc-link,
+        .toc-level-5 .toc-link,
+        .toc-level-6 .toc-link { color: #7aab92; font-size: 0.82rem; }
+
+        /* ========== 目录唤起按钮 ========== */
+        .toc-reveal-btn {
+            position: fixed;
+            top: 20px; left: 8px;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.4);
+            z-index: 998;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .toc-reveal-btn.show { opacity: 1; visibility: visible; }
+        .toc-reveal-btn:hover { background: var(--accent-dark); transform: scale(1.05); }
+
+        /* ========== 正文容器 ========== */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 24px;
+        }
+        .content {
+            background-color: var(--card-bg);
+            padding: 24px 32px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        /* 标题 + 锚点偏移修复 */
+        .anchor-heading {
+            position: relative;
+            padding-top: 80px;
+            margin-top: -80px;
+        }
+        .content h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            margin: 20px 0 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-light2);
+            position: relative;
+        }
+        .content h1::before {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 56px; height: 2px;
+            background: var(--accent);
+        }
+        .content h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+            margin: 18px 0 8px;
+            padding-left: 10px;
+            position: relative;
+        }
+        .content h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 80px;
+            width: 3px;
+            height: calc(100% - 80px);
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 14px 0 6px;
+        }
+        .content h4, .content h5, .content h6 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 12px 0 6px;
+        }
+
+        /* 图片样式 */
+        .content-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin: 10px auto;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            cursor: zoom-in;
+        }
+        .content-img.loaded { opacity: 1; }
+
+        /* 段落/列表 */
+        .content p { margin: 6px 0; font-size: 1rem; line-height: 1.7; color: var(--text-primary); }
+        .content ul, .content ol { padding-left: 20px; margin: 6px 0 6px 10px; }
+        .content li { margin: 4px 0; }
+        .content a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-light2); transition: all 0.15s; }
+        .content a:hover { color: var(--accent-dark); border-bottom-color: var(--accent); }
+
+        /* 行内代码 */
+        .content code {
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+            font-size: 0.875rem;
+            background: #fff4e6;
+            color: #b45309;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #fde8c0;
+        }
+
+        /* 代码块 */
+        .content pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 14px 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-left: 3px solid #a78bfa;
+            box-shadow: 0 4px 20px rgba(26,21,39,0.25);
+        }
+        .content pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        /* 表格 */
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            overflow-x: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        .content th, .content td {
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .content th {
+            background: linear-gradient(135deg, var(--accent-light), #f0faf5);
+            font-weight: 600;
+            color: var(--accent-deeper);
+            white-space: nowrap;
+        }
+        .content tr:nth-child(even) { background-color: #f9fdfb; }
+        .content tr:hover { background-color: var(--accent-light); }
+
+        /* 引用块 */
+        .content blockquote {
+            border-left: 4px solid var(--accent);
+            background: var(--accent-light);
+            margin: 10px 0;
+            padding: 10px 16px;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ========== Mermaid ========== */
+        .mermaid {
+            margin: 16px 0;
+            text-align: center;
+            overflow-x: auto;
+            cursor: zoom-in;
+            padding: 16px;
+            background: var(--accent-light);
+            border-radius: 8px;
+            border: 1px solid var(--accent-light2);
+        }
+
+        /* ========== Lightbox ========== */
+        .lightbox-svg {
+            display: none;
+            width: 92vw; max-height: 88vh;
+            transform-origin: center center;
+            will-change: transform;
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            cursor: default;
+            box-sizing: border-box;
+        }
+        .lightbox-svg svg { width: 100% !important; height: auto !important; min-height: 400px; display: block; }
+        .lightbox-close {
+            position: fixed;
+            top: 16px; right: 20px;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 15px;
+            cursor: pointer;
+            z-index: 100000;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,30,15,0.88);
+            backdrop-filter: blur(2px);
+            z-index: 99999;
+            cursor: zoom-out;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-img {
+            max-width: 90vw; max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            object-fit: contain;
+            cursor: default;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* ========== 回到顶部 ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            text-align: center;
+            line-height: 44px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,159,82,0.35);
+            transition: all 0.3s ease;
+            opacity: 0; visibility: hidden;
+            z-index: 9999;
+            touch-action: manipulation;
+            border: none; outline: none;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,159,82,0.5); }
+
+        /* ========== 移动端 ========== */
+        @media (max-width: 992px) {
+            body { padding-left: 0; }
+            body.toc-hidden { padding-left: 0; }
+            .toc-wrapper { width: 260px; transform: translateX(-100%); }
+            .toc-wrapper.hidden { transform: translateX(-100%); }
+            .toc-mobile-trigger { display: block !important; }
+            .toc-reveal-btn { display: none; }
+            .content-wrapper { padding: 16px 12px; }
+            .content { padding: 18px; }
+        }
+
+        /* ========== 移动端触发按钮 ========== */
+        .toc-mobile-trigger {
+            position: fixed;
+            top: 20px; left: 20px;
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 12px rgba(0,159,82,0.35);
+            z-index: 9998;
+            display: none;
+        }
+
+        /* ========== 小屏 ========== */
+        @media (max-width: 576px) {
+            .back-to-top { width: 38px; height: 38px; line-height: 38px; font-size: 15px; bottom: 16px; right: 16px; }
+            .content h1 { font-size: 1.5rem; }
+            .content h2 { font-size: 1.25rem; }
+            .content h3 { font-size: 1.1rem; }
+        }
+
+        .toc-wrapper.show { transform: translateX(0); }
+    </style>
+</head>
+<body>
+    <!-- 左侧固定目录 -->
+    <div class="toc-wrapper" id="tocWrapper">
+        
+    <div class="toc-header">
+        <h2>目录</h2>
+        <button class="toc-toggle-btn" id="tocToggleBtn">≡</button>
+    </div>
+    <ul class="toc-list">
+    
+<li class='toc-item toc-level-1'><a href='#heading-1' class='toc-link'>SC-BIG 高效学习框架</a></li>
+    <ul class='toc-sublist'>
+    <li class='toc-item toc-level-2'><a href='#heading-2' class='toc-link'>起点哲学：学习的两种模式</a></li>
+        <ul class='toc-sublist'>
+        <li class='toc-item toc-level-3'><a href='#heading-3' class='toc-link'>模式一｜探索模式：好奇心驱动，广撒网</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-4' class='toc-link'>模式二｜聚焦模式：问题驱动，精确打击</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-5' class='toc-link'>两种模式的关系：不是对立，而是循环</a></li>
+        </ul></li>
+    <li class='toc-item toc-level-2'><a href='#heading-6' class='toc-link'>学习的本质：压缩不确定性</a></li>
+    <li class='toc-item toc-level-2'><a href='#heading-7' class='toc-link'>认知四象限：你的知识版图长什么样</a></li>
+    <li class='toc-item toc-level-2'><a href='#heading-8' class='toc-link'>不确定性的五种类型</a></li>
+    <li class='toc-item toc-level-2'><a href='#heading-9' class='toc-link'>学习路径：从问题到判断的五个阶段</a></li>
+        <ul class='toc-sublist'>
+        <li class='toc-item toc-level-3'><a href='#heading-10' class='toc-link'>阶段一｜定位：把模糊的困惑变成清晰的问题</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-11' class='toc-link'>阶段二｜测距：我离答案有多远？</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-12' class='toc-link'>阶段三｜侦察：围绕问题快速扫描</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-13' class='toc-link'>阶段四｜精测：在关键点上建立可靠认知</a></li>
+        <li class='toc-item toc-level-3'><a href='#heading-14' class='toc-link'>阶段五｜建构：形成你自己的回答</a></li>
+        </ul></li>
+    <li class='toc-item toc-level-2'><a href='#heading-15' class='toc-link'>闭环：输出验证与新问题的诞生</a></li>
+    <li class='toc-item toc-level-2'><a href='#heading-16' class='toc-link'>全景：一条线串起所有</a></li>
+</ul></li>
+    </ul>
+    
+    </div>
+
+    <!-- 目录唤起按钮（隐藏后显示） -->
+    <button class="toc-reveal-btn" id="tocRevealBtn">≡</button>
+
+    <!-- 移动端目录触发按钮 -->
+    <button class="toc-mobile-trigger" id="tocMobileTrigger">≡</button>
+
+    <!-- 正文容器 -->
+    <div class="content-wrapper">
+        <div class="content">
+            <h1 class="anchor-heading" id="heading-1">
+ SC-BIG 高效学习框架
+</h1>
+<blockquote>
+ <p>
+  两种模式，一条主线，四象限诊断，五种思维，一个完整的认知升级路径
+ </p>
+</blockquote>
+<hr/>
+<h2 class="anchor-heading" id="heading-2">
+ 起点哲学：学习的两种模式
+</h2>
+<p>
+ 在进入具体方法之前，需要先理解一个根本问题：
+ <strong>
+  好问题不会凭空冒出来。
+ </strong>
+</p>
+<p>
+ 一个完全没有知识储备的人，连"提出一个好问题"都做不到。你之所以能问出"怎么从全局角度做决策"，是因为你在实践中撞过墙；你之所以能讨论贝叶斯思维，是因为你在某个时刻接触过概率决策的概念。问题是从已有的认知和经验里长出来的。
+</p>
+<p>
+ 这里存在一个鸡生蛋的困境：高效学习需要从问题出发，但好问题需要知识基础，而知识基础似乎只能"漫无目的"地积累。
+</p>
+<p>
+ 解开这个困境的关键是：
+ <strong>
+  学习不是只有一种模式，而是两种模式的交替循环。
+ </strong>
+</p>
+<hr/>
+<h3 class="anchor-heading" id="heading-3">
+ 模式一｜探索模式：好奇心驱动，广撒网
+</h3>
+<p>
+ 没有明确问题，但保持对世界的好奇，广泛接触各种信息和想法。随手翻一本书、听一期播客、读一篇看起来有意思的文章、跟不同领域的人聊天。
+</p>
+<p>
+ 这种模式看起来漫无目的，但它有不可替代的价值——
+ <strong>
+  它扩大你的"问题生成能力"。
+ </strong>
+ 你见过的东西越多，你能提出的问题就越多、越深、越有质量。它就像植物的根系在土壤里蔓延，你不知道哪条根会找到水源，但不伸出去就永远找不到。
+</p>
+<p>
+ <strong>
+  探索模式的关键原则：
+ </strong>
+ - 跟着好奇心走，不跟着"应该学什么"走
+- 不追求系统性，追求广度和意外发现
+- 重点不是记住什么，而是让自己暴露在足够多的刺激中
+- 遇到让你"咦？"的东西——一个反直觉的观点、一个没想到的关联、一个说不清但觉得重要的想法——记下来，这就是未来问题的种子
+</p>
+<h3 class="anchor-heading" id="heading-4">
+ 模式二｜聚焦模式：问题驱动，精确打击
+</h3>
+<p>
+ 有明确的问题，围绕这个问题定向寻找答案。所有的阅读和学习都服务于这一个问题，不相关的直接跳过。你知道什么时候可以停——当你能回答这个问题、并且答案经得起检验的时候。
+</p>
+<p>
+ <strong>
+  这是本框架的主体内容。
+ </strong>
+ 后面的五个阶段（定位→测距→侦察→精测→建构）都是在聚焦模式下运行的。
+</p>
+<p>
+ <strong>
+  聚焦模式的关键原则：
+ </strong>
+ - 永远从"我要回答什么问题"出发，不从"我要学 X"出发
+- 书、文章、课程不是起点，而是你为了回答问题去调用的工具
+- 在每个阶段都清楚地知道"我现在是在回答哪个问题"，答不上来就说明偏离了主线
+- 敢于跳过和过滤，大多数内容跟你的问题无关
+</p>
+<hr/>
+<h3 class="anchor-heading" id="heading-5">
+ 两种模式的关系：不是对立，而是循环
+</h3>
+<p>
+ <strong>
+  探索模式为聚焦模式提供弹药
+ </strong>
+ — 没有广泛的知识接触，你提不出好问题，也缺乏跨领域联想的能力。
+</p>
+<p>
+ <strong>
+  聚焦模式为探索模式提供方向
+ </strong>
+ — 没有深度追问的经验，广泛阅读就真的变成了信息囤积，看了很多但什么也没沉淀。
+</p>
+<p>
+ 两种模式的健康比例不是固定的，而是随你的阶段变化：刚进入一个全新领域时，探索模式占比高（因为你还不知道该问什么）；一旦问题浮现，就迅速切换到聚焦模式；聚焦完成后，带着新的认知基础，再进入下一轮探索。
+</p>
+<p>
+ <strong>
+  真正低效的不是"漫无目的地看"，而是永远停在探索模式，从来不进入聚焦模式
+ </strong>
+ — 一直在输入，从来不围绕一个具体问题做深度加工。收藏了一千篇文章、看了五十本书，但从来没有围绕任何一个问题形成过自己的判断。那不是学习，那是信息囤积。
+</p>
+<p>
+ 反过来，
+ <strong>
+  永远只做聚焦模式也有问题
+ </strong>
+ — 你会变得越来越"专"但越来越"窄"，提不出跨领域的好问题，错过意外的洞察。
+</p>
+<p>
+ 理想的状态是：
+ <strong>
+  在探索中发现问题，在聚焦中解决问题，在解决问题的过程中发现新的探索方向。
+ </strong>
+ 这是一个螺旋上升的循环。
+</p>
+<blockquote>
+ <p>
+  下面的五阶段学习路径，是聚焦模式的完整操作方法。当你从探索模式中捕捉到一个值得追的问题时，就进入这个流程。
+ </p>
+</blockquote>
+<hr/>
+<h2 class="anchor-heading" id="heading-6">
+ 学习的本质：压缩不确定性
+</h2>
+<p>
+ 有了问题之后，学习的过程就是——
+ <strong>
+  围绕这个问题，不断缩小不确定性，直到你能形成可靠的判断。
+ </strong>
+</p>
+<p>
+ 你一开始面对问题，满眼混沌——不知道什么重要、什么可信、什么跟什么有关。学习的每一步，都是在某个维度上把不确定性往下压。
+</p>
+<p>
+ 这就是贯穿整个框架的主线。后面所有的东西——五种思维、结构化方法、阅读策略——都是服务于这条线的。
+</p>
+<hr/>
+<h2 class="anchor-heading" id="heading-7">
+ 认知四象限：你的知识版图长什么样
+</h2>
+<p>
+ 在开始压缩不确定性之前，先看清你面对的全景。任何时刻，你对一个问题的认知状态可以用四个象限来描述：
+</p>
+<pre><code>            │
+  已知的已知  │  已知的未知
+  我知道自己  │  我知道自己
+  知道什么   │  不知道什么
+            │
+ ───────────┼───────────
+            │
+  未知的已知  │  未知的未知
+  我不知道   │  我不知道
+  自己其实   │  自己不知道
+  知道什么   │  什么
+            │</code></pre>
+<p>
+ <strong>
+  已知的已知
+ </strong>
+ — 你的确定领地。你知道自己懂什么，能讲清楚，能用得上。这是你的认知资产。
+</p>
+<p>
+ <strong>
+  已知的未知
+ </strong>
+ — 你的学习清单。你明确知道自己哪里不懂，可以定向去查、去学。这是最舒服的学习区，因为方向明确。
+</p>
+<p>
+ <strong>
+  未知的未知
+ </strong>
+ — 你的认知黑洞。你根本意识不到还有这么一块空白存在，所以也不会去学。很多重大判断失误不是判断错了，是压根没意识到还有这个维度需要考虑。
+</p>
+<p>
+ <strong>
+  未知的已知
+ </strong>
+ — 你的沉睡资产。你有一些直觉、经验、隐性知识，但没有把它显性化——用不好、说不清、也传不出去。比如"凭感觉"就能判断一个方案靠不靠谱，但说不出为什么。
+</p>
+<p>
+ <strong>
+  学习的终极目标，就是改变这四个象限的面积比例：
+ </strong>
+</p>
+<ul>
+ <li>
+  把"已知的未知"定向消除 → 变成"已知的已知"
+ </li>
+ <li>
+  把"未知的未知"翻出来 → 先变成"已知的未知"，再消除
+ </li>
+ <li>
+  把"未知的已知"显性化 → 变成可复用、可传递的"已知的已知"
+ </li>
+ <li>
+  持续扩大"已知的已知"的版图
+ </li>
+</ul>
+<p>
+ 后面五个学习阶段的每一步，都在改变这些象限的面积。四象限是你的认知状态诊断工具——随时可以用它来检查自己当前处于什么状态、下一步该往哪个方向使力。
+</p>
+<hr/>
+<h2 class="anchor-heading" id="heading-8">
+ 不确定性的五种类型
+</h2>
+<p>
+ 围绕你的问题，不确定性可以拆成五种。它们与认知四象限的关系是——每种不确定性都指向四象限中不同区域的问题：
+</p>
+<p>
+ <strong>
+  结构性不确定
+ </strong>
+ — 我不知道这个问题涉及的全貌是什么，关键要素有哪些，它们之间什么关系。就像拿到一张没有标注的地图。（对应"已知的未知"——你知道自己缺地图，但不知道地图长什么样）
+</p>
+<p>
+ <strong>
+  质量性不确定
+ </strong>
+ — 我不知道手头的信息哪些可信、哪些有偏、哪些过时。地图上标了很多路，但不知道哪些还能走。（对应"已知的未知"——你知道信息有好坏，但不知道具体哪些可信）
+</p>
+<p>
+ <strong>
+  程度性不确定
+ </strong>
+ — 我不知道自己到底确定了多少。感觉"大概懂了"，但说不清是 60% 懂还是 90% 懂。（对应"已知的已知"和"已知的未知"的边界模糊——你分不清自己到底在哪个象限）
+</p>
+<p>
+ <strong>
+  盲区性不确定
+ </strong>
+ — 我不知道自己不知道什么。最危险的不确定性，因为你甚至意识不到它的存在。（直接对应"未知的未知"——认知黑洞）
+</p>
+<p>
+ <strong>
+  根基性不确定
+ </strong>
+ — 我以为自己理解了，但实际上只是在复述别人的结论、在用类比代替真正的理解。（对应一种伪装的"已知的已知"——你以为它在确定领地里，其实它是"未知的已知"甚至"未知的未知"伪装成了已知。第一性原理就是识破这种伪装的工具）这种不确定性最顽固——你读了十个来源，它们可能都建立在同一个未经检验的假设上，靠多读是压不下去的。消除它的唯一方式是
+ <strong>
+  回到最底层的基本事实和基本规律，从那里重新往上推导
+ </strong>
+ ——这就是第一性原理（First Principles Thinking）。
+</p>
+<p>
+ 前四种不确定性可以靠扫描、筛选、对比、验证来压缩。第五种不行。第五种要求你停下来问："如果我把所有别人告诉我的结论都拿掉，只剩下不可再拆的基本事实，我能从零推出什么？"这是一种更深层的思维操作，它不是某一步的专属工具，而是在学习的关键节点——当你发现自己虽然读了很多但说不清"为什么"的时候——需要启动的深度模式。
+</p>
+<p>
+ SC-BIG 的五种思维 + 第一性原理，对应着压缩不同类型不确定性的能力：
+</p>
+<table>
+ <thead>
+  <tr>
+   <th>
+    不确定性类型
+   </th>
+   <th>
+    对应的思维能力
+   </th>
+   <th>
+    核心动作
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    结构性不确定
+   </td>
+   <td>
+    <strong>
+     S 系统思维
+    </strong>
+    — 根
+   </td>
+   <td>
+    看清全局，建立结构，理清关系
+   </td>
+  </tr>
+  <tr>
+   <td>
+    质量性不确定
+   </td>
+   <td>
+    <strong>
+     C 审辩式思维
+    </strong>
+    — 茎
+   </td>
+   <td>
+    评估可信度，检验逻辑，辨别真伪
+   </td>
+  </tr>
+  <tr>
+   <td>
+    程度性不确定
+   </td>
+   <td>
+    <strong>
+     B 贝叶斯思维
+    </strong>
+    — 叶
+   </td>
+   <td>
+    量化置信度，根据新证据持续更新
+   </td>
+  </tr>
+  <tr>
+   <td>
+    盲区性不确定
+   </td>
+   <td>
+    <strong>
+     I 逆向思维
+    </strong>
+    — 花
+   </td>
+   <td>
+    从反面照亮盲区，提前发现风险
+   </td>
+  </tr>
+  <tr>
+   <td>
+    根基性不确定
+   </td>
+   <td>
+    <strong>
+     第一性原理
+    </strong>
+    — 土壤
+   </td>
+   <td>
+    剥到不可再拆的基本事实，从零重建理解
+   </td>
+  </tr>
+  <tr>
+   <td>
+    贯穿全程
+   </td>
+   <td>
+    <strong>
+     G 成长思维
+    </strong>
+    — 果
+   </td>
+   <td>
+    相信不确定性是可以被压缩的，持续迭代
+   </td>
+  </tr>
+ </tbody>
+</table>
+<p>
+ 为什么第一性原理是"土壤"？因为根茎叶花果都需要扎在土壤里才能成活。如果土壤本身有问题——你的整个理解建立在一个未经检验的借来的地基上——上面长出来的一切都不可靠。第一性原理就是检验和翻新这片土壤的能力。
+</p>
+<p>
+ <strong>
+  结构化思想
+ </strong>
+ 是全程的底层操作系统——无论你在压缩哪种不确定性，都需要把信息拆解、归类、建立层次关系。
+</p>
+<p>
+ <strong>
+  Adler 的阅读层次
+ </strong>
+ （检视阅读 / 分析阅读 / 主题阅读）是你根据当前不确定性的大小，决定对每份材料投入多深的策略——不确定性高、地图还很粗糙时用检视阅读快速扫描；锁定关键节点后用分析阅读深挖；形成整体判断时用主题阅读跨源整合。
+</p>
+<hr/>
+<h2 class="anchor-heading" id="heading-9">
+ 学习路径：从问题到判断的五个阶段
+</h2>
+<h3 class="anchor-heading" id="heading-10">
+ 阶段一｜定位：把模糊的困惑变成清晰的问题
+</h3>
+<p>
+ <strong>
+  要压缩的不确定性：
+ </strong>
+ 结构性不确定（问题本身的形状未知）
+ <strong>
+  主导思维：
+ </strong>
+ S 系统思维 + I 逆向思维
+ <strong>
+  四象限变化：
+ </strong>
+ 把一团模糊的困惑（未知的未知）转化为一组明确的子问题（已知的未知）
+</p>
+<p>
+ 大多数人觉得自己"有个问题要学"，但这个问题往往是模糊的。这一步的目标是把模糊的困惑变成可以操作的问题。
+</p>
+<p>
+ <strong>
+  系统思维向上看：
+ </strong>
+ - 这个问题存在于什么更大的系统中？
+- 它跟我已知的哪些问题有关联？
+- 解决它对我整体认知或业务的影响有多大？值得投入多少时间？
+</p>
+<p>
+ <strong>
+  逆向思维反过来问：
+ </strong>
+ - 如果我不解决这个问题，最坏结果是什么？
+- 我在这个问题上最容易犯什么错？
+- 什么样的答案是我绝对不想要的？
+</p>
+<p>
+ <strong>
+  结构化动作：
+ </strong>
+ 把问题拆解成子问题（What / Why / How / 适用条件），识别哪个子问题是关键瓶颈。
+</p>
+<p>
+ <strong>
+  同时判断知识性质——这决定后续路径的侧重：
+ </strong>
+ - 实践性知识（编程、管理）→ 后续以动手验证为主线，阅读为辅助
+- 概念性知识（理论、原理）→ 后续以深度阅读和跨源整合为主线
+- 信息性知识（动态、趋势）→ 后续以高效扫描和信源筛选为主线
+</p>
+<blockquote>
+ <p>
+  <strong>
+   阶段产出：
+  </strong>
+  一组结构清晰的子问题 + 对知识性质的判断 + 对投入值不值的初步决策。
+  <strong>
+   对焦检查：
+  </strong>
+  我现在能用一句话说清楚我要回答什么问题吗？如果不能，这一步还没做完。
+ </p>
+</blockquote>
+<hr/>
+<h3 class="anchor-heading" id="heading-11">
+ 阶段二｜测距：我离答案有多远？
+</h3>
+<p>
+ <strong>
+  要压缩的不确定性：
+ </strong>
+ 程度性不确定（不知道自己懂多少）
+ <strong>
+  主导思维：
+ </strong>
+ B 贝叶斯思维 + G 成长思维
+ <strong>
+  四象限变化：
+ </strong>
+ 划清"已知的已知"和"已知的未知"之间的边界，同时激活"未知的已知"（你有哪些经验和直觉可以用上？）
+</p>
+<p>
+ 在去找答案之前，先诚实测量自己的起点。这一步防止两种浪费：重复学习已经知道的东西，和高估自己跳过该学的东西。
+</p>
+<p>
+ <strong>
+  贝叶斯思维量化现状：
+ </strong>
+ - 关于这个问题，我现有的认知是什么？
+- 这些认知基于什么？（亲身经验 / 二手信息 / 纯直觉）
+- 给自己一个粗略的置信度——我有多确定？
+</p>
+<p>
+ <strong>
+  成长思维校准心态：
+ </strong>
+ - 防止退缩："我不懂"≠"我不能懂"，区分暂时困难和根本障碍
+- 防止自满："我大概懂了"经得起追问吗？能用自己的话讲清楚吗？
+</p>
+<blockquote>
+ <p>
+  <strong>
+   阶段产出：
+  </strong>
+  一张"不确定性地图"——围绕我的问题，哪些区域比较确定，哪些模糊，哪些完全空白。这张地图直接决定下一步去哪里找答案。
+  <strong>
+   对焦检查：
+  </strong>
+  我知道自己在哪些点上不确定吗？如果只是笼统地觉得"不太懂"，这一步还不够具体。
+ </p>
+</blockquote>
+<hr/>
+<h3 class="anchor-heading" id="heading-12">
+ 阶段三｜侦察：围绕问题快速扫描
+</h3>
+<p>
+ <strong>
+  要压缩的不确定性：
+ </strong>
+ 结构性不确定（从"一片混沌"到"粗糙的地图"）
+ <strong>
+  主导思维：
+ </strong>
+ S 系统思维 + C 审辩式思维
+ <strong>
+  对应阅读策略：
+ </strong>
+ 检视阅读（Inspectional Reading）
+ <strong>
+  四象限变化：
+ </strong>
+ 大量"未知的未知"被翻出来变成"已知的未知"；同时一些简单事实直接进入"已知的已知"
+</p>
+<p>
+ 注意：这一步不是"广泛阅读"，而是
+ <strong>
+  围绕你的问题做定向侦察
+ </strong>
+ 。你是带着明确的问题去扫描，不是漫无目的地浏览。
+</p>
+<p>
+ 面对一本书、一篇长文、一个课程，先问：
+ <strong>
+  这个内容跟我的问题有关吗？
+ </strong>
+ 如果有关，在 15-30 分钟内快速提取骨架：
+</p>
+<p>
+ <strong>
+  系统思维搭骨架：
+ </strong>
+ - 与我的问题相关的核心概念有哪些？
+- 这些概念之间的关系是什么？（因果 / 从属 / 对立 / 递进）
+- 围绕我的问题，主要有哪些流派或争议？
+</p>
+<p>
+ <strong>
+  审辩式思维做初筛：
+ </strong>
+ - 来源可靠吗？
+- 不同来源的共识和分歧分别在哪？
+- 哪些是经过验证的事实，哪些只是个人观点？
+</p>
+<p>
+ <strong>
+  对每个内容快速做决策：
+ </strong>
+ 与我的问题无关 → 直接跳过。相关但不关键 → 记录要点，不深入。关键 → 标记待深入。
+ <strong>
+  大多数内容应该在这一步被过滤掉。
+ </strong>
+ 敢于跳过，是高效学习的核心能力之一。
+</p>
+<blockquote>
+ <p>
+  <strong>
+   阶段产出：
+  </strong>
+  一张围绕你的问题的知识地图 + 一个"接下来该深入什么"的优先级清单。
+  <strong>
+   对焦检查：
+  </strong>
+  我扫描的每一份材料，都是因为它可能帮我回答我的问题吗？如果发现自己在"顺便看看"，说明已经偏离了。
+ </p>
+</blockquote>
+<hr/>
+<h3 class="anchor-heading" id="heading-13">
+ 阶段四｜精测：在关键点上建立可靠认知
+</h3>
+<p>
+ <strong>
+  要压缩的不确定性：
+ </strong>
+ 质量性不确定 + 程度性不确定 + 根基性不确定（从"大概知道"到"真正理解"）
+ <strong>
+  主导思维：
+ </strong>
+ C 审辩式思维（全面主导）+ B 贝叶斯思维（持续更新）
+ <strong>
+  对应阅读策略：
+ </strong>
+ 分析阅读（Analytical Reading）
+ <strong>
+  四象限变化：
+ </strong>
+ "已知的未知"被逐个消除变成"已知的已知"；第一性原理检验把伪装成"已知的已知"的根基性不确定揪出来
+</p>
+<p>
+ 先选焦点，再深度分析。不是什么都值得精读——只有那些对回答你的核心问题至关重要的内容才值得。
+</p>
+<p>
+ <strong>
+  选焦点的两个标准：
+ </strong>
+ - 逆向思维选"犯错成本最高"的节点 — 理解错了后果最严重的地方优先
+- 贝叶斯思维选"信息价值最高"的节点 — 不确定性大 × 对我的问题影响大的地方优先
+</p>
+<p>
+ <strong>
+  对选定内容做深度分析（审辩式思维全面展开）：
+ </strong>
+</p>
+<ol>
+ <li>
+  <strong>
+   拆论证结构
+  </strong>
+  — 核心主张是什么？论据是什么？推理链条完整吗？
+ </li>
+ <li>
+  <strong>
+   追隐含假设
+  </strong>
+  — 作者没有明说但论证依赖的前提是什么？找到它就找到了适用边界。
+ </li>
+ <li>
+  <strong>
+   分三层内容
+  </strong>
+  — 事实（可验证）/ 推理（可评估逻辑）/ 观点（背后是价值判断）。
+ </li>
+ <li>
+  <strong>
+   评论据质量
+  </strong>
+  — 证据来源可靠吗？样本量够吗？有没有选择性引用？
+ </li>
+ <li>
+  <strong>
+   找反例和边界
+  </strong>
+  — 什么条件下这个观点不成立？有没有反面证据？
+ </li>
+</ol>
+<p>
+ <strong>
+  第一性原理检验（在关键节点启动）：
+ </strong>
+ 当你完成上面五步后，对于那些对你的判断影响最大的核心论断，再追问一层：如果把所有来源的结论都拿掉，只剩下不可再拆的基本事实和基本规律，这个论断还能从零推出来吗？
+</p>
+<p>
+ 这一步不需要对每个内容都做——那样太慢了。它只在一个特定信号出现时启动：
+ <strong>
+  你发现自己能复述结论，但说不清"为什么一定是这样而不是那样"。
+ </strong>
+ 这就是根基性不确定的症状。此时你需要停下来，把问题剥到最底层，从基本事实重新往上建构，而不是继续堆积更多来源的相同结论。
+</p>
+<p>
+ <strong>
+  关键动作：每读完一个重要内容，立刻更新你的置信度。
+ </strong>
+ 这个动作强迫你精确追踪认知的真实移动，而不是停留在"又看了一些东西"的错觉里。
+</p>
+<blockquote>
+ <p>
+  <strong>
+   阶段产出：
+  </strong>
+  对核心问题的关键节点，从"模糊印象"变成"可以讲清楚骨架逻辑"。
+  <strong>
+   对焦检查：
+  </strong>
+  我深入分析的每个内容，都是因为它直接影响我对核心问题的判断吗？
+ </p>
+</blockquote>
+<hr/>
+<h3 class="anchor-heading" id="heading-14">
+ 阶段五｜建构：形成你自己的回答
+</h3>
+<p>
+ <strong>
+  要压缩的不确定性：
+ </strong>
+ 全部五种（终极整合）
+ <strong>
+  主导思维：
+ </strong>
+ 五种全部上线
+ <strong>
+  对应阅读策略：
+ </strong>
+ 主题阅读（Syntopical Reading）
+ <strong>
+  四象限变化：
+ </strong>
+ "已知的已知"大幅扩张；"未知的已知"（你的隐性洞察）被显性化融入判断；残余的"未知的未知"被逆向思维尽可能翻出
+</p>
+<p>
+ 这是整个路径的终点。目标不是"我读了很多"，而是
+ <strong>
+  "我能回答我最初的那个问题了，并且这个回答是我自己的、经得起检验的"
+ </strong>
+ 。
+</p>
+<p>
+ <strong>
+  S 系统思维
+ </strong>
+ — 把多个来源的碎片围绕你的问题整合成一个有层次的整体。不是来源并列，而是建成一棵树。
+</p>
+<p>
+ <strong>
+  C 审辩式思维
+ </strong>
+ — 在不同来源的分歧点上做裁判。真分歧还是伪分歧？根源在哪？
+</p>
+<p>
+ <strong>
+  B 贝叶斯思维
+ </strong>
+ — 综合所有证据后，对你的核心问题给一个最终置信度。哪些确定，哪些仍需更多信息。
+</p>
+<p>
+ <strong>
+  I 逆向思维
+ </strong>
+ — 对你形成的回答做压力测试。最大弱点在哪？什么新证据会推翻它？
+</p>
+<p>
+ <strong>
+  G 成长思维
+ </strong>
+ — 这个过程暴露了你哪些认知盲区？这些发现就是下一轮问题的种子。
+</p>
+<p>
+ <strong>
+  核心原则：用你的问题去组织材料，不要被材料的结构带着走。
+ </strong>
+ 很多人读了五本书，脑子里有五个互不关联的知识块，根本原因是每次都在跟着作者的结构走，从来没有建立过自己的结构。你的结构应该围绕你的问题生长，书只是喂养它的养分。
+</p>
+<p>
+ <strong>
+  第一性原理在建构中的角色：
+ </strong>
+ 当你整合多个来源形成自己的判断时，最后做一次"地基检查"——你的整个判断链条，最底层依赖的是什么基本事实？这些基本事实是你亲自验证过的，还是所有来源都"默认成立"但没人真正检验过的？如果是后者，那就是你的判断中最薄弱的一环。用第一性原理把这一环补上，你的判断就真正站稳了。
+</p>
+<blockquote>
+ <p>
+  <strong>
+   阶段产出：
+  </strong>
+  一个你自己的、结构化的、标注了置信度的回答。你知道自己相信什么、为什么相信、在什么条件下需要修正。
+  <strong>
+   对焦检查：
+  </strong>
+  我能用自己的话回答最初的那个问题了吗？
+ </p>
+</blockquote>
+<hr/>
+<h2 class="anchor-heading" id="heading-15">
+ 闭环：输出验证与新问题的诞生
+</h2>
+<p>
+ 学习的终点不是"我觉得我懂了"，而是"我的回答经受住了检验"。
+</p>
+<p>
+ <strong>
+  验证方式：
+ </strong>
+ - 用自己的话讲给别人听（费曼技巧）——讲不清的地方就是理解的薄弱点
+- 跟人或 AI 辩论，让对方专门挑刺
+- 在实际工作中应用，看结果是否符合预期
+</p>
+<p>
+ <strong>
+  验证后三种走向：
+ </strong>
+ - 结果符合预期 → 置信度上升，这块认知沉淀下来，问题关闭
+- 结果不符合预期 → 回到路径中某个阶段，带着更精确的问题重新走
+- 过程中冒出新问题 → 恭喜，新一轮循环的起点。好的学习总是这样——回答一个问题的同时，发现三个新的值得追的问题
+</p>
+<p>
+ <strong>
+  成长思维在这一步的角色：
+ </strong>
+ 发现自己理解有误不是失败，是认知升级的信号。每一次"我错了"都意味着不确定性被进一步压缩了。
+</p>
+<hr/>
+<h2 class="anchor-heading" id="heading-16">
+ 全景：一条线串起所有
+</h2>
+<pre><code>    ┌─────────────────────────────────────────────┐
+    │         探索模式（好奇心驱动）                  │
+    │   广泛接触 → 积累认知弹药 → 发现值得追的问题     │
+    └──────────────────┬──────────────────────────┘
+                       │ 捕捉到一个好问题
+                       ▼
+            ┌─ 阶段一｜定位 ─── S系统 + I逆向
+            │
+            ├─ 阶段二｜测距 ─── B贝叶斯 + G成长
+            │
+    聚焦模式 ├─ 阶段三｜侦察 ─── S系统 + C审辩（检视阅读）
+            │
+            ├─ 阶段四｜精测 ─── C审辩 + B贝叶斯（分析阅读）
+            │
+            └─ 阶段五｜建构 ─── SCBIG全部（主题阅读）
+                       │
+                       ▼
+                   输出验证 ─── G成长 + B贝叶斯
+                       │
+            ┌──────────┼──────────┐
+            ▼          ▼          ▼
+         问题关闭    修正重走    新问题诞生
+                                  │
+                       ┌──────────┘
+                       ▼
+    ┌─────────────────────────────────────────────┐
+    │      带着新认知重新进入探索模式                  │
+    │   视野更宽 → 问题更深 → 螺旋上升               │
+    └─────────────────────────────────────────────┘</code></pre>
+<p>
+ <strong>
+  一句话总结：
+ </strong>
+</p>
+<p>
+ <strong>
+  高效学习是探索与聚焦的交替循环。在探索中发现问题，在聚焦中解决问题，在解决问题的过程中打开新的探索方向。聚焦时，用系统思维看清全局，用审辩思维验证质量，用贝叶斯思维追踪进度，用逆向思维照亮盲区，用第一性原理检验地基，用成长思维持续迭代。当你能复述结论却说不清"为什么"时，就是该启动第一性原理、回到基本事实重新建构的信号。探索为聚焦提供弹药，聚焦为探索提供方向，两者缺一不可，螺旋上升。
+ </strong>
+</p>
+<hr/>
+<p>
+ <em>
+  SC-BIG Learning Framework v5.0
+ </em>
+ <em>
+  土壤·根茎叶花果 — 探索与聚焦的螺旋，从混沌到清晰
+ </em>
+</p>
+
+        </div>
+    </div>
+
+    <!-- 图片放大遮罩 -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose">✕</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+        <div class="lightbox-svg" id="lightboxSvg"></div>
+    </div>
+
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // ========== 核心变量 ==========
+        const tocWrapper = document.getElementById('tocWrapper');
+        const tocToggleBtn = document.getElementById('tocToggleBtn');
+        const tocRevealBtn = document.getElementById('tocRevealBtn');
+        const tocMobileTrigger = document.getElementById('tocMobileTrigger');
+        const body = document.body;
+
+        // ========== 目录切换核心逻辑（修复隐藏后唤起） ==========
+        function toggleToc() {
+            // 切换目录显示/隐藏
+            tocWrapper.classList.toggle('hidden');
+            // 切换body的padding（适配空间）
+            body.classList.toggle('toc-hidden');
+            // 显示/隐藏唤起按钮
+            tocRevealBtn.classList.toggle('show');
+            
+            // 移动端特殊处理
+            if (window.innerWidth <= 992) {
+                tocWrapper.classList.toggle('show');
+            }
+        }
+
+        // 绑定点击事件
+        tocToggleBtn.addEventListener('click', toggleToc); // 目录内隐藏按钮
+        tocRevealBtn.addEventListener('click', toggleToc); // 隐藏后唤起按钮
+        tocMobileTrigger.addEventListener('click', toggleToc); // 移动端触发按钮
+
+        // ========== 回到顶部按钮逻辑 ==========
+        const backToTopBtn = document.getElementById('backToTop');
+        // 节流函数（优化滚动性能）
+        function throttle(fn, delay) {
+            let timer = null;
+            return function() {
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        fn.apply(this, arguments);
+                        timer = null;
+                    }, delay);
+                }
+            };
+        }
+        // 滚动监听
+        window.addEventListener('scroll', throttle(function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        }, 100));
+        // 点击回到顶部
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // ========== 图片懒加载增强（兼容旧浏览器） ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            const lazyImages = document.querySelectorAll('.content-img[loading="lazy"]');
+            // 检测图片是否进入视口
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        // 加载完成后添加样式
+                        img.onload = function() {
+                            img.classList.add('loaded');
+                        };
+                        // 兼容：手动触发加载
+                        if (img.complete) {
+                            img.classList.add('loaded');
+                        }
+                        // 停止观察已加载的图片
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '200px 0px', // 提前200px开始加载
+                threshold: 0.01
+            });
+            // 观察所有懒加载图片
+            lazyImages.forEach(img => {
+                observer.observe(img);
+            });
+
+            // 初始触发滚动检查
+            window.dispatchEvent(new Event('scroll'));
+
+            // 初始化：大屏显示目录，小屏隐藏
+            if (window.innerWidth > 992) {
+                tocWrapper.classList.remove('hidden');
+                body.classList.remove('toc-hidden');
+                tocRevealBtn.classList.remove('show');
+            } else {
+                tocWrapper.classList.add('hidden');
+                tocRevealBtn.classList.remove('show');
+            }
+        });
+
+        // ========== 修复目录链接点击平滑滚动 ==========
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').slice(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // 移动端点击目录后自动隐藏目录
+                    if (window.innerWidth <= 992) {
+                        tocWrapper.classList.remove('show');
+                        tocWrapper.classList.add('hidden');
+                        body.classList.remove('toc-hidden');
+                    }
+                }
+            });
+        });
+
+        // ========== 图片 & Mermaid 点击放大 ==========
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxSvg = document.getElementById('lightboxSvg');
+
+        // 缩放/平移状态
+        let lbScale = 1, lbX = 0, lbY = 0, lbActiveEl = null;
+
+        function clampPan() {
+            // 根据当前缩放和容器尺寸限制平移范围，避免内容完全移出可视区
+            if (!lbActiveEl) return;
+            const rect = lbActiveEl.getBoundingClientRect();
+            // 内容实际尺寸（未变换）
+            const elW = rect.width / lbScale;
+            const elH = rect.height / lbScale;
+            // 可视区尺寸
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            // 允许平移的最大幅度：至少保留 20% 内容在视窗内
+            const maxX = (elW * lbScale * 0.8 + vw * 0.5) / 2;
+            const maxY = (elH * lbScale * 0.8 + vh * 0.5) / 2;
+            lbX = Math.min(maxX, Math.max(-maxX, lbX));
+            lbY = Math.min(maxY, Math.max(-maxY, lbY));
+        }
+
+        function applyTransform() {
+            if (!lbActiveEl) return;
+            clampPan();
+            lbActiveEl.style.transform = `translate(${lbX}px, ${lbY}px) scale(${lbScale})`;
+        }
+
+        function resetTransform() {
+            lbScale = 1; lbX = 0; lbY = 0;
+            applyTransform();
+        }
+
+        function openLightboxImg(src, alt) {
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightboxImg.style.display = 'block';
+            lightboxSvg.style.display = 'none';
+            lightboxSvg.innerHTML = '';
+            lbActiveEl = lightboxImg;
+            resetTransform();
+            lightboxOverlay.classList.add('active');
+        }
+
+        function openLightboxSvg(svgEl) {
+            const clone = svgEl.cloneNode(true);
+            if (!clone.getAttribute('viewBox')) {
+                const rect = svgEl.getBoundingClientRect();
+                const w = rect.width || parseFloat(svgEl.getAttribute('width'));
+                const h = rect.height || parseFloat(svgEl.getAttribute('height'));
+                if (w && h) clone.setAttribute('viewBox', `0 0 ${w} ${h}`);
+            }
+            clone.removeAttribute('width');
+            clone.removeAttribute('height');
+            clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            clone.style.cssText = 'width:100%;height:auto;display:block;transform-origin:center center;will-change:transform;';
+            lightboxSvg.innerHTML = '';
+            lightboxSvg.appendChild(clone);
+            lightboxImg.style.display = 'none';
+            lightboxSvg.style.display = 'block';
+            // 变换目标是白卡内部的 svg 元素，白卡本身保持不动
+            lbActiveEl = lightboxSvg.querySelector('svg');
+            resetTransform();
+            lightboxOverlay.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('active');
+            lightboxImg.style.display = 'none';
+            lightboxSvg.style.display = 'none';
+            lightboxSvg.innerHTML = '';
+            resetTransform();
+            lbActiveEl = null;
+        }
+
+        // ===== 触控板捏合缩放 & 双指平移 =====
+        // 挂在 document 捕获阶段，lightbox 开启时拦截所有 wheel 事件
+        document.addEventListener('wheel', function(e) {
+            if (!lightboxOverlay.classList.contains('active')) return;
+            e.preventDefault();
+            if (!lbActiveEl) return;
+            // 校正 deltaMode：0=像素(触控板), 1=行(鼠标滚轮), 2=页
+            const lineH = 16;
+            const dx = e.deltaMode === 1 ? e.deltaX * lineH : e.deltaX;
+            const dy = e.deltaMode === 1 ? e.deltaY * lineH : e.deltaY;
+            if (e.ctrlKey) {
+                // 捏合缩放：ctrlKey + deltaY
+                const factor = dy < 0 ? 1.08 : 0.93;
+                lbScale = Math.min(Math.max(0.2, lbScale * factor), 20);
+            } else {
+                // 双指平移
+                lbX -= dx;
+                lbY -= dy;
+            }
+            applyTransform();
+        }, { passive: false, capture: true });
+
+        // 双击还原
+        lightboxOverlay.addEventListener('dblclick', function(e) {
+            if (e.target === lightboxOverlay) return;
+            resetTransform();
+        });
+
+        document.querySelectorAll('.content-img').forEach(img => {
+            img.addEventListener('click', function() {
+                openLightboxImg(this.src, this.alt);
+            });
+        });
+
+        // 用 MutationObserver 监听 Mermaid SVG 插入，确保渲染后再绑定
+        document.querySelectorAll('.mermaid').forEach(function(el) {
+            // 5s 超时兜底：Mermaid 语法错误时渲染结果为文字而非 SVG，永不触发
+            const timer = setTimeout(function() { obs.disconnect(); }, 5000);
+            const obs = new MutationObserver(function(mutations, observer) {
+                const svg = el.querySelector('svg');
+                if (svg) {
+                    clearTimeout(timer);
+                    observer.disconnect();
+                    el.addEventListener('click', function() {
+                        const s = this.querySelector('svg');
+                        if (s) openLightboxSvg(s);
+                    });
+                }
+            });
+            obs.observe(el, { childList: true, subtree: true });
+        });
+
+        lightboxOverlay.addEventListener('click', function(e) {
+            if (e.target === lightboxOverlay) closeLightbox();
+        });
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // ========== Mermaid 初始化 ==========
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+        // ========== 窗口大小变化时适配 ==========
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                // 大屏：恢复目录显示，隐藏唤起按钮
+                tocWrapper.classList.remove('hidden', 'show');
+                body.classList.remove('toc-hidden');
+                tocRevealBtn.classList.remove('show');
+            } else {
+                // 小屏：隐藏目录，显示移动端触发按钮
+                tocWrapper.classList.add('hidden');
+                tocWrapper.classList.remove('show');
+                body.classList.remove('toc-hidden');
+                tocRevealBtn.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
+    
