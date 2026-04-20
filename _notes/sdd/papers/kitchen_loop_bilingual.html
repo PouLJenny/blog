@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Kitchen Loop · 中英对照</title>
+<title>__TITLE_ZH__</title>
 <script>
   MathJax = {
     tex: {
@@ -28,6 +28,7 @@
 <style>
   :root {
     --g-primary: #009f52;
+    --g-secondary: #3eb77a;
     --g-soft: #e1f5ec;
     --g-primary-alpha: rgba(0,159,82,0.12);
     --text: #1f2a37;
@@ -46,6 +47,7 @@
   @media (prefers-color-scheme: dark) {
     html:not([data-theme]) {
       --g-primary: #3fd18a;
+      --g-secondary: #67c492;
       --g-soft: #08331f;
       --g-primary-alpha: rgba(63,209,138,0.18);
       --text: #e5e7eb;
@@ -64,6 +66,7 @@
   /* Explicit user choice: overrides system preference */
   html[data-theme="dark"] {
     --g-primary: #3fd18a;
+    --g-secondary: #67c492;
     --g-soft: #08331f;
     --g-primary-alpha: rgba(63,209,138,0.18);
     --text: #e5e7eb;
@@ -332,7 +335,7 @@
 
   h1, h2, h3 { line-height: 1.3; }
   h1 { font-size: 22px; margin: 18px 0 8px; color: var(--g-primary); }
-  h2 { font-size: 18px; margin: 16px 0 6px; color: var(--text); }
+  h2 { font-size: 18px; margin: 16px 0 6px; color: var(--g-secondary); }
   h3 { font-size: 16px; margin: 12px 0 4px; color: var(--text); }
   p { margin: 6px 0 10px; }
   blockquote {
@@ -609,7 +612,7 @@
 <div class="topbar">
   <div class="topbar-inner">
     <div>
-      <span class="title">The Kitchen Loop</span>
+      <span class="title">__TOOLBAR_TITLE__</span>
       <span class="sub">User-Spec-Driven Development for a Self-Evolving Codebase · Yannick Roy · 2026</span>
     </div>
     <div class="controls">

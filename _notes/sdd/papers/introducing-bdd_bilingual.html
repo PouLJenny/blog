@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDD 介绍 / Introducing BDD</title>
+
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('bilingual-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch(e){}
+})();
+</script>
+
+<style>
+:root {
+  --bg: #ffffff; --fg: #1a1a1a; --fg-soft: #555;
+  --border: #e5e5e5; --accent: #009f52; --accent-soft: #e1f5ec;
+  --accent-hover: #007a3f; --code-bg: #f6f8f7; --code-border: #e5e5e5;
+  --fig-bg: #ffffff; --row-hover: #f9fbfa; --highlight: #e1f5ec;
+  --quote-bg: #f6f8f7; --toc-bg: #fafafa;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    --bg: #1a1a1a; --fg: #e8e8e8; --fg-soft: #a0a0a0;
+    --border: #2e2e2e; --accent: #3fd07f; --accent-soft: #1a3329;
+    --accent-hover: #5ee094; --code-bg: #242424; --code-border: #2e2e2e;
+    --fig-bg: #1a1a1a; --row-hover: #222; --highlight: #1a3329;
+    --quote-bg: #222; --toc-bg: #1e1e1e;
+  }
+}
+html[data-theme="dark"] {
+  --bg: #1a1a1a; --fg: #e8e8e8; --fg-soft: #a0a0a0;
+  --border: #2e2e2e; --accent: #3fd07f; --accent-soft: #1a3329;
+  --accent-hover: #5ee094; --code-bg: #242424; --code-border: #2e2e2e;
+  --fig-bg: #1a1a1a; --row-hover: #222; --highlight: #1a3329;
+  --quote-bg: #222; --toc-bg: #1e1e1e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.7; font-size: 16px;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+/* Top bar: full-width bg, inner content centered to layout width */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+.topbar-inner {
+  max-width: 1680px; margin: 0 auto;
+  padding: 10px 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.topbar .title { font-weight: 600; font-size: 15px; }
+.topbar .title .sub { color: var(--fg-soft); font-weight: 400; margin-left: 8px; font-size: 13px; }
+.topbar .spacer { flex: 1; }
+.controls { display: flex; align-items: center; gap: 8px; }
+.modes { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.modes button {
+  background: transparent; border: none; color: var(--fg);
+  padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit;
+}
+.modes button.active { background: var(--accent); color: white; }
+.modes button:not(.active):hover { background: var(--accent-soft); }
+#themebtn, #tocbtn {
+  background: transparent; border: 1px solid var(--border); border-radius: 6px;
+  width: 32px; height: 32px; cursor: pointer; color: var(--fg);
+  display: inline-flex; align-items: center; justify-content: center; padding: 0;
+}
+#themebtn:hover, #tocbtn:hover { background: var(--accent-soft); }
+#themebtn svg, #tocbtn svg { width: 18px; height: 18px; }
+#tocbtn { display: none; }
+
+/* Main layout: TOC + main centered as one block */
+.layout { display: flex; gap: 0; max-width: 1680px; margin: 0 auto; }
+aside.toc {
+  width: 260px; flex-shrink: 0;
+  position: sticky; top: 54px; align-self: flex-start;
+  max-height: calc(100vh - 54px); overflow-y: auto;
+  padding: 20px 12px 40px;
+  background: var(--toc-bg); border-right: 1px solid var(--border);
+  font-size: 13px;
+}
+aside.toc .toc-title {
+  font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--fg-soft); margin-bottom: 10px; padding: 0 8px;
+}
+.toc-item {
+  display: block; padding: 5px 8px; color: var(--fg-soft);
+  border-left: 2px solid transparent; line-height: 1.4;
+  border-radius: 0 4px 4px 0; margin-bottom: 2px;
+}
+.toc-item:hover { background: var(--accent-soft); color: var(--fg); text-decoration: none; }
+.toc-item.active { border-left-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+.toc-l1 { font-weight: 600; }
+.toc-l2 { padding-left: 20px; }
+.toc-item .en, .toc-item .zh { display: block; }
+.toc-item .zh { font-size: 12px; color: var(--fg-soft); }
+.toc-item.active .zh { color: var(--accent); }
+
+main { flex: 1; min-width: 0; padding: 30px 40px 80px; }
+
+/* Row grid: EN left, ZH right */
+.row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+  transition: background 0.15s;
+}
+.row:last-child { border-bottom: none; }
+.row:hover { background: var(--row-hover); }
+.row.highlighted { background: var(--highlight); }
+.cell { min-width: 0; }
+.cell > *:first-child { margin-top: 0; }
+.cell > *:last-child { margin-bottom: 0; }
+
+h1, h2, h3 { line-height: 1.3; margin: 1.2em 0 0.6em; }
+h1, h2 { color: var(--accent); }
+h3 { color: var(--fg); }
+h1 { font-size: 28px; font-weight: 700; }
+h2 { font-size: 20px; font-weight: 600; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0.8em 0; }
+blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--quote-bg);
+  padding: 8px 16px; margin: 1em 0;
+  color: var(--fg-soft); font-style: italic;
+  border-radius: 0 4px 4px 0;
+}
+ul { padding-left: 1.4em; margin: 0.8em 0; }
+li { margin: 0.3em 0; }
+code {
+  background: var(--code-bg); border: 1px solid var(--code-border);
+  padding: 1px 5px; border-radius: 3px; font-size: 0.9em;
+  font-family: "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", monospace;
+}
+pre.code {
+  background: var(--code-bg); border: 1px solid var(--code-border);
+  border-radius: 6px; padding: 12px 14px; overflow-x: auto;
+  margin: 1em 0; font-size: 13px; line-height: 1.5;
+}
+pre.code code { background: transparent; border: none; padding: 0; font-size: inherit; }
+strong { color: var(--fg); }
+
+.infobox {
+  background: var(--quote-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 14px; margin: 1em 0;
+}
+.info-row { display: flex; gap: 10px; padding: 3px 0; font-size: 14px; }
+.info-label { color: var(--fg-soft); min-width: 100px; }
+
+.data-table { border-collapse: collapse; margin: 1em 0; width: 100%; font-size: 14px; }
+.data-table th, .data-table td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+.data-table th { background: var(--code-bg); font-weight: 600; }
+.data-table caption { caption-side: top; font-weight: 600; text-align: left; padding: 4px 0; }
+
+/* Mode switching */
+body.mode-en .cell.zh { display: none; }
+body.mode-en .row { grid-template-columns: 1fr; }
+body.mode-zh .cell.en { display: none; }
+body.mode-zh .row { grid-template-columns: 1fr; }
+body.mode-en .toc-item .zh { display: none; }
+body.mode-zh .toc-item .en { display: none; }
+
+.toc-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 55; }
+body.toc-open .toc-backdrop { display: block; }
+
+@media (max-width: 1100px) {
+  aside.toc {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 280px; max-height: 100vh; z-index: 60;
+    transform: translateX(-100%); transition: transform 0.2s;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+  }
+  body.toc-open aside.toc { transform: translateX(0); }
+  #tocbtn { display: inline-flex; }
+  main { padding: 20px 24px 60px; }
+}
+
+@media (max-width: 768px) {
+  body { font-size: 15px; }
+  .topbar-inner { padding: 8px 12px; gap: 8px; }
+  .topbar .title .sub { display: none; }
+  .modes button { padding: 5px 8px; font-size: 12px; }
+  main { padding: 16px 14px 40px; }
+  .row { grid-template-columns: 1fr; gap: 8px; padding: 8px 4px; }
+  .row .cell.en { opacity: 0.7; border-top: 1px dashed var(--border); padding-top: 8px; }
+  body.mode-zh .row .cell.en { border-top: none; padding-top: 0; }
+  body.mode-zh .row, body.mode-en .row { grid-template-columns: 1fr; }
+  h1 { font-size: 22px; } h2 { font-size: 17px; }
+}
+
+@media print {
+  .topbar, aside.toc, .toc-backdrop { display: none; }
+  main { padding: 0; }
+  .row { break-inside: avoid; page-break-inside: avoid; }
+  a { color: var(--fg); text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="topbar-inner">
+  <button id="tocbtn" aria-label="Toggle table of contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="title">BDD 介绍 / Introducing BDD<span class="sub">Dan North · 2006</span></div>
+  <div class="spacer"></div>
+  <div class="controls">
+    <div class="modes" role="tablist">
+      <button data-mode="both" title="双语">双语</button>
+      <button data-mode="zh" title="中文">中文</button>
+      <button data-mode="en" title="English">EN</button>
+    </div>
+    <button id="themebtn" aria-label="Toggle theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+</div>
+</div>
+<div class="toc-backdrop"></div>
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-title">目录 / Contents</div>
+    <a class="toc-item toc-l1" href="#row-0" data-i="0"><span class="en">Introducing BDD</span><span class="zh">BDD 介绍</span></a><a class="toc-item toc-l2" href="#row-5" data-i="5"><span class="en">Test method names should be sentences</span><span class="zh">测试方法名应该是句子</span></a><a class="toc-item toc-l2" href="#row-12" data-i="12"><span class="en">A simple sentence template keeps test methods focused</span><span class="zh">一个简单的句式模板,让测试方法保持专注</span></a><a class="toc-item toc-l2" href="#row-19" data-i="19"><span class="en">An expressive test name is helpful when a test fails</span><span class="zh">测试失败时,一个有表现力的测试名能帮上大忙</span></a><a class="toc-item toc-l2" href="#row-24" data-i="24"><span class="en">&quot;Behaviour&quot; is a more useful word than &quot;test&quot;</span><span class="zh">&quot;行为&quot;是比&quot;测试&quot;更有用的词</span></a><a class="toc-item toc-l2" href="#row-29" data-i="29"><span class="en">JBehave emphasizes behaviour over testing</span><span class="zh">JBehave 强调行为而非测试</span></a><a class="toc-item toc-l2" href="#row-33" data-i="33"><span class="en">Determine the next most important behaviour</span><span class="zh">找出下一个最重要的行为</span></a><a class="toc-item toc-l2" href="#row-39" data-i="39"><span class="en">Requirements are behaviour, too</span><span class="zh">需求也是行为</span></a><a class="toc-item toc-l2" href="#row-42" data-i="42"><span class="en">BDD provides a &quot;ubiquitous language&quot; for analysis</span><span class="zh">BDD 为分析过程提供了&quot;通用语言&quot;</span></a><a class="toc-item toc-l2" href="#row-58" data-i="58"><span class="en">Acceptance criteria should be executable</span><span class="zh">验收标准应该是可执行的</span></a><a class="toc-item toc-l2" href="#row-66" data-i="66"><span class="en">The present and future of BDD</span><span class="zh">BDD 的现状与未来</span></a><a class="toc-item toc-l2" href="#row-71" data-i="71"><span class="en">Colophon</span><span class="zh">补记(Colophon)</span></a>
+  </aside>
+  <main><div class="row" id="row-0" data-i="0"><div class="cell en" data-i="0"><h1>Introducing BDD</h1></div><div class="cell zh" data-i="0"><h1>BDD 介绍</h1></div></div><div class="row" id="row-1" data-i="1"><div class="cell en" data-i="1"><blockquote>20 Sep 2006 · 13 mins · Dan North</blockquote></div><div class="cell zh" data-i="1"><blockquote>2006 年 9 月 20 日 · 13 分钟阅读 · Dan North</blockquote></div></div><div class="row" id="row-2" data-i="2"><div class="cell en" data-i="2"><p>I had a problem. While using and teaching agile practices like test-driven development (TDD) on projects in different environments, I kept coming across the same confusion and misunderstandings. Programmers wanted to know where to start, what to test and what not to test, how much to test in one go, what to call their tests, and how to understand why a test fails.</p></div><div class="cell zh" data-i="2"><p>我遇到过一个问题。在不同环境的项目中使用和教授测试驱动开发(TDD)等敏捷实践时,我反复遇到同样的困惑和误解。程序员们想知道:从哪里开始写、测什么、不测什么、一次写多少、测试该怎么命名、测试失败时又该如何理解失败的原因。</p></div></div><div class="row" id="row-3" data-i="3"><div class="cell en" data-i="3"><p>The deeper I got into TDD, the more I felt that my own journey had been less of a wax-on, wax-off process of gradual mastery than a series of blind alleys. I remember thinking &quot;If only someone had told me that!&quot; far more often than I thought &quot;Wow, a door has opened.&quot; I decided it must be possible to present TDD in a way that gets straight to the good stuff and avoids all the pitfalls.</p></div><div class="cell zh" data-i="3"><p>我在 TDD 上钻得越深,就越觉得自己走过的路不是那种擦拭打蜡、循序渐进的师徒修炼,而更像一条又一条死胡同。我脑子里冒出&quot;要是当初有人告诉我就好了!&quot;的次数,远比&quot;哇,豁然开朗&quot;要多。我当时就认定:一定存在一种方式,能把 TDD 直接讲到精华部分,同时避开所有陷阱。</p></div></div><div class="row" id="row-4" data-i="4"><div class="cell en" data-i="4"><p>My response is behaviour-driven development (BDD). It has evolved out of established agile practices and is designed to make them more accessible and effective for teams new to agile software delivery. Over time, BDD has grown to encompass the wider picture of agile analysis and automated acceptance testing.</p></div><div class="cell zh" data-i="4"><p>我的答案就是行为驱动开发(BDD,behaviour-driven development)。它脱胎于已有的敏捷实践,目的是让刚接触敏捷交付的团队更容易上手、更高效地使用这些实践。随着时间推移,BDD 的范畴扩展到了更宏观的敏捷分析和自动化验收测试。</p></div></div><div class="row" id="row-5" data-i="5"><div class="cell en" data-i="5"><h2>Test method names should be sentences</h2></div><div class="cell zh" data-i="5"><h2>测试方法名应该是句子</h2></div></div><div class="row" id="row-6" data-i="6"><div class="cell en" data-i="6"><p>My first &quot;Aha!&quot; moment occurred as I was being shown a deceptively simple utility called <a href="http://agiledox.sourceforge.net/" target="_blank" rel="noopener">agiledox</a>, written by my colleague, Chris Stevenson. It takes a JUnit test class and prints out the method names as plain sentences, so a test case that looks like this:</p></div><div class="cell zh" data-i="6"><p>我的第一个&quot;啊哈!&quot;时刻,是看到同事 Chris Stevenson 写的一个看起来平平无奇的小工具 <a href="http://agiledox.sourceforge.net/" target="_blank" rel="noopener">agiledox</a> 时。它会读取一个 JUnit 测试类,把方法名打印成普通句子,所以一个长这样的测试用例:</p></div></div><div class="row" id="row-7" data-i="7"><div class="cell en" data-i="7"><pre class="code"><code class="lang-java">public class CustomerLookupTest extends TestCase {
+  testFindsCustomerById() {
+    ...
+  }
+
+  testFailsForDuplicateCustomers() {
+    ...
+  }
+  ...
+}</code></pre></div><div class="cell zh" data-i="7"><pre class="code"><code class="lang-java">public class CustomerLookupTest extends TestCase {
+  testFindsCustomerById() {
+    ...
+  }
+
+  testFailsForDuplicateCustomers() {
+    ...
+  }
+  ...
+}</code></pre></div></div><div class="row" id="row-8" data-i="8"><div class="cell en" data-i="8"><p>renders something like this:</p></div><div class="cell zh" data-i="8"><p>会被渲染成这样:</p></div></div><div class="row" id="row-9" data-i="9"><div class="cell en" data-i="9"><pre class="code"><code class="lang-text">CustomerLookup
+- finds customer by id
+- fails for duplicate customers
+- ...</code></pre></div><div class="cell zh" data-i="9"><pre class="code"><code class="lang-text">CustomerLookup
+- finds customer by id
+- fails for duplicate customers
+- ...</code></pre></div></div><div class="row" id="row-10" data-i="10"><div class="cell en" data-i="10"><p>The word &quot;test&quot; is stripped from both the class name and the method names, and the camel-case method name is converted into regular text. That&#x27;s all it does, but its effect is amazing.</p></div><div class="cell zh" data-i="10"><p>类名和方法名里的&quot;test&quot;字样都被抹掉,驼峰命名的方法名被转成普通文本。它就做这么点事,但效果惊人。</p></div></div><div class="row" id="row-11" data-i="11"><div class="cell en" data-i="11"><p>Developers discovered it could do at least some of their documentation for them, so they started to write test methods that were real sentences. What&#x27;s more, they found that when they wrote the method name in the language of the business domain, the generated documents made sense to business users, analysts, and testers.</p></div><div class="cell zh" data-i="11"><p>开发者发现这东西至少能帮自己写一部分文档,于是开始把测试方法名写成真正的句子。更妙的是,他们发现当方法名用业务领域的语言来写时,生成的文档对业务用户、分析师和测试人员而言都是能看懂的。</p></div></div><div class="row" id="row-12" data-i="12"><div class="cell en" data-i="12"><h2>A simple sentence template keeps test methods focused</h2></div><div class="cell zh" data-i="12"><h2>一个简单的句式模板,让测试方法保持专注</h2></div></div><div class="row" id="row-13" data-i="13"><div class="cell en" data-i="13"><p>Then I came across the convention of starting test method names with the word &quot;should.&quot; This sentence template—<strong>The class <em>should</em> do something</strong>—means you can only define a test for the current class. This keeps you focused. If you find yourself writing a test whose name doesn&#x27;t fit this template, it suggests the behaviour may belong elsewhere.</p></div><div class="cell zh" data-i="13"><p>后来我又碰上一个约定:测试方法名以&quot;should&quot;开头。这个句式模板——<strong>这个类 <em>应该</em> 做某件事</strong>(The class <em>should</em> do something)——意味着你只能为当前这个类定义测试。这会逼你聚焦。如果你发现自己写的测试名套不进这个模板,那往往说明这个行为应该放在别的地方。</p></div></div><div class="row" id="row-14" data-i="14"><div class="cell en" data-i="14"><p>For instance, I was writing a class that validates input from a screen. Most of the fields are regular client details—forename, surname, etc.—but then there is a field for date of birth and one for age. I started writing a <code>ClientDetailsValidatorTest</code> with methods like <code>testShouldFailForMissingSurname</code> and <code>testShouldFailForMissingTitle</code>.</p></div><div class="cell zh" data-i="14"><p>举个例子,当时我在写一个校验屏幕输入的类。大多数字段是常规的客户信息——名、姓等等——但其中有出生日期字段和年龄字段。我开始写 <code>ClientDetailsValidatorTest</code>,里面是 <code>testShouldFailForMissingSurname</code>、<code>testShouldFailForMissingTitle</code> 这样的方法。</p></div></div><div class="row" id="row-15" data-i="15"><div class="cell en" data-i="15"><p>Then I got into calculating the age and entered a world of fiddly business rules: What if the age and date of birth are both provided but don&#x27;t agree? What if the birthday is today? How do I calculate age if I only have a date of birth? I was writing increasingly cumbersome test method names to describe this behaviour, so I considered handing it off to something else. This led me to introduce a new class I called <code>AgeCalculator</code>, with its own <code>AgeCalculatorTest</code>. All the age calculation behaviour moved into the calculator, so the validator needed only one test around the age calculation to ensure it interacted properly with the calculator.</p></div><div class="cell zh" data-i="15"><p>然后我开始处理年龄计算,就一头扎进了一堆繁琐的业务规则:如果同时给了年龄和出生日期但两者对不上怎么办?如果今天就是生日怎么办?只给出生日期该怎么算年龄?为了描述这些行为,我的测试方法名越来越臃肿,于是我开始考虑把这部分工作交给别人来做。这促使我引入了一个新类,叫 <code>AgeCalculator</code>,配上它自己的 <code>AgeCalculatorTest</code>。所有年龄计算相关的行为都搬到了这个 calculator 里,校验器这边只需要围绕年龄计算保留一个测试,确保它能正确地跟 calculator 协作就够了。</p></div></div><div class="row" id="row-16" data-i="16"><div class="cell en" data-i="16"><p>If a class is doing more than one thing, I usually take it as an indication that I should introduce other classes to do some of the work. I define the new service as an interface describing <em>what it does</em>, and I pass this service in through the class&#x27;s constructor:</p></div><div class="cell zh" data-i="16"><p>一个类如果在做不止一件事,我通常会把这当成一个信号:应该引入其他类来分担一部分工作。我会把这个新服务定义成一个接口,描述它 <em>做什么</em>,然后通过构造函数把它传进来:</p></div></div><div class="row" id="row-17" data-i="17"><div class="cell en" data-i="17"><pre class="code"><code class="lang-java">public class ClientDetailsValidator {
+
+  private final AgeCalculator ageCalc;
+
+  public ClientDetailsValidator(AgeCalculator ageCalc) {
+    this.ageCalc = ageCalc;
+  }
+}</code></pre></div><div class="cell zh" data-i="17"><pre class="code"><code class="lang-java">public class ClientDetailsValidator {
+
+  private final AgeCalculator ageCalc;
+
+  public ClientDetailsValidator(AgeCalculator ageCalc) {
+    this.ageCalc = ageCalc;
+  }
+}</code></pre></div></div><div class="row" id="row-18" data-i="18"><div class="cell en" data-i="18"><p>This style of wiring objects together, known as <a href="http://www.martinfowler.com/articles/injection.html" target="_blank" rel="noopener">dependency injection</a>, is especially useful in conjunction with mocks.</p></div><div class="cell zh" data-i="18"><p>这种把对象装配起来的风格叫做<a href="http://www.martinfowler.com/articles/injection.html" target="_blank" rel="noopener">依赖注入</a>(dependency injection),跟 mock 搭配使用时尤其有用。</p></div></div><div class="row" id="row-19" data-i="19"><div class="cell en" data-i="19"><h2>An expressive test name is helpful when a test fails</h2></div><div class="cell zh" data-i="19"><h2>测试失败时,一个有表现力的测试名能帮上大忙</h2></div></div><div class="row" id="row-20" data-i="20"><div class="cell en" data-i="20"><p>After a while, I found that if I was changing code and caused a test to fail, I could look at the test method name and identify the intended behaviour of the code. Typically one of three things had happened:</p></div><div class="cell zh" data-i="20"><p>过了一段时间我发现,当我改代码把某个测试改挂了,我能从测试方法名上读出这段代码原本想要的行为。一般就是三种情况之一:</p></div></div><div class="row" id="row-21" data-i="21"><div class="cell en" data-i="21"><ul><li>I had introduced a bug. Bad me. Solution: Fix the bug.</li><li>The intended behaviour was still relevant but had moved elsewhere. Solution: Move the test and maybe change it.</li><li>The behaviour was no longer correct; the premise of the system had changed. Solution: <em>Delete the test.</em></li></ul></div><div class="cell zh" data-i="21"><ul><li>我引入了 bug。我的错。解决办法:修 bug。</li><li>目标行为依然有效,但已经搬到别处了。解决办法:把测试挪过去,可能要改一改。</li><li>这个行为已经不对了——系统的前提变了。解决办法:<em>删掉这个测试。</em></li></ul></div></div><div class="row" id="row-22" data-i="22"><div class="cell en" data-i="22"><p>The latter is likely to happen on agile projects as your understanding evolves. Unfortunately, novice TDDers have an innate fear of deleting tests, as though it somehow reduces the quality of their code.</p></div><div class="cell zh" data-i="22"><p>最后一种在敏捷项目里很常见,随着你理解的演进,事情就是会这样。不巧的是,TDD 新手对删测试这件事有种本能的恐惧,好像删掉测试会降低代码质量似的。</p></div></div><div class="row" id="row-23" data-i="23"><div class="cell en" data-i="23"><p>A more subtle aspect of the word <em>should</em> becomes apparent when compared with the more formal alternatives of <em>will</em> or <em>shall</em>. <em>Should</em> implicitly allows you to challenge the premise of the test: &quot;Should it? Really?&quot; This makes it easier to decide whether a test is failing due to a bug you have introduced or simply because your previous assumptions about the system&#x27;s behaviour are now incorrect.</p></div><div class="cell zh" data-i="23"><p><em>should</em> 这个词还有一个微妙之处,对比更正式的 <em>will</em> 或 <em>shall</em> 就能看出来。<em>should</em> 隐含了一层意思:你可以质疑这个测试的前提——&quot;真该这样吗?&quot;这让你更容易判断一个失败的测试到底是因为你引入了 bug,还是因为你之前对系统行为的假设如今已经不对了。</p></div></div><div class="row" id="row-24" data-i="24"><div class="cell en" data-i="24"><h2>&quot;Behaviour&quot; is a more useful word than &quot;test&quot;</h2></div><div class="cell zh" data-i="24"><h2>&quot;行为&quot;是比&quot;测试&quot;更有用的词</h2></div></div><div class="row" id="row-25" data-i="25"><div class="cell en" data-i="25"><p>Now I had a tool—agiledox—to remove the word &quot;test&quot; and a template for each test method name. It suddenly occurred to me that people&#x27;s misunderstandings about TDD almost always came back to the word &quot;test&quot;.</p></div><div class="cell zh" data-i="25"><p>至此我有了一个工具 agiledox 来拿掉&quot;test&quot;字样,也有了一个写测试方法名的模板。那一刻我突然意识到:人们对 TDD 的误解,几乎总能追溯到&quot;test&quot;这个词上。</p></div></div><div class="row" id="row-26" data-i="26"><div class="cell en" data-i="26"><p>That&#x27;s not to say that testing isn&#x27;t intrinsic to TDD; the resulting set of methods is an effective way of ensuring your code works. However, if the methods do not comprehensively describe the behaviour of your system, then they are lulling you into a false sense of security.</p></div><div class="cell zh" data-i="26"><p>这不是说测试对 TDD 不重要;这一堆方法确实是一种有效的手段,能保证你的代码可用。但如果这些方法没有完整地描述你系统的行为,那它们只是在给你一种虚假的安全感。</p></div></div><div class="row" id="row-27" data-i="27"><div class="cell en" data-i="27"><p>I started using the word &quot;behaviour&quot; in place of &quot;test&quot; in my dealings with TDD and found that not only did it seem to fit but also that a whole category of coaching questions magically dissolved. I now had answers to some of those TDD questions. What to call your test is easy: it&#x27;s a sentence describing the next behaviour in which you are interested. How much to test becomes moot: you can only describe so much behaviour in a single sentence. When a test fails, simply work through the process described above: either you introduced a bug, the behaviour moved, or the test is no longer relevant.</p></div><div class="cell zh" data-i="27"><p>我开始在讲 TDD 时把&quot;测试&quot;替换成&quot;行为&quot;,结果发现不仅非常贴合,还让一整类教学上的问题凭空消散。我现在能回答那些 TDD 问题中的一部分了。测试该叫什么?简单:一个描述你下一个关心的行为的句子。一次测多少?这个问题不成立:一句话能描述的行为就那么多。测试失败了怎么办?走上面那个流程:要么你引入了 bug,要么行为搬走了,要么测试已经不再适用。</p></div></div><div class="row" id="row-28" data-i="28"><div class="cell en" data-i="28"><p>I found the shift from thinking in tests to thinking in behaviour so profound that I started to refer to TDD as BDD, or behaviour-driven development.</p></div><div class="cell zh" data-i="28"><p>我觉得从&quot;想测试&quot;到&quot;想行为&quot;这个转变如此深刻,以至于我开始把 TDD 叫作 BDD,也就是 behaviour-driven development(行为驱动开发)。</p></div></div><div class="row" id="row-29" data-i="29"><div class="cell en" data-i="29"><h2>JBehave emphasizes behaviour over testing</h2></div><div class="cell zh" data-i="29"><h2>JBehave 强调行为而非测试</h2></div></div><div class="row" id="row-30" data-i="30"><div class="cell en" data-i="30"><p>At the end of 2003, I decided it was time to put my money—or at least my time—where my mouth was. I started writing a replacement for JUnit called JBehave, which removed any reference to testing and replaced it with a vocabulary built around verifying behaviour. I did this to see how such a framework would evolve if I adhered strictly to my new behaviour-driven mantras. I also thought it would be a valuable teaching tool for introducing TDD and BDD without the distractions of the test-based vocabulary.</p></div><div class="cell zh" data-i="30"><p>2003 年末,我决定拿出真金白银——至少是时间——来验证我说的东西。我动手写了一个 JUnit 的替代品,叫 JBehave,里面彻底剥掉了对&quot;测试&quot;的任何指涉,换成围绕&quot;验证行为&quot;构建的一套词汇。我这么做是想看看:如果我严格遵循自己那套行为驱动的信条,这样一个框架会长成什么样。我也觉得它会是个很有价值的教学工具,可以在不被&quot;测试&quot;词汇干扰的情况下,用来引入 TDD 和 BDD。</p></div></div><div class="row" id="row-31" data-i="31"><div class="cell en" data-i="31"><p>To define the behaviour for a hypothetical <code>CustomerLookup</code> class, I would write a behaviour class called, for example, <code>CustomerLookupBehaviour</code>. It would contain methods that started with the word &quot;should.&quot; The behaviour runner would instantiate the behaviour class and invoke each of the behaviour methods in turn, as JUnit does with its tests. It would report progress as it went and print a summary at the end.</p></div><div class="cell zh" data-i="31"><p>要为一个假想的 <code>CustomerLookup</code> 类定义行为,我会写一个行为类,比如叫 <code>CustomerLookupBehaviour</code>。它里面的方法都以&quot;should&quot;开头。行为运行器(behaviour runner)会实例化这个行为类并依次调用每个行为方法,就像 JUnit 跑测试那样。它会一路汇报进度,最后打印一份汇总。</p></div></div><div class="row" id="row-32" data-i="32"><div class="cell en" data-i="32"><p>My first milestone was to make JBehave self-verifying. I only added behaviour that would enable it to run itself. I was able to migrate all the JUnit tests to JBehave behaviours and get the same immediate feedback as with JUnit.</p></div><div class="cell zh" data-i="32"><p>我的第一个里程碑是让 JBehave 能自我验证。我只加那些能让它自己跑起来的行为。我把所有 JUnit 测试都迁移成了 JBehave 行为,拿到了跟 JUnit 一样的即时反馈。</p></div></div><div class="row" id="row-33" data-i="33"><div class="cell en" data-i="33"><h2>Determine the next most important behaviour</h2></div><div class="cell zh" data-i="33"><h2>找出下一个最重要的行为</h2></div></div><div class="row" id="row-34" data-i="34"><div class="cell en" data-i="34"><p>I then discovered the concept of business value. Of course, I had always been aware that I wrote software for a reason, but I had never really thought about the value of the code I was writing right now. Another colleague, business analyst Chris Matts, set me thinking about business value in the context of behaviour-driven development.</p></div><div class="cell zh" data-i="34"><p>之后我发现了&quot;业务价值&quot;这个概念。当然,我一直都知道自己写软件是有目的的,但我从来没认真想过&quot;我此刻正在写的这段代码&quot;到底有什么价值。另一位同事,业务分析师 Chris Matts,让我开始在行为驱动开发的语境下思考业务价值。</p></div></div><div class="row" id="row-35" data-i="35"><div class="cell en" data-i="35"><p>Given that I had the target in mind of making JBehave self-hosting, I found that a really useful way to stay focused was to ask: <strong>What&#x27;s the next most important thing the system <em>doesn&#x27;t</em> do?</strong></p></div><div class="cell zh" data-i="35"><p>我当时的目标是让 JBehave 能够自举(self-hosting),我发现有一个问题特别能让我保持专注:<strong>系统目前 <em>还没做</em> 的事情里,下一件最重要的是什么?</strong></p></div></div><div class="row" id="row-36" data-i="36"><div class="cell en" data-i="36"><p>This question requires you to identify the value of the features you haven&#x27;t yet implemented and to prioritize them. It also helps you formulate the behaviour method name: The system doesn&#x27;t do X (where X is some meaningful behaviour), and X is important, which means it should do X; so your next behaviour method is simply:</p></div><div class="cell zh" data-i="36"><p>这个问题逼你去识别那些还没实现的特性的价值,并给它们排优先级。它同时也帮你写出行为方法名:系统还没做 X(X 是某种有意义的行为),而 X 很重要,那意味着它应该做 X;所以你下一个行为方法就是简单的:</p></div></div><div class="row" id="row-37" data-i="37"><div class="cell en" data-i="37"><pre class="code"><code class="lang-java">public void shouldDoX() {
+  // ...
+}</code></pre></div><div class="cell zh" data-i="37"><pre class="code"><code class="lang-java">public void shouldDoX() {
+  // ...
+}</code></pre></div></div><div class="row" id="row-38" data-i="38"><div class="cell en" data-i="38"><p>Now I had an answer to another TDD question, namely where to start.</p></div><div class="cell zh" data-i="38"><p>这下,TDD 的另一个问题——&quot;从哪里开始&quot;——我也有答案了。</p></div></div><div class="row" id="row-39" data-i="39"><div class="cell en" data-i="39"><h2>Requirements are behaviour, too</h2></div><div class="cell zh" data-i="39"><h2>需求也是行为</h2></div></div><div class="row" id="row-40" data-i="40"><div class="cell en" data-i="40"><p>At this point, I had a framework that helped me understand—and more importantly, explain—how TDD works and an approach that avoided all the pitfalls I had encountered.</p></div><div class="cell zh" data-i="40"><p>到这个时候,我有了一套框架,能帮我理解——更重要的是,能解释——TDD 是怎么运作的,也有了一种避开所有既有陷阱的方法。</p></div></div><div class="row" id="row-41" data-i="41"><div class="cell en" data-i="41"><p>Toward the end of 2004, while I was describing my new found, behaviour-based vocabulary to Matts, he said, &quot;But that&#x27;s just like analysis.&quot; There was a long pause while we processed this, and then we decided to apply all of this behaviour-driven thinking to defining requirements. If we could develop a consistent vocabulary for analysts, testers, developers, and the business, then we would be well on the way to eliminating some of the ambiguity and miscommunication that occur when technical people talk to business people.</p></div><div class="cell zh" data-i="41"><p>2004 年快到年底时,我把这套新的、基于行为的词汇讲给 Matts 听,他说:&quot;但这不就是分析吗。&quot;我们各自沉默了好一会儿消化这句话,然后决定把这一整套行为驱动的思路应用到需求定义上。如果我们能给分析师、测试人员、开发人员和业务方建立一套一致的词汇,那就向消除&quot;技术人跟业务人沟通时的歧义和误解&quot;这件事迈进了一大步。</p></div></div><div class="row" id="row-42" data-i="42"><div class="cell en" data-i="42"><h2>BDD provides a &quot;ubiquitous language&quot; for analysis</h2></div><div class="cell zh" data-i="42"><h2>BDD 为分析过程提供了&quot;通用语言&quot;</h2></div></div><div class="row" id="row-43" data-i="43"><div class="cell en" data-i="43"><p>Around this time, Eric Evans published his bestselling book Domain-Driven Design. In it, he describes the concept of modelling a system using a ubiquitous language based on the business domain, so that the business vocabulary permeates right into the codebase.</p></div><div class="cell zh" data-i="43"><p>大约在同一时期,Eric Evans 出版了他那本畅销书《领域驱动设计》(Domain-Driven Design)。书里他描述了这样一个概念:基于业务领域,用一套通用语言(ubiquitous language)对系统进行建模,让业务词汇一路渗透到代码里。</p></div></div><div class="row" id="row-44" data-i="44"><div class="cell en" data-i="44"><p>Chris and I realized we were trying to define a ubiquitous language for <em>the analysis process itself</em>! We had a good starting point. In common use within the company there was already a story template that looked like this:</p></div><div class="cell zh" data-i="44"><p>Chris 和我意识到,我们其实是在为 <em>分析过程本身</em> 定义一套通用语言!我们已经有一个不错的起点。公司里当时已经普遍在用一个用户故事模板,长这样:</p></div></div><div class="row" id="row-45" data-i="45"><div class="cell en" data-i="45"><pre class="code"><code class="lang-text">As a [X]
+I want [Y]
+so that [Z]</code></pre></div><div class="cell zh" data-i="45"><pre class="code"><code class="lang-text">As a [X]
+I want [Y]
+so that [Z]</code></pre></div></div><div class="row" id="row-46" data-i="46"><div class="cell en" data-i="46"><p>where Y is some feature, Z is the benefit or value of the feature, and X is the person (or role) who will benefit. Its strength is that it forces you to identify the value of delivering a story when you first define it. When there is no real business value for a story, it often comes down to something like &quot;...I want [some feature] so that [I just do, ok?].&quot; This can make it easier to descope some of the more esoteric requirements.</p></div><div class="cell zh" data-i="46"><p>其中 Y 是某个功能,Z 是这个功能带来的收益或价值,X 是受益的人(或角色)。它的优势在于:你一开始定义故事时,就被迫去识别交付这个故事的价值是什么。当一个故事没有真正的业务价值时,它常常会塌缩成这样:&quot;……我想要[某个功能]只是因为[我就是想要,好吧?]&quot;这样就更容易把一些不着边际的需求砍掉。</p></div></div><div class="row" id="row-47" data-i="47"><div class="cell en" data-i="47"><p>From this starting point, Matts and I set about discovering what every agile tester already knows: A story&#x27;s behaviour is simply its acceptance criteria: if the system fulfils all the acceptance criteria, it&#x27;s behaving correctly; if it doesn&#x27;t, it isn&#x27;t. So we created a template to capture a story&#x27;s acceptance criteria.</p></div><div class="cell zh" data-i="47"><p>从这个起点出发,Matts 和我开始探索——其实每个敏捷测试人员都早就知道了:一个故事的&quot;行为&quot;不就是它的验收标准吗:如果系统满足所有验收标准,它的行为就是对的;不满足,就是错的。于是我们做了一个模板,用来表达一个故事的验收标准。</p></div></div><div class="row" id="row-48" data-i="48"><div class="cell en" data-i="48"><p>The template had to be loose enough that it wouldn&#x27;t feel artificial or constraining to analysts but structured enough that we could break the story into its constituent fragments and automate them. We started describing the acceptance criteria in terms of <em>scenarios</em>, which took the following form:</p></div><div class="cell zh" data-i="48"><p>这个模板要足够宽松,不让分析师觉得它矫揉造作或束手束脚;又要足够结构化,这样我们才能把故事拆解成可组合的片段、并把它们自动化。我们开始用 <em>场景</em>(scenario)的形式来描述验收标准,形式如下:</p></div></div><div class="row" id="row-49" data-i="49"><div class="cell en" data-i="49"><pre class="code"><code class="lang-text">Given some initial context (the givens),
+When an event occurs,
+Then ensure some outcomes.</code></pre></div><div class="cell zh" data-i="49"><pre class="code"><code class="lang-text">Given some initial context (the givens),
+When an event occurs,
+Then ensure some outcomes.</code></pre></div></div><div class="row" id="row-50" data-i="50"><div class="cell en" data-i="50"><p>To illustrate, let&#x27;s use the classic example of an ATM machine. One of the story cards might look like this:</p></div><div class="cell zh" data-i="50"><p>作为例子,我们用一个经典的 ATM 取款机来说明。其中一张故事卡可能长这样:</p></div></div><div class="row" id="row-51" data-i="51"><div class="cell en" data-i="51"><pre class="code"><code class="lang-text">Title: Customer withdraws cash
+
+As a customer,
+I want to withdraw cash from an ATM,
+so that I don&#x27;t have to wait in line at the bank.</code></pre></div><div class="cell zh" data-i="51"><pre class="code"><code class="lang-text">Title: Customer withdraws cash
+
+As a customer,
+I want to withdraw cash from an ATM,
+so that I don&#x27;t have to wait in line at the bank.</code></pre></div></div><div class="row" id="row-52" data-i="52"><div class="cell en" data-i="52"><p>So how do we know when we have delivered this story? There are several scenarios to consider: the account may be in credit, the account may be overdrawn but within the overdraft limit, the account may be overdrawn beyond the overdraft limit. Of course, there will be other scenarios, such as if the account is in credit but this withdrawal makes it overdrawn, or if the dispenser has insufficient cash.</p></div><div class="cell zh" data-i="52"><p>那我们怎么知道这个故事已经交付了呢?这里有好几个场景要考虑:账户可能是贷方余额;账户可能透支,但在透支额度以内;账户也可能透支且超过透支额度。当然还有别的场景,比如账户是贷方余额但这次取款会让它变成透支,或者出钞机里没那么多现金。</p></div></div><div class="row" id="row-53" data-i="53"><div class="cell en" data-i="53"><p>Using the given-when-then template, the first two scenarios might look like this:</p></div><div class="cell zh" data-i="53"><p>用 given-when-then 模板写,前两个场景大概会是这样:</p></div></div><div class="row" id="row-54" data-i="54"><div class="cell en" data-i="54"><pre class="code"><code class="lang-text">Scenario: Account is in credit
+
+Given the account is in credit
+And the card is valid
+And the dispenser contains cash
+When the customer requests cash
+Then ensure the account is debited
+And ensure cash is dispensed
+And ensure the card is returned</code></pre></div><div class="cell zh" data-i="54"><pre class="code"><code class="lang-text">Scenario: Account is in credit
+
+Given the account is in credit
+And the card is valid
+And the dispenser contains cash
+When the customer requests cash
+Then ensure the account is debited
+And ensure cash is dispensed
+And ensure the card is returned</code></pre></div></div><div class="row" id="row-55" data-i="55"><div class="cell en" data-i="55"><p>Notice the use of &quot;and&quot; to connect multiple givens or multiple outcomes in a natural way.</p></div><div class="cell zh" data-i="55"><p>注意这里用&quot;and&quot;把多个 given 或多个 outcome 很自然地连起来。</p></div></div><div class="row" id="row-56" data-i="56"><div class="cell en" data-i="56"><pre class="code"><code class="lang-text">Scenario: Account is overdrawn past the overdraft limit
+
+Given the account is overdrawn
+And the card is valid
+When the customer requests cash
+Then ensure a rejection message is displayed
+And ensure cash is not dispensed
+And ensure the card is returned</code></pre></div><div class="cell zh" data-i="56"><pre class="code"><code class="lang-text">Scenario: Account is overdrawn past the overdraft limit
+
+Given the account is overdrawn
+And the card is valid
+When the customer requests cash
+Then ensure a rejection message is displayed
+And ensure cash is not dispensed
+And ensure the card is returned</code></pre></div></div><div class="row" id="row-57" data-i="57"><div class="cell en" data-i="57"><p>Both scenarios are based on the same event and even have some givens and outcomes in common. We want to capitalize on this by reusing givens, events, and outcomes.</p></div><div class="cell zh" data-i="57"><p>这两个场景基于同一个事件,甚至有一些 given 和 outcome 是相同的。我们想要把这种共性利用起来,复用 given、event 和 outcome。</p></div></div><div class="row" id="row-58" data-i="58"><div class="cell en" data-i="58"><h2>Acceptance criteria should be executable</h2></div><div class="cell zh" data-i="58"><h2>验收标准应该是可执行的</h2></div></div><div class="row" id="row-59" data-i="59"><div class="cell en" data-i="59"><p>The fragments of the scenario—the givens, event, and outcomes—are fine-grained enough to be represented directly in code. JBehave defines an object model that enables us to directly map the scenario fragments to Java classes.</p></div><div class="cell zh" data-i="59"><p>场景里的这些片段——given、event、outcome——粒度足够细,可以直接用代码来表达。JBehave 定义了一套对象模型,让我们能把场景片段直接映射到 Java 类上。</p></div></div><div class="row" id="row-60" data-i="60"><div class="cell en" data-i="60"><p>You write a class representing each given:</p></div><div class="cell zh" data-i="60"><p>每个 given 都写成一个类:</p></div></div><div class="row" id="row-61" data-i="61"><div class="cell en" data-i="61"><pre class="code"><code class="lang-java">public class AccountIsInCredit implements Given {
+  public void setup(World world) {
+    ...
+  }
+}
+
+public class CardIsValid implements Given {
+  public void setup(World world) {
+    ...
+  }
+}</code></pre></div><div class="cell zh" data-i="61"><pre class="code"><code class="lang-java">public class AccountIsInCredit implements Given {
+  public void setup(World world) {
+    ...
+  }
+}
+
+public class CardIsValid implements Given {
+  public void setup(World world) {
+    ...
+  }
+}</code></pre></div></div><div class="row" id="row-62" data-i="62"><div class="cell en" data-i="62"><p>and one for the event:</p></div><div class="cell zh" data-i="62"><p>event 也写成一个类:</p></div></div><div class="row" id="row-63" data-i="63"><div class="cell en" data-i="63"><pre class="code"><code class="lang-java">public class CustomerRequestsCash implements Event {
+  public void occurIn(World world) {
+    ...
+  }
+}</code></pre></div><div class="cell zh" data-i="63"><pre class="code"><code class="lang-java">public class CustomerRequestsCash implements Event {
+  public void occurIn(World world) {
+    ...
+  }
+}</code></pre></div></div><div class="row" id="row-64" data-i="64"><div class="cell en" data-i="64"><p>and so on for the outcomes. JBehave then wires these all together and executes them. It creates a &quot;world,&quot; which is just somewhere to store your objects, and passes it to each of the givens in turn so they can populate the world with known state. JBehave then tells the event to &quot;occur in&quot; the world, which carries out the actual behaviour of the scenario. Finally it passes control to any outcomes we have defined for the story.</p></div><div class="cell zh" data-i="64"><p>outcome 同理。然后 JBehave 把它们全部串起来并执行。它会创建一个&quot;world&quot;——其实就是一个存放对象的地方——依次传给每个 given,让它们把已知的状态灌进 world 里。接着 JBehave 告诉 event 在这个 world 里&quot;发生&quot;(occur in),执行场景里真正的行为。最后它把控制权交给我们为这个故事定义的 outcome。</p></div></div><div class="row" id="row-65" data-i="65"><div class="cell en" data-i="65"><p>Having a class to represent each fragment enables us to reuse fragments in other scenarios or stories. At first, the fragments are implemented using mocks to set an account to be in credit or a card to be valid. These form the starting points for implementing behaviour. As you implement the application, the givens and outcomes are changed to use the actual classes you have implemented, so that by the time the scenario is completed, they have become proper end-to-end functional tests.</p></div><div class="cell zh" data-i="65"><p>用一个类代表一个片段,好处是这些片段可以在其他场景或故事里被复用。刚开始,这些片段是用 mock 来实现的——把账户设成贷方余额、把卡设成有效之类。它们构成了实现行为的起点。随着你把应用真正实现起来,given 和 outcome 里用的就变成了你真实实现的类;等到场景彻底打通的时候,它们也就变成了地地道道的端到端功能测试。</p></div></div><div class="row" id="row-66" data-i="66"><div class="cell en" data-i="66"><h2>The present and future of BDD</h2></div><div class="cell zh" data-i="66"><h2>BDD 的现状与未来</h2></div></div><div class="row" id="row-67" data-i="67"><div class="cell en" data-i="67"><p>After a brief hiatus, JBehave is back under active development. The core is fairly complete and robust. The next step is integration with popular Java IDEs like IntelliJ IDEA and Eclipse.</p></div><div class="cell zh" data-i="67"><p>JBehave 在沉寂了一小段时间之后,现在又在活跃开发了。核心部分已经比较完整、也足够稳健。下一步是跟主流 Java IDE(比如 IntelliJ IDEA 和 Eclipse)的集成。</p></div></div><div class="row" id="row-68" data-i="68"><div class="cell en" data-i="68"><p><a href="http://daveastels.com/" target="_blank" rel="noopener">Dave Astels</a> has been actively promoting BDD. His weblog and various published articles have provoked a flurry of activity, most notably the <a href="http://rspec.rubyforge.org/" target="_blank" rel="noopener">rspec</a> project to produce a BDD framework in the Ruby language. I have started work on rbehave, which will be an implementation of JBehave in Ruby.</p></div><div class="cell zh" data-i="68"><p><a href="http://daveastels.com/" target="_blank" rel="noopener">Dave Astels</a> 一直在积极推广 BDD。他的博客和发表的若干文章引发了一连串活动,其中最值得一提的是 <a href="http://rspec.rubyforge.org/" target="_blank" rel="noopener">rspec</a> 项目——一个用 Ruby 语言实现的 BDD 框架。我自己也开始在写 rbehave,一个 JBehave 的 Ruby 版实现。</p></div></div><div class="row" id="row-69" data-i="69"><div class="cell en" data-i="69"><p>A number of my co-workers have been using BDD techniques on a variety of real-world projects and have found the techniques very successful. The JBehave story runner—the part that verifies acceptance criteria—is under active development.</p></div><div class="cell zh" data-i="69"><p>我的一些同事在各种真实项目里用过 BDD 技术,发现这套技术非常成功。JBehave 的 story runner——负责验证验收标准的那部分——正在活跃开发中。</p></div></div><div class="row" id="row-70" data-i="70"><div class="cell en" data-i="70"><p>The vision is to have a round-trip editor so that BAs and testers can capture stories in a regular text editor that can generate stubs for the behaviour classes, all in the language of the business domain. BDD evolved with the help of many people, and I am hugely grateful to all of them.</p></div><div class="cell zh" data-i="70"><p>我们的愿景是做一个&quot;round-trip&quot;的编辑器,让 BA 和测试人员能在一个普通文本编辑器里记录故事,并据此生成行为类的代码桩——全程使用业务领域的语言。BDD 是在很多人的帮助下成长起来的,我对他们心怀感激。</p></div></div><div class="row" id="row-71" data-i="71"><div class="cell en" data-i="71"><h2>Colophon</h2></div><div class="cell zh" data-i="71"><h2>补记(Colophon)</h2></div></div><div class="row" id="row-72" data-i="72"><div class="cell en" data-i="72"><p>This article first appeared in <a href="https://www.stickyminds.com/better-software-magazine/behavior-modification" target="_blank" rel="noopener">Better Software</a> magazine in March 2006.</p></div><div class="cell zh" data-i="72"><p>本文最初发表于 2006 年 3 月的 <a href="https://www.stickyminds.com/better-software-magazine/behavior-modification" target="_blank" rel="noopener">Better Software</a> 杂志。</p></div></div></main>
+</div>
+<script>
+(function(){
+  var body = document.body;
+  var html = document.documentElement;
+
+  var modeBtns = document.querySelectorAll('.modes button');
+  function setMode(m) {
+    body.classList.remove('mode-en','mode-zh','mode-both');
+    body.classList.add('mode-' + m);
+    modeBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.mode === m); });
+    try { localStorage.setItem('bilingual-mode', m); } catch(e){}
+  }
+  modeBtns.forEach(function(b){ b.addEventListener('click', function(){ setMode(b.dataset.mode); }); });
+  var savedMode = 'both';
+  try { savedMode = localStorage.getItem('bilingual-mode') || 'both'; } catch(e){}
+  if (!savedMode || savedMode === 'both') {
+    if (window.matchMedia('(max-width: 768px)').matches) savedMode = 'zh';
+  }
+  setMode(savedMode || 'both');
+
+  var themeBtn = document.getElementById('themebtn');
+  function curTheme() {
+    var t = html.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function setTheme(t) {
+    html.setAttribute('data-theme', t);
+    try { localStorage.setItem('bilingual-theme', t); } catch(e){}
+  }
+  themeBtn.addEventListener('click', function(){ setTheme(curTheme() === 'dark' ? 'light' : 'dark'); });
+
+  document.querySelectorAll('.cell').forEach(function(cell){
+    cell.addEventListener('click', function(e){
+      if (e.target.tagName === 'A') return;
+      var i = cell.dataset.i;
+      document.querySelectorAll('.row.highlighted').forEach(function(r){ r.classList.remove('highlighted'); });
+      var row = document.getElementById('row-' + i);
+      if (row) {
+        row.classList.add('highlighted');
+        setTimeout(function(){ row.classList.remove('highlighted'); }, 1800);
+      }
+    });
+  });
+
+  var tocBtn = document.getElementById('tocbtn');
+  var backdrop = document.querySelector('.toc-backdrop');
+  function closeToc(){ body.classList.remove('toc-open'); }
+  tocBtn.addEventListener('click', function(){ body.classList.toggle('toc-open'); });
+  backdrop.addEventListener('click', closeToc);
+  document.querySelectorAll('.toc-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      if (window.matchMedia('(max-width: 1100px)').matches) setTimeout(closeToc, 50);
+    });
+  });
+
+  var tocItems = Array.from(document.querySelectorAll('.toc-item'));
+  var rows = tocItems.map(function(t){ return document.getElementById('row-' + t.dataset.i); });
+  var ticking = false;
+  function updateActive(){
+    var fold = 160;
+    var active = 0;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i] && rows[i].getBoundingClientRect().top <= fold) active = i;
+    }
+    tocItems.forEach(function(t, i){ t.classList.toggle('active', i === active); });
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if (!ticking) { requestAnimationFrame(updateActive); ticking = true; }
+  }, {passive: true});
+  updateActive();
+})();
+</script>
+</body>
+</html>

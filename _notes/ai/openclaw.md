@@ -29,6 +29,12 @@ https://github.com/trending?since=monthly
 
 这三个网址的信息，分别是github的天/周/月trending，给我输出一下每个仓库的名称、主要语言、总start数量、当天/周/月的start数量、总结一下这个仓库是干啥的、url连接的表格
 
+使用poul-crawler(强制浏览器模式) 抓一下
+https://claude.com/blog
+输出一个 Category、blog标题、url、北京时间的表格
+
+
+
 
 ## 绑定discord channel 
 
