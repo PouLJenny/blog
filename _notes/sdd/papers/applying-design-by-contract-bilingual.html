@@ -1,0 +1,1462 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>应用&quot;按契约设计&quot;</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('paper-theme');
+      if (t === 'light' || t === 'dark') {
+        document.documentElement.setAttribute('data-theme', t);
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+:root {
+  --g-primary: #009f52; --g-secondary: #3eb77a; --g-soft: #e1f5ec; --g-primary-alpha: rgba(0,159,82,0.12);
+  --text: #1f2a37; --text-muted: #4b5563;
+  --bg: #ffffff; --bg-soft: #f9fafb;
+  --border: #e5e7eb; --border-soft: #f1f3f5;
+  --code-bg: #0f172a; --code-fg: #e2e8f0;
+  --table-head: #f3faf5; --highlight: #fff5c2;
+  --fig-bg: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    --g-primary: #3fd18a; --g-secondary: #67c492; --g-soft: #08331f; --g-primary-alpha: rgba(63,209,138,0.18);
+    --text: #e5e7eb; --text-muted: #9aa4b2;
+    --bg: #0b1220; --bg-soft: #111827;
+    --border: #26324a; --border-soft: #1b2335;
+    --code-bg: #0a1122; --code-fg: #e5e7eb;
+    --table-head: #0c1c12; --highlight: #5b4d18;
+    --fig-bg: #111b2e;
+  }
+}
+html[data-theme="dark"] {
+  --g-primary: #3fd18a; --g-secondary: #67c492; --g-soft: #08331f; --g-primary-alpha: rgba(63,209,138,0.18);
+  --text: #e5e7eb; --text-muted: #9aa4b2;
+  --bg: #0b1220; --bg-soft: #111827;
+  --border: #26324a; --border-soft: #1b2335;
+  --code-bg: #0a1122; --code-fg: #e5e7eb;
+  --table-head: #0c1c12; --highlight: #5b4d18;
+  --fig-bg: #111b2e;
+}
+html[data-theme="light"] {
+  --g-primary: #009f52; --g-secondary: #3eb77a; --g-soft: #e1f5ec; --g-primary-alpha: rgba(0,159,82,0.12);
+  --text: #1f2a37; --text-muted: #4b5563;
+  --bg: #ffffff; --bg-soft: #f9fafb;
+  --border: #e5e7eb; --border-soft: #f1f3f5;
+  --code-bg: #0f172a; --code-fg: #e2e8f0;
+  --table-head: #f3faf5; --highlight: #fff5c2;
+  --fig-bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 15.5px; line-height: 1.7;
+}
+
+/* Topbar */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 50px; padding: 0 18px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .title { font-weight: 600; color: var(--text); font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
+.controls { display: flex; gap: 8px; align-items: center; }
+.modes, .theme-wrap { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.modes button, .theme-wrap button, #tocbtn {
+  appearance: none; border: none; background: transparent; color: var(--text);
+  padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit;
+}
+.modes button.on { background: var(--g-primary); color: white; }
+.modes button:hover:not(.on), .theme-wrap button:hover, #tocbtn:hover { background: var(--bg-soft); }
+#tocbtn { display: none; border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; }
+#themebtn { width: 34px; padding: 0; display: flex; align-items: center; justify-content: center; }
+#themebtn svg { width: 16px; height: 16px; }
+html[data-theme="dark"] #themebtn .ic-sun, html:not([data-theme="light"]) #themebtn .ic-sun { display: inline; }
+html[data-theme="dark"] #themebtn .ic-moon, html:not([data-theme="light"]) #themebtn .ic-moon { display: none; }
+html[data-theme="light"] #themebtn .ic-sun { display: none; }
+html[data-theme="light"] #themebtn .ic-moon { display: inline; }
+@media (prefers-color-scheme: dark) { html:not([data-theme]) #themebtn .ic-moon { display: none; } html:not([data-theme]) #themebtn .ic-sun { display: inline; } }
+@media (prefers-color-scheme: light) { html:not([data-theme]) #themebtn .ic-sun { display: none; } html:not([data-theme]) #themebtn .ic-moon { display: inline; } }
+
+/* Layout */
+.layout { display: flex; max-width: 1680px; margin: 0 auto; }
+.toc {
+  width: 260px; flex-shrink: 0; padding: 16px 12px;
+  position: sticky; top: 54px; max-height: calc(100vh - 54px); overflow-y: auto;
+  border-right: 1px solid var(--border-soft);
+}
+.toc-heading { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; margin: 0 0 10px 6px; text-transform: uppercase; }
+.toc-item { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 13.5px; border-left: 2px solid transparent; border-radius: 4px; line-height: 1.4; }
+.toc-item:hover { background: var(--bg-soft); color: var(--text); }
+.toc-item.toc-l2 { padding-left: 20px; font-size: 13px; }
+.toc-item.active { background: var(--g-soft); border-left-color: var(--g-primary); color: var(--text); }
+.toc-item .toc-en { font-family: inherit; color: var(--text-muted); font-size: 11.5px; display: block; margin-top: 2px; }
+body.mode-zh .toc-en, body.mode-en .toc-zh { display: none; }
+body.mode-en .toc-en { color: var(--text); font-size: 13.5px; display: block; margin-top: 0; }
+
+main { flex: 1; min-width: 0; }
+.doc-head { padding: 40px 32px 24px; border-bottom: 1px solid var(--border); }
+.doc-head h1 { margin: 0 0 6px; color: var(--g-primary); font-size: 28px; line-height: 1.3; }
+.doc-head .sub-en { color: var(--text-muted); font-size: 14px; }
+.doc-head .sub-zh { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+body.mode-en .doc-head .sub-zh, body.mode-zh .doc-head .sub-en { display: none; }
+.doc-head .source { margin-top: 10px; font-size: 13px; }
+.doc-head .source a { color: var(--g-primary); word-break: break-all; }
+
+/* Rows */
+.row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border-soft); cursor: pointer; scroll-margin-top: 60px; }
+.row:hover { background: var(--bg-soft); }
+.row.hl { background: var(--g-primary-alpha); }
+.cell { padding: 12px 24px; min-width: 0; border-right: 1px solid var(--border-soft); overflow-wrap: break-word; }
+.cell:last-child { border-right: none; }
+body.mode-en .cell.zh { display: none; }
+body.mode-en .row { grid-template-columns: 1fr; }
+body.mode-zh .cell.en { display: none; }
+body.mode-zh .row { grid-template-columns: 1fr; }
+
+/* Typography inside cells */
+.cell h1 { color: var(--g-primary); font-size: 24px; margin: 16px 0 8px; line-height: 1.3; }
+.cell h2 { color: var(--g-secondary); font-size: 19px; margin: 20px 0 6px; padding-top: 4px; }
+.cell h3 { font-size: 16px; margin: 14px 0 4px; }
+.cell p { margin: 0.7em 0; }
+.cell blockquote { margin: 12px 0; padding: 10px 16px; border-left: 3px solid var(--g-primary); background: var(--g-soft); color: var(--text); font-style: italic; border-radius: 0 4px 4px 0; }
+.cell ul { padding-left: 22px; margin: 0.6em 0; }
+.cell li { margin: 0.35em 0; }
+.cell a { color: var(--g-primary); text-decoration: none; }
+.cell a:hover { text-decoration: underline; }
+.cell code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.88em; background: var(--bg-soft); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border-soft); }
+
+/* Code blocks */
+pre.code { background: var(--code-bg); color: var(--code-fg); padding: 14px 18px; border-radius: 6px; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 13px; line-height: 1.5; overflow-x: auto; margin: 12px 0; }
+pre.code code { background: transparent; border: none; padding: 0; color: inherit; font-size: inherit; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 14px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { caption-side: top; text-align: left; font-weight: 600; padding: 6px 8px; background: var(--bg-soft); color: var(--text-muted); font-size: 13px; border-radius: 4px 4px 0 0; }
+th, td { padding: 9px 12px; text-align: left; border: 1px solid var(--border); vertical-align: top; }
+thead th { background: var(--table-head); color: var(--text); font-weight: 600; }
+
+/* Figures */
+figure.fig { margin: 18px 0; }
+.fig-body { background: var(--fig-bg); padding: 12px; border: 1px solid var(--border-soft); border-radius: 6px; text-align: center; cursor: zoom-in; }
+.fig-body svg { max-width: 100%; height: auto; display: inline-block; }
+figcaption { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+.fig-num { font-weight: 600; color: var(--text); }
+
+/* Infobox — collapsible */
+details.infobox { margin: 18px 0; background: var(--g-soft); border-left: 4px solid var(--g-primary); border-radius: 0 6px 6px 0; padding: 10px 16px; }
+details.infobox summary.info-title { font-weight: 700; color: var(--g-primary); cursor: pointer; list-style: none; font-size: 14.5px; padding: 4px 0; user-select: none; }
+details.infobox summary.info-title::-webkit-details-marker { display: none; }
+details.infobox summary.info-title::before { content: "▶ "; display: inline-block; transition: transform 0.2s; font-size: 10px; margin-right: 4px; }
+details.infobox[open] summary.info-title::before { transform: rotate(90deg); }
+details.infobox .info-body { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--border-soft); font-size: 14px; }
+details.infobox .info-body p { margin: 8px 0; }
+
+/* Citation superscript */
+sup.cite { color: var(--g-primary); cursor: pointer; font-weight: 600; padding: 0 1px; border-radius: 2px; }
+sup.cite:hover, sup.cite:focus { background: var(--g-soft); outline: none; }
+
+/* Citation popover */
+.cite-pop {
+  position: absolute; z-index: 50; max-width: 420px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 14px; font-size: 13px; line-height: 1.55; color: var(--text);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+  display: none;
+}
+.cite-pop.show { display: block; }
+.cite-pop .ref-num { color: var(--g-primary); font-weight: 700; margin-right: 4px; }
+.cite-pop a { color: var(--g-primary); word-break: break-all; }
+
+/* Ref rows */
+.ref-row { padding: 8px 24px; font-size: 14px; border-bottom: 1px solid var(--border-soft); scroll-margin-top: 64px; line-height: 1.5; }
+.ref-row.hl-ref { background: var(--highlight); transition: background 0.5s ease; }
+.ref-row .ref-num { color: var(--g-primary); font-weight: 700; margin-right: 6px; }
+
+/* Lightbox */
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.72); display: none; align-items: center; justify-content: center; padding: 30px; }
+.lightbox.show { display: flex; }
+.lightbox-inner { background: var(--fig-bg); padding: 16px; border-radius: 8px; max-width: min(95vw, 1600px); max-height: 90vh; overflow: auto; position: relative; }
+.lightbox-close { position: absolute; top: 8px; right: 10px; appearance: none; border: none; background: var(--bg-soft); color: var(--text); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; font-family: inherit; display: flex; align-items: center; justify-content: center; }
+
+/* TOC drawer (mobile) */
+.toc-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 110; display: none; }
+body.toc-open .toc-backdrop { display: block; }
+
+@media (max-width: 1100px) {
+  #tocbtn { display: inline-flex; }
+  .toc { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; background: var(--bg); z-index: 120; transform: translateX(-100%); transition: transform 0.25s ease; border-right: 1px solid var(--border); padding-top: 60px; max-height: 100vh; }
+  body.toc-open .toc { transform: translateX(0); }
+  main { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  body { font-size: 15px; }
+  .cell { padding: 10px 14px; }
+  .doc-head { padding: 24px 16px 18px; }
+  .doc-head h1 { font-size: 22px; }
+  .topbar .title { max-width: 40vw; font-size: 13px; }
+  .modes button, .theme-wrap button, #tocbtn { padding: 6px 10px; font-size: 12.5px; }
+  .lightbox-close { width: 44px; height: 44px; }
+  /* mobile default mode-zh */
+  body.mode-bi .row { grid-template-columns: 1fr; }
+  body.mode-bi .cell.en { font-size: 13px; color: var(--text-muted); border-top: 1px dashed var(--border-soft); }
+}
+
+/* Print */
+@media print {
+  .topbar, .lightbox, .cite-pop, .toc, .toc-backdrop { display: none !important; }
+  body { font-size: 11pt; line-height: 1.5; }
+  .row, figure.fig { break-inside: avoid; page-break-inside: avoid; }
+  .cell { border: none !important; }
+  main { margin: 0; }
+  pre.code { border: 1px solid #ccc; background: #f5f5f5; color: #222; }
+}
+
+math-display, .math-display { text-align: center; overflow-x: auto; margin: 10px 0; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="title">应用&quot;按契约设计&quot;</div>
+  <div class="controls">
+    <button id="tocbtn" aria-label="Table of contents">≡ 目录</button>
+    <div class="modes" role="tablist" aria-label="Language mode">
+      <button data-mode="bi" class="on">双语</button>
+      <button data-mode="zh">中文</button>
+      <button data-mode="en">English</button>
+    </div>
+    <div class="theme-wrap">
+      <button id="themebtn" aria-label="Toggle theme">
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="toc-backdrop"></div>
+<div class="layout">
+  <aside class="toc" aria-label="Table of contents">
+    <p class="toc-heading">Contents · 目录</p>
+    <a class="toc-item toc-l1" data-i="0" href="#row-0">
+<span class="toc-zh">应用&quot;按契约设计&quot;</span>
+<span class="toc-en">Applying &quot;Design by Contract&quot;</span>
+</a><a class="toc-item toc-l2" data-i="8" href="#row-8">
+<span class="toc-zh">重访防御式编程</span>
+<span class="toc-en">Defensive programming revisited</span>
+</a><a class="toc-item toc-l2" data-i="13" href="#row-13">
+<span class="toc-zh">契约的概念</span>
+<span class="toc-en">The notion of contract</span>
+</a><a class="toc-item toc-l2" data-i="26" href="#row-26">
+<span class="toc-zh">断言:为软件拟定契约</span>
+<span class="toc-en">Assertions: Contracting for software</span>
+</a><a class="toc-item toc-l2" data-i="45" href="#row-45">
+<span class="toc-zh">断言的作用</span>
+<span class="toc-en">The role of assertions</span>
+</a><a class="toc-item toc-l2" data-i="54" href="#row-54">
+<span class="toc-zh">对软件契约的几点观察</span>
+<span class="toc-en">Observations on software contracts</span>
+</a><a class="toc-item toc-l2" data-i="61" href="#row-61">
+<span class="toc-zh">该由谁检查?</span>
+<span class="toc-en">Who should check?</span>
+</a><a class="toc-item toc-l2" data-i="74" href="#row-74">
+<span class="toc-zh">类不变量</span>
+<span class="toc-en">Class invariants</span>
+</a><a class="toc-item toc-l2" data-i="89" href="#row-89">
+<span class="toc-zh">为软件契约编写文档</span>
+<span class="toc-en">Documenting a software contract</span>
+</a><a class="toc-item toc-l2" data-i="97" href="#row-97">
+<span class="toc-zh">监控断言</span>
+<span class="toc-en">Monitoring assertions</span>
+</a><a class="toc-item toc-l2" data-i="102" href="#row-102">
+<span class="toc-zh">为什么要监控?</span>
+<span class="toc-en">Why monitor?</span>
+</a><a class="toc-item toc-l2" data-i="107" href="#row-107">
+<span class="toc-zh">引入继承</span>
+<span class="toc-en">Introducing inheritance</span>
+</a><a class="toc-item toc-l2" data-i="140" href="#row-140">
+<span class="toc-zh">不变量与动态绑定</span>
+<span class="toc-en">Invariants and dynamic binding</span>
+</a><a class="toc-item toc-l2" data-i="164" href="#row-164">
+<span class="toc-zh">应对异常情形</span>
+<span class="toc-en">Dealing with abnormal situations</span>
+</a><a class="toc-item toc-l2" data-i="177" href="#row-177">
+<span class="toc-zh">一种有纪律的异常处理机制</span>
+<span class="toc-en">A disciplined exception-handling mechanism</span>
+</a><a class="toc-item toc-l2" data-i="201" href="#row-201">
+<span class="toc-zh">致谢</span>
+<span class="toc-en">Acknowledgments</span>
+</a><a class="toc-item toc-l2" data-i="204" href="#row-204">
+<span class="toc-zh">参考文献</span>
+<span class="toc-en">References</span>
+</a>
+  </aside>
+  <main>
+    <div class="doc-head">
+      <h1>应用&quot;按契约设计&quot;</h1>
+      <div class="sub-zh">Bertrand Meyer · Interactive Software Engineering · Computer (IEEE), 1992 年 10 月, pp. 40–51</div>
+      <div class="sub-en">Bertrand Meyer · Interactive Software Engineering · Computer (IEEE), October 1992, pp. 40–51</div>
+      <div class="source">原文 / Source: <a href="https://se.inf.ethz.ch/~meyer/publications/computer/contract.pdf" target="_blank" rel="noopener">https://se.inf.ethz.ch/~meyer/publications/computer/contract.pdf</a></div>
+    </div>
+    <div class="row" id="row-0" data-i="0">
+<div class="cell en"><h1>Applying &quot;Design by Contract&quot;</h1></div>
+<div class="cell zh"><h1>应用&quot;按契约设计&quot;</h1></div>
+</div><div class="row" id="row-1" data-i="1">
+<div class="cell en"><blockquote>Reliability is even more important in object-oriented programming than elsewhere. This article shows how to reduce bugs by building software components on the basis of carefully designed contracts.</blockquote></div>
+<div class="cell zh"><blockquote>可靠性在面向对象编程中比在其他场合更为重要。本文展示如何通过在精心设计的契约基础上构造软件部件来减少 bug。</blockquote></div>
+</div><div class="row" id="row-2" data-i="2">
+<div class="cell en"><p>As object-oriented techniques steadily gain ground in the world of software development, users and prospective users of these techniques are clamoring more and more loudly for a &quot;methodology&quot; of object-oriented software construction — or at least for some methodological guidelines. This article presents such guidelines, whose main goal is to help improve the reliability of software systems. <em>Reliability</em> is here defined as the combination of correctness and robustness or, more prosaically, as the absence of bugs.</p></div>
+<div class="cell zh"><p>随着面向对象技术在软件开发领域稳步占据阵地,这些技术的使用者和潜在使用者对面向对象软件构造的&quot;方法论&quot;—— 或至少是某种方法论指引 —— 的呼声越来越高。本文即提供这样的指引,其主要目标是帮助改善软件系统的可靠性。此处<strong>可靠性</strong>(Reliability)定义为正确性(correctness)与健壮性(robustness)之合,或者更通俗一点,就是没有 bug。</p></div>
+</div><div class="row" id="row-3" data-i="3">
+<div class="cell en"><p>Everyone developing software systems, or just using them, knows how pressing this question of reliability is in the current state of software engineering. Yet the rapidly growing literature on object-oriented analysis, design, and programming includes remarkably few contributions on how to make object-oriented software more reliable. This is surprising and regrettable, since at least three reasons justify devoting particular attention to reliability in the context of object-oriented development:</p></div>
+<div class="cell zh"><p>凡是开发软件系统或仅仅是使用软件系统的人,都清楚可靠性这个问题在当下软件工程中有多迫切。然而,关于面向对象分析、设计和编程的文献虽然迅速增长,其中论及如何使面向对象软件更可靠的却少得令人意外 —— 也令人遗憾,因为至少有三个理由,使得我们应当在面向对象开发的语境下特别关注可靠性:</p></div>
+</div><div class="row" id="row-4" data-i="4">
+<div class="cell en"><p>(1) The cornerstone of object-oriented technology is reuse. For reusable components, which may be used in thousands of different applications, the potential consequences of incorrect behavior are even more serious than for application-specific developments. (2) Proponents of object-oriented methods make strong claims about their beneficial effect on software quality. Reliability is certainly a central component of any reasonable definition of quality as applied to software. (3) The object-oriented approach, based on the theory of abstract data types, provides a particularly appropriate framework for discussing and enforcing reliability.</p></div>
+<div class="cell zh"><p>(1) 面向对象技术的基石是复用。对于可能被成千上万个不同应用使用的可复用部件来说,错误行为的潜在后果比应用专属开发严重得多。(2) 面向对象方法的提倡者对该方法在软件质量上的正面效应作出很强的主张。在任何对软件&quot;质量&quot;所下的合理定义中,可靠性都必定是核心组成部分。(3) 面向对象方法建立在抽象数据类型(abstract data types)理论之上,为讨论并强制可靠性提供了特别合适的框架。</p></div>
+</div><div class="row" id="row-5" data-i="5">
+<div class="cell en"><p>The pragmatic techniques presented in this article, while certainly not providing infallible ways to guarantee reliability, may help considerably toward this goal. They rely on the theory of <em>design by contract</em>, which underlies the design of the Eiffel analysis, design, and programming language <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> and of the supporting libraries, from which a number of examples will be drawn.</p></div>
+<div class="cell zh"><p>本文给出的这些实用技术当然不是保证可靠性的万灵药,但朝这个目标可以有相当的帮助。它们依赖于<strong>按契约设计</strong>(design by contract)理论,这一理论也是 Eiffel 分析/设计/编程语言 <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> 及其配套库的设计基础,本文的诸多例子就取自这些库。</p></div>
+</div><div class="row" id="row-6" data-i="6">
+<div class="cell en"><p>The contributions of the work reported below include (1) a coherent set of <em>methodological principles</em> helping to produce correct and robust software; (2) a systematic approach to the delicate problem of how to deal with abnormal cases, leading to a simple and powerful <em>exception-handling</em> mechanism; and (3) a better understanding of <em>inheritance</em> and of the associated techniques (redeclaration, polymorphism, and dynamic binding) through the notion of subcontract, allowing a systematic approach to using these powerful but sometimes dangerous mechanisms.</p></div>
+<div class="cell zh"><p>本文所述工作的贡献包括:(1) 一组有助于产出正确、健壮软件的、连贯的<strong>方法论原则</strong>(methodological principles);(2) 对如何处理异常情形这一棘手问题的系统化方法,由此得出一套简单而强大的<strong>异常处理</strong>(exception-handling)机制;(3) 通过转包(subcontract)这一概念,对<strong>继承</strong>(inheritance)及其相关技术(重新声明、多态、动态绑定)的更好理解,使这些强大但有时危险的机制能够被系统化地使用。</p></div>
+</div><div class="row" id="row-7" data-i="7">
+<div class="cell en"><p>Most of the concepts presented here have appeared elsewhere. They were previewed in the book <em>Object-Oriented Software Construction</em> <sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup>; and a more complete exposition was presented in a recent book chapter <sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup>, from which this article has been adapted. More profoundly, this work finds its root in earlier work on systematic program development <sup class="cite" tabindex="0" data-ref="4" data-lang="en">[4]</sup>,<sup class="cite" tabindex="0" data-ref="5" data-lang="en">[5]</sup> and abstract data types <sup class="cite" tabindex="0" data-ref="6" data-lang="en">[6]</sup>-<sup class="cite" tabindex="0" data-ref="8" data-lang="en">[8]</sup>. This article focuses on the central ideas, introducing them concisely for direct application by developers.</p></div>
+<div class="cell zh"><p>本文呈现的大部分概念此前已在别处出现过。它们曾在《Object-Oriented Software Construction》<sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup> 一书中有预告;更完整的阐述收在近期的一篇专著章节 <sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup> 中,本文即由该章改编。更追本溯源地说,这项工作植根于早期在系统化程序开发 <sup class="cite" tabindex="0" data-ref="4" data-lang="en">[4]</sup>,<sup class="cite" tabindex="0" data-ref="5" data-lang="en">[5]</sup> 和抽象数据类型 <sup class="cite" tabindex="0" data-ref="6" data-lang="en">[6]</sup>-<sup class="cite" tabindex="0" data-ref="8" data-lang="en">[8]</sup> 方面的工作。本文聚焦于其中的核心思想,以简洁的方式介绍出来,便于开发者直接应用。</p></div>
+</div><div class="row" id="row-8" data-i="8">
+<div class="cell en"><h2>Defensive programming revisited</h2></div>
+<div class="cell zh"><h2>重访防御式编程</h2></div>
+</div><div class="row" id="row-9" data-i="9">
+<div class="cell en"><p>Software engineering and programming methodology textbooks that discuss reliability often emphasize the technique known as <em>defensive programming</em>, which directs developers to protect every software module against the slings and arrows of outrageous fortune. In particular, this encourages programmers to include as many checks as possible, even if they are redundant with checks made by callers. Include them anyway, the advice goes; if they do not help, at least they will not harm.</p></div>
+<div class="cell zh"><p>讨论可靠性的软件工程与编程方法论教材往往会强调一种被称为<strong>防御式编程</strong>(defensive programming)的技术,它要求开发者保护每一个软件模块免受飞来横祸。尤其是,它鼓励程序员尽可能多地加入检查,哪怕与调用方所做的检查重复也要加 —— 反正加上去,就算没帮助也不会有害,建议是这么说的。</p></div>
+</div><div class="row" id="row-10" data-i="10">
+<div class="cell en"><p>This approach suggests that routines should be as general as possible. A partial routine (one that works only if the caller ensures certain restrictive conditions at the time of the call) is considered dangerous because it might produce unwanted consequences if a caller does not abide by the rules.</p></div>
+<div class="cell zh"><p>这种做法暗含的是:例程应当尽可能通用。一个&quot;部分例程&quot;(partial routine,即只有在调用方于调用时满足某些限制性条件才能工作的例程)被视作危险的,因为一旦调用方不守规矩,它可能会产生意料之外的后果。</p></div>
+</div><div class="row" id="row-11" data-i="11">
+<div class="cell en"><p>This technique, however, often defeats its own purposes. Adding possibly redundant code &quot;just in case&quot; only contributes to the software&#x27;s complexity — the single worst obstacle to software quality in general, and to reliability in particular. The result of such blind checking is simply to introduce more software, hence more sources of things that could go wrong at execution time, hence the need for more checks, and so on ad infinitum. Such blind and often redundant checking causes much of the complexity and unwieldiness that often characterizes software.</p></div>
+<div class="cell zh"><p>然而,这种技术常常适得其反。&quot;以防万一&quot;地加入可能冗余的代码,只是给软件的复杂性火上浇油 —— 而复杂性是软件质量总体上、尤其是可靠性方面的头号障碍。这种盲目检查的结果,就只是引入更多代码,因而引入更多运行时出错源头,因而需要更多检查,如此无穷无尽。许多软件之所以复杂而笨重,很大程度上就是这种盲目而又往往冗余的检查造成的。</p></div>
+</div><div class="row" id="row-12" data-i="12">
+<div class="cell en"><p>Obtaining and guaranteeing reliability requires a more systematic approach. In particular, software elements should be considered as implementations meant to satisfy well-understood specifications, not as arbitrary executable texts. This is where the contract theory comes in.</p></div>
+<div class="cell zh"><p>要获得并保障可靠性,需要一种更系统化的方法。特别是,应当把软件元素视作<strong>旨在满足明确理解的规约</strong>的实现,而不是任意的可执行文本。这就是契约理论登场的地方。</p></div>
+</div><div class="row" id="row-13" data-i="13">
+<div class="cell en"><h2>The notion of contract</h2></div>
+<div class="cell zh"><h2>契约的概念</h2></div>
+</div><div class="row" id="row-14" data-i="14">
+<div class="cell en"><p>Assume you are writing some program unit implementing a task to be performed at runtime. Unless the task is trivial, it involves a number of subtasks. For example, it might appear as</p></div>
+<div class="cell zh"><p>设想你正在编写某个程序单元,它要在运行时执行某项任务。除非任务十分平凡,否则它会涉及若干子任务。比如它可能长这样:</p></div>
+</div><div class="row" id="row-15" data-i="15">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>my_task is
+    do
+        subtask_1 ;
+        subtask_2 ;
+        ...
+        subtask_n ;
+    end</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>my_task is
+    do
+        subtask_1 ;
+        subtask_2 ;
+        ...
+        subtask_n ;
+    end</code></pre></div>
+</div><div class="row" id="row-16" data-i="16">
+<div class="cell en"><p>a form that suffices for this discussion, although in many cases the control structure linking the various subtasks is less simple than the mere sequencing shown here.</p></div>
+<div class="cell zh"><p>对本文的讨论而言,这种形式就够了 —— 虽然很多情况下,串起各子任务的控制结构并不像这里单纯的顺序这么简单。</p></div>
+</div><div class="row" id="row-17" data-i="17">
+<div class="cell en"><p>For each of these subtasks, you may either write the corresponding solution in line as part of the body of _my_task_, or rely on a call to another unit. The decision is a typical design trade-off: Too much calling causes fragmentation of the software text; too little results in overcomplex individual units.</p></div>
+<div class="cell zh"><p>对这些子任务中的每一个,你要么把对应的解答作为 _my_task_ 主体的一部分内联写出,要么依赖对另一个单元的调用。这个取舍是典型的设计抉择:调用太多会把软件文本切得七零八落,调用太少则会让单个单元过于臃肿。</p></div>
+</div><div class="row" id="row-18" data-i="18">
+<div class="cell en"><p>Assume you decide to use a routine call for one of the subtasks. This is similar to the situation encountered in everyday life when you decide to contract out for a certain (human) task rather than doing it yourself. For example, if you are in Paris and want an urgent letter or package delivered to another Paris address, you may decide to deliver it yourself, or you may contract out the task to a courier service.</p></div>
+<div class="cell zh"><p>假设你决定用例程调用来处理其中一个子任务。这类似日常生活中的情形:你决定把某项(人类的)任务转包出去,而不是亲自去做。举例来说,你在巴黎,要把一封加急信件或一个包裹送到巴黎另一个地址,你可以自己送,也可以把这项任务转包给一家快递公司。</p></div>
+</div><div class="row" id="row-19" data-i="19">
+<div class="cell en"><p>Two major properties characterize human contracts involving two parties: (1) Each party expects some benefits from the contract and is prepared to incur some obligations to obtain them. (2) These benefits and obligations are documented in a contract document.</p></div>
+<div class="cell zh"><p>涉及两方的人类契约具有两个主要特征:(1) 每一方都期望从契约中获得某些利益,并准备为此承担某些义务。(2) 这些利益和义务都被记录在一份契约文件里。</p></div>
+</div><div class="row" id="row-20" data-i="20">
+<div class="cell en"><div class="table-wrap"><table><caption>Table 1. Example contract.</caption><thead><tr><th>Party</th><th>Obligations</th><th>Benefits</th></tr></thead><tbody><tr><td>Client</td><td>Provide letter or package of no more than 5 kgs, each dimension no more than 2 meters. Pay 100 francs.</td><td>Get package delivered to recipient in four hours or less.</td></tr><tr><td>Supplier</td><td>Deliver package to recipient in four hours or less.</td><td>No need to deal with deliveries too big, too heavy, or unpaid.</td></tr></tbody></table></div></div>
+<div class="cell zh"><div class="table-wrap"><table><caption>表 1. 契约示例。</caption><thead><tr><th>方</th><th>义务</th><th>利益</th></tr></thead><tbody><tr><td>客户方</td><td>提供不超过 5 kg 的信件或包裹,每边不超过 2 米。支付 100 法郎。</td><td>包裹在四小时或更短时间内送达收件人。</td></tr><tr><td>供应方</td><td>在四小时或更短时间内把包裹送达收件人。</td><td>无需处理过大、过重或未付款的快件。</td></tr></tbody></table></div></div>
+</div><div class="row" id="row-21" data-i="21">
+<div class="cell en"><p>Table 1 shows an imaginary roster of obligations and benefits for the courier service of the example.</p></div>
+<div class="cell zh"><p>表 1 是针对前述快递服务所拟定的一份(虚构的)义务-利益清单。</p></div>
+</div><div class="row" id="row-22" data-i="22">
+<div class="cell en"><p>A contract document protects both sides: (1) It protects the client by specifying <em>how much</em> should be done: The client is entitled to receive a certain result. (2) It protects the contractor by specifying <em>how little</em> is acceptable: The contractor must not be liable for failing to carry out tasks outside of the specified scope.</p></div>
+<div class="cell zh"><p>一份契约文件对双方都有保护作用:(1) 它通过明确规定<strong>应做多少</strong>来保护客户方:客户方有权获得特定的结果。(2) 它通过明确规定<strong>最低限度可接受到什么程度</strong>来保护承包方:承包方不应为完成规定范围之外的任务而担责。</p></div>
+</div><div class="row" id="row-23" data-i="23">
+<div class="cell en"><p>As evidenced by this example, what is an obligation for one party is usually a benefit for the other.</p></div>
+<div class="cell zh"><p>这个例子也印证了:一方的义务通常就是另一方的利益。</p></div>
+</div><div class="row" id="row-24" data-i="24">
+<div class="cell en"><p>This example also suggests a somewhat more subtle observation, which is important in the following discussion (and in studying the application of these ideas to concurrent computation). If the contract is exhaustive, every &quot;obligation&quot; entry also in a certain sense describes a &quot;benefit&quot; by stating that the constraints given are the only relevant ones. For example, the obligation entry for the client indicates that a client who satisfies all the constraints listed is <em>entitled</em> to the benefits shown in the next entry. This is the No Hidden Clauses rule: With a fully spelled out contract between honest parties, no requirement other than the contract&#x27;s official obligations may be imposed on the client as a condition for obtaining the contract&#x27;s official benefits.</p></div>
+<div class="cell zh"><p>这个例子还暗含一个更微妙的观察,它对后续讨论(以及研究这些思想在并发计算中的应用)很重要。如果契约是穷尽的,那么每一条&quot;义务&quot;条目在某种意义上也描述了一种&quot;利益&quot;,因为它声明给出的约束是唯一相关的约束。例如,客户方的义务条目意味着:一个满足所列全部约束的客户方<strong>有权</strong>获得下一条条目所列的利益。这就是 No Hidden Clauses(无隐藏条款)规则:在诚实双方之间一份充分写明的契约中,除了契约正式列出的义务之外,不得对客户方施加任何其他要求来作为获取契约正式利益的条件。</p></div>
+</div><div class="row" id="row-25" data-i="25">
+<div class="cell en"><p>The No Hidden Clauses principle does not prevent us from including references, implicit or explicit, to rules not physically part of the contract. For example, general rules such as the relevant laws and common business practices are implicitly considered to be part of every contract of a certain kind, even if not explicitly repeated in the text of each contract. They apply to both client and supplier and will lead below to the notion of class invariant.</p></div>
+<div class="cell zh"><p>No Hidden Clauses 原则并不妨碍我们在契约中隐式或显式地援引物理上不在该契约之内的规则。例如,诸如相关法律和通行商业惯例这类通用规则,即使没有在每份契约的文本中明确重复,也会被隐式视为这一类契约的组成部分。它们对客户方和供应方同样适用,并将引出后文的<strong>类不变量</strong>(class invariant)概念。</p></div>
+</div><div class="row" id="row-26" data-i="26">
+<div class="cell en"><h2>Assertions: Contracting for software</h2></div>
+<div class="cell zh"><h2>断言:为软件拟定契约</h2></div>
+</div><div class="row" id="row-27" data-i="27">
+<div class="cell en"><p>It is not difficult to see how the preceding ideas apply to software construction. If the execution of a certain task relies on a routine call to handle one of its subtasks, it is necessary to specify the relationship between the client (the caller) and the supplier (the called routine) as precisely as possible. The mechanisms for expressing such conditions are called <em>assertions</em>. Some assertions, called <em>preconditions</em> and <em>postconditions</em>, apply to individual routines. Others, the <em>class invariants</em>, constrain all the routines of a given class and will be discussed later.</p></div>
+<div class="cell zh"><p>不难看出前述思想如何适用于软件构造。如果某项任务的执行依赖于一个例程调用来处理它的某个子任务,那就有必要尽可能精确地规定客户方(caller,调用方)与供应方(called routine,被调用例程)之间的关系。用于表达这类条件的机制被称为<strong>断言</strong>(assertions)。其中一些断言 —— 称为<strong>前置条件</strong>(preconditions)和<strong>后置条件</strong>(postconditions)—— 作用于单个例程;另一些 —— <strong>类不变量</strong>(class invariants)—— 则约束给定类的所有例程,后文再讨论。</p></div>
+</div><div class="row" id="row-28" data-i="28">
+<div class="cell en"><p>It is important to include the preconditions and postconditions as part of routine declarations (see Figure 1).</p></div>
+<div class="cell zh"><p>把前置条件和后置条件作为例程声明的一部分写出来,这一点很重要(见图 1)。</p></div>
+</div><div class="row" id="row-29" data-i="29">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="1"><svg viewBox="0 0 540 246" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="540" height="246" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">routine_name (argument declarations) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Header comment</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Precondition</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Routine body, i.e. instructions</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Postcondition</text><text x="52" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text></svg></div><figcaption><span class="fig-num">Fig. 1.</span> A routine equipped with assertions.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="1"><svg viewBox="0 0 540 246" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="540" height="246" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">routine_name (argument declarations) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Header comment</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Precondition</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Routine body, i.e. instructions</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Postcondition</text><text x="52" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text></svg></div><figcaption><span class="fig-num">图 1.</span> 带有断言的例程。</figcaption></figure></div>
+</div><div class="row" id="row-30" data-i="30">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>routine_name (argument declarations) is
+        -- Header comment
+    require
+        Precondition
+    do
+        Routine body, i.e. instructions
+    ensure
+        Postcondition
+    end</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>routine_name (argument declarations) is
+        -- Header comment
+    require
+        Precondition
+    do
+        Routine body, i.e. instructions
+    ensure
+        Postcondition
+    end</code></pre></div>
+</div><div class="row" id="row-31" data-i="31">
+<div class="cell en"><p>In this Eiffel notation, the Require and Ensure clauses (as well as the header comment) are optional. They introduce assertions — respectively the precondition and the postcondition. Each assertion is a list of Boolean expressions, separated by semicolons; here a semicolon is equivalent to a Boolean &quot;and&quot; but allows individual identification of the assertion clauses.</p></div>
+<div class="cell zh"><p>在这种 Eiffel 记法中,Require 和 Ensure 子句(连同头部注释)都是可选的。它们引入的是断言 —— 分别是前置条件和后置条件。每个断言是一个由分号分隔的布尔表达式列表;这里的分号等价于布尔&quot;与&quot;,但允许对各断言子句作单独标识。</p></div>
+</div><div class="row" id="row-32" data-i="32">
+<div class="cell en"><p>The precondition expresses requirements that any call must satisfy if it is to be correct; the postcondition expresses properties that are ensured in return by the execution of the call.</p></div>
+<div class="cell zh"><p>前置条件表达任何调用若要正确,就必须满足的要求;后置条件表达的则是调用执行作为回报所保证的性质。</p></div>
+</div><div class="row" id="row-33" data-i="33">
+<div class="cell en"><p>A missing precondition clause is equivalent to the clause <code>require True</code>, and a missing postcondition to the clause <code>ensure True</code>. The assertion True is the least committing of all possible assertions. Any possible state of the computation will satisfy it.</p></div>
+<div class="cell zh"><p>缺省的前置条件子句等价于 <code>require True</code>,缺省的后置条件等价于 <code>ensure True</code>。断言 True 是所有可能断言中承诺最少的:计算过程中任何可能的状态都满足它。</p></div>
+</div><div class="row" id="row-34" data-i="34">
+<div class="cell en"><p>Consider, for example, in a class <code>TREE</code> describing tree nodes, a routine <code>put_child</code> for adding a new child to a tree node <code>Current</code>. The child is accessible through a reference, which must be attached to an existing node object. Table 2 informally expresses the contract.</p></div>
+<div class="cell zh"><p>例如,考虑一个描述树节点的类 <code>TREE</code>,其中有一个例程 <code>put_child</code>,用于为树节点 <code>Current</code> 添加一个新子节点。子节点通过一个引用访问,该引用必须附着于一个已存在的节点对象。表 2 以非形式化方式表达了这一契约。</p></div>
+</div><div class="row" id="row-35" data-i="35">
+<div class="cell en"><div class="table-wrap"><table><caption>Table 2. The <code>put_child</code> contract.</caption><thead><tr><th>Party</th><th>Obligations</th><th>Benefits</th></tr></thead><tbody><tr><td>Client</td><td>Use as argument a reference, say <code>new</code>, to an existing node object.</td><td>Get updated tree where the <code>Current</code> node has one more child than before</td><td><code>new</code> now has <code>Current</code> as its parent.</td></tr><tr><td>Supplier</td><td>Insert new node as required.</td><td>No need to do anything if the argument is not attached to an object.</td></tr></tbody></table></div></div>
+<div class="cell zh"><div class="table-wrap"><table><caption>表 2. <code>put_child</code> 的契约。</caption><thead><tr><th>方</th><th>义务</th><th>利益</th></tr></thead><tbody><tr><td>客户方</td><td>作为参数使用一个引用 —— 比如说 <code>new</code> —— 它指向一个已存在的节点对象。</td><td>得到更新后的树,其中 <code>Current</code> 节点比之前多一个子节点</td><td><code>new</code> 现在以 <code>Current</code> 为其父节点。</td></tr><tr><td>供应方</td><td>按要求插入新节点。</td><td>若实参未附着到任何对象,则无需做任何事情。</td></tr></tbody></table></div></div>
+</div><div class="row" id="row-36" data-i="36">
+<div class="cell en"><p>This is the contract enforced by <code>put_child</code> on any potential caller. It contains the most important information that can be given about the routine: what each party in the contract must guarantee for a correct call, and what each party is entitled to in return. Because this information is so crucial to the construction of reliable systems using such routines, it should be a formal part of the routine&#x27;s text (see Figure 2).</p></div>
+<div class="cell zh"><p>这就是 <code>put_child</code> 对任何潜在调用方强制施加的契约。它包含了关于该例程所能给出的最重要的信息:契约中每一方为一次正确调用必须保证什么,作为回报每一方有权获得什么。正因为这些信息对使用该例程构造可靠系统极为关键,它们应当成为例程文本的正式组成部分(见图 2)。</p></div>
+</div><div class="row" id="row-37" data-i="37">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="2"><svg viewBox="0 0 580 268" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="268" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">put_child (new: NODE) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Add new to the children of current node</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new /= Void</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Insertion algorithm ...</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new.parent = Current;</text><text x="80" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">child_count = old child_count + 1</text><text x="52" y="244" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- put_child</text></svg></div><figcaption><span class="fig-num">Fig. 2.</span> Assertions for child insertion routine.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="2"><svg viewBox="0 0 580 268" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="268" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">put_child (new: NODE) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Add new to the children of current node</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new /= Void</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Insertion algorithm ...</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new.parent = Current;</text><text x="80" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">child_count = old child_count + 1</text><text x="52" y="244" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- put_child</text></svg></div><figcaption><span class="fig-num">图 2.</span> 子节点插入例程的断言。</figcaption></figure></div>
+</div><div class="row" id="row-38" data-i="38">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>put_child (new: NODE) is
+        -- Add new to the children of current node
+    require
+        new /= Void
+    do
+        ... Insertion algorithm ...
+    ensure
+        new.parent = Current;
+        child_count = old child_count + 1
+    end -- put_child</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>put_child (new: NODE) is
+        -- Add new to the children of current node
+    require
+        new /= Void
+    do
+        ... Insertion algorithm ...
+    ensure
+        new.parent = Current;
+        child_count = old child_count + 1
+    end -- put_child</code></pre></div>
+</div><div class="row" id="row-39" data-i="39">
+<div class="cell en"><p>A few more details about the rules of object-oriented programming as embodied in Eiffel should help make this example completely clear:</p></div>
+<div class="cell zh"><p>关于 Eiffel 中所体现的面向对象编程规则,再补充几点细节,这个例子就完全清楚了:</p></div>
+</div><div class="row" id="row-40" data-i="40">
+<div class="cell en"><ul><li>A reference such as <code>new</code> is either <em>void</em> (not attached to any object) or attached to an object. In the first case, it equals the value <code>Void</code>. Here the precondition expresses that the reference <code>new</code> must not be void, as stated informally by the corresponding entry in Table 2.</li></ul></div>
+<div class="cell zh"><ul><li>像 <code>new</code> 这样的引用要么是<strong>void</strong>(未附着于任何对象),要么附着于某个对象。前一种情况下它等于值 <code>Void</code>。这里的前置条件表达的就是:引用 <code>new</code> 必须不为 void,正如表 2 的相应条目非形式化所述。</li></ul></div>
+</div><div class="row" id="row-41" data-i="41">
+<div class="cell en"><ul><li>In accordance with Eiffel&#x27;s object-oriented principles, the routine will appear in the text of a class describing trees, or tree nodes. This is why it does not need an argument representing the node to which the routine will add the reference <code>new</code> as a child; all routines of the class are relative to a typical tree node, the &quot;current instance&quot; of the class. In a specific call such as <code>some_node.put_child (x)</code>, the value before the period, here <code>some_node</code>, serves as the current instance.</li></ul></div>
+<div class="cell zh"><ul><li>按 Eiffel 的面向对象原则,该例程出现在描述树或树节点的类的文本中。正因如此,它不需要一个额外的参数来表示&quot;将向其添加 <code>new</code> 作为子节点的那个节点&quot;;类中所有例程都是相对于一个典型的树节点 —— 即类的&quot;当前实例&quot;(current instance)—— 而言的。在形如 <code>some_node.put_child (x)</code> 的具体调用中,句点之前的值(这里是 <code>some_node</code>)就是当前实例。</li></ul></div>
+</div><div class="row" id="row-42" data-i="42">
+<div class="cell en"><ul><li>In the text of the class, the predefined name <code>Current</code> serves, if necessary, to refer to the current instance. Here it is used in the postcondition.</li></ul></div>
+<div class="cell zh"><ul><li>在类文本中,预定义名 <code>Current</code> 在必要时可用于指代当前实例。这里在后置条件中使用了它。</li></ul></div>
+</div><div class="row" id="row-43" data-i="43">
+<div class="cell en"><ul><li>The notation <code>old child_count</code>, appearing in the postcondition of <code>put_child</code>, denotes the value of <code>child_count</code> as captured on entry to a particular call. In other words, the second clause of the postcondition expresses that the routine must increase <code>child_count</code> by one. The construct <code>old</code> may appear only in a routine postcondition.</li></ul></div>
+<div class="cell zh"><ul><li><code>put_child</code> 后置条件中出现的记法 <code>old child_count</code>,表示 <code>child_count</code> 在某次调用进入时所捕获的值。换言之,后置条件的第二个子句表达的是:例程必须使 <code>child_count</code> 增加一。构造 <code>old</code> 只可出现在例程的后置条件中。</li></ul></div>
+</div><div class="row" id="row-44" data-i="44">
+<div class="cell en"><details class="infobox"><summary class="info-title">Further sources</summary><div class="info-body"><p>One of the two primary sources of inspiration for this work is the research on program proving and systematic program construction pioneered by Floyd <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>, Hoare <sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup>, and Dijkstra <sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup>. Other well-known work on the application of proof methods to software construction includes contributions by Gries <sup class="cite" tabindex="0" data-ref="4" data-lang="en">[4]</sup> and Mills <sup class="cite" tabindex="0" data-ref="5" data-lang="en">[5]</sup>. The other major influence is the theory of abstract data types (see references in the body of the article).</p><p>The use of assertions in an object-oriented language and the approach to inheritance presented here (based on the notion of subcontracting) appear original to Eiffel. The exception-handling model and its implementation are also among Eiffel&#x27;s contributions. These mechanisms, and the reasoning that led to them, are discussed in detail in references 1 and 2 of the main bibliography at the end of the article.</p><p>The notion of class invariant comes directly from Hoare&#x27;s data invariants <sup class="cite" tabindex="0" data-ref="6" data-lang="en">[6]</sup>. Invariants, as well as other assertions, also play an important role in the VDM software specification method, as described by Jones <sup class="cite" tabindex="0" data-ref="7" data-lang="en">[7]</sup>. The transposition of data invariants to object-oriented software development, in the form of class invariants, appears to be new with Eiffel.</p><p>Nonobject-oriented research languages that support assertions have included Euclid <sup class="cite" tabindex="0" data-ref="8" data-lang="en">[8]</sup> and Alphard <sup class="cite" tabindex="0" data-ref="9" data-lang="en">[9]</sup>; see also the Ada-based specification language Anna <sup class="cite" tabindex="0" data-ref="10" data-lang="en">[10]</sup>. CLU, cited in the text, includes nonformal assertions.</p><p>The view of programs as mechanisms to compute partial functions is central in the mentioned VDM method.</p><p>Another view of exceptions can be found in Cristian [11]. Eiffel&#x27;s notion of a rescue clause bears some resemblance to Randell&#x27;s recovery blocks [12], but the spirit and aims are different. Recovery blocks as defined by Randell are alternate implementations of the original goal of a routine, to be used when the initial implementation fails to achieve this goal. In contrast, a rescue clause does not attempt to carry on the routine&#x27;s official business; it simply patches things up by bringing the object to a stable state. Any retry attempt uses the original implementation again. Also, recovery blocks require that the initial system state be restored before an alternate implementation is tried after a failure. This appears impossible to implement in any practical environment for which efficiency is of any concern. Eiffel&#x27;s rescue clauses do not require any such preservation of the state; the only rule is that the rescue clause must restore the class invariant and, if resumption is attempted, the routine precondition.</p><p>The rescue clause notion was actually derived from a corresponding formal notion of surrogate function, also called doppelgänger, which appeared in the specification method and language M [13], a direct successor to Abrial&#x27;s original Z language [14]. Like Z and unlike Eiffel, M was a formal specification language, not an executable language. Functions in an M specification may be partial. A surrogate is associated with a partial function and serves as a backup for arguments that do not belong to that function&#x27;s domain.</p><p><strong>References</strong></p><p><sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> R.W. Floyd, &quot;Assigning Meanings to Programs,&quot; Proc. Am. Math. Soc. Symp. in Applied Math., Vol. 19, J.T. Schwartz, ed., American Mathematical Society, Providence, R.I., 1967, pp. 19-31.</p><p><sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup> C.A.R. Hoare, &quot;An Axiomatic Basis for Computer Programming,&quot; Comm. ACM, Vol. 12, No. 10, Oct. 1969, pp. 576-580, 583.</p><p><sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup> E.W. Dijkstra, A Discipline of Programming, Prentice Hall, Englewood Cliffs, N.J., 1976.</p><p><sup class="cite" tabindex="0" data-ref="4" data-lang="en">[4]</sup> D. Gries, The Science of Programming, Springer-Verlag, Berlin and New York, 1981.</p><p><sup class="cite" tabindex="0" data-ref="5" data-lang="en">[5]</sup> H.D. Mills et al., Principles of Computer Programming: A Mathematical Approach, Allyn and Bacon, Boston, 1987.</p><p><sup class="cite" tabindex="0" data-ref="6" data-lang="en">[6]</sup> C.A.R. Hoare, &quot;Proof of Correctness of Data Representations,&quot; Acta Informatica, Vol. 1, No. 4, 1972, pp. 271-281.</p><p><sup class="cite" tabindex="0" data-ref="7" data-lang="en">[7]</sup> C.B. Jones, Systematic Software Development Using VDM, Prentice Hall, Englewood Cliffs, N.J., 1986.</p><p><sup class="cite" tabindex="0" data-ref="8" data-lang="en">[8]</sup> B.W. Lampson et al., &quot;Report on the Programming Language Euclid,&quot; SIGPlan Notices, Vol. 12, No. 2, Feb. 1977, pp. 1-79.</p><p><sup class="cite" tabindex="0" data-ref="9" data-lang="en">[9]</sup> Mary Shaw et al., Alphard: Form and Content, Springer-Verlag, Berlin and New York, 1981.</p><p><sup class="cite" tabindex="0" data-ref="10" data-lang="en">[10]</sup> D. Luckham and F.W. von Henke, &quot;An Overview of Anna, a Specification Language for Ada,&quot; IEEE Software, Vol. 2, No. 2, Mar. 1985, pp. 9-22.</p><p>[11] F. Cristian, &quot;On Exceptions, Failures, and Errors,&quot; Technology and Science of Informatics, Vol. 4, No. 4, July-Aug. 1985.</p><p>[12] B. Randell, &quot;System Structure for Software Fault Tolerance,&quot; IEEE Trans. Software Eng., Vol. SE-1, No. 2, June 1975, pp. 220-232.</p><p>[13] B. Meyer, &quot;M: A System Description Method,&quot; Tech. Report TRCS85-15, Computer Science Dept., Univ. of California, Santa Barbara, 1985.</p><p>[14] J.-R. Abrial, S.A. Schuman, and B. Meyer, &quot;A Specification Language,&quot; in On the Construction of Programs, R. McNaughten and R.C. McKeag, eds., Cambridge University Press, England, 1980.</p></div></details></div>
+<div class="cell zh"><details class="infobox"><summary class="info-title">延伸资料</summary><div class="info-body"><p>本项工作的两大灵感来源之一是 Floyd <sup class="cite" tabindex="0" data-ref="1" data-lang="zh">[1]</sup>、Hoare <sup class="cite" tabindex="0" data-ref="2" data-lang="zh">[2]</sup>、Dijkstra <sup class="cite" tabindex="0" data-ref="3" data-lang="zh">[3]</sup> 等人开创的程序证明与系统化程序构造研究。其他在证明方法应用于软件构造方面广为人知的工作,包括 Gries <sup class="cite" tabindex="0" data-ref="4" data-lang="zh">[4]</sup> 和 Mills <sup class="cite" tabindex="0" data-ref="5" data-lang="zh">[5]</sup> 的贡献。另一大影响是抽象数据类型理论(参见本文正文中的引用)。</p><p>在面向对象语言中使用断言、以及本文所介绍的继承方式(基于转包的概念),在 Eiffel 看来是首创。异常处理模型及其实现也是 Eiffel 的贡献之一。这些机制及其背后的推理,在本文末尾主文献列表的文献 1 和 2 中有详细讨论。</p><p>类不变量的概念直接来自 Hoare 的数据不变量 <sup class="cite" tabindex="0" data-ref="6" data-lang="zh">[6]</sup>。不变量和其他断言在 VDM 软件规约方法中同样扮演重要角色,Jones <sup class="cite" tabindex="0" data-ref="7" data-lang="zh">[7]</sup> 对此有所论述。把数据不变量以类不变量的形式转用到面向对象软件开发中,似乎是 Eiffel 首倡。</p><p>支持断言的非面向对象研究型语言包括 Euclid <sup class="cite" tabindex="0" data-ref="8" data-lang="zh">[8]</sup> 和 Alphard <sup class="cite" tabindex="0" data-ref="9" data-lang="zh">[9]</sup>;另见基于 Ada 的规约语言 Anna <sup class="cite" tabindex="0" data-ref="10" data-lang="zh">[10]</sup>。正文中提到的 CLU 包含非形式化断言。</p><p>把程序视为计算部分函数的机制,是前述 VDM 方法的核心思想。</p><p>另一种看待异常的视角可见于 Cristian [11]。Eiffel 的救援子句(rescue clause)在概念上与 Randell 的恢复块(recovery blocks)[12] 有些相似,但意图和目标不同。Randell 定义的恢复块是例程原有目标的<strong>替代实现</strong>,在初始实现未能达成目标时启用。相比之下,救援子句不试图继续完成例程的正式业务;它只是通过把对象带回一个稳定状态来弥补善后。任何重试尝试仍然使用原来的实现。此外,恢复块要求在故障后尝试替代实现之前,把系统恢复到初始状态 —— 这在任何讲究效率的实际环境中看起来都不可能实现。Eiffel 的救援子句不要求这种状态保留;唯一的规则是,救援子句必须恢复类不变量,若要尝试重启(resumption),还须恢复例程的前置条件。</p><p>救援子句的概念实际上派生自一个对应的形式化概念 —— &quot;代理函数&quot;(surrogate function,也叫 doppelgänger),它出现在规约方法和语言 M [13] 中,M 是 Abrial 原始 Z 语言 [14] 的直接继承者。与 Z 一样、与 Eiffel 不同的是,M 是一个形式化的规约语言,不是可执行语言。M 规约中的函数可以是部分的(partial)。代理函数与某个部分函数相关联,为不属于该函数定义域的实参提供备用处理。</p><p><strong>参考文献</strong></p><p><sup class="cite" tabindex="0" data-ref="1" data-lang="zh">[1]</sup> R.W. Floyd, &quot;Assigning Meanings to Programs,&quot; Proc. Am. Math. Soc. Symp. in Applied Math., Vol. 19, J.T. Schwartz, ed., American Mathematical Society, Providence, R.I., 1967, pp. 19-31.</p><p><sup class="cite" tabindex="0" data-ref="2" data-lang="zh">[2]</sup> C.A.R. Hoare, &quot;An Axiomatic Basis for Computer Programming,&quot; Comm. ACM, Vol. 12, No. 10, Oct. 1969, pp. 576-580, 583.</p><p><sup class="cite" tabindex="0" data-ref="3" data-lang="zh">[3]</sup> E.W. Dijkstra, A Discipline of Programming, Prentice Hall, Englewood Cliffs, N.J., 1976.</p><p><sup class="cite" tabindex="0" data-ref="4" data-lang="zh">[4]</sup> D. Gries, The Science of Programming, Springer-Verlag, Berlin and New York, 1981.</p><p><sup class="cite" tabindex="0" data-ref="5" data-lang="zh">[5]</sup> H.D. Mills et al., Principles of Computer Programming: A Mathematical Approach, Allyn and Bacon, Boston, 1987.</p><p><sup class="cite" tabindex="0" data-ref="6" data-lang="zh">[6]</sup> C.A.R. Hoare, &quot;Proof of Correctness of Data Representations,&quot; Acta Informatica, Vol. 1, No. 4, 1972, pp. 271-281.</p><p><sup class="cite" tabindex="0" data-ref="7" data-lang="zh">[7]</sup> C.B. Jones, Systematic Software Development Using VDM, Prentice Hall, Englewood Cliffs, N.J., 1986.</p><p><sup class="cite" tabindex="0" data-ref="8" data-lang="zh">[8]</sup> B.W. Lampson et al., &quot;Report on the Programming Language Euclid,&quot; SIGPlan Notices, Vol. 12, No. 2, Feb. 1977, pp. 1-79.</p><p><sup class="cite" tabindex="0" data-ref="9" data-lang="zh">[9]</sup> Mary Shaw et al., Alphard: Form and Content, Springer-Verlag, Berlin and New York, 1981.</p><p><sup class="cite" tabindex="0" data-ref="10" data-lang="zh">[10]</sup> D. Luckham and F.W. von Henke, &quot;An Overview of Anna, a Specification Language for Ada,&quot; IEEE Software, Vol. 2, No. 2, Mar. 1985, pp. 9-22.</p><p>[11] F. Cristian, &quot;On Exceptions, Failures, and Errors,&quot; Technology and Science of Informatics, Vol. 4, No. 4, July-Aug. 1985.</p><p>[12] B. Randell, &quot;System Structure for Software Fault Tolerance,&quot; IEEE Trans. Software Eng., Vol. SE-1, No. 2, June 1975, pp. 220-232.</p><p>[13] B. Meyer, &quot;M: A System Description Method,&quot; Tech. Report TRCS85-15, Computer Science Dept., Univ. of California, Santa Barbara, 1985.</p><p>[14] J.-R. Abrial, S.A. Schuman, and B. Meyer, &quot;A Specification Language,&quot; in On the Construction of Programs, R. McNaughten and R.C. McKeag, eds., Cambridge University Press, England, 1980.</p></div></details></div>
+</div><div class="row" id="row-45" data-i="45">
+<div class="cell en"><h2>The role of assertions</h2></div>
+<div class="cell zh"><h2>断言的作用</h2></div>
+</div><div class="row" id="row-46" data-i="46">
+<div class="cell en"><p>You may well be wondering what happens if one of these conditions fails to be satisfied during execution. This question will be answered by whether assertions are monitored at runtime, depending on programmer wishes. But this is not a crucial question at this point. The prime goal of this discussion is to find ways of writing reliable software systems that work. The question of what happens when they do <em>not</em> work, although practically significant, comes only after achieving that more fundamental goal.</p></div>
+<div class="cell zh"><p>你可能正想问:如果这些条件中有某一条在执行时不被满足,会发生什么?这个问题的答案取决于是否在运行时对断言进行监控 —— 这依程序员的意愿而定。但在这里,这个问题并不是关键。本讨论的首要目标,是找到编写<strong>能正确运行的</strong>可靠软件系统的方法。软件<strong>不正确运行</strong>时会发生什么,虽然在实践中也很重要,但得在实现那个更根本的目标之后再谈。</p></div>
+</div><div class="row" id="row-47" data-i="47">
+<div class="cell en"><p>Another way of expressing this observation is to notice that assertions do <em>not</em> describe special but expected cases that call for special treatment. In other words, the above assertions are not a way to describe (for example) the handling of void arguments to <code>put_child</code>. If we wanted to treat void arguments as an acceptable (although special) case, we would handle it not through assertions but through standard conditional control structures (see Figure 3).</p></div>
+<div class="cell zh"><p>换一种方式表述这个观察:断言<strong>不是</strong>用来描述那些需要特殊处置的、特殊但可预期的情形。换言之,上述的断言不是用来描述(比如)对 <code>put_child</code> 传入 void 实参的处理。如果我们想把 void 实参视作一种可接受的(虽然是特殊的)情形,我们不会通过断言,而是通过标准的条件控制结构来处理(见图 3)。</p></div>
+</div><div class="row" id="row-48" data-i="48">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="3"><svg viewBox="0 0 520 158" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="520" height="158" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">if</tspan> new = Void <tspan fill="var(--g-primary)" font-weight="600">then</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Take care of special case ...</text><text x="24" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">else</tspan></text><text x="52" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Take care of standard case ...</text><text x="24" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text></svg></div><figcaption><span class="fig-num">Fig. 3.</span> Handling a special case.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="3"><svg viewBox="0 0 520 158" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="520" height="158" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">if</tspan> new = Void <tspan fill="var(--g-primary)" font-weight="600">then</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Take care of special case ...</text><text x="24" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">else</tspan></text><text x="52" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Take care of standard case ...</text><text x="24" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text></svg></div><figcaption><span class="fig-num">图 3.</span> 处理特殊情形。</figcaption></figure></div>
+</div><div class="row" id="row-49" data-i="49">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>if new = Void then
+    ... Take care of special case ...
+else
+    ... Take care of standard case ...
+end</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>if new = Void then
+    ... Take care of special case ...
+else
+    ... Take care of standard case ...
+end</code></pre></div>
+</div><div class="row" id="row-50" data-i="50">
+<div class="cell en"><p>Assertions (here the precondition) are something else: ways to describe the conditions on which software elements will work, and the conditions they will achieve in return. By putting the condition <code>new /= Void</code> in the precondition, we make it part of the routine&#x27;s specification; the last form shown (with the If) would mean that we have changed that specification, broadening it to include the special case <code>new = Void</code> as acceptable.</p></div>
+<div class="cell zh"><p>断言(这里是前置条件)是另一回事:它们描述软件元素<strong>将会工作</strong>所依据的条件,以及作为回报<strong>将会达成</strong>的条件。把条件 <code>new /= Void</code> 放进前置条件,我们就使它成为例程规约的一部分;而上面最后那种形式(用 If)的含义是,我们改变了那个规约,扩大到把 <code>new = Void</code> 这种特殊情形也算作可接受的。</p></div>
+</div><div class="row" id="row-51" data-i="51">
+<div class="cell en"><p>As a consequence, any runtime violation of an assertion is not a special case but always the manifestation of a software bug. To be precise:</p></div>
+<div class="cell zh"><p>其结果是,运行时任何断言违反都不是某种特殊情形,而永远是软件 bug 的表现。确切地说:</p></div>
+</div><div class="row" id="row-52" data-i="52">
+<div class="cell en"><ul><li>A <em>precondition violation</em> indicates a bug in the client (caller). The caller did not observe the conditions imposed on correct calls.</li></ul></div>
+<div class="cell zh"><ul><li><strong>前置条件违反</strong>(precondition violation)表示客户方(调用方)有 bug。调用方没有遵守施加于正确调用之上的条件。</li></ul></div>
+</div><div class="row" id="row-53" data-i="53">
+<div class="cell en"><ul><li>A <em>postcondition violation</em> is a bug in the supplier (routine). The routine failed to deliver on its promises.</li></ul></div>
+<div class="cell zh"><ul><li><strong>后置条件违反</strong>(postcondition violation)是供应方(例程)的 bug。例程未能兑现其承诺。</li></ul></div>
+</div><div class="row" id="row-54" data-i="54">
+<div class="cell en"><h2>Observations on software contracts</h2></div>
+<div class="cell zh"><h2>对软件契约的几点观察</h2></div>
+</div><div class="row" id="row-55" data-i="55">
+<div class="cell en"><p>In Table 2, the bottom-right entry is particularly noteworthy. If the precondition is not satisfied, the routine is not bound to do anything, like a mail delivery company given a parcel that does not meet the specification. This means that the routine body should not be of the form mentioned above:</p></div>
+<div class="cell zh"><p>表 2 的右下角那一格特别值得注意。如果前置条件不被满足,例程<strong>不受任何约束去做任何事</strong>,就像一家邮递公司收到了一个不符合规格的包裹。这意味着例程主体不应写成前面提到的那种形式:</p></div>
+</div><div class="row" id="row-56" data-i="56">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>if new = Void then
+    ...
+else
+    ...
+end</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>if new = Void then
+    ...
+else
+    ...
+end</code></pre></div>
+</div><div class="row" id="row-57" data-i="57">
+<div class="cell en"><p>Using such a construction would defeat the purpose of having a precondition (Require clause). This is an absolute rule: Either you have the condition in the Require, or you have it in an If instruction in the body of the routine, but never in both.</p></div>
+<div class="cell zh"><p>用这种构造,就会抵消设立前置条件(Require 子句)的意义。这是一条绝对规则:要么条件写在 Require 里,要么写在例程主体的 If 指令里,<strong>绝不能两处都写</strong>。</p></div>
+</div><div class="row" id="row-58" data-i="58">
+<div class="cell en"><p>This principle is the exact opposite of the idea of defensive programming, since it directs programmers to avoid redundant tests. Such an approach is possible and fruitful because the use of assertions encourages writing software to spell out the consistency conditions that could go wrong at runtime. Then instead of checking blindly, as with defensive programming, you can use clearly defined contracts that assign the responsibility for each consistency condition to one of the parties. If the contract is precise and explicit, there is no need for redundant checks.</p></div>
+<div class="cell zh"><p>这条原则正是防御式编程理念的反面,因为它引导程序员<strong>避免冗余测试</strong>。这种做法之所以可行且有效,正是因为断言的使用鼓励开发者在编写软件时明确地把运行时可能出错的一致性条件写出来。然后,不必像防御式编程那样盲目检查,而是可以使用清晰定义的契约,把每一条一致性条件的责任分派给某一方。契约若精确而显式,冗余检查就没有必要。</p></div>
+</div><div class="row" id="row-59" data-i="59">
+<div class="cell en"><p>The stronger the precondition, the heavier the burden on the client, and the easier for the supplier. The matter of who should deal with abnormal values is essentially a pragmatic decision about division of labor: The best solution is the one that achieves the simplest architecture. If every routine and caller checked for every possible call error, routines would never perform any useful work.</p></div>
+<div class="cell zh"><p>前置条件越强,客户方的负担越重,供应方越轻松。谁来处理异常值,本质上是关于分工的实用决策:最佳解就是能得到<strong>最简架构</strong>的那个解。如果每个例程和每个调用方都去检查每一种可能的调用错误,例程就永远干不了什么有用的活。</p></div>
+</div><div class="row" id="row-60" data-i="60">
+<div class="cell en"><p>In many existing programs, one can hardly find the islands of useful processing in oceans of error-checking code. In the absence of assertions, defensive programming may be the only reasonable approach. But with techniques for defining precisely each party&#x27;s responsibility, as provided by assertions, such redundancy (so harmful to the consistency and simplicity of the structure) is not needed.</p></div>
+<div class="cell zh"><p>在许多现有程序里,很难在错误检查代码的汪洋大海中找到那几座真正有用处理的孤岛。没有断言机制的话,防御式编程也许是唯一合理的选择。但有了断言所提供的、用于精确定义各方职责的手段,这种(对结构的一致性和简洁性极为有害的)冗余就不再需要了。</p></div>
+</div><div class="row" id="row-61" data-i="61">
+<div class="cell en"><h2>Who should check?</h2></div>
+<div class="cell zh"><h2>该由谁检查?</h2></div>
+</div><div class="row" id="row-62" data-i="62">
+<div class="cell en"><p>The rejection of defensive programming means that the client and supplier are not both held responsible for a consistency condition. Either the condition is part of the precondition and must be guaranteed by the client, or it is not stated in the precondition and must be handled by the supplier.</p></div>
+<div class="cell zh"><p>拒绝防御式编程意味着:对于一个一致性条件,<strong>不会</strong>让客户方和供应方双方都担责。这个条件要么是前置条件的一部分、由客户方保证,要么不在前置条件中、由供应方处理。</p></div>
+</div><div class="row" id="row-63" data-i="63">
+<div class="cell en"><p>Which of these two solutions should be chosen? There is no absolute rule; several styles of writing routines are possible, ranging from &quot;demanding&quot; ones where the precondition is strong (putting the responsibility on clients) to &quot;tolerant&quot; ones where it is weak (increasing the routine&#x27;s burden). Choosing between them is to a certain extent a matter of personal preference; again, the key criterion is to maximize the overall simplicity of the architecture.</p></div>
+<div class="cell zh"><p>两种做法该选哪一种?没有绝对的规则;编写例程的风格有很多种,从前置条件很强的&quot;苛刻型&quot;(把责任压在客户方身上)到前置条件很弱的&quot;宽容型&quot;(加重例程负担)。选择在一定程度上是个人偏好;同样,关键判据是让架构的整体简洁性最大化。</p></div>
+</div><div class="row" id="row-64" data-i="64">
+<div class="cell en"><p>The experience with Eiffel, in particular the design of the libraries, suggests that the systematic use of a demanding style can be quite successful. In this approach, every routine concentrates on doing a well-defined job so as to do it well, rather than attempting to handle every imaginable case. Client programmers do not expect miracles. As long as the conditions on the use of a routine make sense, and the routine&#x27;s documentation states these conditions (the contract) explicitly, the programmers will be able to use the routine properly by observing their part of the deal.</p></div>
+<div class="cell zh"><p>Eiffel 的经验 —— 特别是库的设计 —— 表明,系统化地采用苛刻风格可以相当成功。在这种做法下,每个例程都专注于把一件定义良好的事情做好,而不是试图应对所有能想到的情形。客户方程序员并不指望奇迹。只要例程的使用条件说得通,并且例程的文档把这些条件(契约)明确陈述出来,程序员就能通过遵守自己那一份协议来正确地使用该例程。</p></div>
+</div><div class="row" id="row-65" data-i="65">
+<div class="cell en"><p>One objection to this style is that it seems to force every client to make the same checks, corresponding to the precondition, and thus results in unnecessary and damaging repetitions. But this argument is not justified:</p></div>
+<div class="cell zh"><p>对这种风格有一种反对意见是:它似乎迫使每个客户方都做相同的、对应于前置条件的检查,从而造成不必要且有害的重复。但这个论点站不住脚:</p></div>
+</div><div class="row" id="row-66" data-i="66">
+<div class="cell en"><ul><li>The presence of a precondition <em>p</em> in a routine <em>r</em> does not necessarily mean that every call must test for <em>p</em>, as in</li></ul></div>
+<div class="cell zh"><ul><li>一个例程 <em>r</em> 中存在前置条件 <em>p</em>,并不必然意味着每次调用都必须测试 <em>p</em>,像这样:</li></ul></div>
+</div><div class="row" id="row-67" data-i="67">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>if x.p then
+    x.r
+else
+    ... Special Treatment ...
+end</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>if x.p then
+    x.r
+else
+    ... Special Treatment ...
+end</code></pre></div>
+</div><div class="row" id="row-68" data-i="68">
+<div class="cell en"><p>What the precondition means is that the client must <em>guarantee</em> property <em>p</em>; this is not the same as <em>testing for</em> this condition before each call. If the context of the call implies <em>p</em>, then there is no need for such a test. A typical scheme is</p></div>
+<div class="cell zh"><p>前置条件的含义是客户方必须<strong>保证</strong>性质 <em>p</em>;这与每次调用前<strong>测试</strong>这个条件不是一回事。如果调用的上下文已经蕴含 <em>p</em>,那就没必要测试。一种典型的模式是</p></div>
+</div><div class="row" id="row-69" data-i="69">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>x.s; x.r</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>x.s; x.r</code></pre></div>
+</div><div class="row" id="row-70" data-i="70">
+<div class="cell en"><p>where the postcondition of <em>s</em> implies <em>p</em>.</p></div>
+<div class="cell zh"><p>其中 <em>s</em> 的后置条件蕴含 <em>p</em>。</p></div>
+</div><div class="row" id="row-71" data-i="71">
+<div class="cell en"><ul><li>Assume that many clients will indeed need to check for the precondition. Then what matters is the &quot;Special Treatment.&quot; It is either the same for all calls or specific to each call. If it is the same, causing undue repetition in various clients, this is simply the sign of a poor class interface design, using an overly demanding contract for <em>r</em>. The contract should be renegotiated and made broader (more tolerant) to include the standard Special Treatment as part of the routine&#x27;s specification.</li></ul></div>
+<div class="cell zh"><ul><li>假设许多客户方确实需要检查前置条件。那么关键在于&quot;Special Treatment&quot;(特殊处理)。它要么对所有调用都一样,要么因调用而异。如果一样 —— 从而在各个客户方那里造成多余重复 —— 这仅仅说明类的接口设计差,对 <em>r</em> 采用了过于苛刻的契约。契约应当被重新协商,放宽成更宽容的版本,把标准的特殊处理纳入例程规约的一部分。</li></ul></div>
+</div><div class="row" id="row-72" data-i="72">
+<div class="cell en"><ul><li>If, however, the Special Treatment is different for various clients, then the need for each client to perform its own individual test for <em>p</em> is intrinsic and not a consequence of the design method suggested here. These tests would have to be included anyway.</li></ul></div>
+<div class="cell zh"><ul><li>如果特殊处理对不同客户方而言并不相同,那么每个客户方各自为 <em>p</em> 做个别测试就是<strong>本质需要</strong>,并非本文所建议的设计方法带来的后果。这些测试反正都得加上。</li></ul></div>
+</div><div class="row" id="row-73" data-i="73">
+<div class="cell en"><p>The last case corresponds to the frequent situation in which a supplier simply lacks the proper context to handle abnormal cases. For example, it is impossible for a general-purpose <code>STACK</code> module to know what to do when requested to pop an element from an empty stack. Only the client — a module from a compiler or other system that uses stacks — has the needed information.</p></div>
+<div class="cell zh"><p>最后这种情况对应于一种常见情形:供应方根本没有合适的上下文来处理异常情形。例如,一个通用的 <code>STACK</code> 模块在被要求从空栈弹出元素时无从决断该怎么办。只有客户方 —— 来自编译器或其他使用栈的系统的某个模块 —— 才掌握所需的信息。</p></div>
+</div><div class="row" id="row-74" data-i="74">
+<div class="cell en"><h2>Class invariants</h2></div>
+<div class="cell zh"><h2>类不变量</h2></div>
+</div><div class="row" id="row-75" data-i="75">
+<div class="cell en"><p>Routine preconditions and postconditions may be used in non-object-oriented approaches, although they fit particularly well with the object-oriented method. Invariants, the next major use of assertions, are inconceivable outside of the object-oriented approach.</p></div>
+<div class="cell zh"><p>例程的前置条件和后置条件在非面向对象的方法中也可以使用,只不过它们与面向对象方法尤为契合。而不变量 —— 断言的下一个主要用途 —— 在面向对象方法之外是不可想象的。</p></div>
+</div><div class="row" id="row-76" data-i="76">
+<div class="cell en"><p>A class invariant is a property that applies to all instances of the class, transcending particular routines. For example, the invariant of a class describing nodes of a binary tree could be of the form shown in Figure 4, stating that the parent of both the left and right children of a node, if these children exist, is the node itself. (The Implies operator denotes implication. Eiffel operator precedence rules make the parentheses unnecessary here; they have been added for clarity.)</p></div>
+<div class="cell zh"><p>类不变量是适用于该类所有实例的性质,超越于个别例程之上。例如,描述二叉树节点的类的不变量可以写成图 4 所示的形式,表达的是:一个节点的左、右子节点(如果存在)的父节点就是这个节点本身。(Implies 运算符表示蕴含。Eiffel 的运算符优先级规则使这里的括号本不必要,加上只为清晰起见。)</p></div>
+</div><div class="row" id="row-77" data-i="77">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="4"><svg viewBox="0 0 580 114" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="114" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">invariant</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">left /= Void <tspan fill="var(--g-primary)" font-weight="600">implies</tspan> (left.parent = Current);</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">right /= Void <tspan fill="var(--g-primary)" font-weight="600">implies</tspan> (right.parent = Current)</text></svg></div><figcaption><span class="fig-num">Fig. 4.</span> An invariant for binary trees.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="4"><svg viewBox="0 0 580 114" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="114" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">invariant</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">left /= Void <tspan fill="var(--g-primary)" font-weight="600">implies</tspan> (left.parent = Current);</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">right /= Void <tspan fill="var(--g-primary)" font-weight="600">implies</tspan> (right.parent = Current)</text></svg></div><figcaption><span class="fig-num">图 4.</span> 二叉树的一个不变量。</figcaption></figure></div>
+</div><div class="row" id="row-78" data-i="78">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>invariant
+    left /= Void implies (left.parent = Current);
+    right /= Void implies (right.parent = Current)</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>invariant
+    left /= Void implies (left.parent = Current);
+    right /= Void implies (right.parent = Current)</code></pre></div>
+</div><div class="row" id="row-79" data-i="79">
+<div class="cell en"><p>The optional class invariant clause appears at the end of a class text:</p></div>
+<div class="cell zh"><p>可选的类不变量子句出现在类文本的末尾:</p></div>
+</div><div class="row" id="row-80" data-i="80">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>class BINARY_TREE [T] feature
+    ... Attribute and routine declarations ...
+invariant
+    ... As shown above ...
+end -- class TABLE</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>class BINARY_TREE [T] feature
+    ... Attribute and routine declarations ...
+invariant
+    ... As shown above ...
+end -- class TABLE</code></pre></div>
+</div><div class="row" id="row-81" data-i="81">
+<div class="cell en"><p>Two properties characterize a class invariant:</p></div>
+<div class="cell zh"><p>类不变量具有两个特征:</p></div>
+</div><div class="row" id="row-82" data-i="82">
+<div class="cell en"><ul><li>The invariant must be satisfied after the creation of every instance of the class (every binary tree in this example). This means that every creation procedure of the class must yield an object satisfying the invariant. (A class may have one or more creation procedures, which serve to initialize objects. The creation procedure to be called in any given case is specified in the creation instruction.)</li></ul></div>
+<div class="cell zh"><ul><li>不变量必须在该类每个实例(本例中每棵二叉树)被创建之后成立。这意味着该类每个创建过程(creation procedure)都必须产出满足不变量的对象。(一个类可以有一个或多个创建过程,用于初始化对象。具体某次调用哪个创建过程,由创建指令指定。)</li></ul></div>
+</div><div class="row" id="row-83" data-i="83">
+<div class="cell en"><ul><li>The invariant must be preserved by every exported routine of the class (that is to say, every routine available to clients). Any such routine must guarantee that the invariant is satisfied on exit if it was satisfied on entry.</li></ul></div>
+<div class="cell zh"><ul><li>不变量必须被该类每个导出的(即可供客户方使用的)例程所保持。任何这样的例程都必须保证:若不变量在入口处成立,则在出口处也成立。</li></ul></div>
+</div><div class="row" id="row-84" data-i="84">
+<div class="cell en"><p>In effect, then, the invariant is added to the precondition and postcondition of every exported routine of the class. But the invariant characterizes the class as a whole rather than its individual routines.</p></div>
+<div class="cell zh"><p>实际上,这就等于把不变量附加到了该类每个导出例程的前置条件和后置条件上。但不变量刻画的是类作为一个整体,而不是其单个例程。</p></div>
+</div><div class="row" id="row-85" data-i="85">
+<div class="cell en"><p>Figure 5 illustrates these requirements by picturing the life cycle of any object as a sequence of transitions between &quot;observable&quot; states. Observable states, shown as shaded rectangles, are the states that immediately follow object creation, and any states subsequently reached after the execution of an exported routine of the object&#x27;s generating class. The invariant is the consistency constraint on observable states. (It is not necessarily satisfied in between these states.)</p></div>
+<div class="cell zh"><p>图 5 用图示方式展示了这些要求:它把任意对象的生命周期描绘为一系列在&quot;可观察&quot;状态之间的迁移。可观察状态(图中以阴影矩形表示)是紧随对象创建之后的状态,以及随后由对象所属类的某个导出例程执行之后所到达的各状态。不变量就是施加于可观察状态之上的一致性约束。(它在这些状态<strong>之间</strong>不一定成立。)</p></div>
+</div><div class="row" id="row-86" data-i="86">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="5"><svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs><marker id="arr5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker></defs>
+<rect x="0" y="0" width="520" height="440" fill="var(--fig-bg)"/>
+<!-- start black dot -->
+<circle cx="110" cy="30" r="8" fill="var(--text)"/>
+<text x="130" y="34" font-family="inherit" font-size="13" fill="var(--text)">Object creation</text>
+<!-- arrow down -->
+<line x1="110" y1="40" x2="110" y2="60" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<!-- INV boxes: 4 of them, with transitions a·f, a·g, a·h, a·f -->
+<g font-family="SF Mono, Menlo, monospace" font-size="14">
+<rect x="70" y="65" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="88" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="165" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="188" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="265" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="288" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="365" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="388" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+</g>
+<!-- transitions between boxes: a·f, a·g, a·h, a·f -->
+<g font-family="inherit" font-size="14" fill="var(--text)">
+<line x1="110" y1="101" x2="110" y2="160" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="135" font-style="italic">a·f</text>
+<line x1="110" y1="201" x2="110" y2="260" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="235" font-style="italic">a·g</text>
+<line x1="110" y1="301" x2="110" y2="360" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="335" font-style="italic">a·h</text>
+<line x1="110" y1="401" x2="110" y2="430" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="424" font-style="italic">a·f</text>
+</g>
+</svg></div><figcaption><span class="fig-num">Fig. 5.</span> The invariant in an object&#x27;s life cycle.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="5"><svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs><marker id="arr5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker></defs>
+<rect x="0" y="0" width="520" height="440" fill="var(--fig-bg)"/>
+<!-- start black dot -->
+<circle cx="110" cy="30" r="8" fill="var(--text)"/>
+<text x="130" y="34" font-family="inherit" font-size="13" fill="var(--text)">Object creation</text>
+<!-- arrow down -->
+<line x1="110" y1="40" x2="110" y2="60" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<!-- INV boxes: 4 of them, with transitions a·f, a·g, a·h, a·f -->
+<g font-family="SF Mono, Menlo, monospace" font-size="14">
+<rect x="70" y="65" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="88" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="165" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="188" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="265" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="288" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+
+<rect x="70" y="365" width="80" height="36" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="110" y="388" text-anchor="middle" fill="var(--g-primary)" font-weight="bold">INV</text>
+</g>
+<!-- transitions between boxes: a·f, a·g, a·h, a·f -->
+<g font-family="inherit" font-size="14" fill="var(--text)">
+<line x1="110" y1="101" x2="110" y2="160" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="135" font-style="italic">a·f</text>
+<line x1="110" y1="201" x2="110" y2="260" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="235" font-style="italic">a·g</text>
+<line x1="110" y1="301" x2="110" y2="360" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="335" font-style="italic">a·h</text>
+<line x1="110" y1="401" x2="110" y2="430" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr5)"/>
+<text x="128" y="424" font-style="italic">a·f</text>
+</g>
+</svg></div><figcaption><span class="fig-num">图 5.</span> 不变量在对象生命周期中的位置。</figcaption></figure></div>
+</div><div class="row" id="row-87" data-i="87">
+<div class="cell en"><p>The invariant corresponds to what was called &quot;general conditions&quot; in the initial discussion of contracts: laws or regulations that apply to all contracts of a certain category, often through a clause of the form &quot;all provisions of the XX code shall apply to this contract.&quot;</p></div>
+<div class="cell zh"><p>这里的不变量对应于前文讨论契约时所称的&quot;general conditions&quot;(通用条件):适用于某一类所有契约的法律或规定,常以&quot;XX 法典之全部条款适用于本契约&quot;这样的条款体现。</p></div>
+</div><div class="row" id="row-88" data-i="88">
+<div class="cell en"><details class="infobox"><summary class="info-title">On the assertion language</summary><div class="info-body"><p>This article includes many examples of typical assertions. But what exactly is permissible in an assertion?</p><p>Eiffel assertions are Boolean expressions, with a few extensions such as the <code>old</code> notation. Since the whole power of Boolean expressions is available, they may include function calls. Because the full power of the language is available to write these functions, the conditions they express can be quite sophisticated. For example, the invariant of a class <code>ACYCLIC_GRAPH</code> may contain a clause of the form <code>not cyclic</code>, where <code>cyclic</code> is a Boolean-valued function that determines whether a graph contains any cycles by using the appropriate graph algorithm.</p><p>In some cases, one might want to use quantified expressions of the form &quot;For all x of type T, p (x) holds&quot; or &quot;There exists x of type T, such that p (x) holds,&quot; where p is a certain Boolean property. Such expressions are not available in Eiffel. It is possible, however, to express the corresponding properties by using the same technique: calls to functions that rely on loops to emulate the quantifiers.</p><p>Although some thought has been given to extend the language to include a full-fledged formal specification language, with first-order predicate calculus, the need for such an extension does not seem crucial. In Eiffel, intended as a vehicle for industrial software development rather than just for research, the use of function calls in assertions seems to provide an acceptable trade-off between different design goals: reliability, the ability to generate efficient code, and overall simplicity of the language.</p><p>In fact, first-order predicate calculus would not necessarily be sufficient. Many practically important properties, such as the requirement that a graph be noncyclic, would require higher order calculus.</p><p>The use of functions — that is to say, computations — is not without its dangers. In software, a function is a case of a routine; it prescribes certain actions. This makes software functions <em>imperative</em>, whereas mathematical functions are said to be <em>applicative</em>. The major difference is that software functions can produce side effects (change the state of the computation). Introducing functions into assertions lets the imperative fox back into the applicative chicken coop.</p><p>In practice, this means that any function used in assertions must be of unimpeachable quality, avoiding any change to the current state and any operation that could result in abnormal situations.</p></div></details></div>
+<div class="cell zh"><details class="infobox"><summary class="info-title">关于断言语言</summary><div class="info-body"><p>本文给了许多典型断言的例子。但断言里究竟允许出现什么?</p><p>Eiffel 的断言是布尔表达式,附带若干扩展,比如 <code>old</code> 记法。既然可以使用布尔表达式的全部力量,它们就可以包含函数调用。又因为写这些函数时可以使用语言的全部能力,它们所能表达的条件可以相当复杂。比如,类 <code>ACYCLIC_GRAPH</code> 的不变量中可能包含形如 <code>not cyclic</code> 的子句,其中 <code>cyclic</code> 是一个布尔值函数,用相应的图算法判断一个图是否含有任何环路。</p><p>某些情况下,可能想用&quot;对所有类型 T 的 x,p (x) 成立&quot;或&quot;存在类型 T 的 x,使得 p (x) 成立&quot;这种带量词的表达式,其中 p 是某个布尔性质。这类表达式在 Eiffel 中不可用。但可以用同样的技术表达相应的性质:调用依赖循环来模拟量词的函数。</p><p>虽然曾考虑过将语言扩展为包含一阶谓词演算的完整形式化规约语言,但这样的扩展看起来并不是关键的。Eiffel 被定位为工业软件开发的载体,而不仅是研究工具,在断言中使用函数调用看来在多个设计目标(可靠性、能生成高效代码、语言整体简洁性)之间提供了可接受的折中。</p><p>事实上一阶谓词演算未必够用。许多在实践中重要的性质,比如要求图无环,都需要高阶演算。</p><p>使用函数 —— 也就是计算 —— 并非没有风险。在软件中,函数是例程的一种;它规定了某些动作。这使得软件函数是<strong>命令式</strong>(imperative)的,而数学函数则是<strong>应用式</strong>(applicative)的。主要差异在于:软件函数可能产生副作用(改变计算状态)。把函数引入断言,就等于让命令式的狐狸溜回了应用式的鸡窝。</p><p>在实践中,这意味着断言中使用的任何函数都必须质量过硬:不改变当前状态,不做任何可能导致异常情形的操作。</p></div></details></div>
+</div><div class="row" id="row-89" data-i="89">
+<div class="cell en"><h2>Documenting a software contract</h2></div>
+<div class="cell zh"><h2>为软件契约编写文档</h2></div>
+</div><div class="row" id="row-90" data-i="90">
+<div class="cell en"><p>For the contract theory to work properly and lead to correct systems, client programmers must be provided with a proper description of the interface properties of a class and its routines — the contracts.</p></div>
+<div class="cell zh"><p>要让契约理论切实可行并引出正确的系统,客户方程序员就必须拿到对类及其例程接口性质 —— 即契约 —— 的恰当描述。</p></div>
+</div><div class="row" id="row-91" data-i="91">
+<div class="cell en"><p>Here assertions can play a key role, since they help express the purpose of a software element such as a routine without reference to its implementation.</p></div>
+<div class="cell zh"><p>这里断言可以扮演关键角色,因为它们有助于在<strong>不涉及实现</strong>的前提下表达软件元素(如例程)的目的。</p></div>
+</div><div class="row" id="row-92" data-i="92">
+<div class="cell en"><p>The <code>short</code> command of the Eiffel environment serves to document a class by extracting interface information. In this approach, software documentation is not treated as a product to be developed and maintained separately from the actual code; instead, it is the more abstract part of that code and can be extracted by computer tools.</p></div>
+<div class="cell zh"><p>Eiffel 环境的 <code>short</code> 命令用于通过抽取接口信息为类编写文档。在这种做法下,软件文档不再被视作与实际代码分开开发和维护的产物;恰恰相反,它就是那段代码的更抽象部分,可以用计算机工具自动抽取出来。</p></div>
+</div><div class="row" id="row-93" data-i="93">
+<div class="cell en"><p>The <code>short</code> command retains only the exported features of a class and, for an exported routine, drops the routine body and any other implementation-related details. However, pre- and postconditions are kept. (So is the header comment if present.) For example, Figure 6 shows what the <code>short</code> command yields for the <code>put_child</code> routine. It expresses simply and concisely the purpose of the routine, without reference to a particular implementation.</p></div>
+<div class="cell zh"><p><code>short</code> 命令只保留类的导出特性(exported features),对一个导出例程则丢弃其例程主体及其他与实现相关的细节。然而前置条件和后置条件被保留。(如果有头部注释,也保留。)例如,图 6 展示了 <code>short</code> 命令对例程 <code>put_child</code> 的输出。它简洁明了地表达了该例程的目的,而不涉及任何特定的实现。</p></div>
+</div><div class="row" id="row-94" data-i="94">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="6"><svg viewBox="0 0 580 202" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="202" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">put_child (new: NODE)</text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Add new to the children of current node</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new /= Void</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new.parent = Current;</text><text x="80" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">child_count = old child_count + 1</text></svg></div><figcaption><span class="fig-num">Fig. 6.</span> The short form of a routine.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="6"><svg viewBox="0 0 580 202" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="580" height="202" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">put_child (new: NODE)</text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Add new to the children of current node</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">require</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new /= Void</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">ensure</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">new.parent = Current;</text><text x="80" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">child_count = old child_count + 1</text></svg></div><figcaption><span class="fig-num">图 6.</span> 一个例程的 short 形式。</figcaption></figure></div>
+</div><div class="row" id="row-95" data-i="95">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>put_child (new: NODE)
+        -- Add new to the children of current node
+    require
+        new /= Void
+    ensure
+        new.parent = Current;
+        child_count = old child_count + 1</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>put_child (new: NODE)
+        -- Add new to the children of current node
+    require
+        new /= Void
+    ensure
+        new.parent = Current;
+        child_count = old child_count + 1</code></pre></div>
+</div><div class="row" id="row-96" data-i="96">
+<div class="cell en"><p>All documentation on the details of Eiffel classes (for example, the class specifications in the book on the basic libraries <sup class="cite" tabindex="0" data-ref="9" data-lang="en">[9]</sup>) is produced automatically in this fashion. For classes that inherit from others, the <code>short</code> command must be combined with another tool, <code>flat</code>, which flattens out the class hierarchy by including inherited features at the same level as &quot;immediate&quot; ones (those declared in the class itself).</p></div>
+<div class="cell zh"><p>Eiffel 类细节的全部文档(比如基础库书 <sup class="cite" tabindex="0" data-ref="9" data-lang="en">[9]</sup> 中的那些类规约)都是以这种方式自动生成的。对于继承自其他类的类,<code>short</code> 命令还必须与另一个工具 <code>flat</code> 配合使用,<code>flat</code> 会把类层级&quot;压平&quot;,将继承来的特性与&quot;自带&quot;特性(类自身声明的那些)放在同一层展示。</p></div>
+</div><div class="row" id="row-97" data-i="97">
+<div class="cell en"><h2>Monitoring assertions</h2></div>
+<div class="cell zh"><h2>监控断言</h2></div>
+</div><div class="row" id="row-98" data-i="98">
+<div class="cell en"><p>What happens if, during execution, a system violates one of its own assertions?</p></div>
+<div class="cell zh"><p>如果在执行过程中系统违反了自己的某条断言,会发生什么?</p></div>
+</div><div class="row" id="row-99" data-i="99">
+<div class="cell en"><p>In the development environment, the answer depends on a compilation option. For each class, you may choose from various levels of assertion monitoring: no assertion checking, preconditions only (the default), preconditions and postconditions, all of the above plus class invariants, or all assertions. (The difference between the last two follows from the existence of other assertions, such as loop invariants, not covered in the present discussion.)</p></div>
+<div class="cell zh"><p>在开发环境里,答案取决于一个编译选项。对每个类,你可以在若干个断言监控级别中选择:不做断言检查;仅前置条件(默认);前置加后置条件;上述加类不变量;或所有断言。(最后两档之间的差别源于还存在其他断言,比如循环不变量 —— 本文不涉及。)</p></div>
+</div><div class="row" id="row-100" data-i="100">
+<div class="cell en"><p>For a class compiled under the &quot;no assertion monitoring&quot; option, assertions have no effect on system execution. The subsequent options cause evaluation of assertions at various stages: routine entry for preconditions, routine exit for postconditions, and both steps for invariants.</p></div>
+<div class="cell zh"><p>在&quot;不做断言监控&quot;选项下编译的类,其断言对系统执行无任何效果。其余各档选项会在不同阶段求值断言:前置条件在例程入口处,后置条件在例程出口处,不变量则两头都查。</p></div>
+</div><div class="row" id="row-101" data-i="101">
+<div class="cell en"><p>Under the monitoring options, the effect of an assertion violation is to raise an exception. The possible responses to an exception are discussed later.</p></div>
+<div class="cell zh"><p>在监控选项开启时,断言违反的效果是<strong>抛出一个异常</strong>(raise an exception)。对异常的可能响应将在后文讨论。</p></div>
+</div><div class="row" id="row-102" data-i="102">
+<div class="cell en"><h2>Why monitor?</h2></div>
+<div class="cell zh"><h2>为什么要监控?</h2></div>
+</div><div class="row" id="row-103" data-i="103">
+<div class="cell en"><p>As noted, assertion violations are not special (but expected) cases; they result from bugs. The main application of runtime assertion monitoring, then, is debugging. Turning assertion checking on (at any of the levels previously listed) makes it possible to detect mistakes.</p></div>
+<div class="cell zh"><p>如前所述,断言违反不是特殊的(但可预期的)情形;它们源自 bug。因此运行时断言监控的主要用途就是<strong>调试</strong>。在前述任一级别打开断言检查,就能让错误浮现出来。</p></div>
+</div><div class="row" id="row-104" data-i="104">
+<div class="cell en"><p>When writing software, developers make many assumptions about the properties that will hold at various stages of the software&#x27;s execution, especially routine entry and return. In the usual approaches to software construction, these assumptions remain informal and implicit. Here the assertion mechanism enables developers to express them explicitly. Assertion monitoring, then, is a way to call the developer&#x27;s bluff by checking what the software does against what its author thinks it does. This yields a productive approach to debugging, testing, and quality assurance, in which the search for errors is not blind but based on consistency conditions provided by the developers themselves.</p></div>
+<div class="cell zh"><p>写代码时,开发者会对软件执行各阶段(尤其是例程入口和返回)成立的性质做出许多假设。在通常的软件构造方法里,这些假设停留在非正式、隐式的状态。这里断言机制使开发者能显式地把它们表达出来。所以断言监控就是拿软件<strong>实际在做什么</strong>和<strong>作者以为它在做什么</strong>相对照,来揭开开发者的底牌。这带来了一种高效的调试、测试和质量保证途径:错误搜寻不再是盲目的,而是基于开发者自己给出的一致性条件。</p></div>
+</div><div class="row" id="row-105" data-i="105">
+<div class="cell en"><p>Particularly interesting here is the use of <em>preconditions</em> in library classes. In the general approach to software construction suggested by the Eiffel method, developers build successive &quot;clusters&quot; of classes in a bottom-up order, from more general (reusable) to more specific (application-dependent). This is the &quot;cluster model&quot; of the software life cycle <sup class="cite" tabindex="0" data-ref="10" data-lang="en">[10]</sup>. Deciding to release a library cluster <em>l</em> for general use normally implies a reasonable degree of confidence in its quality — the belief that no bugs remain in <em>l</em>. So it may be unnecessary to monitor the postconditions of routines in the classes of <em>l</em>. But the classes of an application cluster that is a client of <em>l</em> (see Figure 7) may still be &quot;young&quot; and contain bugs; such bugs may show up as erroneous arguments in calls to routines of the classes of <em>l</em>. Monitoring preconditions for classes of <em>l</em> helped to find them. This is one of the reasons why precondition checking is the default compilation option.</p></div>
+<div class="cell zh"><p>这里特别值得一提的,是库类中<strong>前置条件</strong>的用法。按 Eiffel 方法所建议的整体软件构造路径,开发者自底向上地构建一系列&quot;簇&quot;(cluster)——从更通用(可复用)的到更具体(应用相关)的。这就是软件生命周期的&quot;簇模型&quot;<sup class="cite" tabindex="0" data-ref="10" data-lang="en">[10]</sup>。决定把一个库簇 <em>l</em> 公开发布以供通用,通常意味着对其质量有合理程度的信心 —— 相信 <em>l</em> 中已无遗留 bug。所以对 <em>l</em> 中类的例程监控后置条件可能没必要。但作为 <em>l</em> 客户方的应用簇中的类(见图 7)可能还很&quot;年轻&quot;、仍带着 bug;这样的 bug 可能就表现为对 <em>l</em> 中例程的调用里出现错误实参。这时监控 <em>l</em> 中类的前置条件就帮到了你找出它们。这正是为什么前置条件检查是默认编译选项的原因之一。</p></div>
+</div><div class="row" id="row-106" data-i="106">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="7"><svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs><marker id="arr7" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="var(--fig-bg)"/>
+<rect x="80" y="20" width="280" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="220" y="50" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--text)">Application classes</text>
+<line x1="220" y1="75" x2="220" y2="120" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arr7)"/>
+<rect x="60" y="125" width="320" height="55" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="220" y="160" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--text)">Library classes (cluster <tspan font-style="italic">l</tspan>)</text>
+</svg></div><figcaption><span class="fig-num">Fig. 7.</span> Library cluster and application cluster.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="7"><svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs><marker id="arr7" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="var(--fig-bg)"/>
+<rect x="80" y="20" width="280" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="220" y="50" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--text)">Application classes</text>
+<line x1="220" y1="75" x2="220" y2="120" stroke="var(--text-muted)" stroke-width="2" marker-end="url(#arr7)"/>
+<rect x="60" y="125" width="320" height="55" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="220" y="160" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--text)">Library classes (cluster <tspan font-style="italic">l</tspan>)</text>
+</svg></div><figcaption><span class="fig-num">图 7.</span> 库簇与应用簇。</figcaption></figure></div>
+</div><div class="row" id="row-107" data-i="107">
+<div class="cell en"><h2>Introducing inheritance</h2></div>
+<div class="cell zh"><h2>引入继承</h2></div>
+</div><div class="row" id="row-108" data-i="108">
+<div class="cell en"><p>One of the consequences of the contract theory is a better understanding and control of the fundamental object-oriented notion of inheritance and of the key associated techniques: redeclaration, polymorphism, and dynamic binding.</p></div>
+<div class="cell zh"><p>契约理论的推论之一,是对面向对象核心概念 —— 继承,以及与之相关的关键技术(重新声明、多态、动态绑定)—— 有了更好的理解与掌控。</p></div>
+</div><div class="row" id="row-109" data-i="109">
+<div class="cell en"><p>Through inheritance, you can define new classes by combining previous ones. A class that inherits from another has all the features (routines and attributes) defined in that class, plus its own. But it is not required to retain the exact form of inherited features: It may <em>redeclare</em> them to change their specification, their implementation, or both. This flexibility of the inheritance mechanism is central to the power of the object-oriented method.</p></div>
+<div class="cell zh"><p>通过继承,可以通过组合已有的类来定义新的类。继承自另一个类的类,会拥有那个类定义的全部特性(例程和属性),再加上自己的。但它不必保留继承特性的<strong>原样</strong>:它可以<strong>重新声明</strong>(redeclare)以改变其规约、其实现,或二者兼改。继承机制的这种灵活性是面向对象方法威力的核心。</p></div>
+</div><div class="row" id="row-110" data-i="110">
+<div class="cell en"><p>For example, a binary tree class could provide a default representation and the corresponding implementations for search and insertion operations. A descendant of that class may provide a representation that is specifically adapted to certain cases (such as almost full binary trees) and redeclare the routines accordingly.</p></div>
+<div class="cell zh"><p>举例来说,一个二叉树类可以提供一种默认表示,以及搜索和插入操作的相应实现。该类的一个后代类可以提供专为某些情形(比如几乎填满的二叉树)量身定制的表示,并相应地重新声明这些例程。</p></div>
+</div><div class="row" id="row-111" data-i="111">
+<div class="cell en"><p>Such a form of redeclaration is called a <em>redefinition</em>. It assumes that the inherited routine already had an implementation. The other form of redeclaration, called <em>effecting</em>, applies to features for which the inherited version, known as a <em>deferred</em> (or abstract) feature, had no implementation, but only a specification. The effecting then provides an implementation (making the feature <em>effective</em>, the reverse of <em>deferred</em>). The subsequent discussion applies to both forms of redeclaration, although for simplicity it concentrates on redefinition.</p></div>
+<div class="cell zh"><p>这种形式的重新声明称为<strong>重定义</strong>(redefinition)。它假定被继承的例程已经有一份实现。另一种形式的重新声明称为<strong>实现化</strong>(effecting),作用于继承版本尚无实现、只有规约的特性 —— 后者称为<strong>延迟</strong>(deferred,即抽象)特性。实现化就是提供一份实现(使该特性由<strong>延迟</strong>变为<strong>有效</strong>,effective,即 deferred 的反面)。后续讨论对两种重新声明都适用,但为简单起见,重点放在重定义上。</p></div>
+</div><div class="row" id="row-112" data-i="112">
+<div class="cell en"><p>Redeclaration takes its full power thanks to polymorphism and dynamic binding. Polymorphism is type adaptation controlled by inheritance. More concretely, this means that if you have <code>b</code> of type <code>BINARY_TREE</code> and <code>sb</code> of type <code>SPECIAL_BINARY_TREE</code>, the latter class a descendant of the former, then the assignment</p></div>
+<div class="cell zh"><p>重新声明的全部威力得益于多态和动态绑定。多态是由继承所控制的类型适配。具体来说,假设你有类型为 <code>BINARY_TREE</code> 的 <code>b</code> 和类型为 <code>SPECIAL_BINARY_TREE</code> 的 <code>sb</code>,后者是前者的后代类,那么赋值</p></div>
+</div><div class="row" id="row-113" data-i="113">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>b := sb</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>b := sb</code></pre></div>
+</div><div class="row" id="row-114" data-i="114">
+<div class="cell en"><p>is permitted, allowing <code>b</code> to become attached at runtime to instances of <code>SPECIAL_BINARY_TREE</code>, of a more specialized form than the declaration of <code>b</code> specifies. Of course, this is only possible if the inheritance relation holds between the two classes as indicated.</p></div>
+<div class="cell zh"><p>是允许的 —— 它允许 <code>b</code> 在运行时附着于 <code>SPECIAL_BINARY_TREE</code> 的实例,这比 <code>b</code> 声明时的类型更为特化。当然,这只有在两个类之间存在所述的继承关系时才可能。</p></div>
+</div><div class="row" id="row-115" data-i="115">
+<div class="cell en"><p>What happens then for a call of the form</p></div>
+<div class="cell zh"><p>那么对于形如</p></div>
+</div><div class="row" id="row-116" data-i="116">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>t.insert (v)</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>t.insert (v)</code></pre></div>
+</div><div class="row" id="row-117" data-i="117">
+<div class="cell en"><p>which applies procedure <code>insert</code>, with argument <code>v</code>, to the object attached to <code>t</code>? Dynamic binding means that such a call always uses the appropriate version of the procedure — the original one if the object to which <code>t</code> is attached is an instance of <code>BINARY_TREE</code>, the redefined version if it is an instance of <code>SPECIAL_BINARY_TREE</code>. The reverse policy, static binding (using the declaration of <code>b</code> to make the choice), would be an absurdity: deliberately choosing the wrong version of an operation.</p></div>
+<div class="cell zh"><p>的调用(以实参 <code>v</code> 对 <code>t</code> 所附着的对象施加过程 <code>insert</code>),会发生什么?动态绑定意味着这种调用总是使用<strong>合适</strong>的那个版本 —— 如果 <code>t</code> 所附着的对象是 <code>BINARY_TREE</code> 的实例,就用原版本;若是 <code>SPECIAL_BINARY_TREE</code> 的实例,则用重定义版本。反过来的策略,即静态绑定(用 <code>b</code> 的声明来做选择),就是一种荒谬:明知故犯地选错操作的版本。</p></div>
+</div><div class="row" id="row-118" data-i="118">
+<div class="cell en"><p>The combination of inheritance, redeclaration, polymorphism, and dynamic binding yields much of the power and flexibility that result from the use of the object-oriented approach <sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup>. Yet these techniques may also raise concerns of possible misuse: What is to prevent a redeclaration from producing an effect that is incompatible with the semantics of the original version — fooling clients in a particularly bad way, especially in the context of dynamic binding? Nothing, of course. No design technique is immune to misuse. But at least it is possible to help serious designers use the technique properly; here the contract theory provides the proper perspective.</p></div>
+<div class="cell zh"><p>继承、重新声明、多态、动态绑定的组合,贡献了使用面向对象方法所获得的大部分威力与灵活性 <sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup>。然而这些技术也可能引发对误用的担忧:有什么能防止一次重新声明产生一种与原版本语义不兼容的效果 —— 从而以一种特别坏的方式欺骗客户方,尤其在动态绑定的语境下?当然没有。没有哪种设计技术能免于误用。但我们至少可以帮助认真的设计者正确地使用这项技术;在这里,契约理论就提供了合适的视角。</p></div>
+</div><div class="row" id="row-119" data-i="119">
+<div class="cell en"><p>What redeclaration and dynamic binding mean is the ability to <em>subcontract</em> a task; preventing misuse then means guaranteeing that subcontractors honor the prime contractor&#x27;s promises in the original contract.</p></div>
+<div class="cell zh"><p>重新声明和动态绑定所意味的,是把一项任务<strong>转包</strong>(subcontract)出去的能力;防止误用也就意味着要保证转包方(subcontractor)信守原契约中主承包方(prime contractor)作出的承诺。</p></div>
+</div><div class="row" id="row-120" data-i="120">
+<div class="cell en"><p>Consider the situation described by Figure 8. <code>A</code> exports a routine <code>r</code> to its clients. (For simplicity, we ignore any arguments to <code>r</code>.) A client <code>X</code> executes a call</p></div>
+<div class="cell zh"><p>考虑图 8 所描绘的情形。<code>A</code> 向它的客户方导出一个例程 <code>r</code>。(为简单起见,略去 <code>r</code> 的任何参数。)一个客户方 <code>X</code> 执行调用</p></div>
+</div><div class="row" id="row-121" data-i="121">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>u.r</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>u.r</code></pre></div>
+</div><div class="row" id="row-122" data-i="122">
+<div class="cell en"><p>where <code>u</code> is declared of type <code>A</code>. Now <code>B</code>, a descendant of <code>A</code>, redeclares <code>r</code>. Through polymorphism, <code>u</code> may well become attached to an instance of <code>B</code> rather than <code>A</code>. Note that often there is no way to know this from the text of <code>X</code> alone; for example, the call just shown could be in a routine of <code>X</code> beginning with</p></div>
+<div class="cell zh"><p>其中 <code>u</code> 被声明为类型 <code>A</code>。现在,<code>A</code> 的后代 <code>B</code> 重新声明了 <code>r</code>。通过多态,<code>u</code> 完全可能附着于 <code>B</code> 的实例而非 <code>A</code> 的。请注意:通常单看 <code>X</code> 的文本,是无法知道这一点的;比如前述调用可能写在 <code>X</code> 的某个例程里:</p></div>
+</div><div class="row" id="row-123" data-i="123">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>some_routine (u: A) is ...</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>some_routine (u: A) is ...</code></pre></div>
+</div><div class="row" id="row-124" data-i="124">
+<div class="cell en"><p>where the polymorphism only results from a call of the form</p></div>
+<div class="cell zh"><p>而其多态性仅仅来自形如</p></div>
+</div><div class="row" id="row-125" data-i="125">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>z.some_routine (v)</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>z.some_routine (v)</code></pre></div>
+</div><div class="row" id="row-126" data-i="126">
+<div class="cell en"><p>for which the actual argument <code>v</code> is of type <code>B</code>. If this last call is in a class other than <code>X</code>, the author of <code>X</code> does not even know that <code>u</code> may become attached to an instance of <code>B</code>. In fact, he may not even know about the existence of a class <code>B</code>.</p></div>
+<div class="cell zh"><p>的调用 —— 该调用的实参 <code>v</code> 是类型 <code>B</code> 的。如果最后这个调用写在 <code>X</code> 以外的某个类里,<code>X</code> 的作者甚至根本不知道 <code>u</code> 可能附着于 <code>B</code> 的实例。事实上,他甚至可能不知道有 <code>B</code> 这么个类存在。</p></div>
+</div><div class="row" id="row-127" data-i="127">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="8"><svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs>
+<marker id="arr8" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker>
+<marker id="arr8tri" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0,0 L0,12 L10,6 z" fill="none" stroke="var(--text-muted)" stroke-width="1.5"/></marker>
+</defs>
+<rect x="0" y="0" width="440" height="260" fill="var(--fig-bg)"/>
+<!-- X box -->
+<rect x="30" y="90" width="80" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="70" y="122" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">X</text>
+<!-- A,r box (right, top) -->
+<g>
+<rect x="270" y="70" width="110" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="310" y="100" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">A</text>
+<circle cx="360" cy="95" r="16" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="360" y="100" text-anchor="middle" font-family="inherit" font-size="14" font-style="italic" fill="var(--text)">r</text>
+</g>
+<!-- B,r+ box (bottom) -->
+<g>
+<rect x="270" y="180" width="110" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="310" y="210" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">B</text>
+<circle cx="360" cy="205" r="16" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="360" y="210" text-anchor="middle" font-family="inherit" font-size="13" fill="var(--text)"><tspan font-style="italic">r</tspan><tspan baseline-shift="super" font-size="10">+</tspan></text>
+</g>
+<!-- X -> A arrow (client) -->
+<line x1="110" y1="110" x2="265" y2="95" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr8)"/>
+<!-- B -> A inheritance triangle -->
+<line x1="325" y1="180" x2="325" y2="122" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr8tri)"/>
+</svg></div><figcaption><span class="fig-num">Fig. 8.</span> Redefinition of a routine under contract.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="8"><svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" role="img">
+<defs>
+<marker id="arr8" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="var(--text-muted)"/></marker>
+<marker id="arr8tri" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0,0 L0,12 L10,6 z" fill="none" stroke="var(--text-muted)" stroke-width="1.5"/></marker>
+</defs>
+<rect x="0" y="0" width="440" height="260" fill="var(--fig-bg)"/>
+<!-- X box -->
+<rect x="30" y="90" width="80" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="70" y="122" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">X</text>
+<!-- A,r box (right, top) -->
+<g>
+<rect x="270" y="70" width="110" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="310" y="100" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">A</text>
+<circle cx="360" cy="95" r="16" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="360" y="100" text-anchor="middle" font-family="inherit" font-size="14" font-style="italic" fill="var(--text)">r</text>
+</g>
+<!-- B,r+ box (bottom) -->
+<g>
+<rect x="270" y="180" width="110" height="50" fill="var(--bg-soft)" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+<text x="310" y="210" text-anchor="middle" font-family="inherit" font-size="16" font-style="italic" fill="var(--text)">B</text>
+<circle cx="360" cy="205" r="16" fill="var(--g-soft)" stroke="var(--g-primary)" stroke-width="1.5"/>
+<text x="360" y="210" text-anchor="middle" font-family="inherit" font-size="13" fill="var(--text)"><tspan font-style="italic">r</tspan><tspan baseline-shift="super" font-size="10">+</tspan></text>
+</g>
+<!-- X -> A arrow (client) -->
+<line x1="110" y1="110" x2="265" y2="95" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr8)"/>
+<!-- B -> A inheritance triangle -->
+<line x1="325" y1="180" x2="325" y2="122" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arr8tri)"/>
+</svg></div><figcaption><span class="fig-num">图 8.</span> 契约下的例程重定义。</figcaption></figure></div>
+</div><div class="row" id="row-128" data-i="128">
+<div class="cell en"><p>But then the danger is clear. To ascertain the properties of the call <code>u.r</code>, the author of <code>X</code> can only look at the contract for <code>r</code> in <code>A</code>. Yet, because of dynamic binding, <code>A</code> may subcontract the execution of <code>r</code> to <code>B</code>, and it is <code>B</code>&#x27;s contract that will be applied.</p></div>
+<div class="cell zh"><p>但这样一来,危险就昭然若揭。要弄清调用 <code>u.r</code> 的性质,<code>X</code> 的作者只能看 <code>A</code> 中 <code>r</code> 的契约。然而由于动态绑定,<code>A</code> 可能把 <code>r</code> 的执行转包给 <code>B</code>,届时生效的是 <code>B</code> 的契约。</p></div>
+</div><div class="row" id="row-129" data-i="129">
+<div class="cell en"><p>How do you avoid &quot;fooling&quot; <code>X</code> in the process? There are two ways <code>B</code> could violate its prime contractor&#x27;s promises:</p></div>
+<div class="cell zh"><p>那该如何避免在这个过程中&quot;欺骗&quot; <code>X</code>?<code>B</code> 可能以两种方式破坏主承包方的承诺:</p></div>
+</div><div class="row" id="row-130" data-i="130">
+<div class="cell en"><ul><li><code>B</code> could make the precondition <em>stronger</em>, raising the risk that some calls that are correct from <code>X</code>&#x27;s viewpoint (they satisfy the original client obligations) will not be handled properly.</li></ul></div>
+<div class="cell zh"><ul><li><code>B</code> 可能让前置条件<strong>变强</strong>,使得某些从 <code>X</code> 的视角看是正确的调用(它们满足原本的客户方义务)得不到妥善处理。</li></ul></div>
+</div><div class="row" id="row-131" data-i="131">
+<div class="cell en"><ul><li><code>B</code> could make the postcondition <em>weaker</em>, returning a result less favorable than what has been promised to <code>X</code>.</li></ul></div>
+<div class="cell zh"><ul><li><code>B</code> 可能让后置条件<strong>变弱</strong>,返回一个比承诺给 <code>X</code> 的结果更不利的结果。</li></ul></div>
+</div><div class="row" id="row-132" data-i="132">
+<div class="cell en"><p>None of this, then, is permitted. But the reverse changes are of course legitimate. A redeclaration may weaken the original&#x27;s precondition or it may strengthen the postcondition. Changes of either kind mean that the subcontractor does a <em>better</em> job than the original contractor — which there is no reason to prohibit.</p></div>
+<div class="cell zh"><p>这两种都不允许。但反方向的改动当然是合法的。一次重新声明可以<strong>减弱</strong>原前置条件,也可以<strong>加强</strong>原后置条件。任一方向的改动都意味着转包方比原承包方做得<strong>更好</strong> —— 没有理由禁止。</p></div>
+</div><div class="row" id="row-133" data-i="133">
+<div class="cell en"><p>These rules illuminate some of the fundamental properties of inheritance, redeclaration, polymorphism, and dynamic binding. Redeclaration, for all the power it brings to software development, is <em>not</em> a way to turn a routine into something completely different. The new version must remain compatible with the original specification, although it may improve on it. The noted rules express this precisely.</p></div>
+<div class="cell zh"><p>这些规则点明了继承、重新声明、多态、动态绑定的一些根本性质。重新声明虽然为软件开发带来了力量,却<strong>不是</strong>把一个例程变成截然不同东西的手段。新版本必须与原规约保持兼容,虽然可以在其基础上有所改进。上述规则精确地表达了这一点。</p></div>
+</div><div class="row" id="row-134" data-i="134">
+<div class="cell en"><p>These rules must be enforced by the language. Eiffel uses a simple convention. In a redeclaration, it is not permitted to use the forms <code>require...</code> and <code>ensure...</code>. The absence of a precondition or postcondition clause means that the redeclared version retains the original version&#x27;s assertion. Since this is the most frequent situation, the class author is not required to write anything special in this case. A class author who does want to adapt the assertion will use either or both of the forms</p></div>
+<div class="cell zh"><p>这些规则必须由语言强制执行。Eiffel 采用了一种简单的约定:在重新声明中,<strong>不允许</strong>使用 <code>require...</code> 和 <code>ensure...</code> 这两种形式。前置或后置条件子句的缺省意味着重新声明版本沿用原版本的断言。由于这是最常见的情形,类的作者通常无需为此写任何特殊的东西。若类作者确实要调整断言,可使用以下任一或两种形式:</p></div>
+</div><div class="row" id="row-135" data-i="135">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>require else
+    new_pre
+ensure then
+    new_post</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>require else
+    new_pre
+ensure then
+    new_post</code></pre></div>
+</div><div class="row" id="row-136" data-i="136">
+<div class="cell en"><p>which yield the following as new precondition and postcondition:</p></div>
+<div class="cell zh"><p>它们产生如下新的前置条件和后置条件:</p></div>
+</div><div class="row" id="row-137" data-i="137">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>new_pre or else original_precondition
+new_post and then original_postcondition</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>new_pre or else original_precondition
+new_post and then original_postcondition</code></pre></div>
+</div><div class="row" id="row-138" data-i="138">
+<div class="cell en"><p>where <code>Or Else</code> and <code>And Then</code> are the noncommutative versions of the &quot;or&quot; and &quot;and&quot; operators (evaluating their second argument only if necessary). In this way, the new precondition is guaranteed to be weaker than or equal to the original&#x27;s, and the new postcondition is guaranteed to be stronger than or equal to the original&#x27;s.</p></div>
+<div class="cell zh"><p>其中 <code>Or Else</code> 和 <code>And Then</code> 分别是&quot;或&quot;和&quot;与&quot;的<strong>非交换版本</strong>(仅在必要时才求值第二个实参)。这样一来,新前置条件保证<strong>弱于或等于</strong>原版本,新后置条件保证<strong>强于或等于</strong>原版本。</p></div>
+</div><div class="row" id="row-139" data-i="139">
+<div class="cell en"><details class="infobox"><summary class="info-title">The concurrency issue</summary><div class="info-body"><p>The theory of design by contract raises important questions regarding the application of object-oriented ideas to concurrent computation. In discussing contracts, this article mentions that clients may view the precondition of a routine not just as an obligation but also in part as a benefit, since the contract implicitly indicates that a call satisfying the precondition will be serviced correctly. This is the No Hidden Clause rule. For example, if the insertion routine <code>put</code> for a <code>BOUNDED_QUEUE</code> class has the precondition <code>not full</code> to state that an insertion operation requires a queue that is not full, then a protected call of the form</p><p><code>q: BOUNDED_QUEUE [T]; x: T; ... if not q.full then q.put (x) end</code></p><p>will succeed, since the client executing this call has taken the trouble to check the precondition explicitly.</p><p>In parallel computation, however, things are not so nice. The bounded queue in this example may be used as a bounded buffer, accessible to several processors. The processor in charge of the client, which will carry out the above instructions, and the processor in charge of <code>q</code>, which will carry out the execution of <code>put</code>, could be different processors. Then, even if the test for <code>q.full</code> yields false, between the time the client executes this test and the time it executes the call <code>q.put (x)</code>, quite a few events may have occurred. For example, another client may have made the queue full by executing its own call to <code>put</code>.</p><p>In other words, a different semantic interpretation may be necessary for preconditions in the context of parallel computation. This observation serves as the starting point for some of the current work on models for concurrent object-oriented programming <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>,<sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup>.</p><p><strong>References</strong></p><p><sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> B. Meyer, &quot;Sequential and Concurrent Object-Oriented Programming,&quot; in TOOLS 2 (Technology of Object-Oriented Languages and Systems), Angkor/SOL, Paris, June 1990, pp. 17-28.</p><p><sup class="cite" tabindex="0" data-ref="2" data-lang="en">[2]</sup> J. Potter and G. Jalloul, &quot;Models for Concurrent Eiffel,&quot; in TOOLS 6 (Technology of Object-Oriented Languages and Systems), Prentice Hall, Englewood Cliffs, N.J., 1991, pp. 183-192.</p></div></details></div>
+<div class="cell zh"><details class="infobox"><summary class="info-title">并发问题</summary><div class="info-body"><p>按契约设计理论给面向对象思想在并发计算中的应用带来了重要问题。在讨论契约时,本文提到:客户方可以不仅把例程的前置条件视作义务,也部分地视作利益 —— 因为契约隐含地表明,一次满足前置条件的调用将被正确服务。这就是 No Hidden Clause 规则。例如,如果 <code>BOUNDED_QUEUE</code> 类的插入例程 <code>put</code> 有前置条件 <code>not full</code>,以表达一次插入操作需要队列未满,那么形如下面这种受保护的调用</p><p><code>q: BOUNDED_QUEUE [T]; x: T; ... if not q.full then q.put (x) end</code></p><p>会成功,因为执行此调用的客户方已自觉做了前置条件的显式检查。</p><p>然而在并行计算里,情况就没这么理想了。本例中的有界队列可能被当作一个有界缓冲区,供多个处理器访问。负责该客户方(将执行上述指令)的处理器,和负责 <code>q</code>(将执行 <code>put</code>)的处理器,可能不是同一个。那样的话,即使对 <code>q.full</code> 的测试结果为 false,从客户方执行此测试的那一刻、到它执行调用 <code>q.put (x)</code> 的那一刻之间,完全可能发生不少事件。比如,另一个客户方可能通过它自己对 <code>put</code> 的调用把队列塞满了。</p><p>换言之,在并行计算的语境下,前置条件可能需要一种不同的语义解释。这个观察是当前一些并发面向对象编程模型工作的起点 <sup class="cite" tabindex="0" data-ref="1" data-lang="zh">[1]</sup>,<sup class="cite" tabindex="0" data-ref="2" data-lang="zh">[2]</sup>。</p><p><strong>参考文献</strong></p><p><sup class="cite" tabindex="0" data-ref="1" data-lang="zh">[1]</sup> B. Meyer, &quot;Sequential and Concurrent Object-Oriented Programming,&quot; in TOOLS 2 (Technology of Object-Oriented Languages and Systems), Angkor/SOL, Paris, June 1990, pp. 17-28.</p><p><sup class="cite" tabindex="0" data-ref="2" data-lang="zh">[2]</sup> J. Potter and G. Jalloul, &quot;Models for Concurrent Eiffel,&quot; in TOOLS 6 (Technology of Object-Oriented Languages and Systems), Prentice Hall, Englewood Cliffs, N.J., 1991, pp. 183-192.</p></div></details></div>
+</div><div class="row" id="row-140" data-i="140">
+<div class="cell en"><h2>Invariants and dynamic binding</h2></div>
+<div class="cell zh"><h2>不变量与动态绑定</h2></div>
+</div><div class="row" id="row-141" data-i="141">
+<div class="cell en"><p>In addition to the rules on preconditions and postconditions, another constraint ties assertions with inheritance: Invariants are always passed on to descendants.</p></div>
+<div class="cell zh"><p>除了关于前置条件和后置条件的规则外,还有一条约束把断言与继承绑定起来:<strong>不变量总是向后代传递</strong>。</p></div>
+</div><div class="row" id="row-142" data-i="142">
+<div class="cell en"><p>This is a direct result of the view that inheritance is (among other things) classification. If we want to consider every instance of a class <code>B</code> as being also an instance of <code>B</code>&#x27;s ancestors, we must accept that consistency constraints on a parent <code>A</code> also apply to instances of <code>B</code>.</p></div>
+<div class="cell zh"><p>这是继承(在其他作用之外)也是<strong>分类</strong>这一观点的直接结果。如果要把类 <code>B</code> 的每个实例也视作 <code>B</code> 的诸祖先的实例,就必须接受:施加在父类 <code>A</code> 上的一致性约束,也适用于 <code>B</code> 的实例。</p></div>
+</div><div class="row" id="row-143" data-i="143">
+<div class="cell en"><p>For example, if the invariant for a class <code>TREE</code>, describing tree nodes, includes the clause <code>child.parent = Current</code> expressing that the parent of a node&#x27;s currently active child is the node itself, this clause will automatically apply to instances of a class <code>BINARY_TREE</code>, which inherits from <code>TREE</code>. As a result, the language specification defines &quot;the invariant of a class&quot; as the assertion obtained by concatenating the assertion in the invariant clause of the class to the invariants of all parents (obtained recursively under this definition) <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>.</p></div>
+<div class="cell zh"><p>例如,如果描述树节点的类 <code>TREE</code> 的不变量中包含子句 <code>child.parent = Current</code>(表达一个节点的当前活动子节点的父节点就是该节点本身),那么这个子句将自动适用于继承自 <code>TREE</code> 的类 <code>BINARY_TREE</code> 的实例。正因如此,语言规约把&quot;一个类的不变量&quot;定义为:将该类不变量子句中的断言,与所有父类的不变量(按此定义递归而得)连接起来所得到的断言 <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>。</p></div>
+</div><div class="row" id="row-144" data-i="144">
+<div class="cell en"><p>As a result, the invariant of a class is always stronger than or equal to the invariants of each of its parents.</p></div>
+<div class="cell zh"><p>因此,一个类的不变量总是<strong>强于或等于</strong>它每一个父类的不变量。</p></div>
+</div><div class="row" id="row-145" data-i="145">
+<div class="cell en"><p>These rules lead to a better understanding of why static binding would be, as previously stated, such a disaster. Assume again the declaration and call</p></div>
+<div class="cell zh"><p>这些规则让我们更好地理解:为什么前文所说的静态绑定会是一场灾难。再次考虑声明和调用</p></div>
+</div><div class="row" id="row-146" data-i="146">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>u: A;
+...
+u.r</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>u: A;
+...
+u.r</code></pre></div>
+</div><div class="row" id="row-147" data-i="147">
+<div class="cell en"><p>where a descendant <code>B</code> of <code>A</code> redefines <code>r</code>. Call <code>r_A</code> and <code>r_B</code> the two implementations. Then <code>r_A</code> must preserve <code>INV_A</code>, the invariant of <code>A</code>, and <code>r_B</code> must preserve <code>INV_B</code>, the invariant of <code>B</code>, which is stronger than or equal to <code>INV_A</code>.</p></div>
+<div class="cell zh"><p>其中 <code>A</code> 的后代 <code>B</code> 重定义了 <code>r</code>。设两份实现分别为 <code>r_A</code> 和 <code>r_B</code>。那么 <code>r_A</code> 必须保持 <code>INV_A</code>(<code>A</code> 的不变量),而 <code>r_B</code> 必须保持 <code>INV_B</code>(<code>B</code> 的不变量),后者强于或等于 <code>INV_A</code>。</p></div>
+</div><div class="row" id="row-148" data-i="148">
+<div class="cell en"><p>There is, of course, no requirement that <code>r_A</code> preserve <code>INV_B</code>. In fact, class <code>A</code> may have been written long before <code>B</code>, and the author of <code>A</code> does not need to know anything about eventual descendants of this class.</p></div>
+<div class="cell zh"><p>当然,<strong>没有</strong>要求说 <code>r_A</code> 也得保持 <code>INV_B</code>。事实上,类 <code>A</code> 可能远远早于 <code>B</code> 就写好了,<code>A</code> 的作者根本不需要知道这个类最终会有什么后代。</p></div>
+</div><div class="row" id="row-149" data-i="149">
+<div class="cell en"><p>If <code>u</code> dynamically becomes attached to an instance of <code>B</code>, dynamic binding requires the execution of <code>r_B</code> for this call. Static binding would trigger <code>r_A</code>. Since this version of the routine is not required to preserve <code>INV_B</code>, the result would yield a catastrophic situation: an object of type <code>B</code> that does not satisfy the consistency constraint — the invariant — of its own class. In such cases, any attempt at understanding software texts or reasoning about their runtime behavior becomes futile.</p></div>
+<div class="cell zh"><p>如果 <code>u</code> 动态地附着到 <code>B</code> 的一个实例上,动态绑定要求此次调用执行 <code>r_B</code>。静态绑定则会触发 <code>r_A</code>。由于这个版本的例程并不被要求保持 <code>INV_B</code>,其结果就是一场灾难性的局面:一个 <code>B</code> 类型的对象,却不满足自己这个类的一致性约束 —— 不变量。在这种情况下,要想理解软件文本或推理其运行时行为,都是徒劳的。</p></div>
+</div><div class="row" id="row-150" data-i="150">
+<div class="cell en"><p>A simple example will make the situation more concrete. Assume a class <code>ACCOUNT</code> describing bank accounts, with the attributes shown in Figure 9a and a procedure to record a new deposit shown in Figure 9b.</p></div>
+<div class="cell zh"><p>一个简单的例子会让情况更具体。假设有一个描述银行账户的类 <code>ACCOUNT</code>,它的属性见图 9a,记录一笔新存款的过程见图 9b。</p></div>
+</div><div class="row" id="row-151" data-i="151">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="9"><svg viewBox="0 0 560 246" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="560" height="246" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- (a)</text><text x="24" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">initial_deposit: INTEGER;</text><text x="24" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">deposits, withdrawals: TRANSACTION_LIST</text><text x="24" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"></text><text x="24" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- (b)</text><text x="24" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">record_deposit (d: INTEGER) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Update the deposits list ...</text><text x="52" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- record_deposit</text></svg></div><figcaption><span class="fig-num">Fig. 9.</span> Features of a Bank Account class.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="9"><svg viewBox="0 0 560 246" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="560" height="246" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- (a)</text><text x="24" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">initial_deposit: INTEGER;</text><text x="24" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">deposits, withdrawals: TRANSACTION_LIST</text><text x="24" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"></text><text x="24" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- (b)</text><text x="24" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">record_deposit (d: INTEGER) <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">... Update the deposits list ...</text><text x="52" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- record_deposit</text></svg></div><figcaption><span class="fig-num">图 9.</span> 银行账户类的特性。</figcaption></figure></div>
+</div><div class="row" id="row-152" data-i="152">
+<div class="cell en"><pre class="code">[[CODE:eiffel]]
+-- (a)
+initial_deposit: INTEGER;
+deposits, withdrawals: TRANSACTION_LIST</pre></div>
+<div class="cell zh"><pre class="code">[[CODE:eiffel]]
+-- (a)
+initial_deposit: INTEGER;
+deposits, withdrawals: TRANSACTION_LIST</pre></div>
+</div><div class="row" id="row-153" data-i="153">
+<div class="cell en"><p>-- (b)
+record_deposit (d: INTEGER) is
+    do
+        ... Update the deposits list ...
+    end -- record_deposit
+[[/CODE]]</p></div>
+<div class="cell zh"><p>-- (b)
+record_deposit (d: INTEGER) is
+    do
+        ... Update the deposits list ...
+    end -- record_deposit
+[[/CODE]]</p></div>
+</div><div class="row" id="row-154" data-i="154">
+<div class="cell en"><p>With this version of the class, obtaining an account&#x27;s current balance requires a computation expressed by a function. Figure 10 shows how the <code>balance</code> function could appear, assuming the appropriate function <code>sum</code> in class <code>TRANSACTION_LIST</code>.</p></div>
+<div class="cell zh"><p>在这个版本的类中,要取得一个账户的当前余额,需要由一个函数所表达的计算。图 10 展示了函数 <code>balance</code> 可能的样子 —— 假定类 <code>TRANSACTION_LIST</code> 中有一个合适的 <code>sum</code> 函数。</p></div>
+</div><div class="row" id="row-155" data-i="155">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="10"><svg viewBox="0 0 540 202" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="540" height="202" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">balance: INTEGER <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Current balance</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Result := initial_deposit +</text><text x="108" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">deposits.sum -</text><text x="108" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">withdrawals.sum</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- balance</text></svg></div><figcaption><span class="fig-num">Fig. 10.</span> Computing the balance.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="10"><svg viewBox="0 0 540 202" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="540" height="202" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">balance: INTEGER <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Current balance</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Result := initial_deposit +</text><text x="108" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">deposits.sum -</text><text x="108" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">withdrawals.sum</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- balance</text></svg></div><figcaption><span class="fig-num">图 10.</span> 计算余额。</figcaption></figure></div>
+</div><div class="row" id="row-156" data-i="156">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>balance: INTEGER is
+        -- Current balance
+    do
+        Result := initial_deposit +
+            deposits.sum -
+            withdrawals.sum
+    end -- balance</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>balance: INTEGER is
+        -- Current balance
+    do
+        Result := initial_deposit +
+            deposits.sum -
+            withdrawals.sum
+    end -- balance</code></pre></div>
+</div><div class="row" id="row-157" data-i="157">
+<div class="cell en"><p>In a descendant class <code>ACCOUNT1</code>, it may be a better space-time trade-off to store the current balance with every account object. This can be achieved by redefining the function <code>balance</code> into an attribute (a process that is indeed supported by the language). Naturally, this attribute must be consistent with the others; this is expressed by the invariant of <code>ACCOUNT1</code>, shown in Figure 11.</p></div>
+<div class="cell zh"><p>在后代类 <code>ACCOUNT1</code> 中,在时空取舍上可能更好的做法是把当前余额和每个账户对象一起存下来。实现方法是把函数 <code>balance</code> 重定义为一个属性(该语言确实支持这种做法)。自然,这个属性必须与其他属性保持一致;这一点通过 <code>ACCOUNT1</code> 的不变量表达,见图 11。</p></div>
+</div><div class="row" id="row-158" data-i="158">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="11"><svg viewBox="0 0 560 114" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="560" height="114" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">invariant</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">balance = initial_deposit + deposits.sum</text><text x="80" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">- withdrawals.sum</text></svg></div><figcaption><span class="fig-num">Fig. 11.</span> Invariant of the Account class.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="11"><svg viewBox="0 0 560 114" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="560" height="114" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">invariant</tspan></text><text x="52" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">balance = initial_deposit + deposits.sum</text><text x="80" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">- withdrawals.sum</text></svg></div><figcaption><span class="fig-num">图 11.</span> Account 类的不变量。</figcaption></figure></div>
+</div><div class="row" id="row-159" data-i="159">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>invariant
+    balance = initial_deposit + deposits.sum
+        - withdrawals.sum</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>invariant
+    balance = initial_deposit + deposits.sum
+        - withdrawals.sum</code></pre></div>
+</div><div class="row" id="row-160" data-i="160">
+<div class="cell en"><p>For this to work, however, <code>B</code> must redefine any routine of <code>A</code> that modified deposits or withdrawals; the redefined version must also modify the <code>balance</code> field of the object accordingly, so as to maintain the invariant. This is the case, for example, with procedure <code>record_deposit</code>.</p></div>
+<div class="cell zh"><p>但要让这套做法成立,<code>B</code> 就必须重定义 <code>A</code> 中所有会修改 deposits 或 withdrawals 的例程;重定义的版本也必须相应地修改对象的 <code>balance</code> 字段,以维持不变量。例如过程 <code>record_deposit</code> 就属于这种情形。</p></div>
+</div><div class="row" id="row-161" data-i="161">
+<div class="cell en"><p>Now assume that we have the declaration and call</p></div>
+<div class="cell zh"><p>现在假设有声明和调用</p></div>
+</div><div class="row" id="row-162" data-i="162">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>a: ACCOUNT;
+...
+a.record_deposit (1_000_000)</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>a: ACCOUNT;
+...
+a.record_deposit (1_000_000)</code></pre></div>
+</div><div class="row" id="row-163" data-i="163">
+<div class="cell en"><p>If in a certain execution, <code>a</code> happens to be attached to an object of type <code>ACCOUNT1</code> at the time of the call, static binding would mean applying the original, <code>ACCOUNT</code> version of <code>record_deposit</code> — which fails to update the <code>balance</code> field. The result would be an inconsistent <code>ACCOUNT1</code> object and certain disaster.</p></div>
+<div class="cell zh"><p>如果某次执行里,调用时 <code>a</code> 恰好附着于一个 <code>ACCOUNT1</code> 类型的对象,静态绑定就会套用原版本、即 <code>ACCOUNT</code> 版本的 <code>record_deposit</code> —— 它不会更新 <code>balance</code> 字段。结果就是一个不一致的 <code>ACCOUNT1</code> 对象,灾难注定。</p></div>
+</div><div class="row" id="row-164" data-i="164">
+<div class="cell en"><h2>Dealing with abnormal situations</h2></div>
+<div class="cell zh"><h2>应对异常情形</h2></div>
+</div><div class="row" id="row-165" data-i="165">
+<div class="cell en"><p>The Design by Contract theory has one more immediate application to the practice of reliable software development: exception handling.</p></div>
+<div class="cell zh"><p>按契约设计理论对可靠软件开发的实践还有一项直接应用:异常处理。</p></div>
+</div><div class="row" id="row-166" data-i="166">
+<div class="cell en"><p>Exceptions — abnormal cases — have been the target of much study, and several programming languages, notably Ada, PL/I, and CLU, offer exception-handling mechanisms. Much of this work is disappointing, however, because it fails to define precisely what an abnormal case is. Then exception handling often becomes a kind of generalized, interroutine &quot;goto&quot; mechanism, with no clear guidelines for proper use.</p></div>
+<div class="cell zh"><p>异常 —— 即异常情形 —— 已是许多研究的对象,Ada、PL/I、CLU 等几门编程语言都提供了异常处理机制。然而这方面的许多工作令人失望,因为它们没能精确地定义&quot;异常情形&quot;到底是什么。于是异常处理往往沦为一种广义的、跨例程的&quot;goto&quot;机制,没有明确的使用指引。</p></div>
+</div><div class="row" id="row-167" data-i="167">
+<div class="cell en"><p>To understand the issue better, I performed a study (reported elsewhere <sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup>) of Ada and CLU textbooks, looking for examples of exception handling and methodological principles. The results were disappointing, as the books showed many examples of <em>triggering</em> exceptions but few of how to <em>handle</em> them. Furthermore, some of the latter were hair-raising. For example, one textbook proposed an example of a square root routine which, when confronted with a negative argument, triggers an exception. The exception handler prints a message and then simply returns to the caller without notifying the caller that something wrong has occurred — fooling the caller, as it were, into believing that everything is going according to plan. Since a typical use for square roots in a typical Ada program is a missile trajectory computation, it is easy to foresee the probable consequences.</p></div>
+<div class="cell zh"><p>为更好地理解这个问题,我做了一项研究(报告另见 <sup class="cite" tabindex="0" data-ref="3" data-lang="en">[3]</sup>):翻阅 Ada 和 CLU 的教材,寻找异常处理的例子和方法论原则。结果令人失望,因为这些书展示了大量<strong>触发</strong>(triggering)异常的例子,但很少讲怎么<strong>处理</strong>(handle)。而且后者中有些还让人头皮发麻。比如有一本教材举了一个求平方根的例程的例子,当遇到负实参时触发一个异常。异常处理器打印一条消息,然后径直返回调用方 —— 根本不告诉调用方已经出事了 —— 于是就在骗调用方相信一切顺利进行。考虑到典型 Ada 程序里一个典型的平方根用途是导弹弹道计算,可能的后果不难预见。</p></div>
+</div><div class="row" id="row-168" data-i="168">
+<div class="cell en"><p>Beyond the bad taste of such individual examples, one may fault the design of the exception mechanism itself for failing to encourage, or even to define, a proper discipline for handling abnormal cases.</p></div>
+<div class="cell zh"><p>抛开这类个例的恶劣趣味不说,异常机制的设计本身也值得批评:它没能鼓励 —— 甚至没有定义 —— 一套处理异常情形的像样规程。</p></div>
+</div><div class="row" id="row-169" data-i="169">
+<div class="cell en"><p>The contract theory provides a good starting point for a more rational solution. If a routine is seen not just as some &quot;piece of code&quot; but as the implementation of a certain specification — the contract — it is possible to define a notion of <em>failure</em>. Failure occurs when an execution of a routine cannot fulfill the routine&#x27;s contract. Possible reasons for a failure include a hardware malfunction, a bug in the implementation, or some external unexpected event.</p></div>
+<div class="cell zh"><p>契约理论为一个更理性的解法提供了良好起点。如果把例程不仅仅视作某段&quot;代码&quot;,而是视作某个规约 —— 即契约 —— 的实现,就可以定义<strong>故障</strong>(failure)这个概念。故障发生于例程的一次执行无法兑现其契约时。可能的故障原因包括硬件故障、实现中的 bug,或某个外部意外事件。</p></div>
+</div><div class="row" id="row-170" data-i="170">
+<div class="cell en"><p>&quot;Failure&quot; is here the basic concept. &quot;Exception&quot; is a derived notion. An exception occurs when a certain strategy for fulfilling a routine&#x27;s contract has not succeeded. This is not a failure, at least not yet, because the routine may have an alternative strategy.</p></div>
+<div class="cell zh"><p>这里&quot;故障&quot;是基本概念,&quot;异常&quot;(exception)是派生概念。异常发生于用来兑现例程契约的某个策略未能成功之时。这还不算故障 —— 至少还不算,因为例程可能还有替代策略。</p></div>
+</div><div class="row" id="row-171" data-i="171">
+<div class="cell en"><p>The most obvious example of exception is the failure of a called routine: <em>r</em>&#x27;s strategy for fulfilling its contract involved a call to <em>s</em>; the call failed; clearly, this is an exception for <em>r</em>. Another example, previously mentioned, is a runtime assertion violation, if assertions are monitored. It is also convenient to treat as exceptions the signals sent by the operating system or the hardware: arithmetic overflow, memory exhaustion, and the like. They indeed correspond to failures of calls to basic facilities (arithmetic operations, memory allocation).</p></div>
+<div class="cell zh"><p>异常最显眼的例子就是被调用例程的故障:<em>r</em> 为兑现自己的契约所用的策略涉及一次对 <em>s</em> 的调用;该调用失败了;显然,对 <em>r</em> 而言这就是一个异常。另一个前面提过的例子,是运行时断言违反 —— 如果断言被监控的话。把操作系统或硬件发出的信号(算术溢出、内存耗尽等等)也当作异常来处理是方便的。它们确实对应于对基本设施(算术运算、内存分配)调用的故障。</p></div>
+</div><div class="row" id="row-172" data-i="172">
+<div class="cell en"><p>Equipped with this notion of failure and exception, we can define a coherent response to an exception. The exception occurs because the strategy used to achieve the routine&#x27;s contract did not work. Only three possible responses then make sense:</p></div>
+<div class="cell zh"><p>配备了这样的故障和异常概念,我们就能定义一种连贯的异常响应方式。异常之所以发生,是因为用于兑现例程契约的策略没奏效。那么有意义的响应只有三种:</p></div>
+</div><div class="row" id="row-173" data-i="173">
+<div class="cell en"><p>(1) Perhaps an alternative strategy is available. We have lost a battle, but we have not lost the war. In this case the routine should put the objects back into a consistent state and make another attempt, using the new strategy. This is called <em>resumption</em>.</p></div>
+<div class="cell zh"><p>(1) 也许还有一种替代策略可用。这场战役输了,但战争还没输。这时例程应当把各对象恢复到一致状态,并用新策略再试一次。这称为<strong>重启</strong>(resumption)。</p></div>
+</div><div class="row" id="row-174" data-i="174">
+<div class="cell en"><p>(2) Perhaps, however, we have lost the war altogether. No new strategy is available. Then the routine should put back the objects in a consistent state, give up on the contract, and report failure to the caller. This is called <em>organized panic</em>.</p></div>
+<div class="cell zh"><p>(2) 不过,也可能是整场战争都输了,没有新策略可用。那么例程应当把各对象恢复到一致状态、放弃契约、向调用方报告故障。这称为<strong>有序恐慌</strong>(organized panic)。</p></div>
+</div><div class="row" id="row-175" data-i="175">
+<div class="cell en"><p>(3) A rare but possible third case is the <em>false alarm</em>. This may occur only for operating-system or hardware signals. On some multiwindowing systems, for example, a process receives a signal (transformed by the runtime into an exception) when its window is resized. In most cases, the process should be able to continue its execution, possibly after taking some corrective actions (such as registering the new window dimensions for use by editors and other tools).</p></div>
+<div class="cell zh"><p>(3) 第三种情形罕见但确有可能,就是<strong>虚假警报</strong>(false alarm)。这只会发生在操作系统或硬件信号上。比如在某些多窗口系统里,进程在它的窗口被调整大小时会收到一个信号(由运行时转成异常)。多数情况下,进程应当能继续执行,可能还得采取一些纠正动作(比如把新的窗口尺寸登记给编辑器和其他工具)。</p></div>
+</div><div class="row" id="row-176" data-i="176">
+<div class="cell en"><p>The description of both resumption and organized panic mentions putting back the objects &quot;in a consistent state.&quot; This is essential if further executions (after an eventual resumption) will use the objects again. The notion of consistent state should be clear from the preceding discussion: Any exception handling, whether for resumption or for organized panic, should restore the invariant.</p></div>
+<div class="cell zh"><p>重启和有序恐慌的描述里都提到了把各对象&quot;恢复到一致状态&quot;。这至关重要,因为后续执行(若最终选择重启)还会再用到这些对象。一致状态的含义从前文讨论应已清楚:任何异常处理 —— 无论是为了重启还是有序恐慌 —— 都应当<strong>恢复不变量</strong>。</p></div>
+</div><div class="row" id="row-177" data-i="177">
+<div class="cell en"><h2>A disciplined exception-handling mechanism</h2></div>
+<div class="cell zh"><h2>一种有纪律的异常处理机制</h2></div>
+</div><div class="row" id="row-178" data-i="178">
+<div class="cell en"><p>It is not hard to devise an exception mechanism that directly supports the preceding method for handling abnormal cases.</p></div>
+<div class="cell zh"><p>不难设计出一种异常机制,直接支持上述处理异常情形的方法。</p></div>
+</div><div class="row" id="row-179" data-i="179">
+<div class="cell en"><p>To specify how a routine should behave after an exception, the author of an Eiffel routine may include a &quot;rescue&quot; clause, which expresses the alternate behavior of the routine (and is similar to clauses that occur in human contracts, to allow for exceptional, unplanned circumstances). When a routine includes a rescue clause, any exception occurring during the routine&#x27;s execution interrupts the execution of the body (the Do clause) and starts execution of the rescue clause. The clause contains zero or more instructions, one of which may be a <code>Retry</code>. The execution terminates in either of two ways:</p></div>
+<div class="cell zh"><p>为了规定例程在异常后应如何行事,Eiffel 例程的作者可以加入一个&quot;救援&quot;(rescue)子句,用于表达例程的替代行为(与人类契约中用于应对突发、计划外情形的条款类似)。当例程包含救援子句时,执行中任何异常都会中断例程主体(Do 子句)的执行,转而开始执行救援子句。该子句包含零条或多条指令,其中可以有一条 <code>Retry</code>。执行以下两种方式之一结束:</p></div>
+</div><div class="row" id="row-180" data-i="180">
+<div class="cell en"><ul><li>If the rescue clause terminates without executing a <code>Retry</code>, the routine <em>fails</em>. It reports failure to its caller by triggering a new exception. This is the organized panic case.</li></ul></div>
+<div class="cell zh"><ul><li>如果救援子句执行完毕且<strong>没有</strong>执行 <code>Retry</code>,则例程<strong>故障</strong>(fails)。它通过触发一个新的异常,向调用方报告故障。这就是有序恐慌的情形。</li></ul></div>
+</div><div class="row" id="row-181" data-i="181">
+<div class="cell en"><ul><li>If the rescue clause executes a <code>Retry</code>, the body of the routine (Do clause) is executed again.</li></ul></div>
+<div class="cell zh"><ul><li>如果救援子句执行了 <code>Retry</code>,则例程主体(Do 子句)会再次执行。</li></ul></div>
+</div><div class="row" id="row-182" data-i="182">
+<div class="cell en"><p>As an example, here is a solution to a problem found in many Ada textbooks: Using a function <code>getint</code>, which reads an integer, prompt a user to enter an integer value; if the input is not an integer, ask again, unless the user cannot provide an integer after five attempts, in which case a failure occurs. It is assumed that <code>getint</code> is an external routine, perhaps written in C or assembly language, and we have no control over it. It triggers an exception when applied to input that is not an integer; the routine should catch that exception and prompt the user again. Figure 12 shows a solution.</p></div>
+<div class="cell zh"><p>举个例子,这里是许多 Ada 教材里的一个问题的解答:用一个读入整数的函数 <code>getint</code>,提示用户输入一个整数值;若输入非整数,就再问一次 —— 除非用户在五次尝试后仍不能提供整数,此时产生故障。假设 <code>getint</code> 是一个外部例程,可能由 C 或汇编编写,我们无法控制它。当它被施加于非整数输入时会触发一个异常;该例程应当捕获此异常并再次提示用户。图 12 展示了一个解。</p></div>
+</div><div class="row" id="row-183" data-i="183">
+<div class="cell en"><figure class="fig"><div class="fig-body" data-fig="12"><svg viewBox="0 0 680 334" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="680" height="334" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">get_integer_from_user: INTEGER <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Read an integer (allow user up to five attempts)</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">local</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">failures: INTEGER</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Result := getint</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">rescue</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">failures := failures + 1;</text><text x="80" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">if</tspan> failures &lt; 5 <tspan fill="var(--g-primary)" font-weight="600">then</tspan></text><text x="108" y="244" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">message (&quot;Input must be an integer. Please enter again: &quot;);</text><text x="108" y="266" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">retry</tspan></text><text x="80" y="288" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text><text x="52" y="310" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- get_integer_from_user</text></svg></div><figcaption><span class="fig-num">Fig. 12.</span> Reading an integer with an unsafe primitive.</figcaption></figure></div>
+<div class="cell zh"><figure class="fig"><div class="fig-body" data-fig="12"><svg viewBox="0 0 680 334" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0" y="0" width="680" height="334" fill="var(--fig-bg)" stroke="var(--border)" stroke-width="1" rx="6"/><text x="24" y="46" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">get_integer_from_user: INTEGER <tspan fill="var(--g-primary)" font-weight="600">is</tspan></text><text x="80" y="68" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">-- Read an integer (allow user up to five attempts)</text><text x="52" y="90" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">local</tspan></text><text x="80" y="112" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">failures: INTEGER</text><text x="52" y="134" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">do</tspan></text><text x="80" y="156" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">Result := getint</text><text x="52" y="178" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">rescue</tspan></text><text x="80" y="200" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">failures := failures + 1;</text><text x="80" y="222" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">if</tspan> failures &lt; 5 <tspan fill="var(--g-primary)" font-weight="600">then</tspan></text><text x="108" y="244" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve">message (&quot;Input must be an integer. Please enter again: &quot;);</text><text x="108" y="266" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">retry</tspan></text><text x="80" y="288" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan></text><text x="52" y="310" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" fill="var(--text)" xml:space="preserve"><tspan fill="var(--g-primary)" font-weight="600">end</tspan> -- get_integer_from_user</text></svg></div><figcaption><span class="fig-num">图 12.</span> 用一个不安全原语读取一个整数。</figcaption></figure></div>
+</div><div class="row" id="row-184" data-i="184">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>get_integer_from_user: INTEGER is
+        -- Read an integer (allow user up to five attempts)
+    local
+        failures: INTEGER
+    do
+        Result := getint
+    rescue
+        failures := failures + 1;
+        if failures &lt; 5 then
+            message (&quot;Input must be an integer. Please enter again: &quot;);
+            retry
+        end
+    end -- get_integer_from_user</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>get_integer_from_user: INTEGER is
+        -- Read an integer (allow user up to five attempts)
+    local
+        failures: INTEGER
+    do
+        Result := getint
+    rescue
+        failures := failures + 1;
+        if failures &lt; 5 then
+            message (&quot;Input must be an integer. Please enter again: &quot;);
+            retry
+        end
+    end -- get_integer_from_user</code></pre></div>
+</div><div class="row" id="row-185" data-i="185">
+<div class="cell en"><p>The first five times the interactive user enters a wrong input, the routine starts again, thanks to the <code>Retry</code>. This is the direct implementation of resumption.</p></div>
+<div class="cell zh"><p>交互式用户前五次输入错误时,例程都会凭 <code>Retry</code> 重新启动。这就是重启的直接实现。</p></div>
+</div><div class="row" id="row-186" data-i="186">
+<div class="cell en"><p>The local entity <code>failures</code> serves to record the number of failed calls to <code>getint</code>. Like any integer local entity, it is automatically initialized to zero on routine call. (The Eiffel language definition <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> specifies simple initialization values for every possible type.)</p></div>
+<div class="cell zh"><p>局部实体 <code>failures</code> 用于记录 <code>getint</code> 失败调用的次数。与任何整型局部实体一样,它在例程调用时自动初始化为零。(Eiffel 语言定义 <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup> 为每种可能的类型都规定了简单的初始化值。)</p></div>
+</div><div class="row" id="row-187" data-i="187">
+<div class="cell en"><p>In this example, only one type of exception is possible. In some cases, the rescue clause might need to discriminate between possible types of exceptions and handle them differently. This is made possible through simple features of the kernel library class <code>EXCEPTIONS</code>, although it isn&#x27;t necessary to look at the (straightforward) details here. This class also provides mechanisms for handling the false alarm case by specifying that for certain signals execution may be allowed to resume.</p></div>
+<div class="cell zh"><p>本例中只可能有一种异常。某些情况下,救援子句可能需要对可能的异常类型加以区分并分别处理。这通过内核库类 <code>EXCEPTIONS</code> 的一些简单特性即可做到,此处无需深入那些(简单直接的)细节。该类也提供机制来处理虚假警报情形 —— 通过指定某些信号允许执行继续。</p></div>
+</div><div class="row" id="row-188" data-i="188">
+<div class="cell en"><p>What happens after five successive failures of <code>getint</code>? The rescue clause terminates without executing a <code>Retry</code> and the routine execution fails (organized panic). The key rule in this case is that the caller of <code>get_integer_from_user</code> will get an exception, which it will have to handle by using the same policy, choosing between organized panic, resumption, and false alarm.</p></div>
+<div class="cell zh"><p><code>getint</code> 连续五次失败之后会发生什么?救援子句执行完毕且<strong>未</strong>执行 <code>Retry</code>,例程执行故障(有序恐慌)。关键规则是:<code>get_integer_from_user</code> 的调用方会收到一个异常,它得用同一套策略来处理 —— 在有序恐慌、重启和虚假警报之间作选择。</p></div>
+</div><div class="row" id="row-189" data-i="189">
+<div class="cell en"><p>In a typical system, only a handful of routines have an explicit rescue clause. What if an exception occurs during the execution of a routine that has no such clause? The rule is simple: An absent clause is considered equivalent to an implicit clause of the form</p></div>
+<div class="cell zh"><p>在一个典型系统里,只有少数例程带有显式的救援子句。那么当异常发生在一个没有此子句的例程里时呢?规则很简单:缺省的子句被视作等价于一个隐式子句,形如</p></div>
+</div><div class="row" id="row-190" data-i="190">
+<div class="cell en"><pre class="code" data-lang="eiffel"><code>rescue
+    default_rescue</code></pre></div>
+<div class="cell zh"><pre class="code" data-lang="eiffel"><code>rescue
+    default_rescue</code></pre></div>
+</div><div class="row" id="row-191" data-i="191">
+<div class="cell en"><p>where <code>default_rescue</code> is a general-purpose procedure that, in its basic form, does nothing. Then an exception simply starts the rescue clause, which, executing the empty <code>default_rescue</code>, causes failure of the routine; this triggers the rescue clause, explicit or implicit. If exceptions are passed in this manner all the way back to the &quot;root object&quot; that started the execution, that execution halts after printing an exception history table that clearly documents the sequence of recorded abnormal events. But, of course, some routine in the call chain may have a rescue clause, even one containing a <code>Retry</code> that will attempt a resumption.</p></div>
+<div class="cell zh"><p>其中 <code>default_rescue</code> 是一个通用过程,其基本形式什么也不做。这样,异常发生时就只是启动救援子句 —— 它执行空的 <code>default_rescue</code>、使例程故障;这又触发(显式或隐式的)救援子句。若异常就这样一路传回发起执行的&quot;根对象&quot;(root object),执行就在打印一张异常历史表后终止,该表清晰地记录了所记录的异常事件序列。当然,调用链中可能有某个例程带有救援子句,里面甚至可能带一个 <code>Retry</code> 来尝试重启。</p></div>
+</div><div class="row" id="row-192" data-i="192">
+<div class="cell en"><p>Why define the default behavior as a call to <code>default_rescue</code> rather than just as an empty rescue clause? The reason comes from the methodological discussion. In the case of organized panic, it is essential to restore the invariant before conceding defeat and surrendering. A null action would not achieve this for a class with a nontrivial invariant.</p></div>
+<div class="cell zh"><p>为什么把默认行为定义为对 <code>default_rescue</code> 的调用,而不是干脆定义成一个空的救援子句?原因来自方法论上的讨论。在有序恐慌的情形下,<strong>在认输投降之前恢复不变量</strong>是必不可少的。对一个有非平凡不变量的类,空动作做不到这点。</p></div>
+</div><div class="row" id="row-193" data-i="193">
+<div class="cell en"><p>The solution is provided once again by the coalesced forces of inheritance and assertions. Procedure <code>default_rescue</code>, in its default null form, appears as a procedure of the general-purpose class <code>ANY</code>. This library class, as defined by the language rules <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>, is automatically an ancestor of all possible developer-defined classes. So it is the responsibility of designers of a class <code>C</code>, if they are concerned about possible exceptions occurring in routines that do not have specific rescue clauses, to redefine <code>default_rescue</code> so that it will ensure the class invariant of <code>C</code>.</p></div>
+<div class="cell zh"><p>解答再次由继承与断言的合力提供。过程 <code>default_rescue</code>,以其默认的空动作形式,作为通用类 <code>ANY</code> 的一个过程出现。按语言规则 <sup class="cite" tabindex="0" data-ref="1" data-lang="en">[1]</sup>,这个库类自动是所有开发者定义的类的祖先。因此,如果类 <code>C</code> 的设计者担心在没有专门救援子句的例程里发生异常,他们有责任重定义 <code>default_rescue</code>,使其能保住 <code>C</code> 的类不变量。</p></div>
+</div><div class="row" id="row-194" data-i="194">
+<div class="cell en"><p>Often, one of the creation procedures may serve as a redefinition of <code>default_rescue</code>, since creation procedures are also required to ensure the invariant.</p></div>
+<div class="cell zh"><p>很多时候,某个创建过程就可以充当 <code>default_rescue</code> 的重定义 —— 因为创建过程本身也要求保证不变量。</p></div>
+</div><div class="row" id="row-195" data-i="195">
+<div class="cell en"><p>This illuminates the difference between the body (the Do clause) and the rescue clause:</p></div>
+<div class="cell zh"><p>这也点明了例程主体(Do 子句)与救援子句的差别:</p></div>
+</div><div class="row" id="row-196" data-i="196">
+<div class="cell en"><ul><li>The body must implement the contract, or ensure the postcondition. For consistency, it must also abide by the general law of the land — preserve the invariant. Its job is made a bit easier by the assumption that the invariant will hold initially, guaranteeing that the routine will find objects in a consistent state.</li></ul></div>
+<div class="cell zh"><ul><li>主体必须实现契约,即保证后置条件。为保持一致,它还必须遵守一地通法 —— 保持不变量。它的任务有一点小优惠:可以假定不变量在入口处就已经成立,这保证了例程一进来看到的各对象已处于一致状态。</li></ul></div>
+</div><div class="row" id="row-197" data-i="197">
+<div class="cell en"><ul><li>In contrast, the rescue clause may not make any such assumption; it has no precondition, since an exception may occur at any time. Its reward is a less-demanding task. All that it is required to do on exit is to restore the invariant. Ensuring the postcondition — the contract — is not its job.</li></ul></div>
+<div class="cell zh"><ul><li>相反,救援子句不能作出这样的假定;它没有前置条件,因为异常随时可能发生。它的奖赏是任务更轻:出口时只需恢复不变量。保证后置条件 —— 即契约 —— 不是它的职责。</li></ul></div>
+</div><div class="row" id="row-198" data-i="198">
+<div class="cell en"><p>A useful analogy is the contrast between the grandeur and servitude of two equally respectable professions — cook and fire fighter. A cook may assume that the restaurant is not burning (satisfies the invariant) when the workday begins. If the restaurant is indeed nonburning, the cook must prepare meals (ensure the postcondition). It is also a part of the cook&#x27;s contract, although perhaps an implicit one, to avoid setting the restaurant on fire in the process (to maintain the invariant).</p></div>
+<div class="cell zh"><p>一个有用的类比:两种同样体面的职业的高贵与辛酸之间的对比 —— 厨师和消防员。厨师可以假定餐厅上工时没在着火(满足不变量)。如果餐厅确实没在着火,厨师就必须备餐(保证后置条件)。厨师的契约里还有 —— 虽然也许是隐含的 —— 一条义务:备餐过程中别把餐厅点着(维持不变量)。</p></div>
+</div><div class="row" id="row-199" data-i="199">
+<div class="cell en"><p>When the fire fighter is called for help, in contrast, the state of the restaurant is not guaranteed. It may be burning or (in the case of a wrong alert) not burning. But then the fire fighter&#x27;s only duty is to return the restaurant to a nonburning state. Serving meals to the assembled customers is not part of the fire fighter&#x27;s job description.</p></div>
+<div class="cell zh"><p>相比之下,消防员被喊来帮忙时,餐厅的状态没有保障。它可能正在烧,也可能(若是误报)没在烧。但此时消防员的唯一职责是把餐厅恢复到不着火的状态。给满座的客人上菜不在消防员的岗位职责里。</p></div>
+</div><div class="row" id="row-200" data-i="200">
+<div class="cell en"><details class="infobox"><summary class="info-title">Status of Eiffel</summary><div class="info-body"><p>The definition of the Eiffel language, used as the vehicle for this article, is in the public domain. The language evolution is under the control of an organization of users and developers of Eiffel technology: the Nonprofit International Consortium for Eiffel (NICE). Membership in NICE is open to any interested organization. The address is PO Box 6884, Santa Barbara, CA 93160.</p></div></details></div>
+<div class="cell zh"><details class="infobox"><summary class="info-title">Eiffel 的现状</summary><div class="info-body"><p>本文以 Eiffel 语言作为载体,该语言的定义属于公有领域。语言的演进由一个 Eiffel 技术的用户与开发者组织 —— 非营利的 Eiffel 国际联盟(Nonprofit International Consortium for Eiffel,NICE)—— 监管。NICE 的成员资格对任何有兴趣的机构开放。地址为 PO Box 6884, Santa Barbara, CA 93160。</p></div></details></div>
+</div><div class="row" id="row-201" data-i="201">
+<div class="cell en"><h2>Acknowledgments</h2></div>
+<div class="cell zh"><h2>致谢</h2></div>
+</div><div class="row" id="row-202" data-i="202">
+<div class="cell en"><p>I have been greatly influenced by the originators of the classical work on systematic software development, mentioned in the &quot;Further sources&quot; sidebar. With his usual thoroughness, Kim Walden read the text and pointed out errors and possible improvements. The anonymous referees made several useful comments.</p></div>
+<div class="cell zh"><p>我深受系统化软件开发领域经典工作开创者们的影响,他们在&quot;延伸资料&quot;侧栏中有所提及。Kim Walden 以其一贯的细致通读了本文,指出了错误与可改进之处。匿名审稿人也给了若干有用的意见。</p></div>
+</div><div class="row" id="row-203" data-i="203">
+<div class="cell en"><p>Eiffel is a trademark of the Nonprofit International Consortium for Eiffel.</p></div>
+<div class="cell zh"><p>Eiffel 是非营利 Eiffel 国际联盟的商标。</p></div>
+</div><div class="row" id="row-204" data-i="204">
+<div class="cell en"><h2>References</h2></div>
+<div class="cell zh"><h2>参考文献</h2></div>
+</div><div class="row" id="row-205" data-i="205">
+<div class="cell en"><div class="ref-row" id="ref-en-1" data-ref-num="1"><span class="ref-num">[1]</span> B. Meyer, Eiffel: The Language, Prentice Hall, Englewood Cliffs, N.J., 1991.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-1" data-ref-num="1"><span class="ref-num">[1]</span> B. Meyer, Eiffel: The Language, Prentice Hall, Englewood Cliffs, N.J., 1991.</div></div>
+</div><div class="row" id="row-206" data-i="206">
+<div class="cell en"><div class="ref-row" id="ref-en-2" data-ref-num="2"><span class="ref-num">[2]</span> B. Meyer, Object-Oriented Software Construction, Prentice Hall, Englewood Cliffs, N.J., 1988.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-2" data-ref-num="2"><span class="ref-num">[2]</span> B. Meyer, Object-Oriented Software Construction, Prentice Hall, Englewood Cliffs, N.J., 1988.</div></div>
+</div><div class="row" id="row-207" data-i="207">
+<div class="cell en"><div class="ref-row" id="ref-en-3" data-ref-num="3"><span class="ref-num">[3]</span> B. Meyer, &quot;Design by Contract,&quot; in Advances in Object-Oriented Software Engineering, D. Mandrioli and B. Meyer, eds., Prentice Hall, Englewood Cliffs, N.J., 1991, pp. 1-50.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-3" data-ref-num="3"><span class="ref-num">[3]</span> B. Meyer, &quot;Design by Contract,&quot; in Advances in Object-Oriented Software Engineering, D. Mandrioli and B. Meyer, eds., Prentice Hall, Englewood Cliffs, N.J., 1991, pp. 1-50.</div></div>
+</div><div class="row" id="row-208" data-i="208">
+<div class="cell en"><div class="ref-row" id="ref-en-4" data-ref-num="4"><span class="ref-num">[4]</span> C.A.R. Hoare, &quot;An Axiomatic Basis for Computer Programming,&quot; Comm. ACM, Vol. 12, No. 10, Oct. 1969, pp. 576-580, 583.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-4" data-ref-num="4"><span class="ref-num">[4]</span> C.A.R. Hoare, &quot;An Axiomatic Basis for Computer Programming,&quot; Comm. ACM, Vol. 12, No. 10, Oct. 1969, pp. 576-580, 583.</div></div>
+</div><div class="row" id="row-209" data-i="209">
+<div class="cell en"><div class="ref-row" id="ref-en-5" data-ref-num="5"><span class="ref-num">[5]</span> E.W. Dijkstra, A Discipline of Programming, Prentice Hall, Englewood Cliffs, N.J., 1976.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-5" data-ref-num="5"><span class="ref-num">[5]</span> E.W. Dijkstra, A Discipline of Programming, Prentice Hall, Englewood Cliffs, N.J., 1976.</div></div>
+</div><div class="row" id="row-210" data-i="210">
+<div class="cell en"><div class="ref-row" id="ref-en-6" data-ref-num="6"><span class="ref-num">[6]</span> J.A. Goguen, J.W. Thatcher, and E.G. Wagner, &quot;An Initial Algebra Approach to the Specification, Correctness, and Implementation of Abstract Data Types,&quot; in Current Trends in Programming Methodology, Vol. 4, R.T. Yeh, ed., Prentice Hall, Englewood Cliffs, N.J., 1978, pp. 80-149.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-6" data-ref-num="6"><span class="ref-num">[6]</span> J.A. Goguen, J.W. Thatcher, and E.G. Wagner, &quot;An Initial Algebra Approach to the Specification, Correctness, and Implementation of Abstract Data Types,&quot; in Current Trends in Programming Methodology, Vol. 4, R.T. Yeh, ed., Prentice Hall, Englewood Cliffs, N.J., 1978, pp. 80-149.</div></div>
+</div><div class="row" id="row-211" data-i="211">
+<div class="cell en"><div class="ref-row" id="ref-en-7" data-ref-num="7"><span class="ref-num">[7]</span> J.V. Guttag, &quot;Abstract Data Types and the Development of Data Structures,&quot; Comm. ACM, Vol. 20, No. 6, June 1977, pp. 396-404.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-7" data-ref-num="7"><span class="ref-num">[7]</span> J.V. Guttag, &quot;Abstract Data Types and the Development of Data Structures,&quot; Comm. ACM, Vol. 20, No. 6, June 1977, pp. 396-404.</div></div>
+</div><div class="row" id="row-212" data-i="212">
+<div class="cell en"><div class="ref-row" id="ref-en-8" data-ref-num="8"><span class="ref-num">[8]</span> B. Meyer, &quot;La Description des Structures de Données,&quot; Bulletin de la Direction des Etudes et Recherches d&#x27;Electricité de France, Série C (Informatique), No. 2, Paris, 1976.</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-8" data-ref-num="8"><span class="ref-num">[8]</span> B. Meyer, &quot;La Description des Structures de Données,&quot; Bulletin de la Direction des Etudes et Recherches d&#x27;Electricité de France, Série C (Informatique), No. 2, Paris, 1976.</div></div>
+</div><div class="row" id="row-213" data-i="213">
+<div class="cell en"><div class="ref-row" id="ref-en-9" data-ref-num="9"><span class="ref-num">[9]</span> B. Meyer, Eiffel: The Libraries, Prentice Hall, Englewood Cliffs, N.J., (to appear in 1993).</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-9" data-ref-num="9"><span class="ref-num">[9]</span> B. Meyer, Eiffel: The Libraries, Prentice Hall, Englewood Cliffs, N.J., (to appear in 1993).</div></div>
+</div><div class="row" id="row-214" data-i="214">
+<div class="cell en"><div class="ref-row" id="ref-en-10" data-ref-num="10"><span class="ref-num">[10]</span> B. Meyer, &quot;The New Culture of Software Development,&quot; TOOLS 1 (Technology of Object-Oriented Languages and Systems), SOL, Paris, Nov. 1989, pp. 13-23. Slightly revised version in Advances in Object-Oriented Software Engineering (see reference 3).</div></div>
+<div class="cell zh"><div class="ref-row" id="ref-zh-10" data-ref-num="10"><span class="ref-num">[10]</span> B. Meyer, &quot;The New Culture of Software Development,&quot; TOOLS 1 (Technology of Object-Oriented Languages and Systems), SOL, Paris, Nov. 1989, pp. 13-23. Slightly revised version in Advances in Object-Oriented Software Engineering (see reference 3).</div></div>
+</div>
+  </main>
+</div>
+<script>
+(function() {
+  var REFS = {"1": "B. Meyer, Eiffel: The Language, Prentice Hall, Englewood Cliffs, N.J., 1991.", "2": "B. Meyer, Object-Oriented Software Construction, Prentice Hall, Englewood Cliffs, N.J., 1988.", "3": "B. Meyer, \"Design by Contract,\" in Advances in Object-Oriented Software Engineering, D. Mandrioli and B. Meyer, eds., Prentice Hall, Englewood Cliffs, N.J., 1991, pp. 1-50.", "4": "C.A.R. Hoare, \"An Axiomatic Basis for Computer Programming,\" Comm. ACM, Vol. 12, No. 10, Oct. 1969, pp. 576-580, 583.", "5": "E.W. Dijkstra, A Discipline of Programming, Prentice Hall, Englewood Cliffs, N.J., 1976.", "6": "J.A. Goguen, J.W. Thatcher, and E.G. Wagner, \"An Initial Algebra Approach to the Specification, Correctness, and Implementation of Abstract Data Types,\" in Current Trends in Programming Methodology, Vol. 4, R.T. Yeh, ed., Prentice Hall, Englewood Cliffs, N.J., 1978, pp. 80-149.", "7": "J.V. Guttag, \"Abstract Data Types and the Development of Data Structures,\" Comm. ACM, Vol. 20, No. 6, June 1977, pp. 396-404.", "8": "B. Meyer, \"La Description des Structures de Données,\" Bulletin de la Direction des Etudes et Recherches d'Electricité de France, Série C (Informatique), No. 2, Paris, 1976.", "9": "B. Meyer, Eiffel: The Libraries, Prentice Hall, Englewood Cliffs, N.J., (to appear in 1993).", "10": "B. Meyer, \"The New Culture of Software Development,\" TOOLS 1 (Technology of Object-Oriented Languages and Systems), SOL, Paris, Nov. 1989, pp. 13-23. Slightly revised version in Advances in Object-Oriented Software Engineering (see reference 3)."};
+
+  // Initial mode: mobile -> zh, desktop -> bi
+  function isMobile() { return window.matchMedia('(max-width: 768px)').matches; }
+  document.body.classList.add(isMobile() ? 'mode-zh' : 'mode-bi');
+
+  // Language mode switching
+  document.querySelectorAll('.modes button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var m = btn.dataset.mode;
+      document.body.classList.remove('mode-bi','mode-zh','mode-en');
+      document.body.classList.add('mode-' + m);
+      document.querySelectorAll('.modes button').forEach(function(b){ b.classList.toggle('on', b === btn); });
+    });
+  });
+  function syncModeButtons() {
+    var m = document.body.classList.contains('mode-zh') ? 'zh' : (document.body.classList.contains('mode-en') ? 'en' : 'bi');
+    document.querySelectorAll('.modes button').forEach(function(b){ b.classList.toggle('on', b.dataset.mode === m); });
+  }
+  syncModeButtons();
+
+  // Theme toggle
+  var themeBtn = document.getElementById('themebtn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next;
+      if (cur === 'dark') next = 'light';
+      else if (cur === 'light') next = 'dark';
+      else { next = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark'; }
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('paper-theme', next); } catch (e) {}
+    });
+  }
+
+  // TOC drawer
+  var tocbtn = document.getElementById('tocbtn');
+  if (tocbtn) {
+    tocbtn.addEventListener('click', function() { document.body.classList.toggle('toc-open'); });
+  }
+  document.querySelector('.toc-backdrop').addEventListener('click', function() { document.body.classList.remove('toc-open'); });
+
+  // TOC click -> smooth scroll with correct offset
+  document.querySelectorAll('.toc-item').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.getElementById(item.getAttribute('href').slice(1));
+      if (!target) return;
+      var tb = document.querySelector('.topbar');
+      var offset = tb.getBoundingClientRect().height + 8;
+      var y = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+      if (isMobile() || window.matchMedia('(max-width: 1100px)').matches) {
+        document.body.classList.remove('toc-open');
+      }
+    });
+  });
+
+  // TOC active highlighting on scroll (rAF-throttled)
+  var tocItems = Array.prototype.slice.call(document.querySelectorAll('.toc-item'));
+  var headings = tocItems.map(function(a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  var ticking = false;
+  function updateActive() {
+    var fold = 160;
+    var active = null;
+    for (var i = 0; i < headings.length; i++) {
+      var r = headings[i].getBoundingClientRect();
+      if (r.top <= fold) active = i;
+      else break;
+    }
+    tocItems.forEach(function(t, i) { t.classList.toggle('active', i === active); });
+    ticking = false;
+  }
+  window.addEventListener('scroll', function() {
+    if (!ticking) { requestAnimationFrame(updateActive); ticking = true; }
+  });
+  updateActive();
+
+  // Row click -> highlight
+  document.querySelectorAll('.row').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('.cite')) return;
+      document.querySelectorAll('.row.hl').forEach(function(x) { x.classList.remove('hl'); });
+      row.classList.add('hl');
+    });
+  });
+
+  // Citation popovers
+  var pop = document.createElement('div');
+  pop.className = 'cite-pop';
+  document.body.appendChild(pop);
+  var popAnchor = null;
+  var hoverMode = !window.matchMedia('(hover: none)').matches;
+
+  function showPop(cite) {
+    var n = cite.dataset.ref;
+    var lang = cite.dataset.lang || 'en';
+    var text = REFS[n];
+    if (!text) return;
+    pop.innerHTML = '<span class="ref-num">[' + n + ']</span>' + text.replace(/(https?:\/\/\S+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    pop.classList.add('show');
+    popAnchor = cite;
+    positionPop(cite);
+  }
+  function hidePop() { pop.classList.remove('show'); popAnchor = null; }
+  function positionPop(cite) {
+    var r = cite.getBoundingClientRect();
+    var pr = pop.getBoundingClientRect();
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var left = r.left + window.scrollX;
+    var top = r.bottom + window.scrollY + 6;
+    if (left + pr.width + 10 > vw) left = vw - pr.width - 10;
+    if (left < 10) left = 10;
+    // if overflow bottom, put above
+    if (r.bottom + pr.height + 12 > vh) {
+      top = r.top + window.scrollY - pr.height - 6;
+    }
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+  }
+
+  document.querySelectorAll('sup.cite').forEach(function(cite) {
+    if (hoverMode) {
+      cite.addEventListener('mouseenter', function() { showPop(cite); });
+      cite.addEventListener('mouseleave', function() { setTimeout(function(){ if (!pop.matches(':hover')) hidePop(); }, 100); });
+      cite.addEventListener('focus', function() { showPop(cite); });
+      cite.addEventListener('blur', function() { hidePop(); });
+      cite.addEventListener('click', function(e) {
+        e.stopPropagation();
+        jumpToRef(cite);
+      });
+    } else {
+      // mobile: 2-tap
+      cite.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (popAnchor === cite) { jumpToRef(cite); hidePop(); }
+        else { showPop(cite); }
+      });
+    }
+  });
+  pop.addEventListener('mouseleave', hidePop);
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('sup.cite') && !e.target.closest('.cite-pop')) hidePop();
+  });
+
+  function jumpToRef(cite) {
+    var n = cite.dataset.ref;
+    var lang = cite.dataset.lang || 'en';
+    // try both language variants
+    var target = document.getElementById('ref-' + lang + '-' + n) || document.getElementById('ref-en-' + n) || document.getElementById('ref-zh-' + n);
+    if (!target) return;
+    var tb = document.querySelector('.topbar');
+    var offset = tb.getBoundingClientRect().height + 8;
+    var y = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({top: y, behavior: 'smooth'});
+    target.classList.add('hl-ref');
+    setTimeout(function() { target.classList.remove('hl-ref'); }, 3000);
+  }
+
+  // Lightbox
+  var lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = '<div class="lightbox-inner"><button class="lightbox-close" aria-label="Close">✕</button><div class="lightbox-content"></div></div>';
+  document.body.appendChild(lb);
+  var lbContent = lb.querySelector('.lightbox-content');
+  document.querySelectorAll('.fig-body').forEach(function(body) {
+    body.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var svg = body.querySelector('svg');
+      if (!svg) return;
+      var clone = svg.cloneNode(true);
+      clone.removeAttribute('width');
+      clone.removeAttribute('height');
+      clone.style.width = '100%';
+      clone.style.height = 'auto';
+      lbContent.innerHTML = '';
+      lbContent.appendChild(clone);
+      lb.classList.add('show');
+    });
+  });
+  function closeLB() { lb.classList.remove('show'); lbContent.innerHTML = ''; }
+  lb.querySelector('.lightbox-close').addEventListener('click', closeLB);
+  lb.addEventListener('click', function(e) { if (e.target === lb) closeLB(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLB(); });
+})();
+</script>
+</body>
+</html>
