@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>测试驱动的 AI Agent 定义（TDAD） · Test-Driven AI Agent Definition (TDAD)</title>
+<script>(function(){try{var t=localStorage.getItem('tdad-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+:root{
+  --gp:#009f52; --gs:#3eb77a; --gsoft:#e1f5ec;
+  --bg:#ffffff; --bg2:#f7faf8; --fg:#15201a; --fg2:#5b6b62; --bd:#dfe7e2;
+  --code-bg:#f4f7f5; --hl:#e1f5ec; --sh:0 1px 2px rgba(0,0,0,.05);
+  --fig-bg:#ffffff; --fig-panel:#f5f7f9; --fig-blue:#cfe2f7; --fig-gray:#e9ebee; --fig-gray-s:#a9b0b8;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Iowan Old Style","Source Serif 4",Georgia,"Songti SC","Noto Serif CJK SC",serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  html:not([data-theme]){
+    --gp:#2ecb84; --gs:#67c492; --gsoft:#123027;
+    --bg:#101512; --bg2:#161d19; --fg:#e6ece8; --fg2:#9daba3; --bd:#26312b;
+    --code-bg:#161d19; --hl:#17352a; --sh:none;
+    --fig-bg:#141a17; --fig-panel:#171f1b; --fig-blue:#1d3a55; --fig-gray:#232b27; --fig-gray-s:#5d6a63;
+  }
+}
+html[data-theme="dark"]{
+  --gp:#2ecb84; --gs:#67c492; --gsoft:#123027;
+  --bg:#101512; --bg2:#161d19; --fg:#e6ece8; --fg2:#9daba3; --bd:#26312b;
+  --code-bg:#161d19; --hl:#17352a; --sh:none;
+  --fig-bg:#141a17; --fig-panel:#171f1b; --fig-blue:#1d3a55; --fig-gray:#232b27; --fig-gray-s:#5d6a63;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:16px;line-height:1.72;-webkit-text-size-adjust:100%}
+a{color:var(--gp)}
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:12px;padding:10px 18px;box-shadow:var(--sh)}
+.brand{font-weight:700;color:var(--gp);font-size:15px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;flex:1}
+.controls{display:flex;align-items:center;gap:8px}
+.modes{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.modes button{background:transparent;border:0;color:var(--fg2);font:inherit;font-size:13px;
+  padding:5px 11px;cursor:pointer}
+.modes button.on{background:var(--gp);color:#fff}
+.iconbtn{background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--fg2);
+  width:32px;height:30px;display:grid;place-items:center;cursor:pointer;padding:0}
+.iconbtn:hover{color:var(--gp);border-color:var(--gp)}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;align-items:start}
+.toc{position:sticky;top:51px;max-height:calc(100vh - 51px);overflow:auto;
+  padding:18px 12px 40px 18px;border-right:1px solid var(--bd);background:var(--bg2)}
+.toc a{display:block;text-decoration:none;color:var(--fg2);font-size:13px;line-height:1.45;
+  padding:4px 8px;border-radius:6px;border-left:2px solid transparent}
+.toc a:hover{background:var(--gsoft);color:var(--gp)}
+.toc a.act{color:var(--gp);border-left-color:var(--gp);background:var(--gsoft);font-weight:600}
+.toc a.tl3{padding-left:20px;font-size:12.5px}
+.toc .tzh{display:block;font-size:11.5px;opacity:.75}
+.main{padding:26px 30px 80px}
+.head{border-bottom:2px solid var(--gp);padding-bottom:16px;margin-bottom:8px}
+.head h1{font-family:var(--serif);font-size:26px;line-height:1.35;margin:0 0 4px}
+.head h1.zhh{font-family:var(--sans);font-size:23px;color:var(--gp)}
+.head .meta{color:var(--fg2);font-size:13.5px;margin-top:8px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;border-bottom:1px solid transparent;
+  border-radius:8px;transition:background .12s}
+.row.sel{background:var(--hl)}
+.cell{padding:6px 10px;min-width:0}
+.cell.en{font-family:var(--serif)}
+.row p{margin:.5em 0}
+h1,h2,h3,h4{font-weight:700;line-height:1.35}
+.cell h2{font-size:20px;margin:1.1em 0 .3em;color:var(--gp);
+  border-bottom:1px solid var(--bd);padding-bottom:5px}
+.cell h3{font-size:17px;margin:1em 0 .25em;color:var(--gs)}
+.cell h4{font-size:15.5px;margin:.9em 0 .2em;color:var(--fg)}
+.row.rh{margin-top:6px}
+code{font-family:var(--mono);font-size:.87em;background:var(--code-bg);
+  border:1px solid var(--bd);border-radius:4px;padding:.06em .32em}
+pre.code{background:var(--code-bg);border:1px solid var(--bd);border-left:3px solid var(--gp);
+  border-radius:8px;padding:12px 14px;overflow:auto;font-size:12.5px;line-height:1.6}
+pre.code code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
+.note{font-size:12.8px;color:var(--fg2);border-left:2px solid var(--bd);padding-left:10px;margin:.4em 0}
+.cap{font-size:13px;color:var(--fg2);text-align:center;margin:.2em 0 .8em}
+.bl{margin:.35em 0;padding-left:20px}
+.bl li{margin:.15em 0}
+.bl li::marker{color:var(--gp)}
+.li{display:flex;gap:10px;margin:.5em 0}
+.lin{flex:none;width:22px;height:22px;border-radius:50%;background:var(--gp);color:#fff;
+  font-size:12.5px;font-weight:700;display:grid;place-items:center;margin-top:3px;font-family:var(--sans)}
+.box{background:var(--gsoft);border:1px solid var(--gp);border-radius:10px;padding:12px 16px;margin:.6em 0}
+.boxh{font-weight:700;color:var(--gp);margin-bottom:4px}
+.box p{margin:.3em 0;font-size:14.5px}
+.algo{background:var(--code-bg);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin:.6em 0}
+.algoh{font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:6px;margin-bottom:6px;
+  color:var(--gp);font-family:var(--sans)}
+.algl{font-family:var(--mono);font-size:12.4px;line-height:1.65;white-space:pre-wrap}
+figure{margin:.6em 0}
+.fig{background:var(--fig-bg);border:1px solid var(--bd);border-radius:10px;padding:8px;cursor:zoom-in}
+.figsvg{width:100%;height:auto;display:block}
+.tbl figcaption{font-size:13px;color:var(--fg2);margin-bottom:6px;font-weight:600}
+.tw{overflow-x:auto;border:1px solid var(--bd);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-family:var(--sans)}
+th,td{padding:6px 9px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}
+th{background:var(--gsoft);color:var(--gp);font-weight:700;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--bg2)}
+.ref{display:flex;gap:8px;font-size:12.7px;color:var(--fg2);margin:.3em 0;scroll-margin-top:70px}
+.refn{color:var(--gp);font-weight:700;flex:none}
+.ref.hit{background:var(--hl);border-radius:6px}
+.cite{text-decoration:none;font-weight:600;font-size:.9em;vertical-align:super;line-height:0}
+sup.fn{color:var(--gp);font-weight:700;font-size:.72em}
+.math{overflow-x:auto;padding:2px 0}
+#pop{position:fixed;z-index:80;max-width:380px;background:var(--bg);border:1px solid var(--gp);
+  border-radius:8px;padding:9px 12px;font-size:12.5px;line-height:1.55;box-shadow:0 6px 24px rgba(0,0,0,.18);display:none}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+#lb>div{background:var(--fig-bg);border-radius:10px;padding:14px;max-width:96vw;max-height:92vh;overflow:auto}
+#lb svg{width:min(1400px,92vw);height:auto}
+body.mode-en .cell.zh,body.mode-zh .cell.en{display:none}
+body.mode-en .row,body.mode-zh .row{grid-template-columns:1fr}
+body.mode-en .toc .tzh{display:none}
+body.mode-zh .toc .ten{display:none}
+@media (max-width:1100px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .toc{position:fixed;top:51px;left:0;bottom:0;width:270px;z-index:45;transform:translateX(-100%);
+    transition:transform .2s;border-right:1px solid var(--bd)}
+  .toc.open{transform:none}
+  .main{padding:20px 16px 70px}
+}
+@media (min-width:1101px){#tocbtn{display:none}}
+@media (max-width:900px){
+  body:not(.mode-en):not(.mode-zh) .row{grid-template-columns:1fr;gap:0}
+  body:not(.mode-en):not(.mode-zh) .cell.zh{border-top:1px dashed var(--bd)}
+}
+@media print{
+  .topbar,.toc,#lb,#pop{display:none!important}
+  .wrap{grid-template-columns:1fr}
+  body{font-size:11pt}
+  .row{break-inside:avoid}
+}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},
+ svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<div class="topbar">
+  <button class="iconbtn" id="tocbtn" aria-label="目录">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="brand">测试驱动的 AI Agent 定义（TDAD） · Test-Driven AI Agent Definition (TDAD)</div>
+  <div class="controls">
+    <div class="modes">
+      <button data-m="both">双语</button>
+      <button data-m="zh">中文</button>
+      <button data-m="en">English</button>
+    </div>
+    <button class="iconbtn" id="themebtn" aria-label="主题">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</div>
+<div class="wrap">
+  <nav class="toc"><a class="tl2" href="#en-sec-4" data-sec="4"><span class="ten">Abstract</span><span class="tzh">摘要</span></a><a class="tl2" href="#en-sec-9" data-sec="9"><span class="ten">1 Introduction</span><span class="tzh">1 引言</span></a><a class="tl3" href="#en-sec-18" data-sec="18"><span class="ten">1.1 Contributions</span><span class="tzh">1.1 本文贡献</span></a><a class="tl2" href="#en-sec-26" data-sec="26"><span class="ten">2 Related Work</span><span class="tzh">2 相关工作</span></a><a class="tl2" href="#en-sec-31" data-sec="31"><span class="ten">3 The TDAD Methodology</span><span class="tzh">3 TDAD 方法论</span></a><a class="tl3" href="#en-sec-33" data-sec="33"><span class="ten">3.1 Specification Format</span><span class="tzh">3.1 规约格式</span></a><a class="tl3" href="#en-sec-46" data-sec="46"><span class="ten">3.2 Four Roles</span><span class="tzh">3.2 四个角色</span></a><a class="tl3" href="#en-sec-53" data-sec="53"><span class="ten">3.3 Tool Descriptions as First-Class Artifacts</span><span class="tzh">3.3 把工具描述当作一等产物</span></a><a class="tl3" href="#en-sec-57" data-sec="57"><span class="ten">3.4 Test Taxonomy</span><span class="tzh">3.4 测试分类法</span></a><a class="tl3" href="#en-sec-59" data-sec="59"><span class="ten">3.5 Deterministic Evaluation</span><span class="tzh">3.5 确定性评测</span></a><a class="tl3" href="#en-sec-61" data-sec="61"><span class="ten">3.6 Compilation Loop</span><span class="tzh">3.6 编译循环</span></a><a class="tl2" href="#en-sec-66" data-sec="66"><span class="ten">4 Preventing Specification Gaming</span><span class="tzh">4 防止规约博弈</span></a><a class="tl3" href="#en-sec-68" data-sec="68"><span class="ten">4.1 Visible vs. Hidden Test Splits</span><span class="tzh">4.1 可见测试与隐藏测试的划分</span></a><a class="tl3" href="#en-sec-74" data-sec="74"><span class="ten">4.2 Semantic Mutation Testing</span><span class="tzh">4.2 语义变异测试</span></a><a class="tl3" href="#en-sec-94" data-sec="94"><span class="ten">4.3 Spec Evolution and Regression</span><span class="tzh">4.3 规约演化与回归</span></a><a class="tl3" href="#en-sec-97" data-sec="97"><span class="ten">4.4 Reliability Under Stochasticity</span><span class="tzh">4.4 随机性下的可靠性</span></a><a class="tl3" href="#en-sec-99" data-sec="99"><span class="ten">4.5 Metrics Summary</span><span class="tzh">4.5 指标汇总</span></a><a class="tl2" href="#en-sec-103" data-sec="103"><span class="ten">5 SpecSuite-Core Benchmark</span><span class="tzh">5 SpecSuite-Core 基准</span></a><a class="tl3" href="#en-sec-104" data-sec="104"><span class="ten">5.1 Design Principles</span><span class="tzh">5.1 设计原则</span></a><a class="tl3" href="#en-sec-107" data-sec="107"><span class="ten">5.2 The Four Specs</span><span class="tzh">5.2 四份规约</span></a><a class="tl3" href="#en-sec-113" data-sec="113"><span class="ten">5.3 Spec Summaries</span><span class="tzh">5.3 规约概要</span></a><a class="tl2" href="#en-sec-118" data-sec="118"><span class="ten">6 Experimental Results</span><span class="tzh">6 实验结果</span></a><a class="tl3" href="#en-sec-120" data-sec="120"><span class="ten">6.1 Experimental Setup</span><span class="tzh">6.1 实验设置</span></a><a class="tl3" href="#en-sec-126" data-sec="126"><span class="ten">6.2 Main Results</span><span class="tzh">6.2 主要结果</span></a><a class="tl3" href="#en-sec-131" data-sec="131"><span class="ten">6.3 Compilation Failure Analysis</span><span class="tzh">6.3 编译失败分析</span></a><a class="tl3" href="#en-sec-133" data-sec="133"><span class="ten">6.4 Mutation Testing Details</span><span class="tzh">6.4 变异测试细节</span></a><a class="tl3" href="#en-sec-135" data-sec="135"><span class="ten">6.5 Cost and Iteration Analysis</span><span class="tzh">6.5 成本与迭代分析</span></a><a class="tl3" href="#en-sec-140" data-sec="140"><span class="ten">6.6 Discussion</span><span class="tzh">6.6 讨论</span></a><a class="tl2" href="#en-sec-142" data-sec="142"><span class="ten">7 Reference Implementation</span><span class="tzh">7 参考实现</span></a><a class="tl2" href="#en-sec-147" data-sec="147"><span class="ten">8 Limitations</span><span class="tzh">8 局限性</span></a><a class="tl2" href="#en-sec-152" data-sec="152"><span class="ten">9 Conclusion</span><span class="tzh">9 结论</span></a><a class="tl2" href="#en-sec-158" data-sec="158"><span class="ten">References</span><span class="tzh">参考文献</span></a><a class="tl2" href="#en-sec-183" data-sec="183"><span class="ten">Appendices</span><span class="tzh">附录</span></a><a class="tl3" href="#en-sec-184" data-sec="184"><span class="ten">A Metric Definitions (Formal)</span><span class="tzh">A 指标的形式化定义</span></a><a class="tl3" href="#en-sec-197" data-sec="197"><span class="ten">B Mutation Testing Results</span><span class="tzh">B 变异测试结果</span></a></nav>
+  <main class="main">
+    <div class="head">
+      <h1>Test-Driven AI Agent Definition (TDAD): Compiling Tool-Using Agents from Behavioral Specifications</h1>
+      <h1 class="zhh">测试驱动的 AI Agent 定义（TDAD）：从行为规约编译工具调用型 Agent</h1>
+      <div class="meta">Tzafrir Rehan · Fiverr Labs · tzafrir@f-labs.io<br>arXiv:2603.08806v1 [cs.SE] · 9 March 2026 · arXiv:2603.08806v1 [cs.SE] · 2026 年 3 月 9 日</div>
+    </div>
+    <div class="row rh h1" data-i="3"><div class="cell en"><h1 id="en-sec-3">Test-Driven AI Agent Definition (TDAD): Compiling Tool-Using Agents from Behavioral Specifications</h1></div><div class="cell zh"><h1 id="zh-sec-3">测试驱动的 AI Agent 定义（TDAD）：从行为规约编译工具调用型 Agent</h1></div></div>
+<div class="row rh h2" data-i="4"><div class="cell en"><h2 id="en-sec-4">Abstract</h2></div><div class="cell zh"><h2 id="zh-sec-4">摘要</h2></div></div>
+<div class="row" data-i="5"><div class="cell en"><p>We present <strong>Test-Driven AI Agent Definition (TDAD)</strong>, a methodology that treats agent prompts as compiled artifacts: engineers provide behavioral specifications, a coding agent converts them into executable tests, and a second coding agent iteratively refines the prompt until tests pass. Deploying tool-using LLM agents in production requires measurable behavioral compliance that current development practices cannot provide. Small prompt changes cause silent regressions, tool misuse goes undetected, and policy violations emerge only after deployment. To mitigate specification gaming, TDAD introduces three mechanisms: (1) <strong>visible/hidden test splits</strong> that withhold evaluation tests during compilation, (2) <strong>semantic mutation testing</strong> via a post-compilation agent that generates plausible faulty prompt variants, with the harness measuring whether the test suite detects them, and (3) <strong>spec evolution scenarios</strong> that quantify regression safety when requirements change. We evaluate TDAD on SpecSuite-Core, a benchmark of four deeply-specified agents spanning policy compliance, grounded analytics, runbook adherence, and deterministic enforcement. Across 24 independent trials, TDAD achieves 92% v1 compilation success with 97% mean hidden pass rate; evolved specifications compile at 58%, with most failed runs passing all visible tests except 1–2, and show 86–100% mutation scores, 78% v2 hidden pass rate, and 97% regression safety scores. The implementation is available as an open benchmark; the repository includes all four specs, the harness, and Docker infrastructure, with SupportOps additionally including generated tests, fixtures, and results as a worked example.<sup class="fn">1</sup></p></div><div class="cell zh"><p>本文提出<strong>测试驱动的 AI Agent 定义（Test-Driven AI Agent Definition, TDAD）</strong>：一种把 agent 提示词当作编译产物来对待的方法论——工程师提供行为规约（behavioral specification），由一个编码 agent 将其转换成可执行测试，再由第二个编码 agent 迭代地打磨提示词直到测试全部通过。要把会调用工具的 LLM agent 部署到生产环境，需要可度量的行为合规性，而当前的开发实践无法提供这一点。微小的提示词改动会引发静默回归，工具误用无人察觉，策略违规往往在上线之后才暴露。为缓解规约博弈（specification gaming），TDAD 引入三种机制：（1）<strong>可见/隐藏测试划分</strong>，在编译期扣留评测用的测试；（2）<strong>语义变异测试</strong>，由一个编译后运行的 agent 生成看似合理的错误提示词变体，再由评测框架度量测试套件能否检出它们；（3）<strong>规约演化场景</strong>，量化需求变更时的回归安全性。我们在 SpecSuite-Core 上评估 TDAD——这是一个包含四个深度规约 agent 的基准，覆盖策略合规、有据分析、运行手册遵从与确定性强制执行四类场景。在 24 次独立试验中，TDAD 达到 92% 的 v1 编译成功率与 97% 的平均隐藏测试通过率；演化后的规约编译成功率为 58%，其中大多数失败运行只差 1–2 条可见测试未通过，并取得 86–100% 的变异得分、78% 的 v2 隐藏测试通过率和 97% 的回归安全得分。该实现已作为开放基准发布；仓库包含全部四份规约、评测框架与 Docker 基础设施，其中 SupportOps 还额外提供了生成的测试、夹具与结果，作为一个完整示例。<sup class="fn">1</sup></p></div></div>
+<div class="row" data-i="6"><div class="cell en"><p class="note"><sup class="fn">1</sup> <a href="https://github.com/f-labs-io/tdad-paper-code" target="_blank" rel="noopener">https://github.com/f-labs-io/tdad-paper-code</a></p></div><div class="cell zh"><p class="note"><sup class="fn">1</sup> <a href="https://github.com/f-labs-io/tdad-paper-code" target="_blank" rel="noopener">https://github.com/f-labs-io/tdad-paper-code</a></p></div></div>
+<div class="row rwide" data-i="7"><div class="cell en"><figure class="fig"><svg viewBox="0 0 940 470" xmlns="http://www.w3.org/2000/svg" class="figsvg" role="img" aria-label="TDAD overview diagram">
+  <defs>
+    <marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+    <marker id="ar1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+  </defs>
+  <style>
+    .fg-t { font-family: var(--sans); fill: var(--fg); }
+    .fg-hd { font-weight: 700; font-size: 15px; letter-spacing:.4px; }
+    .fg-name { font-weight: 700; font-size: 15px; fill:#1a6fc4; }
+    .fg-name-d { font-weight: 700; font-size: 15px; fill: var(--fg); }
+    .fg-s { font-size: 12.5px; }
+    .fg-xs { font-size: 11.5px; }
+    .agent { fill: var(--fig-blue); stroke:#2f7ed8; stroke-width:2; rx:10; }
+    .meas { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; rx:6; }
+    .spec { fill: var(--fig-bg); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .big { fill: var(--fig-bg); stroke:#2f7ed8; stroke-width:2.6; rx:14; }
+    .ln { stroke:#2f7ed8; stroke-width:2.2; fill:none; marker-end:url(#ar1); }
+    .lnt { stroke:#2f7ed8; stroke-width:3.4; fill:none; marker-end:url(#ar1); }
+    .sep { stroke: var(--fig-gray-s); stroke-width:1.4; stroke-dasharray:5 5; }
+    .panel { fill: var(--fig-panel); }
+  </style>
+
+  <rect x="8" y="8" width="924" height="454" rx="10" class="panel"/>
+
+  <line class="sep" x1="500" y1="26" x2="500" y2="360"/>
+  <line class="sep" x1="712" y1="26" x2="712" y2="360"/>
+
+  <text class="fg-t fg-hd" x="228" y="44" text-anchor="middle">COMPILATION PIPELINE</text>
+  <text class="fg-t fg-hd" x="606" y="44" text-anchor="middle">COMPILED AGENT</text>
+  <text class="fg-t fg-hd" x="828" y="44" text-anchor="middle">EVALUATION</text>
+
+  <!-- spec doc -->
+  <path class="spec" d="M40 118 h56 l20 20 v68 h-76 z"/>
+  <path class="spec" d="M96 118 l20 20 h-20 z"/>
+  <text class="fg-t fg-s" x="78" y="158" text-anchor="middle">Spec</text>
+  <text class="fg-t fg-s" x="78" y="176" text-anchor="middle">(YAML)</text>
+  <line class="ln" x1="118" y1="172" x2="146" y2="172"/>
+
+  <!-- TestSmith -->
+  <rect class="agent" x="148" y="118" width="122" height="108"/>
+  <text class="fg-t fg-name" x="209" y="146" text-anchor="middle">TestSmith</text>
+  <text class="fg-t fg-xs" x="209" y="168" text-anchor="middle">Generates visible</text>
+  <text class="fg-t fg-xs" x="209" y="184" text-anchor="middle">+ hidden tests</text>
+  <text class="fg-t fg-xs" x="209" y="200" text-anchor="middle">from spec</text>
+
+  <line class="ln" x1="272" y1="164" x2="322" y2="164"/>
+  <text class="fg-t fg-xs" x="297" y="152" text-anchor="middle">visible</text>
+  <text class="fg-t fg-xs" x="297" y="180" text-anchor="middle">tests</text>
+
+  <!-- PromptSmith -->
+  <rect class="agent" x="324" y="122" width="128" height="104"/>
+  <text class="fg-t fg-name" x="388" y="150" text-anchor="middle">PromptSmith</text>
+  <text class="fg-t fg-xs" x="388" y="172" text-anchor="middle">Iterates prompt</text>
+  <text class="fg-t fg-xs" x="388" y="188" text-anchor="middle">until visible tests</text>
+  <text class="fg-t fg-xs" x="388" y="204" text-anchor="middle">pass</text>
+  <path d="M452 150 h34 v-46 h-98" stroke="#2f7ed8" stroke-width="2.2" fill="none" marker-end="url(#ar1b)"/>
+
+  <!-- hidden tests down to HPR -->
+  <line class="ln" x1="209" y1="228" x2="209" y2="286"/>
+  <text class="fg-t fg-xs" x="238" y="248" text-anchor="middle">hidden</text>
+  <text class="fg-t fg-xs" x="238" y="264" text-anchor="middle">tests</text>
+  <rect class="meas" x="150" y="288" width="118" height="58"/>
+  <text class="fg-t" x="209" y="310" text-anchor="middle" font-weight="700" font-size="14">HPR</text>
+  <text class="fg-t fg-xs" x="209" y="327" text-anchor="middle">measurement</text>
+  <text class="fg-t fg-xs" x="209" y="341" text-anchor="middle">output</text>
+
+  <!-- compiled agent -->
+  <line class="lnt" x1="454" y1="188" x2="536" y2="188"/>
+  <text class="fg-t fg-xs" x="492" y="220" text-anchor="middle">compiled</text>
+  <text class="fg-t fg-xs" x="492" y="236" text-anchor="middle">prompt + tool</text>
+  <text class="fg-t fg-xs" x="492" y="252" text-anchor="middle">descriptions</text>
+  <rect class="big" x="538" y="80" width="140" height="266"/>
+  <text class="fg-t fg-name-d" x="608" y="188" text-anchor="middle" font-size="16">COMPILED</text>
+  <text class="fg-t fg-name-d" x="608" y="208" text-anchor="middle" font-size="16">AGENT</text>
+  <text class="fg-t fg-xs" x="608" y="234" text-anchor="middle">Adheres to Behavioral</text>
+  <text class="fg-t fg-xs" x="608" y="250" text-anchor="middle">Specification</text>
+
+  <!-- MutationSmith -->
+  <line class="lnt" x1="680" y1="120" x2="748" y2="120"/>
+  <rect class="agent" x="750" y="80" width="150" height="94"/>
+  <text class="fg-t fg-name" x="825" y="104" text-anchor="middle">MutationSmith</text>
+  <text class="fg-t fg-xs" x="825" y="126" text-anchor="middle">Generates faulty</text>
+  <text class="fg-t fg-xs" x="825" y="142" text-anchor="middle">prompt variants +</text>
+  <text class="fg-t fg-xs" x="825" y="158" text-anchor="middle">activation probes</text>
+  <line class="ln" x1="825" y1="176" x2="825" y2="204"/>
+  <rect class="meas" x="750" y="206" width="150" height="44"/>
+  <text class="fg-t" x="825" y="233" text-anchor="middle" font-weight="700" font-size="14">Harness</text>
+  <line class="ln" x1="825" y1="252" x2="825" y2="280"/>
+  <rect class="meas" x="742" y="282" width="166" height="58"/>
+  <text class="fg-t" x="825" y="305" text-anchor="middle" font-weight="700" font-size="13.5">Mutation Score (MS)</text>
+  <text class="fg-t fg-xs" x="825" y="322" text-anchor="middle">measurement</text>
+  <text class="fg-t fg-xs" x="825" y="336" text-anchor="middle">output</text>
+
+  <!-- spec evolution row -->
+  <path class="spec" d="M262 372 h50 l18 18 v58 h-68 z"/>
+  <path class="spec" d="M312 372 l18 18 h-18 z"/>
+  <text class="fg-t fg-s" x="296" y="406" text-anchor="middle">v1</text>
+  <text class="fg-t fg-s" x="296" y="424" text-anchor="middle">Spec</text>
+  <line class="ln" x1="332" y1="410" x2="372" y2="410"/>
+  <rect class="meas" x="374" y="382" width="146" height="58"/>
+  <text class="fg-t" x="447" y="404" text-anchor="middle" font-weight="700" font-size="14">SURS</text>
+  <text class="fg-t fg-xs" x="447" y="421" text-anchor="middle">regression score</text>
+  <text class="fg-t fg-xs" x="447" y="435" text-anchor="middle">output</text>
+  <line class="ln" x1="522" y1="410" x2="562" y2="410"/>
+  <path class="spec" d="M564 372 h50 l18 18 v58 h-68 z"/>
+  <path class="spec" d="M614 372 l18 18 h-18 z"/>
+  <text class="fg-t fg-s" x="598" y="406" text-anchor="middle">v2</text>
+  <text class="fg-t fg-s" x="598" y="424" text-anchor="middle">Spec</text>
+
+  <!-- legend -->
+  <rect x="700" y="366" width="222" height="88" rx="7" fill="var(--fig-bg)" stroke="var(--fig-gray-s)" stroke-width="1.4"/>
+  <rect class="agent" x="714" y="378" width="26" height="16"/>
+  <text class="fg-t fg-xs" x="750" y="391">LLM agent</text>
+  <rect class="meas" x="714" y="403" width="26" height="16"/>
+  <text class="fg-t fg-xs" x="750" y="416">measurement/infrastructure</text>
+  <path class="spec" d="M716 426 h14 l8 8 v14 h-22 z"/>
+  <text class="fg-t fg-xs" x="750" y="441">specification</text>
+</svg></figure></div><div class="cell zh"><figure class="fig"><svg viewBox="0 0 940 470" xmlns="http://www.w3.org/2000/svg" class="figsvg" role="img" aria-label="TDAD 总览图">
+  <defs>
+    <marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+    <marker id="ar1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+  </defs>
+  <style>
+    .fg-t { font-family: var(--sans); fill: var(--fg); }
+    .fg-hd { font-weight: 700; font-size: 15px; letter-spacing:.4px; }
+    .fg-name { font-weight: 700; font-size: 15px; fill:#1a6fc4; }
+    .fg-name-d { font-weight: 700; font-size: 15px; fill: var(--fg); }
+    .fg-s { font-size: 12.5px; }
+    .fg-xs { font-size: 11.5px; }
+    .agent { fill: var(--fig-blue); stroke:#2f7ed8; stroke-width:2; rx:10; }
+    .meas { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; rx:6; }
+    .spec { fill: var(--fig-bg); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .big { fill: var(--fig-bg); stroke:#2f7ed8; stroke-width:2.6; rx:14; }
+    .ln { stroke:#2f7ed8; stroke-width:2.2; fill:none; marker-end:url(#ar1); }
+    .lnt { stroke:#2f7ed8; stroke-width:3.4; fill:none; marker-end:url(#ar1); }
+    .sep { stroke: var(--fig-gray-s); stroke-width:1.4; stroke-dasharray:5 5; }
+    .panel { fill: var(--fig-panel); }
+  </style>
+
+  <rect x="8" y="8" width="924" height="454" rx="10" class="panel"/>
+
+  <line class="sep" x1="500" y1="26" x2="500" y2="360"/>
+  <line class="sep" x1="712" y1="26" x2="712" y2="360"/>
+
+  <text class="fg-t fg-hd" x="228" y="44" text-anchor="middle">编译流水线</text>
+  <text class="fg-t fg-hd" x="606" y="44" text-anchor="middle">编译后的 AGENT</text>
+  <text class="fg-t fg-hd" x="828" y="44" text-anchor="middle">评测</text>
+
+  <!-- spec doc -->
+  <path class="spec" d="M40 118 h56 l20 20 v68 h-76 z"/>
+  <path class="spec" d="M96 118 l20 20 h-20 z"/>
+  <text class="fg-t fg-s" x="78" y="158" text-anchor="middle">规约</text>
+  <text class="fg-t fg-s" x="78" y="176" text-anchor="middle">(YAML)</text>
+  <line class="ln" x1="118" y1="172" x2="146" y2="172"/>
+
+  <!-- TestSmith -->
+  <rect class="agent" x="148" y="118" width="122" height="108"/>
+  <text class="fg-t fg-name" x="209" y="146" text-anchor="middle">TestSmith</text>
+  <text class="fg-t fg-xs" x="209" y="168" text-anchor="middle">从规约生成</text>
+  <text class="fg-t fg-xs" x="209" y="184" text-anchor="middle">可见 + 隐藏</text>
+  <text class="fg-t fg-xs" x="209" y="200" text-anchor="middle">测试</text>
+
+  <line class="ln" x1="272" y1="164" x2="322" y2="164"/>
+  <text class="fg-t fg-xs" x="297" y="152" text-anchor="middle">可见</text>
+  <text class="fg-t fg-xs" x="297" y="180" text-anchor="middle">测试</text>
+
+  <!-- PromptSmith -->
+  <rect class="agent" x="324" y="122" width="128" height="104"/>
+  <text class="fg-t fg-name" x="388" y="150" text-anchor="middle">PromptSmith</text>
+  <text class="fg-t fg-xs" x="388" y="172" text-anchor="middle">迭代提示词直到</text>
+  <text class="fg-t fg-xs" x="388" y="188" text-anchor="middle">可见测试</text>
+  <text class="fg-t fg-xs" x="388" y="204" text-anchor="middle">全部通过</text>
+  <path d="M452 150 h34 v-46 h-98" stroke="#2f7ed8" stroke-width="2.2" fill="none" marker-end="url(#ar1b)"/>
+
+  <!-- hidden tests down to HPR -->
+  <line class="ln" x1="209" y1="228" x2="209" y2="286"/>
+  <text class="fg-t fg-xs" x="238" y="248" text-anchor="middle">隐藏</text>
+  <text class="fg-t fg-xs" x="238" y="264" text-anchor="middle">测试</text>
+  <rect class="meas" x="150" y="288" width="118" height="58"/>
+  <text class="fg-t" x="209" y="310" text-anchor="middle" font-weight="700" font-size="14">HPR</text>
+  <text class="fg-t fg-xs" x="209" y="327" text-anchor="middle">度量</text>
+  <text class="fg-t fg-xs" x="209" y="341" text-anchor="middle">输出</text>
+
+  <!-- compiled agent -->
+  <line class="lnt" x1="454" y1="188" x2="536" y2="188"/>
+  <text class="fg-t fg-xs" x="492" y="220" text-anchor="middle">编译后的</text>
+  <text class="fg-t fg-xs" x="492" y="236" text-anchor="middle">提示词 +</text>
+  <text class="fg-t fg-xs" x="492" y="252" text-anchor="middle">工具描述</text>
+  <rect class="big" x="538" y="80" width="140" height="266"/>
+  <text class="fg-t fg-name-d" x="608" y="188" text-anchor="middle" font-size="16">编译后的</text>
+  <text class="fg-t fg-name-d" x="608" y="208" text-anchor="middle" font-size="16">AGENT</text>
+  <text class="fg-t fg-xs" x="608" y="234" text-anchor="middle">遵从行为</text>
+  <text class="fg-t fg-xs" x="608" y="250" text-anchor="middle">规约</text>
+
+  <!-- MutationSmith -->
+  <line class="lnt" x1="680" y1="120" x2="748" y2="120"/>
+  <rect class="agent" x="750" y="80" width="150" height="94"/>
+  <text class="fg-t fg-name" x="825" y="104" text-anchor="middle">MutationSmith</text>
+  <text class="fg-t fg-xs" x="825" y="126" text-anchor="middle">生成错误提示词</text>
+  <text class="fg-t fg-xs" x="825" y="142" text-anchor="middle">变体 +</text>
+  <text class="fg-t fg-xs" x="825" y="158" text-anchor="middle">激活探针</text>
+  <line class="ln" x1="825" y1="176" x2="825" y2="204"/>
+  <rect class="meas" x="750" y="206" width="150" height="44"/>
+  <text class="fg-t" x="825" y="233" text-anchor="middle" font-weight="700" font-size="14">评测框架</text>
+  <line class="ln" x1="825" y1="252" x2="825" y2="280"/>
+  <rect class="meas" x="742" y="282" width="166" height="58"/>
+  <text class="fg-t" x="825" y="305" text-anchor="middle" font-weight="700" font-size="13.5">变异得分（MS）</text>
+  <text class="fg-t fg-xs" x="825" y="322" text-anchor="middle">度量</text>
+  <text class="fg-t fg-xs" x="825" y="336" text-anchor="middle">输出</text>
+
+  <!-- spec evolution row -->
+  <path class="spec" d="M262 372 h50 l18 18 v58 h-68 z"/>
+  <path class="spec" d="M312 372 l18 18 h-18 z"/>
+  <text class="fg-t fg-s" x="296" y="406" text-anchor="middle">v1</text>
+  <text class="fg-t fg-s" x="296" y="424" text-anchor="middle">规约</text>
+  <line class="ln" x1="332" y1="410" x2="372" y2="410"/>
+  <rect class="meas" x="374" y="382" width="146" height="58"/>
+  <text class="fg-t" x="447" y="404" text-anchor="middle" font-weight="700" font-size="14">SURS</text>
+  <text class="fg-t fg-xs" x="447" y="421" text-anchor="middle">回归得分</text>
+  <text class="fg-t fg-xs" x="447" y="435" text-anchor="middle">输出</text>
+  <line class="ln" x1="522" y1="410" x2="562" y2="410"/>
+  <path class="spec" d="M564 372 h50 l18 18 v58 h-68 z"/>
+  <path class="spec" d="M614 372 l18 18 h-18 z"/>
+  <text class="fg-t fg-s" x="598" y="406" text-anchor="middle">v2</text>
+  <text class="fg-t fg-s" x="598" y="424" text-anchor="middle">规约</text>
+
+  <!-- legend -->
+  <rect x="700" y="366" width="222" height="88" rx="7" fill="var(--fig-bg)" stroke="var(--fig-gray-s)" stroke-width="1.4"/>
+  <rect class="agent" x="714" y="378" width="26" height="16"/>
+  <text class="fg-t fg-xs" x="750" y="391">LLM agent</text>
+  <rect class="meas" x="714" y="403" width="26" height="16"/>
+  <text class="fg-t fg-xs" x="750" y="416">度量/基础设施</text>
+  <path class="spec" d="M716 426 h14 l8 8 v14 h-22 z"/>
+  <text class="fg-t fg-xs" x="750" y="441">规约</text>
+</svg></figure></div></div>
+<div class="row" data-i="8"><div class="cell en"><p class="cap">Figure 1: TDAD overview. Blue boxes are LLM coding agents; gray boxes are deterministic measurement or infrastructure. TestSmith, PromptSmith, and the Compiled Agent form the compilation pipeline (left). MutationSmith operates post-compilation for evaluation only (right). Spec evolution (bottom) measures regression safety across versions.</p></div><div class="cell zh"><p class="cap">图 1：TDAD 总览。蓝色方框是 LLM 编码 agent；灰色方框是确定性的度量或基础设施。TestSmith、PromptSmith 与编译后的 Agent 构成编译流水线（左侧）。MutationSmith 在编译之后运行，仅用于评测（右侧）。规约演化（底部）度量跨版本的回归安全性。</p></div></div>
+<div class="row rh h2" data-i="9"><div class="cell en"><h2 id="en-sec-9">1 Introduction</h2></div><div class="cell zh"><h2 id="zh-sec-9">1 引言</h2></div></div>
+<div class="row" data-i="10"><div class="cell en"><p>As LLM agents move into production, a common workflow emerges: a product team writes a specification describing the agent&#x27;s tools, policies, and decision logic, then hands it to an AI engineer who must deliver an agent that matches the spec. The engineer faces two challenges: <em>developing</em> the agent (translating requirements into a prompt and tool configuration that produces correct behavior) and <em>verifying</em> that the agent fully meets the requirements across all specified scenarios. Today, both tasks are largely manual: prompt editing by trial and error, spot-checking outputs, and hoping that changes don&#x27;t break prior behavior.</p></div><div class="cell zh"><p>随着 LLM agent 进入生产环境，一种常见的工作流浮现出来：产品团队写一份规约，描述 agent 的工具、策略与决策逻辑，然后交给一位 AI 工程师，由他交付一个与规约相符的 agent。这位工程师面临两个挑战：<em>开发</em> agent（把需求翻译成能产生正确行为的提示词与工具配置），以及*验证* agent 在所有已规约的场景下都完全满足需求。今天这两项工作基本都靠手工：靠试错改提示词、抽查输出，并寄望改动不会破坏此前的行为。</p></div></div>
+<div class="row" data-i="11"><div class="cell en"><p>This gap between capability and engineering discipline creates three concrete problems:</p></div><div class="cell zh"><p>能力与工程纪律之间的这道鸿沟带来三个具体问题：</p></div></div>
+<div class="row" data-i="12"><div class="cell en"><p><strong>Confidence.</strong> Teams cannot verify that an agent behaves correctly across all specified scenarios. A prompt that handles the happy path may fail on edge cases, leak sensitive data, or call tools in the wrong order.</p></div><div class="cell zh"><p><strong>可信度。</strong> 团队无法验证 agent 在所有已规约场景下的行为都正确。一个能走通 happy path 的提示词，可能在边界情况上失败、泄露敏感数据，或以错误顺序调用工具。</p></div></div>
+<div class="row" data-i="13"><div class="cell en"><p><strong>Stability.</strong> Changing a prompt to fix one issue often silently breaks another. Without regression testing, teams discover problems only after deployment: sometimes from customer complaints, sometimes from compliance violations.</p></div><div class="cell zh"><p><strong>稳定性。</strong> 为修一个问题而改提示词，往往会静默地破坏另一个。没有回归测试，团队只能在部署之后才发现问题：有时来自客户投诉，有时来自合规违规。</p></div></div>
+<div class="row" data-i="14"><div class="cell en"><p><strong>Integration.</strong> Agent evaluation often requires bespoke systems disconnected from existing engineering workflows. Teams maintain separate &quot;eval scripts&quot; that don&#x27;t integrate with CI/CD, code review, or standard testing practices.</p></div><div class="cell zh"><p><strong>集成性。</strong> agent 评测常常需要一套与既有工程流程脱节的专用系统。团队维护着独立的&quot;eval 脚本&quot;，无法与 CI/CD、代码评审或标准测试实践集成。</p></div></div>
+<div class="row" data-i="15"><div class="cell en"><p>Software engineering solved analogous problems decades ago through test-driven development: define behavior as tests, iterate until tests pass, then treat the test suite as a regression safety net. TDAD applies this discipline to agents, with adaptations for their unique challenges: stochastic outputs, tool-use traces, and the risk of specification gaming.</p></div><div class="cell zh"><p>几十年前，软件工程已经用测试驱动开发解决了同类问题：把行为定义为测试，迭代到测试通过，然后把测试套件当作回归的安全网。TDAD 把这套纪律应用到 agent 上，并针对其独有挑战做了适配：随机性输出、工具调用轨迹，以及规约博弈的风险。</p></div></div>
+<div class="row" data-i="16"><div class="cell en"><div class="box"><div class="boxh"><strong>TDAD in 60 Seconds</strong></div><p><strong>Input:</strong> Product spec (YAML) with tools, policies, and decision tree.</p><p><strong>Pipeline:</strong> TestSmith generates visible + hidden tests → PromptSmith iterates prompt until visible tests pass → hidden tests measure generalization (HPR) → MutationSmith generates faulty prompt variants; harness checks if tests catch them (MS) → spec evolution measures regression safety (SURS).</p><p><strong>Output:</strong> Compiled prompt + tool descriptions (the agent artifact).</p><p><strong>Key constraint:</strong> Only visible tests drive compilation; hidden tests and mutation scores are measurement only.</p></div></div><div class="cell zh"><div class="box"><div class="boxh"><strong>60 秒看懂 TDAD</strong></div><p><strong>输入：</strong> 产品规约（YAML），含工具、策略与决策树。</p><p><strong>流水线：</strong> TestSmith 生成可见 + 隐藏测试 → PromptSmith 迭代提示词直到可见测试通过 → 隐藏测试度量泛化能力（HPR）→ MutationSmith 生成错误提示词变体，评测框架检查测试能否抓住它们（MS）→ 规约演化度量回归安全性（SURS）。</p><p><strong>输出：</strong> 编译后的提示词 + 工具描述（即 agent 产物）。</p><p><strong>关键约束：</strong> 只有可见测试驱动编译；隐藏测试与变异得分仅用于度量。</p></div></div></div>
+<div class="row" data-i="17"><div class="cell en"><div class="box"><div class="boxh"><strong>Glossary</strong></div><p><strong>Roles:</strong> TestSmith (coding agent: test generator), PromptSmith (coding agent: prompt compiler), MutationSmith (coding agent: mutant generator), Built Agent (runtime, not an agent in the pipeline).</p><p><strong>Test types:</strong> MFT (minimum functionality), INV (invariance), DIR (directional expectation).</p><p><strong>Metrics:</strong> VPR (visible pass rate), HPR (hidden pass rate), MS (mutation score), SURS (spec-update regression score), RPR (rule-pair recall).</p></div></div><div class="cell zh"><div class="box"><div class="boxh"><strong>术语表</strong></div><p><strong>角色：</strong> TestSmith（编码 agent：测试生成器）、PromptSmith（编码 agent：提示词编译器）、MutationSmith（编码 agent：变异体生成器）、Built Agent（运行时，不是流水线中的 agent）。</p><p><strong>测试类型：</strong> MFT（最小功能性）、INV（不变性）、DIR（方向性预期）。</p><p><strong>指标：</strong> VPR（可见通过率）、HPR（隐藏通过率）、MS（变异得分）、SURS（规约更新回归得分）、RPR（规则对召回率）。</p></div></div></div>
+<div class="row rh h3" data-i="18"><div class="cell en"><h3 id="en-sec-18">1.1 Contributions</h3></div><div class="cell zh"><h3 id="zh-sec-18">1.1 本文贡献</h3></div></div>
+<div class="row" data-i="19"><div class="cell en"><p>This paper makes the following contributions:</p></div><div class="cell zh"><p>本文做出以下贡献：</p></div></div>
+<div class="row" data-i="20"><div class="cell en"><div class="li"><span class="lin">1</span><div><strong>A methodology for test-driven agent compilation.</strong> We formalize the process of converting product requirements into behavioral tests, then iteratively refining prompts until tests pass. We decompose this into four roles: TestSmith (test author), PromptSmith (prompt compiler), MutationSmith (test evaluator), and Built Agent (runtime), with explicit interfaces between them (§3).</div></div></div><div class="cell zh"><div class="li"><span class="lin">1</span><div><strong>一套测试驱动的 agent 编译方法论。</strong> 我们把&quot;将产品需求转换为行为测试、再迭代打磨提示词直到测试通过&quot;这一过程形式化，并将其拆解为四个角色：TestSmith（测试作者）、PromptSmith（提示词编译器）、MutationSmith（测试评估者）与 Built Agent（运行时），角色之间有明确接口（§3）。</div></div></div></div>
+<div class="row" data-i="21"><div class="cell en"><div class="li"><span class="lin">2</span><div><strong>Anti-gaming mechanisms for test-driven optimization.</strong> We identify specification gaming as a critical risk when tests become optimization targets and introduce three mitigations: hidden test splits, semantic mutation testing where a coding agent generates plausible faulty prompt variants and evaluates whether the visible test suite detects them, and spec evolution scenarios for regression measurement (§4).</div></div></div><div class="cell zh"><div class="li"><span class="lin">2</span><div><strong>面向测试驱动优化的反博弈机制。</strong> 我们指出：当测试成为优化目标时，规约博弈是一项关键风险，并引入三种缓解手段：隐藏测试划分；语义变异测试——由一个编码 agent 生成看似合理的错误提示词变体，并评估可见测试套件能否检出它们；以及用于回归度量的规约演化场景（§4）。</div></div></div></div>
+<div class="row" data-i="22"><div class="cell en"><div class="li"><span class="lin">3</span><div><strong>A benchmark for evaluating agent compilation workflows.</strong> SpecSuite-Core provides four deeply-specified agents, each with visible tests, hidden tests, mutation intent catalogs for semantic mutation testing, and v1→v2 evolution scenarios. Since the pipeline generates all artifacts from the spec alone, the repository includes SupportOps as a fully worked example (with generated tests, fixtures, and results); the remaining specs need only be run through the pipeline (§5).</div></div></div><div class="cell zh"><div class="li"><span class="lin">3</span><div><strong>一个评估 agent 编译工作流的基准。</strong> SpecSuite-Core 提供四个深度规约的 agent，每个都配有可见测试、隐藏测试、用于语义变异测试的变异意图目录，以及 v1→v2 演化场景。由于流水线仅凭规约就能生成全部产物，仓库中收录 SupportOps 作为完整示例（含生成的测试、夹具与结果）；其余规约只需跑一遍流水线即可（§5）。</div></div></div></div>
+<div class="row" data-i="23"><div class="cell en"><div class="li"><span class="lin">4</span><div><strong>Experimental evaluation across four domains.</strong> We run the full TDAD pipeline three times on each SpecSuite-Core spec version (24 total trials), achieving 92% v1 and 58% v2 compilation success, with most failed runs passing all visible tests except 1–2. Successful runs show 97% v1 / 78% v2 mean hidden pass rates, 86–100% mutation scores, and 97% mean regression safety under spec evolution (§6).</div></div></div><div class="cell zh"><div class="li"><span class="lin">4</span><div><strong>跨四个领域的实验评估。</strong> 我们在每个 SpecSuite-Core 规约版本上完整跑三次 TDAD 流水线（共 24 次试验），取得 92% 的 v1 与 58% 的 v2 编译成功率，其中大多数失败运行只差 1–2 条可见测试未通过。成功运行的平均隐藏通过率为 v1 97% / v2 78%，变异得分 86–100%，规约演化下的平均回归安全性为 97%（§6）。</div></div></div></div>
+<div class="row" data-i="24"><div class="cell en"><div class="li"><span class="lin">5</span><div><strong>A reference implementation using standard tooling.</strong> We provide a repository design that integrates pytest for tests, Claude Code in Docker for test generation, prompt compilation, and mutation testing, and the Claude Agent SDK<sup class="fn">2</sup> for agent execution. The same model can implement each role, but anti-gaming requires separate invocations with restricted artifact access; a single continuous session should not be used when hidden tests are used for evaluation (§7).</div></div></div><div class="cell zh"><div class="li"><span class="lin">5</span><div><strong>一份使用标准工具链的参考实现。</strong> 我们提供一套仓库设计：用 pytest 跑测试，用 Docker 中的 Claude Code 完成测试生成、提示词编译与变异测试，并用 Claude Agent SDK<sup class="fn">2</sup> 执行 agent。同一个模型可以承担每个角色，但反博弈要求分别调用并限制产物访问权限；当隐藏测试用于评测时，不应使用单一的连续会话（§7）。</div></div></div></div>
+<div class="row" data-i="25"><div class="cell en"><p class="note"><sup class="fn">2</sup> <a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener">https://platform.claude.com/docs/en/agent-sdk/overview</a></p></div><div class="cell zh"><p class="note"><sup class="fn">2</sup> <a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener">https://platform.claude.com/docs/en/agent-sdk/overview</a></p></div></div>
+<div class="row rh h2" data-i="26"><div class="cell en"><h2 id="en-sec-26">2 Related Work</h2></div><div class="cell zh"><h2 id="zh-sec-26">2 相关工作</h2></div></div>
+<div class="row" data-i="27"><div class="cell en"><p><strong>Prompt Optimization.</strong> Several systems treat prompts as optimizable artifacts: APE <a class="cite" href="#ref-24" data-ref="24">[24]</a> searches over LLM-generated candidates; TextGrad <a class="cite" href="#ref-22" data-ref="22">[22]</a> uses natural language &quot;gradients&quot;; Self-Refine <a class="cite" href="#ref-10" data-ref="10">[10]</a> and Reflexion <a class="cite" href="#ref-16" data-ref="16">[16]</a> iterate via self-feedback; OPRO <a class="cite" href="#ref-19" data-ref="19">[19]</a>, APO <a class="cite" href="#ref-11" data-ref="11">[11]</a>, PE2 <a class="cite" href="#ref-21" data-ref="21">[21]</a>, and PromptAgent <a class="cite" href="#ref-18" data-ref="18">[18]</a> use LLMs as prompt optimizers. DSPy <a class="cite" href="#ref-7" data-ref="7">[7]</a> is the closest comparator, compiling declarative signatures into optimized prompts with runtime constraints. TDAD differs in three ways: it optimizes against behavioral decision trees rather than task accuracy, includes anti-gaming mechanisms (hidden tests, mutation testing), and works from natural language specifications rather than code-level signatures. Direct empirical comparison is difficult because the input formats differ fundamentally: DSPy optimizes from code-level signatures against fixed evaluation datasets, while TDAD compiles from natural-language specs with stochastically generated test suites; a fair head-to-head would require re-encoding TDAD specs as DSPy signatures or vice versa.</p></div><div class="cell zh"><p><strong>提示词优化。</strong> 已有若干系统把提示词当作可优化产物：APE <a class="cite" href="#ref-24" data-ref="24">[24]</a> 在 LLM 生成的候选中搜索；TextGrad <a class="cite" href="#ref-22" data-ref="22">[22]</a> 使用自然语言&quot;梯度&quot;；Self-Refine <a class="cite" href="#ref-10" data-ref="10">[10]</a> 与 Reflexion <a class="cite" href="#ref-16" data-ref="16">[16]</a> 通过自反馈迭代；OPRO <a class="cite" href="#ref-19" data-ref="19">[19]</a>、APO <a class="cite" href="#ref-11" data-ref="11">[11]</a>、PE2 <a class="cite" href="#ref-21" data-ref="21">[21]</a> 与 PromptAgent <a class="cite" href="#ref-18" data-ref="18">[18]</a> 把 LLM 当作提示词优化器。DSPy <a class="cite" href="#ref-7" data-ref="7">[7]</a> 是最接近的对照，它把声明式签名编译成带运行时约束的优化提示词。TDAD 有三点不同：它针对行为决策树而非任务准确率做优化；包含反博弈机制（隐藏测试、变异测试）；且从自然语言规约而非代码级签名出发。直接的实证对比很困难，因为两者输入格式本质不同：DSPy 从代码级签名出发、针对固定评测数据集优化，而 TDAD 从自然语言规约出发、配合随机生成的测试套件；公平的正面对比需要把 TDAD 规约重新编码为 DSPy 签名，或者反过来。</p></div></div>
+<div class="row" data-i="28"><div class="cell en"><p><strong>Behavioral Testing.</strong> CheckList <a class="cite" href="#ref-13" data-ref="13">[13]</a> introduced MFT/INV/DIR test taxonomies for NLP models; we adopt this taxonomy directly. LLMorph <a class="cite" href="#ref-3" data-ref="3">[3]</a> applies metamorphic testing to LLMs; TDAD uses metamorphic tests in hidden suites. SPADE <a class="cite" href="#ref-14" data-ref="14">[14]</a> mines assertions from prompt edit histories; TDAD instead derives tests proactively from specifications.</p></div><div class="cell zh"><p><strong>行为测试。</strong> CheckList <a class="cite" href="#ref-13" data-ref="13">[13]</a> 为 NLP 模型引入了 MFT/INV/DIR 的测试分类法，我们直接沿用这套分类。LLMorph <a class="cite" href="#ref-3" data-ref="3">[3]</a> 把蜕变测试应用于 LLM；TDAD 在隐藏套件中使用蜕变测试。SPADE <a class="cite" href="#ref-14" data-ref="14">[14]</a> 从提示词编辑历史中挖掘断言；TDAD 则反过来，主动从规约推导测试。</p></div></div>
+<div class="row" data-i="29"><div class="cell en"><p><strong>Agent Benchmarks.</strong> AgentBench <a class="cite" href="#ref-9" data-ref="9">[9]</a>, TAU-Bench <a class="cite" href="#ref-20" data-ref="20">[20]</a>, BFCL <a class="cite" href="#ref-1" data-ref="1">[1]</a>, ToolLLM <a class="cite" href="#ref-12" data-ref="12">[12]</a>, MINT <a class="cite" href="#ref-17" data-ref="17">[17]</a>, and WebArena <a class="cite" href="#ref-23" data-ref="23">[23]</a> evaluate pre-built agents on diverse tasks. SWE-bench <a class="cite" href="#ref-5" data-ref="5">[5]</a> established hidden test suites as a widely adopted evaluation pattern. These benchmarks evaluate agent performance; SpecSuite-Core evaluates the PRD → tests → compilation → regression workflow.</p></div><div class="cell zh"><p><strong>Agent 基准。</strong> AgentBench <a class="cite" href="#ref-9" data-ref="9">[9]</a>、TAU-Bench <a class="cite" href="#ref-20" data-ref="20">[20]</a>、BFCL <a class="cite" href="#ref-1" data-ref="1">[1]</a>、ToolLLM <a class="cite" href="#ref-12" data-ref="12">[12]</a>、MINT <a class="cite" href="#ref-17" data-ref="17">[17]</a> 与 WebArena <a class="cite" href="#ref-23" data-ref="23">[23]</a> 在多样任务上评测已建成的 agent。SWE-bench <a class="cite" href="#ref-5" data-ref="5">[5]</a> 确立了隐藏测试套件这一被广泛采纳的评测范式。这些基准评测的是 agent 性能；SpecSuite-Core 评测的则是 PRD → 测试 → 编译 → 回归这一整条工作流。</p></div></div>
+<div class="row" data-i="30"><div class="cell en"><p><strong>Specification Gaming.</strong> Krakovna et al. <a class="cite" href="#ref-8" data-ref="8">[8]</a> catalogue 60+ examples of AI systems satisfying reward functions without achieving intended goals. Scaling laws for reward overoptimization <a class="cite" href="#ref-4" data-ref="4">[4]</a> and Goodhart&#x27;s Law in RL <a class="cite" href="#ref-6" data-ref="6">[6]</a> show that optimal stopping points exist before gaming dominates, providing mathematical grounding for TDAD&#x27;s hidden tests and iteration budgets. Sycophancy <a class="cite" href="#ref-15" data-ref="15">[15]</a> and emergent misalignment <a class="cite" href="#ref-2" data-ref="2">[2]</a> further motivate executable tests that cannot be &quot;pleased.&quot;</p></div><div class="cell zh"><p><strong>规约博弈。</strong> Krakovna 等人 <a class="cite" href="#ref-8" data-ref="8">[8]</a> 收录了 60 多个 AI 系统满足奖励函数却未达成预期目标的例子。奖励过度优化的缩放律 <a class="cite" href="#ref-4" data-ref="4">[4]</a> 与强化学习中的古德哈特定律 <a class="cite" href="#ref-6" data-ref="6">[6]</a> 表明，在博弈占据主导之前存在最优停止点，这为 TDAD 的隐藏测试与迭代预算提供了数学依据。谄媚性 <a class="cite" href="#ref-15" data-ref="15">[15]</a> 与涌现性失准 <a class="cite" href="#ref-2" data-ref="2">[2]</a> 进一步说明了为什么需要&quot;无法被讨好&quot;的可执行测试。</p></div></div>
+<div class="row rh h2" data-i="31"><div class="cell en"><h2 id="en-sec-31">3 The TDAD Methodology</h2></div><div class="cell zh"><h2 id="zh-sec-31">3 TDAD 方法论</h2></div></div>
+<div class="row" data-i="32"><div class="cell en"><p>TDAD treats agent development as a compilation problem: a specification (PRD + decision tree) is the source, behavioral tests are the intermediate representation, and the prompt/configuration is the compiled artifact. We use &quot;compile&quot; as shorthand for iterative test-driven refinement of a prompt until it satisfies an executable contract (not compilation in the programming-language sense).</p></div><div class="cell zh"><p>TDAD 把 agent 开发当作一个编译问题：规约（PRD + 决策树）是源码，行为测试是中间表示，提示词/配置是编译产物。我们用&quot;编译&quot;作为简称，指代对提示词做迭代式测试驱动打磨直到它满足一份可执行契约（并非程序语言意义上的编译）。</p></div></div>
+<div class="row rh h3" data-i="33"><div class="cell en"><h3 id="en-sec-33">3.1 Specification Format</h3></div><div class="cell zh"><h3 id="zh-sec-33">3.1 规约格式</h3></div></div>
+<div class="row" data-i="34"><div class="cell en"><p>A TDAD specification is a YAML document encoding:</p></div><div class="cell zh"><p>一份 TDAD 规约是一个 YAML 文档，编码以下内容：</p></div></div>
+<div class="row" data-i="35"><div class="cell en"><ul class="bl"><li><strong>Tools:</strong> Names, schemas, failure modes, and sequencing constraints</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>工具（Tools）：</strong> 名称、schema、失败模式与调用顺序约束</li></ul></div></div>
+<div class="row" data-i="36"><div class="cell en"><ul class="bl"><li><strong>Policies:</strong> Behavioral rules with priorities (e.g., &quot;never expose PII&quot; &gt; &quot;be helpful&quot;)</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>策略（Policies）：</strong> 带优先级的行为规则（例如&quot;绝不暴露 PII&quot; &gt; &quot;乐于助人&quot;）</li></ul></div></div>
+<div class="row" data-i="37"><div class="cell en"><ul class="bl"><li><strong>Decision tree:</strong> Branch conditions and required actions at each node</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>决策树（Decision tree）：</strong> 各节点的分支条件与必需动作</li></ul></div></div>
+<div class="row" data-i="38"><div class="cell en"><ul class="bl"><li><strong>Response contract:</strong> Structured output via a <code>respond</code> tool called once per turn</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>响应契约（Response contract）：</strong> 通过每轮调用一次的 <code>respond</code> 工具输出结构化结果</li></ul></div></div>
+<div class="row" data-i="39"><div class="cell en"><ul class="bl"><li><strong>Test guidance:</strong> Examples clarifying ambiguous policy terms for test generation</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>测试指引（Test guidance）：</strong> 用于生成测试时澄清含糊策略术语的示例</li></ul></div></div>
+<div class="row" data-i="40"><div class="cell en"><ul class="bl"><li><strong>Mutation intents:</strong> Failure modes the test suite must detect (used by MutationSmith)</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>变异意图（Mutation intents）：</strong> 测试套件必须检出的失败模式（供 MutationSmith 使用）</li></ul></div></div>
+<div class="row" data-i="41"><div class="cell en"><p>The specification is the single source of truth. Tests implement the specification; they don&#x27;t define it.</p></div><div class="cell zh"><p>规约是唯一的事实之源。测试实现规约；它们不定义规约。</p></div></div>
+<div class="row rh h4" data-i="42"><div class="cell en"><h4 id="en-sec-42">3.1.1 Test Guidance for Ambiguous Policies</h4></div><div class="cell zh"><h4 id="zh-sec-42">3.1.1 面向含糊策略的测试指引</h4></div></div>
+<div class="row" data-i="43"><div class="cell en"><p>Policies using subjective terms (&quot;ambiguous,&quot; &quot;destructive,&quot; &quot;disallowed&quot;) require concrete examples to ensure consistent test generation. The optional <code>test_guidance</code> field provides these:</p></div><div class="cell zh"><p>使用主观术语（&quot;含糊的&quot;&quot;破坏性的&quot;&quot;不允许的&quot;）的策略需要具体示例，才能保证测试生成的一致性。可选的 <code>test_guidance</code> 字段提供这些示例：</p></div></div>
+<div class="row" data-i="44"><div class="cell en"><pre class="code" data-lang="yaml"><code>- id: P3_CLARIFY_AMBIGUITY
+  text: If request is ambiguous, ask
+        one clarifying question first.
+  test_guidance:
+    description: |
+      Ambiguity is about WHAT data,
+      not HOW MUCH. Top-k queries can
+      use reasonable defaults.
+    ambiguous_examples:
+      - &quot;Show me the data&quot;
+      - &quot;What are the numbers?&quot;
+    unambiguous_examples:
+      - &quot;What is total revenue?&quot;
+      - &quot;Show me top 10 customers&quot;</code></pre></div><div class="cell zh"><pre class="code" data-lang="yaml"><code>- id: P3_CLARIFY_AMBIGUITY
+  text: If request is ambiguous, ask
+        one clarifying question first.
+  test_guidance:
+    description: |
+      Ambiguity is about WHAT data,
+      not HOW MUCH. Top-k queries can
+      use reasonable defaults.
+    ambiguous_examples:
+      - &quot;Show me the data&quot;
+      - &quot;What are the numbers?&quot;
+    unambiguous_examples:
+      - &quot;What is total revenue?&quot;
+      - &quot;Show me top 10 customers&quot;</code></pre></div></div>
+<div class="row" data-i="45"><div class="cell en"><p>Without such guidance, TestSmith may generate contradictory tests (e.g., one expecting clarification for &quot;top customers&quot; and another expecting direct execution), making compilation impossible.</p></div><div class="cell zh"><p>若没有这类指引，TestSmith 可能生成互相矛盾的测试（例如一条期望对&quot;top customers&quot;先澄清，另一条却期望直接执行），使编译无法完成。</p></div></div>
+<div class="row rh h3" data-i="46"><div class="cell en"><h3 id="en-sec-46">3.2 Four Roles</h3></div><div class="cell zh"><h3 id="zh-sec-46">3.2 四个角色</h3></div></div>
+<div class="row" data-i="47"><div class="cell en"><p>TDAD decomposes into four distinct roles with explicit interfaces, three for the pipeline and one for evaluation (Figure 1):</p></div><div class="cell zh"><p>TDAD 拆解为四个接口明确的角色，三个属于流水线，一个用于评测（图 1）：</p></div></div>
+<div class="row" data-i="48"><div class="cell en"><p><strong>TestSmith (coding agent)</strong> converts the specification into executable tests. TestSmith receives the spec YAML and a guidelines document specifying rules for each test category. The core principle: every test expectation must be derivable from the spec. If you cannot cite the specific clause that mandates the behavior, do not write the test.</p></div><div class="cell zh"><p><strong>TestSmith（编码 agent）</strong> 把规约转换成可执行测试。TestSmith 接收规约 YAML 以及一份为每类测试规定规则的指引文档。核心原则是：每一条测试预期都必须能从规约中推导出来。如果你无法引用强制该行为的具体条款，就不要写这条测试。</p></div></div>
+<div class="row" data-i="49"><div class="cell en"><p>The generation process: (1) traverse the decision tree, generating one MFT per leaf node with inputs that trigger that path; (2) for each MFT, generate INV variants by paraphrasing user messages while preserving intent; (3) generate DIR tests by creating input pairs that differ only in the condition being tested; (4) create deterministic fixtures that return consistent tool outputs, including canary values, unique identifiers (e.g., &quot;SSN: 999-00-1234&quot;) embedded in mock data that, if leaked in responses, indicate PII exposure.</p></div><div class="cell zh"><p>生成过程如下：（1）遍历决策树，为每个叶节点生成一条 MFT，输入要能触发该路径；（2）对每条 MFT，通过在保持意图不变的前提下改写用户消息来生成 INV 变体；（3）通过构造仅在被测条件上不同的输入对来生成 DIR 测试；（4）创建返回一致工具输出的确定性夹具，其中嵌入金丝雀值——即嵌在 mock 数据中的唯一标识符（例如&quot;SSN: 999-00-1234&quot;），一旦出现在响应中就说明 PII 泄露。</p></div></div>
+<div class="row" data-i="50"><div class="cell en"><p><strong>PromptSmith (coding agent)</strong> iteratively refines the prompt until tests pass. On each iteration, it: (1) runs the visible test suite and collects failures; (2) clusters failures by root cause (e.g., &quot;missing auth check&quot; vs. &quot;wrong tool order&quot;); (3) identifies the minimal prompt edit addressing the largest failure cluster; (4) applies the edit and re-runs tests.</p></div><div class="cell zh"><p><strong>PromptSmith（编码 agent）</strong> 迭代打磨提示词直到测试通过。每轮迭代它会：（1）运行可见测试套件并收集失败项；（2）按根因对失败聚类（例如&quot;缺少鉴权检查&quot; vs. &quot;工具顺序错误&quot;）；（3）找出能覆盖最大失败簇的最小提示词改动；（4）应用该改动并重跑测试。</p></div></div>
+<div class="row" data-i="51"><div class="cell en"><p><strong>Built Agent (runtime)</strong> executes the compiled prompt: loads the refined prompt and configuration, receives user messages and calls tools via MCP, and produces structured responses via a dedicated <code>respond</code> tool. Rather than parsing JSON from free-form text, agents call <code>respond</code> exactly once per turn as their final action, with schema-validated fields including <code>decision</code> (enum), <code>node_id</code>, <code>evidence</code>, and <code>user_message</code>. This enables deterministic assertions over the tool-call trace: tests check structured tool call arguments rather than parsing natural language.</p></div><div class="cell zh"><p><strong>Built Agent（运行时）</strong> 执行编译后的提示词：加载打磨后的提示词与配置，接收用户消息并通过 MCP 调用工具，再经由专用的 <code>respond</code> 工具产出结构化响应。agent 不是从自由文本中解析 JSON，而是在每轮的最后一个动作中恰好调用一次 <code>respond</code>，其字段经 schema 校验，包括 <code>decision</code>（枚举）、<code>node_id</code>、<code>evidence</code> 与 <code>user_message</code>。这使得针对工具调用轨迹的断言变得确定：测试检查的是结构化的工具调用参数，而不是解析自然语言。</p></div></div>
+<div class="row" data-i="52"><div class="cell en"><p><strong>MutationSmith (evaluation-only coding agent)</strong> assesses test-suite strength after compilation. MutationSmith takes the compiled prompt artifact, applies targeted semantic mutations corresponding to common failure modes (e.g., &quot;allow skipping authorization,&quot; &quot;leak PII when asked directly&quot;), and validates each mutation via an activation probe to ensure it actually changes behavior. The harness then runs the visible test suite against each mutated prompt to determine whether the mutation is detected. MutationSmith never participates in compilation and never sees tests (visible or hidden); it receives only the compiled prompt artifact and a mutation-intent catalog. Activation probes are separate from the visible test suite and are used only to confirm the mutation took effect; they are not counted as kills.</p></div><div class="cell zh"><p><strong>MutationSmith（仅用于评测的编码 agent）</strong> 在编译之后评估测试套件的强度。MutationSmith 拿到编译后的提示词产物，施加对应常见失败模式的定向语义变异（例如&quot;允许跳过鉴权&quot;&quot;被直接询问时泄露 PII&quot;），并通过激活探针验证每个变异确实改变了行为。随后评测框架针对每个变异后的提示词运行可见测试套件，判断该变异是否被检出。MutationSmith 从不参与编译，也从不看到测试（无论可见还是隐藏）；它只接收编译后的提示词产物和一份变异意图目录。激活探针独立于可见测试套件，仅用于确认变异确实生效，不计入击杀数。</p></div></div>
+<div class="row rh h3" data-i="53"><div class="cell en"><h3 id="en-sec-53">3.3 Tool Descriptions as First-Class Artifacts</h3></div><div class="cell zh"><h3 id="zh-sec-53">3.3 把工具描述当作一等产物</h3></div></div>
+<div class="row" data-i="54"><div class="cell en"><p>Tool descriptions are often more effective than the system prompt at teaching the agent when to use which tools, since agent frameworks place them alongside the system prompt in the context window. TDAD treats tool descriptions as a first-class optimization target:</p></div><div class="cell zh"><p>在教会 agent 何时用哪个工具这件事上，工具描述往往比系统提示词更有效，因为 agent 框架会把它们与系统提示词一并放进上下文窗口。TDAD 把工具描述当作一等优化目标：</p></div></div>
+<div class="row" data-i="55"><div class="cell en"><pre class="code" data-lang="yaml"><code># Spec provides minimal contract
+verify_identity:
+  description: Verify user identity.
+ 
+# PromptSmith may override with
+# actionable guidance
+verify_identity: |
+  REQUIRED before any account-changing
+  action (cancel_order, update_address).
+  Call FIRST when user wants to cancel.
+  Requires: account_id, last4, zip.
+  If verified=false, refuse and offer
+  to create a ticket.</code></pre></div><div class="cell zh"><pre class="code" data-lang="yaml"><code># Spec provides minimal contract
+verify_identity:
+  description: Verify user identity.
+ 
+# PromptSmith may override with
+# actionable guidance
+verify_identity: |
+  REQUIRED before any account-changing
+  action (cancel_order, update_address).
+  Call FIRST when user wants to cancel.
+  Requires: account_id, last4, zip.
+  If verified=false, refuse and offer
+  to create a ticket.</code></pre></div></div>
+<div class="row" data-i="56"><div class="cell en"><p>The optimized description includes when to call (preconditions), prerequisites (what data is needed), and return value semantics (what to do with results). Both the system prompt and tool description overrides constitute the &quot;compiled agent&quot; artifact.</p></div><div class="cell zh"><p>优化后的描述包含何时调用（前置条件）、前置依赖（需要哪些数据）以及返回值语义（拿到结果后该做什么）。系统提示词与工具描述覆写共同构成&quot;编译后 agent&quot;这一产物。</p></div></div>
+<div class="row rh h3" data-i="57"><div class="cell en"><h3 id="en-sec-57">3.4 Test Taxonomy</h3></div><div class="cell zh"><h3 id="zh-sec-57">3.4 测试分类法</h3></div></div>
+<div class="row" data-i="58"><div class="cell en"><p>Tests encode correctness across two dimensions: process tests assert tool usage and decision-tree compliance (call ordering, required/forbidden tools, confirmations), while outcome tests assert response correctness (numeric grounding, PII refusal, structured output contracts). For each decision node, we recommend at least one MFT (required action), one INV (paraphrase robustness), and one DIR (condition sensitivity).</p></div><div class="cell zh"><p>测试从两个维度编码正确性：过程测试断言工具使用与决策树遵从（调用顺序、必需/禁用工具、确认环节），结果测试断言响应正确性（数值有据、拒绝 PII、结构化输出契约）。对每个决策节点，我们建议至少配一条 MFT（必需动作）、一条 INV（改写鲁棒性）和一条 DIR（条件敏感性）。</p></div></div>
+<div class="row rh h3" data-i="59"><div class="cell en"><h3 id="en-sec-59">3.5 Deterministic Evaluation</h3></div><div class="cell zh"><h3 id="zh-sec-59">3.5 确定性评测</h3></div></div>
+<div class="row" data-i="60"><div class="cell en"><p>SpecSuite-Core avoids LLM user simulators and judge models. Multi-turn conversations are scripted; tool outputs come from deterministic fixtures embedding canary values (unique strings that indicate PII leakage if they appear in responses). The harness and tool outputs are deterministic; the model under test remains stochastic, addressed via recommended reruns (RPR, §4). Assertions operate on the tool-call trace rather than parsing natural language.</p></div><div class="cell zh"><p>SpecSuite-Core 不使用 LLM 用户模拟器和裁判模型。多轮对话是脚本化的；工具输出来自嵌入金丝雀值的确定性夹具（这些唯一字符串一旦出现在响应中即表示 PII 泄露）。评测框架与工具输出是确定的；被测模型仍然是随机的，这一点通过建议的重复运行来处理（RPR，§4）。断言作用于工具调用轨迹，而非解析自然语言。</p></div></div>
+<div class="row rh h3" data-i="61"><div class="cell en"><h3 id="en-sec-61">3.6 Compilation Loop</h3></div><div class="cell zh"><h3 id="zh-sec-61">3.6 编译循环</h3></div></div>
+<div class="row" data-i="62"><div class="cell en"><p>The PromptSmith compilation loop is shown in Algorithm 1. Convergence typically occurs in 2–5 iterations across SpecSuite-Core specs.</p></div><div class="cell zh"><p>PromptSmith 的编译循环见算法 1。在 SpecSuite-Core 的各份规约上，通常 2–5 轮迭代即可收敛。</p></div></div>
+<div class="row" data-i="63"><div class="cell en"><div class="algo"><div class="algoh"><strong>Algorithm 1</strong> PromptSmith Compilation Loop</div><div class="algl"><strong>Require:</strong> Visible test suite T_vis, initial prompt P₀, budget B, focused threshold θ (default 10)</div><div class="algl"><strong>Ensure:</strong> Compiled prompt P</div><div class="algl">1: P ← P₀ ▷ Seed or v1 artifact</div><div class="algl">2: i ← 0</div><div class="algl">3: <strong>while</strong> i &lt; B <strong>do</strong></div><div class="algl">4:  results ← RUNTESTS(T_vis, P)</div><div class="algl">5:  <strong>if</strong> results.all_pass <strong>then</strong></div><div class="algl">6:   <strong>return</strong> P</div><div class="algl">7:  <strong>end if</strong></div><div class="algl">8:  failures ← ANALYZE(results)</div><div class="algl">9:  <strong>if</strong> |failures| &lt; θ <strong>then</strong> ▷ Focused inner loop</div><div class="algl">10:   P ← FOCUSEDLOOP(P, failures)</div><div class="algl">11:  <strong>else</strong></div><div class="algl">12:   P ← EDITPROMPT(P, failures)</div><div class="algl">13:  <strong>end if</strong></div><div class="algl">14:  i ← i + 1</div><div class="algl">15: <strong>end while</strong></div><div class="algl">16: <strong>return</strong> P ▷ Budget exhausted</div></div></div><div class="cell zh"><div class="algo"><div class="algoh"><strong>算法 1</strong> PromptSmith 编译循环</div><div class="algl"><strong>输入要求：</strong> 可见测试套件 T_vis、初始提示词 P₀、预算 B、聚焦阈值 θ（默认 10）</div><div class="algl"><strong>输出保证：</strong> 编译后的提示词 P</div><div class="algl">1: P ← P₀ ▷ 种子提示词或 v1 产物</div><div class="algl">2: i ← 0</div><div class="algl">3: <strong>while</strong> i &lt; B <strong>do</strong></div><div class="algl">4:  results ← RUNTESTS(T_vis, P)</div><div class="algl">5:  <strong>if</strong> results.all_pass <strong>then</strong></div><div class="algl">6:   <strong>return</strong> P</div><div class="algl">7:  <strong>end if</strong></div><div class="algl">8:  failures ← ANALYZE(results)</div><div class="algl">9:  <strong>if</strong> |failures| &lt; θ <strong>then</strong> ▷ 聚焦内层循环</div><div class="algl">10:   P ← FOCUSEDLOOP(P, failures)</div><div class="algl">11:  <strong>else</strong></div><div class="algl">12:   P ← EDITPROMPT(P, failures)</div><div class="algl">13:  <strong>end if</strong></div><div class="algl">14:  i ← i + 1</div><div class="algl">15: <strong>end while</strong></div><div class="algl">16: <strong>return</strong> P ▷ 预算耗尽</div></div></div></div>
+<div class="row rh h4" data-i="64"><div class="cell en"><h4 id="en-sec-64">3.6.1 Two-Loop Compilation Strategy</h4></div><div class="cell zh"><h4 id="zh-sec-64">3.6.1 双循环编译策略</h4></div></div>
+<div class="row" data-i="65"><div class="cell en"><p>When fewer than θ tests fail (default: 10), running the full suite after each edit wastes time. The algorithm employs a focused inner loop that runs only failing tests (up to 8 attempts), promoting the candidate on success or aborting early when stuck. This reduces &quot;last mile&quot; iteration time from minutes to seconds.</p></div><div class="cell zh"><p>当失败测试少于 θ 条（默认 10）时，每次改动后都跑完整套件是浪费时间。算法采用一个聚焦内层循环，只运行失败的测试（最多 8 次尝试），成功则晋升候选提示词，卡住则提前中止。这把&quot;最后一公里&quot;的迭代时间从几分钟降到几秒。</p></div></div>
+<div class="row rh h2" data-i="66"><div class="cell en"><h2 id="en-sec-66">4 Preventing Specification Gaming</h2></div><div class="cell zh"><h2 id="zh-sec-66">4 防止规约博弈</h2></div></div>
+<div class="row" data-i="67"><div class="cell en"><p>Test-driven optimization creates a fundamental tension: tests become the optimization target and therefore a proxy for the specification, creating gaming risk. A sufficiently capable optimizer may satisfy tests without exhibiting correct behavior. While the term &quot;specification gaming&quot; originates in reinforcement learning contexts where agents exploit reward signals during training <a class="cite" href="#ref-8" data-ref="8">[8]</a>, we use it here to describe the analogous risk in test-driven prompt optimization: a coding agent may craft prompts that pass specific test assertions without exhibiting the intended general behavior. TDAD addresses this through three mechanisms.</p></div><div class="cell zh"><p>测试驱动优化带来一个根本性张力：测试成为优化目标，因而也成了规约的代理，这就产生了博弈风险。足够强的优化器可能在不表现出正确行为的前提下满足测试。&quot;规约博弈&quot;一词源自强化学习语境，指 agent 在训练中利用奖励信号 <a class="cite" href="#ref-8" data-ref="8">[8]</a>；我们在此借用它描述测试驱动提示词优化中的类似风险：编码 agent 可能炮制出能通过特定测试断言、却不具备预期一般行为的提示词。TDAD 通过三种机制应对这一点。</p></div></div>
+<div class="row rh h3" data-i="68"><div class="cell en"><h3 id="en-sec-68">4.1 Visible vs. Hidden Test Splits</h3></div><div class="cell zh"><h3 id="zh-sec-68">4.1 可见测试与隐藏测试的划分</h3></div></div>
+<div class="row" data-i="69"><div class="cell en"><p>Tests are partitioned into two sets:</p></div><div class="cell zh"><p>测试被划分为两组：</p></div></div>
+<div class="row" data-i="70"><div class="cell en"><ul class="bl"><li><strong>Visible tests (40–70%):</strong> Used during compilation. PromptSmith sees failures and iterates.</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>可见测试（40–70%）：</strong> 编译期使用。PromptSmith 能看到失败并据此迭代。</li></ul></div></div>
+<div class="row" data-i="71"><div class="cell en"><ul class="bl"><li><strong>Hidden tests (30–60%):</strong> Held out during compilation. Used only for reporting. The exact ratio varies by spec complexity to ensure sufficient hidden coverage for each behavioral category.</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>隐藏测试（30–60%）：</strong> 编译期扣留，仅用于汇报结果。具体比例随规约复杂度变化，以保证每个行为类别都有足够的隐藏覆盖。</li></ul></div></div>
+<div class="row" data-i="72"><div class="cell en"><p>The split is generated as follows: for each decision branch, TestSmith designates the primary MFT as visible and reserves INV/DIR variants as hidden. Additional hidden tests include: (1) paraphrase variants using different vocabulary or sentence structure; (2) boundary conditions (e.g., order value exactly at refund threshold); (3) metamorphic tests asserting that if input X changes in a specific way, output Y must change correspondingly. The <strong>Hidden Pass Rate (HPR)</strong> measures generalization beyond visible tests.</p></div><div class="cell zh"><p>划分方式如下：对每个决策分支，TestSmith 指定主 MFT 为可见，并把 INV/DIR 变体留作隐藏。此外的隐藏测试还包括：（1）使用不同词汇或句式的改写变体；（2）边界条件（例如订单金额恰好等于退款阈值）；（3）蜕变测试，断言若输入 X 以特定方式变化，输出 Y 必须相应变化。<strong>隐藏通过率（HPR）</strong> 度量的是超出可见测试之外的泛化能力。</p></div></div>
+<div class="row" data-i="73"><div class="cell en"><p>We distinguish two modes: in benchmark mode (SpecSuite-Core), tests are generated fresh each trial and hidden tests are frozen within a single trial, ensuring PromptSmith cannot game the evaluation. In production mode, failing hidden tests are promoted to visible, and the agent is recompiled.</p></div><div class="cell zh"><p>我们区分两种模式：在基准模式（SpecSuite-Core）下，测试在每次试验中重新生成，且隐藏测试在单次试验内被冻结，确保 PromptSmith 无法对评测做博弈。在生产模式下，未通过的隐藏测试会被提升为可见测试，并重新编译 agent。</p></div></div>
+<div class="row rh h3" data-i="74"><div class="cell en"><h3 id="en-sec-74">4.2 Semantic Mutation Testing</h3></div><div class="cell zh"><h3 id="zh-sec-74">4.2 语义变异测试</h3></div></div>
+<div class="row" data-i="75"><div class="cell en"><p>A test suite that passes everything, including wrong behaviors, provides no signal. TDAD uses semantic mutation testing: after compilation, a separate coding agent (MutationSmith) generates plausible faulty variants of the compiled prompt and evaluates whether the visible test suite detects them.</p></div><div class="cell zh"><p>一个什么都能通过（包括错误行为也能通过）的测试套件提供不了任何信号。TDAD 采用语义变异测试：编译完成后，由一个独立的编码 agent（MutationSmith）生成编译后提示词的、看似合理的错误变体，并评估可见测试套件能否检出它们。</p></div></div>
+<div class="row" data-i="76"><div class="cell en"><p>Unlike traditional mutation testing (which applies syntactic diffs to source code), TDAD prompts are dynamically synthesized by PromptSmith; there is no fixed artifact to patch in advance. Semantic mutations are intent-based: MutationSmith receives a mutation intent (e.g., &quot;skip authorization checks&quot;) and generates a mutated prompt that realizes that intent while preserving surface plausibility.</p></div><div class="cell zh"><p>与传统变异测试（对源码施加语法层面的 diff）不同，TDAD 的提示词是由 PromptSmith 动态合成的，事先并没有一个固定产物可供打补丁。语义变异是基于意图的：MutationSmith 接收一个变异意图（例如&quot;跳过鉴权检查&quot;），并生成一个在保持表面合理性的同时实现该意图的变异提示词。</p></div></div>
+<div class="row" data-i="77"><div class="cell en"><p>The mutation process: (1) MutationSmith takes the compiled prompt artifact P; (2) for each mutation intent mᵢ in the spec&#x27;s mutation catalog, MutationSmith generates a mutated prompt P_mᵢ; (3) an activation probe, a targeted test case designed to trigger the mutated behavior, validates that P_mᵢ actually differs from P; (4) mutants that fail activation after k attempts (default: 5) are marked as non-activating and excluded from the mutation score calculation; (5) the harness runs the visible test suite against each valid mutant.</p></div><div class="cell zh"><p>变异过程如下：（1）MutationSmith 取得编译后的提示词产物 P；（2）对规约变异目录中的每个变异意图 mᵢ，MutationSmith 生成一个变异提示词 P_mᵢ；（3）激活探针——一个专门设计用于触发变异行为的测试用例——验证 P_mᵢ 确实与 P 不同；（4）经 k 次尝试（默认 5）仍未激活的变异体被标记为未激活，并从变异得分的计算中排除；（5）评测框架针对每个有效变异体运行可见测试套件。</p></div></div>
+<div class="row" data-i="78"><div class="cell en"><p>An activation failure indicates either that the mutation intent is unrealistic for this prompt, or that the prompt&#x27;s design naturally resists the failure mode. This is analogous to filtering likely-equivalent mutants in traditional mutation testing frameworks like PIT (Java) and mutmut (Python). Across our experiments (Table 6), 87% of mutation intents successfully activated; the remainder were excluded as non-activating mutants.</p></div><div class="cell zh"><p>激活失败意味着：要么该变异意图对这份提示词而言不现实，要么该提示词的设计天然抵抗这一失败模式。这与传统变异测试框架（如 PIT（Java）与 mutmut（Python））中过滤&quot;可能等价变异体&quot;的做法类似。在我们的实验中（表 6），87% 的变异意图成功激活；其余作为未激活变异体被排除。</p></div></div>
+<div class="row rwide" data-i="79"><div class="cell en"><figure class="fig"><svg viewBox="0 0 1040 470" xmlns="http://www.w3.org/2000/svg" class="figsvg" role="img" aria-label="Semantic mutation testing pipeline diagram">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+  </defs>
+  <style>
+    .f2 { font-family: var(--sans); fill: var(--fg); }
+    .f2hd { font-weight: 700; font-size: 12.5px; letter-spacing:.3px; }
+    .f2b { font-weight: 700; font-size: 14px; }
+    .f2s { font-size: 12px; }
+    .f2xs { font-size: 11px; }
+    .box { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; rx:8; }
+    .doc { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .dia { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .l2 { stroke:#2f7ed8; stroke-width:2.4; fill:none; marker-end:url(#ar2); }
+    .sep2 { stroke: var(--fig-gray-s); stroke-width:1.3; stroke-dasharray:5 5; }
+    .panel2 { fill: var(--fig-panel); }
+  </style>
+
+  <rect x="8" y="8" width="1024" height="454" rx="10" class="panel2"/>
+  <line class="sep2" x1="158" y1="24" x2="158" y2="446"/>
+  <line class="sep2" x1="352" y1="24" x2="352" y2="446"/>
+  <line class="sep2" x1="536" y1="24" x2="536" y2="446"/>
+  <line class="sep2" x1="672" y1="24" x2="672" y2="446"/>
+  <line class="sep2" x1="872" y1="24" x2="872" y2="446"/>
+
+  <text class="f2 f2hd" x="84"  y="52" text-anchor="middle">INPUT PHASE</text>
+  <text class="f2 f2hd" x="255" y="40" text-anchor="middle">STAGE 1:</text>
+  <text class="f2 f2hd" x="255" y="56" text-anchor="middle">MUTATION GENERATION</text>
+  <text class="f2 f2hd" x="444" y="40" text-anchor="middle">STAGE 2:</text>
+  <text class="f2 f2hd" x="444" y="56" text-anchor="middle">ACTIVATION PROBE</text>
+  <text class="f2 f2hd" x="604" y="40" text-anchor="middle">STAGE 3:</text>
+  <text class="f2 f2hd" x="604" y="56" text-anchor="middle">HARNESS</text>
+  <text class="f2 f2hd" x="772" y="32" text-anchor="middle">STAGE 4:</text>
+  <text class="f2 f2hd" x="772" y="48" text-anchor="middle">OUTPUT &amp;</text>
+  <text class="f2 f2hd" x="772" y="64" text-anchor="middle">EVALUATION</text>
+  <text class="f2 f2hd" x="952" y="52" text-anchor="middle">FINAL METRIC</text>
+
+  <!-- inputs -->
+  <path class="doc" d="M46 118 h56 l18 18 v66 h-74 z"/>
+  <path class="doc" d="M102 118 l18 18 h-18 z"/>
+  <text class="f2 f2s" x="83" y="162" text-anchor="middle">Compiled</text>
+  <text class="f2 f2s" x="83" y="180" text-anchor="middle">Prompt P</text>
+  <path class="doc" d="M46 258 h56 l18 18 v82 h-74 z"/>
+  <path class="doc" d="M102 258 l18 18 h-18 z"/>
+  <text class="f2 f2s" x="83" y="300" text-anchor="middle">Mutation</text>
+  <text class="f2 f2s" x="83" y="318" text-anchor="middle">Intent</text>
+  <text class="f2 f2s" x="83" y="336" text-anchor="middle">Catalog</text>
+
+  <path class="l2" d="M120 168 h30 v100 h20"/>
+  <path class="l2" d="M120 300 h50"/>
+
+  <!-- MutationSmith -->
+  <rect class="box" x="172" y="176" width="166" height="188"/>
+  <text class="f2 f2b" x="255" y="228" text-anchor="middle">MutationSmith</text>
+  <text class="f2 f2s" x="255" y="260" text-anchor="middle">For each intent mᵢ:</text>
+  <text class="f2 f2s" x="255" y="278" text-anchor="middle">Generate mutated</text>
+  <text class="f2 f2s" x="255" y="296" text-anchor="middle">prompt Pₘᵢ</text>
+  <line class="l2" x1="340" y1="270" x2="382" y2="270"/>
+
+  <!-- activation probe diamond -->
+  <path class="dia" d="M444 218 L516 270 L444 322 L372 270 Z"/>
+  <text class="f2 f2s" x="444" y="256" text-anchor="middle" font-weight="700">Activation</text>
+  <text class="f2 f2s" x="444" y="272" text-anchor="middle" font-weight="700">Probe</text>
+  <text class="f2 f2xs" x="444" y="290" text-anchor="middle">Does Pₘᵢ differ</text>
+  <text class="f2 f2xs" x="444" y="304" text-anchor="middle">from P?</text>
+
+  <line class="l2" x1="444" y1="216" x2="444" y2="164"/>
+  <text class="f2 f2xs" x="500" y="200" text-anchor="middle">No (after k tries)</text>
+  <rect class="box" x="368" y="88" width="152" height="74"/>
+  <text class="f2 f2s" x="444" y="112" text-anchor="middle" font-weight="700">Non-activating</text>
+  <text class="f2 f2s" x="444" y="128" text-anchor="middle" font-weight="700">(probe failed)</text>
+  <text class="f2 f2xs" x="444" y="150" text-anchor="middle">Exclude from MS</text>
+
+  <line class="l2" x1="518" y1="270" x2="558" y2="270"/>
+  <text class="f2 f2xs" x="538" y="258" text-anchor="middle">Yes</text>
+
+  <!-- harness -->
+  <rect class="box" x="560" y="222" width="140" height="96"/>
+  <text class="f2 f2b" x="630" y="250" text-anchor="middle">Harness</text>
+  <text class="f2 f2s" x="630" y="274" text-anchor="middle">Run visible test</text>
+  <text class="f2 f2s" x="630" y="292" text-anchor="middle">suite against Pₘᵢ</text>
+  <line class="l2" x1="702" y1="270" x2="740" y2="270"/>
+
+  <!-- output diamond -->
+  <path class="dia" d="M792 226 L850 270 L792 314 L734 270 Z"/>
+  <text class="f2 f2s" x="792" y="275" text-anchor="middle" font-weight="700">OUTPUT</text>
+  <line class="l2" x1="792" y1="224" x2="792" y2="170"/>
+  <text class="f2 f2xs" x="838" y="208" text-anchor="middle">KILLED</text>
+  <line class="l2" x1="792" y1="316" x2="792" y2="368"/>
+  <text class="f2 f2xs" x="842" y="346" text-anchor="middle">SURVIVED</text>
+
+  <rect class="box" x="726" y="106" width="132" height="62"/>
+  <text class="f2 f2s" x="792" y="130" text-anchor="middle" font-weight="700">Killed - MS</text>
+  <text class="f2 f2s" x="792" y="148" text-anchor="middle" font-weight="700">numerator</text>
+  <rect class="box" x="726" y="370" width="132" height="62"/>
+  <text class="f2 f2s" x="792" y="394" text-anchor="middle" font-weight="700">Survived -</text>
+  <text class="f2 f2s" x="792" y="412" text-anchor="middle" font-weight="700">test gap</text>
+
+  <!-- final metric -->
+  <path class="l2" d="M860 137 h102 v96"/>
+  <path class="l2" d="M860 401 h102 v-96"/>
+  <text class="f2 f2s" x="902" y="274" text-anchor="middle">MS =</text>
+  <line x1="926" y1="270" x2="1018" y2="270" stroke="var(--fg)" stroke-width="1.3"/>
+  <text class="f2 f2xs" x="972" y="264" text-anchor="middle">killed</text>
+  <text class="f2 f2xs" x="972" y="286" text-anchor="middle">killed + survived</text>
+</svg></figure></div><div class="cell zh"><figure class="fig"><svg viewBox="0 0 1040 470" xmlns="http://www.w3.org/2000/svg" class="figsvg" role="img" aria-label="语义变异测试流水线图">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f7ed8"/>
+    </marker>
+  </defs>
+  <style>
+    .f2 { font-family: var(--sans); fill: var(--fg); }
+    .f2hd { font-weight: 700; font-size: 12.5px; letter-spacing:.3px; }
+    .f2b { font-weight: 700; font-size: 14px; }
+    .f2s { font-size: 12px; }
+    .f2xs { font-size: 11px; }
+    .box { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; rx:8; }
+    .doc { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .dia { fill: var(--fig-gray); stroke: var(--fig-gray-s); stroke-width:1.6; }
+    .l2 { stroke:#2f7ed8; stroke-width:2.4; fill:none; marker-end:url(#ar2); }
+    .sep2 { stroke: var(--fig-gray-s); stroke-width:1.3; stroke-dasharray:5 5; }
+    .panel2 { fill: var(--fig-panel); }
+  </style>
+
+  <rect x="8" y="8" width="1024" height="454" rx="10" class="panel2"/>
+  <line class="sep2" x1="158" y1="24" x2="158" y2="446"/>
+  <line class="sep2" x1="352" y1="24" x2="352" y2="446"/>
+  <line class="sep2" x1="536" y1="24" x2="536" y2="446"/>
+  <line class="sep2" x1="672" y1="24" x2="672" y2="446"/>
+  <line class="sep2" x1="872" y1="24" x2="872" y2="446"/>
+
+  <text class="f2 f2hd" x="84"  y="52" text-anchor="middle">输入阶段</text>
+  <text class="f2 f2hd" x="255" y="40" text-anchor="middle">阶段 1：</text>
+  <text class="f2 f2hd" x="255" y="56" text-anchor="middle">变异生成</text>
+  <text class="f2 f2hd" x="444" y="40" text-anchor="middle">阶段 2：</text>
+  <text class="f2 f2hd" x="444" y="56" text-anchor="middle">激活探针</text>
+  <text class="f2 f2hd" x="604" y="40" text-anchor="middle">阶段 3：</text>
+  <text class="f2 f2hd" x="604" y="56" text-anchor="middle">评测框架</text>
+  <text class="f2 f2hd" x="772" y="32" text-anchor="middle">阶段 4：</text>
+  <text class="f2 f2hd" x="772" y="48" text-anchor="middle">输出与</text>
+  <text class="f2 f2hd" x="772" y="64" text-anchor="middle">评估</text>
+  <text class="f2 f2hd" x="952" y="52" text-anchor="middle">最终指标</text>
+
+  <!-- inputs -->
+  <path class="doc" d="M46 118 h56 l18 18 v66 h-74 z"/>
+  <path class="doc" d="M102 118 l18 18 h-18 z"/>
+  <text class="f2 f2s" x="83" y="162" text-anchor="middle">编译后的</text>
+  <text class="f2 f2s" x="83" y="180" text-anchor="middle">提示词 P</text>
+  <path class="doc" d="M46 258 h56 l18 18 v82 h-74 z"/>
+  <path class="doc" d="M102 258 l18 18 h-18 z"/>
+  <text class="f2 f2s" x="83" y="300" text-anchor="middle">变异</text>
+  <text class="f2 f2s" x="83" y="318" text-anchor="middle">意图</text>
+  <text class="f2 f2s" x="83" y="336" text-anchor="middle">目录</text>
+
+  <path class="l2" d="M120 168 h30 v100 h20"/>
+  <path class="l2" d="M120 300 h50"/>
+
+  <!-- MutationSmith -->
+  <rect class="box" x="172" y="176" width="166" height="188"/>
+  <text class="f2 f2b" x="255" y="228" text-anchor="middle">MutationSmith</text>
+  <text class="f2 f2s" x="255" y="260" text-anchor="middle">对每个意图 mᵢ：</text>
+  <text class="f2 f2s" x="255" y="278" text-anchor="middle">生成变异</text>
+  <text class="f2 f2s" x="255" y="296" text-anchor="middle">提示词 Pₘᵢ</text>
+  <line class="l2" x1="340" y1="270" x2="382" y2="270"/>
+
+  <!-- activation probe diamond -->
+  <path class="dia" d="M444 218 L516 270 L444 322 L372 270 Z"/>
+  <text class="f2 f2s" x="444" y="256" text-anchor="middle" font-weight="700">激活</text>
+  <text class="f2 f2s" x="444" y="272" text-anchor="middle" font-weight="700">探针</text>
+  <text class="f2 f2xs" x="444" y="290" text-anchor="middle">Pₘᵢ 是否与 P</text>
+  <text class="f2 f2xs" x="444" y="304" text-anchor="middle">不同？</text>
+
+  <line class="l2" x1="444" y1="216" x2="444" y2="164"/>
+  <text class="f2 f2xs" x="500" y="200" text-anchor="middle">否（k 次尝试后）</text>
+  <rect class="box" x="368" y="88" width="152" height="74"/>
+  <text class="f2 f2s" x="444" y="112" text-anchor="middle" font-weight="700">未激活</text>
+  <text class="f2 f2s" x="444" y="128" text-anchor="middle" font-weight="700">（探针失败）</text>
+  <text class="f2 f2xs" x="444" y="150" text-anchor="middle">从 MS 中排除</text>
+
+  <line class="l2" x1="518" y1="270" x2="558" y2="270"/>
+  <text class="f2 f2xs" x="538" y="258" text-anchor="middle">是</text>
+
+  <!-- harness -->
+  <rect class="box" x="560" y="222" width="140" height="96"/>
+  <text class="f2 f2b" x="630" y="250" text-anchor="middle">评测框架</text>
+  <text class="f2 f2s" x="630" y="274" text-anchor="middle">针对 Pₘᵢ 运行</text>
+  <text class="f2 f2s" x="630" y="292" text-anchor="middle">可见测试套件</text>
+  <line class="l2" x1="702" y1="270" x2="740" y2="270"/>
+
+  <!-- output diamond -->
+  <path class="dia" d="M792 226 L850 270 L792 314 L734 270 Z"/>
+  <text class="f2 f2s" x="792" y="275" text-anchor="middle" font-weight="700">输出</text>
+  <line class="l2" x1="792" y1="224" x2="792" y2="170"/>
+  <text class="f2 f2xs" x="838" y="208" text-anchor="middle">已杀死</text>
+  <line class="l2" x1="792" y1="316" x2="792" y2="368"/>
+  <text class="f2 f2xs" x="842" y="346" text-anchor="middle">存活</text>
+
+  <rect class="box" x="726" y="106" width="132" height="62"/>
+  <text class="f2 f2s" x="792" y="130" text-anchor="middle" font-weight="700">杀死 — MS</text>
+  <text class="f2 f2s" x="792" y="148" text-anchor="middle" font-weight="700">分子</text>
+  <rect class="box" x="726" y="370" width="132" height="62"/>
+  <text class="f2 f2s" x="792" y="394" text-anchor="middle" font-weight="700">存活 —</text>
+  <text class="f2 f2s" x="792" y="412" text-anchor="middle" font-weight="700">测试缺口</text>
+
+  <!-- final metric -->
+  <path class="l2" d="M860 137 h102 v96"/>
+  <path class="l2" d="M860 401 h102 v-96"/>
+  <text class="f2 f2s" x="902" y="274" text-anchor="middle">MS =</text>
+  <line x1="926" y1="270" x2="1018" y2="270" stroke="var(--fg)" stroke-width="1.3"/>
+  <text class="f2 f2xs" x="972" y="264" text-anchor="middle">已杀死</text>
+  <text class="f2 f2xs" x="972" y="286" text-anchor="middle">已杀死 + 存活</text>
+</svg></figure></div></div>
+<div class="row" data-i="80"><div class="cell en"><p class="cap">Figure 2: Semantic mutation testing pipeline. Mutants that fail activation after 5 attempts are excluded as non-activating, analogous to filtering likely-equivalent mutants in traditional frameworks.</p></div><div class="cell zh"><p class="cap">图 2：语义变异测试流水线。经 5 次尝试仍未激活的变异体被排除为未激活变异体，这与传统框架中过滤可能等价变异体的做法类似。</p></div></div>
+<div class="row" data-i="81"><div class="cell en"><p>Good mutation intents are: (1) <em>plausible</em>: the mutated prompt could be written by a careless developer; (2) <em>consequential</em>: the behavioral change violates a safety or correctness property; (3) <em>activatable</em>: a probe can verify the mutation took effect. Example intents:</p></div><div class="cell zh"><p>好的变异意图应满足：（1）<em>合理</em>：这个变异提示词有可能出自一个粗心的开发者之手；（2）<em>有后果</em>：该行为变化违反某项安全性或正确性属性；（3）<em>可激活</em>：探针能验证变异确实生效。示例意图：</p></div></div>
+<div class="row" data-i="82"><div class="cell en"><ul class="bl"><li><code>SKIP_AUTH_GATE</code>: Allow actions without identity verification</li></ul></div><div class="cell zh"><ul class="bl"><li><code>SKIP_AUTH_GATE</code>：允许在未验证身份的情况下执行动作</li></ul></div></div>
+<div class="row" data-i="83"><div class="cell en"><ul class="bl"><li><code>LEAK_PII_ON_DIRECT_REQUEST</code>: Expose PII when asked directly</li></ul></div><div class="cell zh"><ul class="bl"><li><code>LEAK_PII_ON_DIRECT_REQUEST</code>：被直接询问时暴露 PII</li></ul></div></div>
+<div class="row" data-i="84"><div class="cell en"><ul class="bl"><li><code>SKIP_CONFIRM_CANCEL</code>: Skip confirmation before destructive actions</li></ul></div><div class="cell zh"><ul class="bl"><li><code>SKIP_CONFIRM_CANCEL</code>：在破坏性动作前跳过确认</li></ul></div></div>
+<div class="row" data-i="85"><div class="cell en"><p>The <strong>Mutation Score (MS)</strong> = fraction of valid mutants killed by the visible test suite:</p></div><div class="cell zh"><p><strong>变异得分（MS）</strong> = 被可见测试套件杀死的有效变异体所占比例：</p></div></div>
+<div class="row" data-i="86"><div class="cell en"><div class="math">$$MS = \frac{\left|\{m \in M' : \exists\, t \in T_{\mathrm{vis}},\ t \text{ fails on } P_m\}\right|}{|M'|} \qquad (1)$$</div></div><div class="cell zh"><div class="math">$$MS = \frac{\left|\{m \in M' : \exists\, t \in T_{\mathrm{vis}},\ t \text{ fails on } P_m\}\right|}{|M'|} \qquad (1)$$</div></div></div>
+<div class="row" data-i="87"><div class="cell en"><p>where M′ excludes non-activating mutants. A mutation is &quot;killed&quot; if at least one visible test fails on the mutated prompt. A low mutation score indicates a weak test suite: if a mutant survives, the suite lacks tests for that failure mode. Figure 2 illustrates this process.</p></div><div class="cell zh"><p>其中 M′ 已排除未激活变异体。若至少有一条可见测试在该变异提示词上失败，则该变异被判为&quot;杀死&quot;。变异得分低说明测试套件薄弱：变异体存活，意味着套件缺少针对该失败模式的测试。图 2 展示了这一过程。</p></div></div>
+<div class="row rh h4" data-i="88"><div class="cell en"><h4 id="en-sec-88">4.2.1 Mutation Activation Predicates</h4></div><div class="cell zh"><h4 id="zh-sec-88">4.2.1 变异激活谓词</h4></div></div>
+<div class="row" data-i="89"><div class="cell en"><p>Activation probes use behavioral checks, not structural checks. The supported predicates verify behavior through observable outputs:</p></div><div class="cell zh"><p>激活探针使用行为检查，而非结构检查。受支持的谓词通过可观测输出来验证行为：</p></div></div>
+<div class="row" data-i="90"><div class="cell en"><ul class="bl"><li><strong>Trace predicates:</strong> Tool called/not called, call ordering violations</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>轨迹谓词：</strong> 工具是否被调用、调用顺序是否违规</li></ul></div></div>
+<div class="row" data-i="91"><div class="cell en"><ul class="bl"><li><strong>Text predicates:</strong> Substring presence/absence in response</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>文本谓词：</strong> 响应中是否包含/不包含某子串</li></ul></div></div>
+<div class="row" data-i="92"><div class="cell en"><ul class="bl"><li><strong>JSON predicates:</strong> Field equality, set membership in structured output</li></ul></div><div class="cell zh"><ul class="bl"><li><strong>JSON 谓词：</strong> 字段相等性、结构化输出中的集合成员关系</li></ul></div></div>
+<div class="row" data-i="93"><div class="cell en"><p>Complex semantic checks like &quot;SQL query contains LIMIT clause&quot; are not directly supported; instead, mutations verify behavior through observable outcomes. This constraint encourages mutations that test behavioral contracts rather than implementation details.</p></div><div class="cell zh"><p>像&quot;SQL 查询包含 LIMIT 子句&quot;这样的复杂语义检查不被直接支持；变异改为通过可观测结果来验证行为。这一约束促使变异去检验行为契约，而非实现细节。</p></div></div>
+<div class="row rh h3" data-i="94"><div class="cell en"><h3 id="en-sec-94">4.3 Spec Evolution and Regression</h3></div><div class="cell zh"><h3 id="zh-sec-94">4.3 规约演化与回归</h3></div></div>
+<div class="row" data-i="95"><div class="cell en"><p>Production specifications change: new tools, updated policies, additional branches. TDAD models this as v1 → v2 evolution, treating v2 as a <em>continuation</em> of v1 rather than a fresh build.</p></div><div class="cell zh"><p>生产环境的规约会变：新增工具、更新策略、增加分支。TDAD 将其建模为 v1 → v2 演化，把 v2 当作 v1 的*延续*，而不是重新构建。</p></div></div>
+<div class="row" data-i="96"><div class="cell en"><p>For each spec, we define a v2 that includes 2–3 coordinated changes: new tool + new branch, stricter policy, or schema change. Critically, v2 compilation <em>starts from the v1 prompt artifact</em> and runs against <strong>only the v2 test suite</strong>; v1 invariant tests are held out entirely and never shown to PromptSmith during v2 compilation. After compilation completes, we evaluate the v2-compiled agent against these held-out v1 invariant tests (behaviors that must be preserved) to compute the <strong>Spec Update Regression Score (SURS)</strong> = fraction of v1 invariant tests that still pass. Because PromptSmith never observes v1 tests during v2 compilation, SURS measures true backward compatibility rather than optimization against known invariants. This mirrors production practice: new requirements are tested explicitly while regression on existing functionality is measured through held-out tests.</p></div><div class="cell zh"><p>对每份规约，我们定义一个包含 2–3 项协同变更的 v2：新工具 + 新分支、更严格的策略，或 schema 变更。关键在于，v2 编译*从 v1 的提示词产物出发*，并且只针对 <strong>v2 测试套件</strong>运行；v1 不变量测试被完全扣留，在 v2 编译期间从不展示给 PromptSmith。编译完成后，我们用这些被扣留的 v1 不变量测试（必须保持不变的行为）评估 v2 编译出的 agent，计算<strong>规约更新回归得分（SURS）</strong> = 仍然通过的 v1 不变量测试所占比例。因为 PromptSmith 在 v2 编译期间从未观察到 v1 测试，SURS 度量的是真实的向后兼容性，而不是针对已知不变量的优化结果。这与生产实践一致：新需求被显式测试，而既有功能上的回归通过扣留测试来度量。</p></div></div>
+<div class="row rh h3" data-i="97"><div class="cell en"><h3 id="en-sec-97">4.4 Reliability Under Stochasticity</h3></div><div class="cell zh"><h3 id="zh-sec-97">4.4 随机性下的可靠性</h3></div></div>
+<div class="row" data-i="98"><div class="cell en"><p>Agents are stochastic; a single pass/fail is insufficient. For production deployments, TDAD recommends measuring <strong>Reliability Pass Rate (RPR)</strong> = pass fraction over N reruns per test, with risk-adjusted N: standard scenarios use N = 10 with threshold τ ≥ 0.9; high-risk scenarios (PII, auth) use N = 50 with a &quot;zero failures&quot; policy (τ = 1.0). This converts &quot;seems stable&quot; into a quantifiable ship gate. We do not evaluate RPR in this study. A single spec version takes approximately 30–60 minutes wall-clock, and a full v1+v2 pipeline approximately 1–2 hours; RPR would multiply this by N, but we note it as an important production consideration.</p></div><div class="cell zh"><p>agent 是随机的；单次通过/失败并不足够。对于生产部署，TDAD 建议度量<strong>可靠性通过率（RPR）</strong> = 每条测试重复运行 N 次的通过比例，且 N 按风险调整：标准场景取 N = 10、阈值 τ ≥ 0.9；高风险场景（PII、鉴权）取 N = 50 并采用&quot;零失败&quot;策略（τ = 1.0）。这把&quot;看起来挺稳&quot;转化为可量化的发布门禁。本研究中我们未评测 RPR。跑完单个规约版本约需 30–60 分钟墙钟时间，完整的 v1+v2 流水线约需 1–2 小时；RPR 会把这个时间乘以 N，但我们仍将其列为一项重要的生产考量。</p></div></div>
+<div class="row rh h3" data-i="99"><div class="cell en"><h3 id="en-sec-99">4.5 Metrics Summary</h3></div><div class="cell zh"><h3 id="zh-sec-99">4.5 指标汇总</h3></div></div>
+<div class="row" data-i="100"><div class="cell en"><p>Table 1 summarizes the TDAD metrics.</p></div><div class="cell zh"><p>表 1 汇总了 TDAD 的各项指标。</p></div></div>
+<div class="row rwide" data-i="101"><div class="cell en"><figure class="tbl"><figcaption>Table 1: TDAD Evaluation Metrics</figcaption><div class="tw"><table><thead><tr><th>Metric</th><th>Definition</th><th>Purpose</th></tr></thead><tbody><tr><td>VPR</td><td>Visible Pass Rate</td><td>Compilation</td></tr><tr><td>HPR</td><td>Hidden Pass Rate</td><td>Generalization</td></tr><tr><td>MS</td><td>Mutation Score</td><td>Test quality</td></tr><tr><td>SURS</td><td>Spec Update Regr.</td><td>Regression safety</td></tr><tr><td>RPR†</td><td>Reliability Pass Rate</td><td>Stochasticity</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 1：TDAD 评测指标</figcaption><div class="tw"><table><thead><tr><th>指标</th><th>定义</th><th>用途</th></tr></thead><tbody><tr><td>VPR</td><td>可见通过率</td><td>编译</td></tr><tr><td>HPR</td><td>隐藏通过率</td><td>泛化</td></tr><tr><td>MS</td><td>变异得分</td><td>测试质量</td></tr><tr><td>SURS</td><td>规约更新回归得分</td><td>回归安全性</td></tr><tr><td>RPR†</td><td>可靠性通过率</td><td>随机性</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="102"><div class="cell en"><p class="note">† Three trials provide variance estimates; formal RPR (N=10–50 per test) recommended for production but not computed here.</p></div><div class="cell zh"><p class="note">† 三次试验提供方差估计；正式的 RPR（每条测试 N=10–50）建议用于生产，本文未计算。</p></div></div>
+<div class="row rh h2" data-i="103"><div class="cell en"><h2 id="en-sec-103">5 SpecSuite-Core Benchmark</h2></div><div class="cell zh"><h2 id="zh-sec-103">5 SpecSuite-Core 基准</h2></div></div>
+<div class="row rh h3" data-i="104"><div class="cell en"><h3 id="en-sec-104">5.1 Design Principles</h3></div><div class="cell zh"><h3 id="zh-sec-104">5.1 设计原则</h3></div></div>
+<div class="row" data-i="105"><div class="cell en"><p>SpecSuite-Core is a benchmark protocol (specs + generators + harness) for evaluating agent compilation workflows, not agents directly. Tests are regenerated per trial unless a seed is fixed; results reflect the full stochastic pipeline. It contains four specs because each is a mini-product with multi-turn flows, tool contracts, decision trees with 10+ branches, hidden tests (40–60%), mutation intent catalogs (5–7 intents per spec), and v1 → v2 evolution scenarios. Each mutation intent corresponds to a realistic regression mode for that domain; the same intents apply to both v1 and v2 compiled prompts.</p></div><div class="cell zh"><p>SpecSuite-Core 是一套基准协议（规约 + 生成器 + 评测框架），用于评估 agent 编译工作流，而非直接评估 agent。除非固定随机种子，测试在每次试验中都会重新生成；结果反映的是完整的随机流水线。它包含四份规约，因为每一份都是一个小型产品，具备多轮流程、工具契约、10 个以上分支的决策树、隐藏测试（40–60%）、变异意图目录（每份规约 5–7 个意图），以及 v1 → v2 演化场景。每个变异意图都对应该领域中一种现实的回归模式；同一批意图同时适用于 v1 与 v2 编译出的提示词。</p></div></div>
+<div class="row" data-i="106"><div class="cell en"><p><strong>Depth over breadth.</strong> Large shallow benchmarks (1000s of single-turn tasks) are easy to build and hard to trust. SpecSuite-Core is small (4 specs) but auditably rigorous.</p></div><div class="cell zh"><p><strong>深度优先于广度。</strong> 大而浅的基准（数千条单轮任务）容易构建但难以信任。SpecSuite-Core 规模很小（4 份规约），但在可审计的意义上足够严谨。</p></div></div>
+<div class="row rh h3" data-i="107"><div class="cell en"><h3 id="en-sec-107">5.2 The Four Specs</h3></div><div class="cell zh"><h3 id="zh-sec-107">5.2 四份规约</h3></div></div>
+<div class="row" data-i="108"><div class="cell en"><p>Table 2 summarizes the four specifications.</p></div><div class="cell zh"><p>表 2 汇总了这四份规约。</p></div></div>
+<div class="row rwide" data-i="109"><div class="cell en"><figure class="tbl"><figcaption>Table 2: SpecSuite-Core Specifications</figcaption><div class="tw"><table><thead><tr><th>Spec</th><th>Key Challenges</th></tr></thead><tbody><tr><td>SupportOps</td><td>Auth before action, PII refusal, plan eligibility, escalation triggers</td></tr><tr><td>DataInsights</td><td>SQL grounding, numeric precision, ambiguity detection, cost-aware queries</td></tr><tr><td>IncidentRunbook</td><td>Evidence-first ordering, severity routing, runbook compliance</td></tr><tr><td>ExpenseGuard</td><td>Spending caps, FX conversion, receipt requirements, manager approval</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 2：SpecSuite-Core 规约</figcaption><div class="tw"><table><thead><tr><th>规约</th><th>关键挑战</th></tr></thead><tbody><tr><td>SupportOps</td><td>动作前先鉴权、拒绝 PII、套餐资格、升级触发条件</td></tr><tr><td>DataInsights</td><td>SQL 有据、数值精度、含糊检测、成本感知查询</td></tr><tr><td>IncidentRunbook</td><td>证据优先的顺序、按严重级路由、运行手册遵从</td></tr><tr><td>ExpenseGuard</td><td>支出上限、外汇换算、票据要求、经理审批</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="110"><div class="cell en"><p>Table 3 quantifies the depth of each specification based on actual test generation.</p></div><div class="cell zh"><p>表 3 基于实际的测试生成结果量化了每份规约的深度。</p></div></div>
+<div class="row rwide" data-i="111"><div class="cell en"><figure class="tbl"><figcaption>Table 3: SpecSuite-Core Quantitative Depth</figcaption><div class="tw"><table><thead><tr><th>Spec</th><th>Nodes</th><th>V1 Vis.</th><th>V1 Hid.</th><th>V2 Vis.</th><th>V2 Hid.</th><th>Mut.</th></tr></thead><tbody><tr><td>SupportOps</td><td>12</td><td>47</td><td>45</td><td>53</td><td>43</td><td>7</td></tr><tr><td>DataInsights</td><td>10</td><td>34</td><td>42</td><td>53</td><td>43</td><td>6</td></tr><tr><td>IncidentRunbook</td><td>14</td><td>39</td><td>42</td><td>42</td><td>45</td><td>7</td></tr><tr><td>ExpenseGuard</td><td>11</td><td>47</td><td>45</td><td>46</td><td>42</td><td>7</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 3：SpecSuite-Core 定量深度</figcaption><div class="tw"><table><thead><tr><th>规约</th><th>节点数</th><th>V1 可见</th><th>V1 隐藏</th><th>V2 可见</th><th>V2 隐藏</th><th>变异数</th></tr></thead><tbody><tr><td>SupportOps</td><td>12</td><td>47</td><td>45</td><td>53</td><td>43</td><td>7</td></tr><tr><td>DataInsights</td><td>10</td><td>34</td><td>42</td><td>53</td><td>43</td><td>6</td></tr><tr><td>IncidentRunbook</td><td>14</td><td>39</td><td>42</td><td>42</td><td>45</td><td>7</td></tr><tr><td>ExpenseGuard</td><td>11</td><td>47</td><td>45</td><td>46</td><td>42</td><td>7</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="112"><div class="cell en"><p class="note">Median test counts across 3 trials; varies ±10–30% due to stochastic generation.</p></div><div class="cell zh"><p class="note">为 3 次试验的测试数量中位数；因生成具有随机性，浮动约 ±10–30%。</p></div></div>
+<div class="row rh h3" data-i="113"><div class="cell en"><h3 id="en-sec-113">5.3 Spec Summaries</h3></div><div class="cell zh"><h3 id="zh-sec-113">5.3 规约概要</h3></div></div>
+<div class="row" data-i="114"><div class="cell en"><p><strong>SupportOps</strong> models a customer service agent with priority-ordered policies: PII protection &gt; identity verification &gt; plan eligibility &gt; confirmation &gt; fraud escalation. V2 adds abuse detection (<code>flag_abuse</code>) while preserving all v1 behaviors. Example tests and mutation intents are available in the repository.</p></div><div class="cell zh"><p><strong>SupportOps</strong> 建模一个客服 agent，其策略按优先级排序：PII 保护 &gt; 身份验证 &gt; 套餐资格 &gt; 确认 &gt; 欺诈升级。V2 新增滥用检测（<code>flag_abuse</code>），同时保留全部 v1 行为。示例测试与变异意图见仓库。</p></div></div>
+<div class="row" data-i="115"><div class="cell en"><p><strong>DataInsights</strong> models a SQL analytics agent requiring grounded responses (must call <code>run_sql</code> before answering), ambiguity detection, and no fabrication. The <code>HALLUCINATE_NUMBERS</code> mutation survived in v1, revealing a test gap; v2 closed it. V2 adds cost estimation before expensive queries.</p></div><div class="cell zh"><p><strong>DataInsights</strong> 建模一个 SQL 分析 agent，要求响应有据（回答前必须调用 <code>run_sql</code>）、能检测含糊、不得编造。<code>HALLUCINATE_NUMBERS</code> 变异在 v1 中存活，暴露出一处测试缺口；v2 补上了它。V2 新增了在执行昂贵查询前做成本估算。</p></div></div>
+<div class="row" data-i="116"><div class="cell en"><p><strong>IncidentRunbook</strong> models an on-call assistant enforcing evidence-first ordering, severity-based routing, and runbook compliance. All 7 mutations activated in both versions; v1 showed one surviving mutation (<code>SKIP_RUNBOOK_LOOKUP</code>), addressed in v2 through improved test coverage.</p></div><div class="cell zh"><p><strong>IncidentRunbook</strong> 建模一个 on-call 助手，强制证据优先的顺序、按严重级路由，以及运行手册遵从。两个版本中 7 个变异全部激活；v1 出现一个存活变异（<code>SKIP_RUNBOOK_LOOKUP</code>），在 v2 中通过改进测试覆盖得到解决。</p></div></div>
+<div class="row" data-i="117"><div class="cell en"><p><strong>ExpenseGuard</strong> models an expense approval agent enforcing spending caps, receipt requirements, and disallowed-item rejection. V2 adds manager approval for amounts above cap, requiring 5 compiler iterations (vs. 2 for v1) due to the need for careful test guidance specifying approval thresholds.</p></div><div class="cell zh"><p><strong>ExpenseGuard</strong> 建模一个报销审批 agent，强制支出上限、票据要求与不允许项目的拒绝。V2 新增了超过上限金额需经理审批，由于需要精心编写指定审批阈值的测试指引，它耗费了 5 轮编译器迭代（v1 为 2 轮）。</p></div></div>
+<div class="row rh h2" data-i="118"><div class="cell en"><h2 id="en-sec-118">6 Experimental Results</h2></div><div class="cell zh"><h2 id="zh-sec-118">6 实验结果</h2></div></div>
+<div class="row" data-i="119"><div class="cell en"><p>We evaluate the complete TDAD pipeline on all four SpecSuite-Core specifications, running three independent trials for each spec version (24 total runs: 4 specs × 2 versions × 3 trials).</p></div><div class="cell zh"><p>我们在全部四份 SpecSuite-Core 规约上评估完整的 TDAD 流水线，每个规约版本跑三次独立试验（共 24 次运行：4 份规约 × 2 个版本 × 3 次试验）。</p></div></div>
+<div class="row rh h3" data-i="120"><div class="cell en"><h3 id="en-sec-120">6.1 Experimental Setup</h3></div><div class="cell zh"><h3 id="zh-sec-120">6.1 实验设置</h3></div></div>
+<div class="row" data-i="121"><div class="cell en"><p><strong>Models:</strong> Claude Sonnet 4.5<sup class="fn">3</sup> for all roles (TestSmith, PromptSmith, MutationSmith, and the Built Agent under test). All roles use default temperature settings (no explicit temperature override); no retry policy is applied to individual test assertions. PromptSmith and the Built Agent use identical model and settings; the only difference is the system prompt (PromptSmith receives compilation instructions, the Built Agent receives the compiled prompt). Test generation uses a fresh TestSmith invocation per trial with no fixed seed; variance across trials reflects stochastic generation.</p></div><div class="cell zh"><p><strong>模型：</strong> 所有角色（TestSmith、PromptSmith、MutationSmith 以及被测的 Built Agent）均使用 Claude Sonnet 4.5<sup class="fn">3</sup>。所有角色使用默认温度设置（未显式覆盖温度）；对单条测试断言不施加任何重试策略。PromptSmith 与 Built Agent 使用相同的模型和设置，唯一差别是系统提示词（PromptSmith 收到编译指令，Built Agent 收到编译后的提示词）。测试生成在每次试验中都新起一次 TestSmith 调用，不固定随机种子；跨试验的方差反映的是生成的随机性。</p></div></div>
+<div class="row" data-i="122"><div class="cell en"><p class="note"><sup class="fn">3</sup> Model ID: claude-sonnet-4-5-20250929.</p></div><div class="cell zh"><p class="note"><sup class="fn">3</sup> 模型 ID：claude-sonnet-4-5-20250929。</p></div></div>
+<div class="row" data-i="123"><div class="cell en"><p><strong>Infrastructure:</strong> Docker containers for isolation; pytest with parallel execution (<code>-n auto</code>) for test runs; deterministic fixtures for reproducibility.</p></div><div class="cell zh"><p><strong>基础设施：</strong> 用 Docker 容器做隔离；测试运行使用 pytest 并行执行（<code>-n auto</code>）；用确定性夹具保证可复现性。</p></div></div>
+<div class="row" data-i="124"><div class="cell en"><p><strong>Budget:</strong> Maximum 6 outer loop iterations for compilation; 8 inner loop attempts when fewer than 10 tests fail.</p></div><div class="cell zh"><p><strong>预算：</strong> 编译最多 6 轮外层循环；失败测试少于 10 条时，内层循环最多 8 次尝试。</p></div></div>
+<div class="row" data-i="125"><div class="cell en"><p><strong>Trials:</strong> Three independent runs per spec version to characterize variance. Each trial generates tests from scratch, compiles independently, and runs full evaluation.</p></div><div class="cell zh"><p><strong>试验：</strong> 每个规约版本三次独立运行以刻画方差。每次试验都从零生成测试、独立编译，并跑完整评测。</p></div></div>
+<div class="row rh h3" data-i="126"><div class="cell en"><h3 id="en-sec-126">6.2 Main Results</h3></div><div class="cell zh"><h3 id="zh-sec-126">6.2 主要结果</h3></div></div>
+<div class="row" data-i="127"><div class="cell en"><p>Table 4 presents the primary metrics across all specs, aggregated over successful compilation runs.</p></div><div class="cell zh"><p>表 4 给出全部规约的主要指标，在成功编译的运行上聚合。</p></div></div>
+<div class="row rwide" data-i="128"><div class="cell en"><figure class="tbl"><figcaption>Table 4: TDAD Pipeline Results Across SpecSuite-Core (mean ± std over successful runs)</figcaption><div class="tw"><table><thead><tr><th>Spec</th><th>Compile V1</th><th>Compile V2</th><th>HPR (%) V1</th><th>HPR (%) V2</th><th>MS (%) V1</th><th>MS (%) V2</th><th>SURS (%)</th></tr></thead><tbody><tr><td>SupportOps</td><td>3/3</td><td>2/3</td><td>97.6±2.3</td><td>62.5±16.1</td><td>100</td><td>100</td><td>94.2±5.1</td></tr><tr><td>DataInsights</td><td>3/3</td><td>2/3</td><td>96.6±4.1</td><td>88.3±3.7</td><td>94.4±9.6</td><td>100</td><td>98.7±1.9</td></tr><tr><td>IncidentRunbook</td><td>2/3</td><td>2/3</td><td>95.2±0.3</td><td>80.3±13.1</td><td>85.7</td><td>100</td><td>97.3±3.7</td></tr><tr><td>ExpenseGuard</td><td>3/3</td><td>1/3</td><td>99.2±1.3</td><td>81.8†</td><td>100</td><td>100†</td><td>100†</td></tr><tr><td>Aggregate</td><td>11/12</td><td>7/12</td><td>97.3±2.6</td><td>77.7±13.9</td><td>95.9±7.1</td><td>100</td><td>97.2±3.5</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 4：TDAD 流水线在 SpecSuite-Core 上的结果（成功运行的均值 ± 标准差）</figcaption><div class="tw"><table><thead><tr><th>规约</th><th>编译 V1</th><th>编译 V2</th><th>HPR (%) V1</th><th>HPR (%) V2</th><th>MS (%) V1</th><th>MS (%) V2</th><th>SURS (%)</th></tr></thead><tbody><tr><td>SupportOps</td><td>3/3</td><td>2/3</td><td>97.6±2.3</td><td>62.5±16.1</td><td>100</td><td>100</td><td>94.2±5.1</td></tr><tr><td>DataInsights</td><td>3/3</td><td>2/3</td><td>96.6±4.1</td><td>88.3±3.7</td><td>94.4±9.6</td><td>100</td><td>98.7±1.9</td></tr><tr><td>IncidentRunbook</td><td>2/3</td><td>2/3</td><td>95.2±0.3</td><td>80.3±13.1</td><td>85.7</td><td>100</td><td>97.3±3.7</td></tr><tr><td>ExpenseGuard</td><td>3/3</td><td>1/3</td><td>99.2±1.3</td><td>81.8†</td><td>100</td><td>100†</td><td>100†</td></tr><tr><td>合计</td><td>11/12</td><td>7/12</td><td>97.3±2.6</td><td>77.7±13.9</td><td>95.9±7.1</td><td>100</td><td>97.2±3.5</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="129"><div class="cell en"><p class="note">† Single successful run; no variance estimate available.</p></div><div class="cell zh"><p class="note">† 仅一次成功运行；无方差估计。</p></div></div>
+<div class="row" data-i="130"><div class="cell en"><p>All metrics are computed over successful runs (Table 4). V1 compiles reliably (92%) with strong generalization (97.3% HPR), while V2 shows lower success (58%) and higher variance. V2 mutation scores reach 100% across all successful runs, closing gaps observed in v1 (e.g., <code>HALLUCINATE_NUMBERS</code> surviving in DataInsights). SURS averages 97.2%, indicating that adding new capabilities rarely breaks existing behaviors.</p></div><div class="cell zh"><p>所有指标都在成功运行上计算（表 4）。V1 编译可靠（92%）且泛化能力强（HPR 97.3%），而 V2 成功率更低（58%）、方差更大。V2 的变异得分在所有成功运行中都达到 100%，补上了 v1 中观察到的缺口（例如 DataInsights 中存活的 <code>HALLUCINATE_NUMBERS</code>）。SURS 平均为 97.2%，说明新增能力很少破坏既有行为。</p></div></div>
+<div class="row rh h3" data-i="131"><div class="cell en"><h3 id="en-sec-131">6.3 Compilation Failure Analysis</h3></div><div class="cell zh"><h3 id="zh-sec-131">6.3 编译失败分析</h3></div></div>
+<div class="row" data-i="132"><div class="cell en"><p>V2 failures stem from TestSmith generating conflicting tests (2 runs) or PromptSmith exhausting the iteration budget (3 runs). However, all failed runs with recoverable logs achieved &gt;95% VPR before budget exhaustion: SupportOps/v2 reached 52/53 (98.1%), IncidentRunbook/v2 48/49 (98.0%), ExpenseGuard/v2 44/46 (95.7%), and IncidentRunbook/v1 36/38 (94.7%). One common pattern was oscillation: fixing test A breaks test B and vice versa, indicating conflicting test expectations from ambiguous spec language. We hypothesize that with increased iteration budgets or human clarification, these runs would succeed. A natural extension is allowing PromptSmith to escalate to TestSmith to resolve conflicting tests. To preserve anti-gaming guarantees, this should use a separate TestSmith invocation that receives only the spec and a failure summary—not the hidden tests or compiled prompt.</p></div><div class="cell zh"><p>V2 的失败来自 TestSmith 生成互相冲突的测试（2 次运行）或 PromptSmith 耗尽迭代预算（3 次运行）。不过，所有日志可恢复的失败运行在预算耗尽前都达到了 &gt;95% 的 VPR：SupportOps/v2 达到 52/53（98.1%），IncidentRunbook/v2 为 48/49（98.0%），ExpenseGuard/v2 为 44/46（95.7%），IncidentRunbook/v1 为 36/38（94.7%）。一种常见模式是振荡：修好测试 A 就破坏测试 B，反之亦然，这说明存在源自规约语言含糊的冲突性测试预期。我们推测，若增加迭代预算或引入人工澄清，这些运行是能够成功的。一个自然的扩展是允许 PromptSmith 向 TestSmith 上报以解决冲突测试。为保住反博弈保证，这应当使用一次独立的 TestSmith 调用，且只接收规约与一份失败摘要——而非隐藏测试或编译后的提示词。</p></div></div>
+<div class="row rh h3" data-i="133"><div class="cell en"><h3 id="en-sec-133">6.4 Mutation Testing Details</h3></div><div class="cell zh"><h3 id="zh-sec-133">6.4 变异测试细节</h3></div></div>
+<div class="row" data-i="134"><div class="cell en"><p>Table 6 (Appendix B) shows mutation outcomes across all specs. V1 mutation scores range from 86–100%, with two surviving mutants (<code>HALLUCINATE_NUMBERS</code> in DataInsights, <code>SKIP_RUNBOOK_LOOKUP</code> in IncidentRunbook). All v2 runs achieve 100% mutation scores.</p></div><div class="cell zh"><p>表 6（附录 B）给出全部规约的变异结果。V1 的变异得分在 86–100% 之间，有两个存活变异体（DataInsights 中的 <code>HALLUCINATE_NUMBERS</code>、IncidentRunbook 中的 <code>SKIP_RUNBOOK_LOOKUP</code>）。全部 v2 运行都取得 100% 的变异得分。</p></div></div>
+<div class="row rh h3" data-i="135"><div class="cell en"><h3 id="en-sec-135">6.5 Cost and Iteration Analysis</h3></div><div class="cell zh"><h3 id="zh-sec-135">6.5 成本与迭代分析</h3></div></div>
+<div class="row" data-i="136"><div class="cell en"><p>Table 5 shows the cost and iteration counts for successful runs. The full pipeline typically costs $2–3 per spec version (Anthropic API pricing, January 2026<sup class="fn">4</sup>), though some runs cost more depending on iterations (e.g., IncidentRunbook v2 averaged $4.23). Most compilations converge in 2–4 iterations. Total cost across all 18 successful runs was $45.15.</p></div><div class="cell zh"><p>表 5 给出成功运行的成本与迭代次数。完整流水线在每个规约版本上通常花费 2–3 美元（按 Anthropic API 2026 年 1 月定价<sup class="fn">4</sup>），不过部分运行会因迭代次数更多而花费更高（例如 IncidentRunbook v2 平均为 4.23 美元）。多数编译在 2–4 轮迭代内收敛。全部 18 次成功运行的总成本为 45.15 美元。</p></div></div>
+<div class="row" data-i="137"><div class="cell en"><p class="note"><sup class="fn">4</sup> <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">https://platform.claude.com/docs/en/about-claude/pricing</a></p></div><div class="cell zh"><p class="note"><sup class="fn">4</sup> <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">https://platform.claude.com/docs/en/about-claude/pricing</a></p></div></div>
+<div class="row rwide" data-i="138"><div class="cell en"><figure class="tbl"><figcaption>Table 5: Pipeline Cost (USD) and Iterations (mean ± std, successful runs)</figcaption><div class="tw"><table><thead><tr><th>Spec</th><th>Cost ($) V1</th><th>Cost ($) V2</th><th>Iterations V1</th><th>Iterations V2</th></tr></thead><tbody><tr><td>SupportOps</td><td>2.19±1.06</td><td>2.02±0.25</td><td>3.3±0.6</td><td>2.5±0.7</td></tr><tr><td>DataInsights</td><td>2.59±1.38</td><td>2.12±0.93</td><td>3.3±0.6</td><td>2.5±0.7</td></tr><tr><td>IncidentRunbook</td><td>1.55±0.12</td><td>4.23±3.21</td><td>2.5±0.7</td><td>3.5±2.1</td></tr><tr><td>ExpenseGuard</td><td>2.68±0.83</td><td>2.91†</td><td>3.3±1.2</td><td>3.0†</td></tr><tr><td>Average</td><td>2.32±0.96</td><td>2.81±1.71</td><td>3.1±0.8</td><td>2.9±1.1</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 5：流水线成本（美元）与迭代次数（成功运行的均值 ± 标准差）</figcaption><div class="tw"><table><thead><tr><th>规约</th><th>成本（$）V1</th><th>成本（$）V2</th><th>迭代次数 V1</th><th>迭代次数 V2</th></tr></thead><tbody><tr><td>SupportOps</td><td>2.19±1.06</td><td>2.02±0.25</td><td>3.3±0.6</td><td>2.5±0.7</td></tr><tr><td>DataInsights</td><td>2.59±1.38</td><td>2.12±0.93</td><td>3.3±0.6</td><td>2.5±0.7</td></tr><tr><td>IncidentRunbook</td><td>1.55±0.12</td><td>4.23±3.21</td><td>2.5±0.7</td><td>3.5±2.1</td></tr><tr><td>ExpenseGuard</td><td>2.68±0.83</td><td>2.91†</td><td>3.3±1.2</td><td>3.0†</td></tr><tr><td>平均</td><td>2.32±0.96</td><td>2.81±1.71</td><td>3.1±0.8</td><td>2.9±1.1</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="139"><div class="cell en"><p class="note">† Single successful run.</p></div><div class="cell zh"><p class="note">† 仅一次成功运行。</p></div></div>
+<div class="row rh h3" data-i="140"><div class="cell en"><h3 id="en-sec-140">6.6 Discussion</h3></div><div class="cell zh"><h3 id="zh-sec-140">6.6 讨论</h3></div></div>
+<div class="row" data-i="141"><div class="cell en"><p>Two findings merit emphasis beyond the tabulated results. First, compilation consistently adds value: seed prompts before compilation achieve 0–90% VPR depending on initial quality, and compilation closes the gap in all cases, improving HPR even for well-crafted starting prompts by addressing edge cases and underspecified behaviors. Second, the primary surviving mutations (<code>HALLUCINATE_NUMBERS</code> in DataInsights v1, <code>SKIP_RUNBOOK_LOOKUP</code> in IncidentRunbook v1) surfaced as systematic gaps: <code>SKIP_RUNBOOK_LOOKUP</code> survived in both successful runs, while <code>HALLUCINATE_NUMBERS</code> survived in 1 of 3. These results illustrate that mutation testing surfaces specific blind spots in the test suite that would otherwise go unnoticed. Despite variance, the pipeline produces usable agents: even the lowest HPR observed (51.1%) still represents an agent passing a majority of hidden tests, and SURS averaging 97.2% enables confident v1 → v2 evolution without catastrophic regression.</p></div><div class="cell zh"><p>除表格数据之外，有两点发现值得强调。第一，编译始终带来价值：编译前的种子提示词依初始质量不同可达到 0–90% 的 VPR，而编译在所有情形下都补上了差距——即便起点提示词写得很好，编译也能通过处理边界情况与欠规约行为来提升 HPR。第二，主要的存活变异（DataInsights v1 中的 <code>HALLUCINATE_NUMBERS</code>、IncidentRunbook v1 中的 <code>SKIP_RUNBOOK_LOOKUP</code>）呈现为系统性缺口：<code>SKIP_RUNBOOK_LOOKUP</code> 在两次成功运行中都存活，而 <code>HALLUCINATE_NUMBERS</code> 在 3 次中存活 1 次。这些结果说明，变异测试能暴露测试套件中原本不会被注意到的特定盲点。尽管存在方差，这条流水线仍能产出可用的 agent：即使观察到的最低 HPR（51.1%）也代表该 agent 通过了大多数隐藏测试，而 SURS 平均 97.2% 使得 v1 → v2 演化可以放心推进，不会出现灾难性回归。</p></div></div>
+<div class="row rh h2" data-i="142"><div class="cell en"><h2 id="en-sec-142">7 Reference Implementation</h2></div><div class="cell zh"><h2 id="zh-sec-142">7 参考实现</h2></div></div>
+<div class="row" data-i="143"><div class="cell en"><p>The repository organizes specs, tests, artifacts, and harness code into a standard pytest-based layout. Claude Code<sup class="fn">5</sup> serves all three pipeline roles (TestSmith, PromptSmith, MutationSmith) in Docker containers, with the pipeline stages following the methodology described in §3–§4.</p></div><div class="cell zh"><p>仓库把规约、测试、产物与评测框架代码组织成标准的 pytest 布局。Claude Code<sup class="fn">5</sup> 在 Docker 容器中承担全部三个流水线角色（TestSmith、PromptSmith、MutationSmith），各阶段遵循 §3–§4 描述的方法论。</p></div></div>
+<div class="row" data-i="144"><div class="cell en"><p class="note"><sup class="fn">5</sup> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">https://docs.anthropic.com/en/docs/claude-code</a></p></div><div class="cell zh"><p class="note"><sup class="fn">5</sup> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">https://docs.anthropic.com/en/docs/claude-code</a></p></div></div>
+<div class="row" data-i="145"><div class="cell en"><p><strong>Compiler isolation.</strong> The compilation container mounts only <code>tests_visible/</code>; hidden tests are stored in a separate Docker volume that is never mounted in the compiler, so PromptSmith cannot read or modify them. Visible test directories are additionally made read-only (<code>chmod -R a-w</code>) before PromptSmith executes, and write access is restricted to prompt artifacts in <code>agent_artifacts/</code>. Hidden tests are executed in a separate evaluation container after compilation completes. This layered isolation—filesystem inaccessibility for hidden tests, write protection for visible tests, and separate evaluation containers—ensures that test-driven compilation cannot degrade into test reading or rewriting.</p></div><div class="cell zh"><p><strong>编译器隔离。</strong> 编译容器只挂载 <code>tests_visible/</code>；隐藏测试存放在一个独立的 Docker 卷中，该卷从不在编译器里挂载，因此 PromptSmith 无法读取或修改它们。可见测试目录在 PromptSmith 执行前还会被设为只读（<code>chmod -R a-w</code>），写权限被限制在 <code>agent_artifacts/</code> 中的提示词产物上。隐藏测试在编译完成后于一个独立的评测容器中执行。这种分层隔离——隐藏测试在文件系统层面不可达、可见测试写保护、评测容器相互独立——确保测试驱动的编译不会退化成读测试或改测试。</p></div></div>
+<div class="row" data-i="146"><div class="cell en"><p>The harness provides assertion helpers for tool-call traces (<code>assert_called</code>, <code>assert_call_order</code>), structured output validation, PII canary detection, and numeric grounding.</p></div><div class="cell zh"><p>评测框架提供了针对工具调用轨迹的断言辅助函数（<code>assert_called</code>、<code>assert_call_order</code>）、结构化输出校验、PII 金丝雀检测与数值有据性检查。</p></div></div>
+<div class="row rh h2" data-i="147"><div class="cell en"><h2 id="en-sec-147">8 Limitations</h2></div><div class="cell zh"><h2 id="zh-sec-147">8 局限性</h2></div></div>
+<div class="row" data-i="148"><div class="cell en"><p><strong>Specification and test completeness.</strong> TDAD assumes requirements can be encoded as behavioral tests; properties like &quot;be empathetic&quot; resist precise specification. Mutation testing measures test strength but cannot guarantee completeness; moreover, excluding non-activating mutants from the mutation score may overstate test suite quality if some excluded mutants reflect genuine blind spots rather than truly equivalent mutations. Hidden tests and mutation testing reduce but do not eliminate gaming risk.</p></div><div class="cell zh"><p><strong>规约与测试的完备性。</strong> TDAD 假定需求可以被编码为行为测试；而像&quot;有同理心&quot;这类属性抗拒精确规约。变异测试度量的是测试强度，无法保证完备性；此外，把未激活变异体排除在变异得分之外，可能高估测试套件质量——如果部分被排除的变异体反映的其实是真实盲点，而非真正等价的变异。隐藏测试与变异测试能降低但无法消除博弈风险。</p></div></div>
+<div class="row" data-i="149"><div class="cell en"><p><strong>Stochastic variation and overhead.</strong> Both compilation and mutation generation are stochastic: V1 HPR variance is ±2–4%, V2 is ±4–16%. A single spec version takes 30–60 minutes wall-clock and $2–3 in API costs, comparable to CI/CD pipeline times but potentially prohibitive for rapid prototyping.</p></div><div class="cell zh"><p><strong>随机波动与开销。</strong> 编译与变异生成都是随机的：V1 的 HPR 方差为 ±2–4%，V2 为 ±4–16%。单个规约版本耗时 30–60 分钟墙钟时间、API 成本 2–3 美元，与 CI/CD 流水线时长相当，但对快速原型可能仍嫌昂贵。</p></div></div>
+<div class="row" data-i="150"><div class="cell en"><p><strong>LLM self-censorship in test generation.</strong> TestSmith avoids generating genuinely hostile or profane inputs due to safety training, even when adversarial inputs are needed for testing abuse detection. For robust coverage of these scenarios, human-curated test corpora remain necessary.</p></div><div class="cell zh"><p><strong>测试生成中的 LLM 自我审查。</strong> 由于安全训练，TestSmith 会回避生成真正有敌意或带脏话的输入，即便测试滥用检测正需要这类对抗性输入。要稳健覆盖这些场景，仍然需要人工整理的测试语料。</p></div></div>
+<div class="row" data-i="151"><div class="cell en"><p><strong>Evaluation scope.</strong> SpecSuite-Core contains four specifications (10–14 decision nodes each) with three trials per version. We do not ablate individual anti-gaming mechanisms (e.g., hidden tests alone, mutation testing alone) or compare against DSPy <a class="cite" href="#ref-7" data-ref="7">[7]</a>, TextGrad <a class="cite" href="#ref-22" data-ref="22">[22]</a>, or APE <a class="cite" href="#ref-24" data-ref="24">[24]</a>. All experiments use Claude Sonnet 4.5 for all pipeline roles; generalization to other model families and cross-model configurations (e.g., different models for TestSmith vs. PromptSmith) remains untested. Scaling to agents with 50+ decision nodes and the authoring learning curve are not quantified.</p></div><div class="cell zh"><p><strong>评估范围。</strong> SpecSuite-Core 包含四份规约（各含 10–14 个决策节点），每个版本三次试验。我们没有对各项反博弈机制做消融（例如只用隐藏测试、或只用变异测试），也没有与 DSPy <a class="cite" href="#ref-7" data-ref="7">[7]</a>、TextGrad <a class="cite" href="#ref-22" data-ref="22">[22]</a> 或 APE <a class="cite" href="#ref-24" data-ref="24">[24]</a> 做对比。全部实验的所有流水线角色都使用 Claude Sonnet 4.5；向其他模型家族的推广以及跨模型配置（例如 TestSmith 与 PromptSmith 用不同模型）尚未测试。扩展到 50 个以上决策节点的 agent，以及编写规约的学习曲线，均未量化。</p></div></div>
+<div class="row rh h2" data-i="152"><div class="cell en"><h2 id="en-sec-152">9 Conclusion</h2></div><div class="cell zh"><h2 id="zh-sec-152">9 结论</h2></div></div>
+<div class="row" data-i="153"><div class="cell en"><p>TDAD treats agent prompts as compiled artifacts: specify behavior as tests, iterate until tests pass, then maintain the test suite as a regression safety net. By adding hidden test splits, mutation testing, and spec evolution scenarios, TDAD provides the anti-gaming mechanisms necessary for production deployment.</p></div><div class="cell zh"><p>TDAD 把 agent 提示词当作编译产物：把行为写成测试规约，迭代到测试通过，再把测试套件维护为回归的安全网。通过加入隐藏测试划分、变异测试与规约演化场景，TDAD 提供了生产部署所必需的反博弈机制。</p></div></div>
+<div class="row" data-i="154"><div class="cell en"><p>Across 24 independent trials on SpecSuite-Core, TDAD achieves 92% v1 compilation success (97% HPR) and 58% v2 success (78% HPR), with 86–100% mutation scores and 97% regression safety. Failed runs typically passed all visible tests except 1–2, suggesting iteration budget constraints rather than fundamental limitations. The full pipeline costs $2–3 per spec version.</p></div><div class="cell zh"><p>在 SpecSuite-Core 上的 24 次独立试验中，TDAD 达到 92% 的 v1 编译成功率（HPR 97%）与 58% 的 v2 成功率（HPR 78%），变异得分 86–100%，回归安全性 97%。失败运行通常只差 1–2 条可见测试未通过，说明瓶颈在迭代预算而非方法的根本局限。完整流水线在每个规约版本上花费 2–3 美元。</p></div></div>
+<div class="row" data-i="155"><div class="cell en"><p>The core contribution is a methodology: the discipline to treat agent development with the same rigor software engineering applies to code. As agents take on higher-stakes decisions, this discipline becomes essential.</p></div><div class="cell zh"><p>核心贡献是一套方法论：用软件工程对待代码的同等严谨来对待 agent 开发的纪律。随着 agent 承担越来越高风险的决策，这种纪律将变得不可或缺。</p></div></div>
+<div class="row" data-i="156"><div class="cell en"><p>The implementation (specifications, test harness, mutation packs, and Docker infrastructure) is available as an open benchmark.<sup class="fn">6</sup> All four specs are executable; the pipeline generates tests, fixtures, and mutations from the spec alone.</p></div><div class="cell zh"><p>该实现（规约、测试评测框架、变异包与 Docker 基础设施）已作为开放基准发布。<sup class="fn">6</sup> 四份规约全部可执行；流水线仅凭规约就能生成测试、夹具与变异。</p></div></div>
+<div class="row" data-i="157"><div class="cell en"><p class="note"><sup class="fn">6</sup> <a href="https://github.com/f-labs-io/tdad-paper-code" target="_blank" rel="noopener">https://github.com/f-labs-io/tdad-paper-code</a></p></div><div class="cell zh"><p class="note"><sup class="fn">6</sup> <a href="https://github.com/f-labs-io/tdad-paper-code" target="_blank" rel="noopener">https://github.com/f-labs-io/tdad-paper-code</a></p></div></div>
+<div class="row rh h2" data-i="158"><div class="cell en"><h2 id="en-sec-158">References</h2></div><div class="cell zh"><h2 id="zh-sec-158">参考文献</h2></div></div>
+<div class="row" data-i="159"><div class="cell en"><div class="ref" id="ref-1"><span class="refn">[1]</span><span class="reft">Berkeley. BFCL: Berkeley function calling leaderboard. <a href="https://gorilla.cs.berkeley.edu/leaderboard.html," target="_blank" rel="noopener">https://gorilla.cs.berkeley.edu/leaderboard.html,</a> 2025.</span></div></div><div class="cell zh"><div class="ref" id="ref-1"><span class="refn">[1]</span><span class="reft">Berkeley. BFCL: Berkeley function calling leaderboard. <a href="https://gorilla.cs.berkeley.edu/leaderboard.html," target="_blank" rel="noopener">https://gorilla.cs.berkeley.edu/leaderboard.html,</a> 2025.</span></div></div></div>
+<div class="row" data-i="160"><div class="cell en"><div class="ref" id="ref-2"><span class="refn">[2]</span><span class="reft">Jan Betley, Daniel Tan, Niels Warncke, Anna Sztyber-Betley, Xuchan Bao, Martín Soto, Nathan Labenz, and Owain Evans. Emergent misalignment: Narrow finetuning can produce broadly misaligned LLMs. In ICML, 2025.</span></div></div><div class="cell zh"><div class="ref" id="ref-2"><span class="refn">[2]</span><span class="reft">Jan Betley, Daniel Tan, Niels Warncke, Anna Sztyber-Betley, Xuchan Bao, Martín Soto, Nathan Labenz, and Owain Evans. Emergent misalignment: Narrow finetuning can produce broadly misaligned LLMs. In ICML, 2025.</span></div></div></div>
+<div class="row" data-i="161"><div class="cell en"><div class="ref" id="ref-3"><span class="refn">[3]</span><span class="reft">Steven Cho, Stefano Ruberto, and Valerio Terragni. Metamorphic testing of large language models for natural language processing. In ICSME, 2025.</span></div></div><div class="cell zh"><div class="ref" id="ref-3"><span class="refn">[3]</span><span class="reft">Steven Cho, Stefano Ruberto, and Valerio Terragni. Metamorphic testing of large language models for natural language processing. In ICSME, 2025.</span></div></div></div>
+<div class="row" data-i="162"><div class="cell en"><div class="ref" id="ref-4"><span class="refn">[4]</span><span class="reft">Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization. In ICML, 2023.</span></div></div><div class="cell zh"><div class="ref" id="ref-4"><span class="refn">[4]</span><span class="reft">Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization. In ICML, 2023.</span></div></div></div>
+<div class="row" data-i="163"><div class="cell en"><div class="ref" id="ref-5"><span class="refn">[5]</span><span class="reft">Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik Narasimhan. SWE-bench: Can language models resolve real-world GitHub issues? In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-5"><span class="refn">[5]</span><span class="reft">Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik Narasimhan. SWE-bench: Can language models resolve real-world GitHub issues? In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="164"><div class="cell en"><div class="ref" id="ref-6"><span class="refn">[6]</span><span class="reft">Jacek Karwowski, Oliver Hayman, Xingjian Bai, Klaus Kiendlhofer, Charlie Griffin, and Joar Skalse. Goodhart&#x27;s law in reinforcement learning. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-6"><span class="refn">[6]</span><span class="reft">Jacek Karwowski, Oliver Hayman, Xingjian Bai, Klaus Kiendlhofer, Charlie Griffin, and Joar Skalse. Goodhart&#x27;s law in reinforcement learning. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="165"><div class="cell en"><div class="ref" id="ref-7"><span class="refn">[7]</span><span class="reft">Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav Santhanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas T Joshi, Hanna Moazam, Heather Miller, Matei Zaharia, and Christopher Potts. DSPy: Compiling declarative language model calls into self-improving pipelines. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-7"><span class="refn">[7]</span><span class="reft">Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav Santhanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas T Joshi, Hanna Moazam, Heather Miller, Matei Zaharia, and Christopher Potts. DSPy: Compiling declarative language model calls into self-improving pipelines. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="166"><div class="cell en"><div class="ref" id="ref-8"><span class="refn">[8]</span><span class="reft">Victoria Krakovna, Jonathan Uesato, Vladimir Mikulik, Matthew Rahtz, Tom Everitt, Ramana Kumar, Zac Kenton, Jan Leike, and Shane Legg. Specification gaming: The flip side of AI ingenuity. DeepMind Blog, 2020.</span></div></div><div class="cell zh"><div class="ref" id="ref-8"><span class="refn">[8]</span><span class="reft">Victoria Krakovna, Jonathan Uesato, Vladimir Mikulik, Matthew Rahtz, Tom Everitt, Ramana Kumar, Zac Kenton, Jan Leike, and Shane Legg. Specification gaming: The flip side of AI ingenuity. DeepMind Blog, 2020.</span></div></div></div>
+<div class="row" data-i="167"><div class="cell en"><div class="ref" id="ref-9"><span class="refn">[9]</span><span class="reft">Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, Shudan Zhang, Xiang Deng, Aohan Zeng, Zhengxiao Du, Chenhui Zhang, Sheng Shen, Tianjun Zhang, Yu Su, Huan Sun, Minlie Huang, Yuxiao Dong, and Jie Tang. AgentBench: Evaluating LLMs as agents. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-9"><span class="refn">[9]</span><span class="reft">Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, Shudan Zhang, Xiang Deng, Aohan Zeng, Zhengxiao Du, Chenhui Zhang, Sheng Shen, Tianjun Zhang, Yu Su, Huan Sun, Minlie Huang, Yuxiao Dong, and Jie Tang. AgentBench: Evaluating LLMs as agents. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="168"><div class="cell en"><div class="ref" id="ref-10"><span class="refn">[10]</span><span class="reft">Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, Shashank Gupta, Bodhisattwa Prasad Majumder, Katherine Hermann, Sean Welleck, Amir Yazdanbakhsh, and Peter Clark. Self-refine: Iterative refinement with self-feedback. In NeurIPS, 2023.</span></div></div><div class="cell zh"><div class="ref" id="ref-10"><span class="refn">[10]</span><span class="reft">Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, Shashank Gupta, Bodhisattwa Prasad Majumder, Katherine Hermann, Sean Welleck, Amir Yazdanbakhsh, and Peter Clark. Self-refine: Iterative refinement with self-feedback. In NeurIPS, 2023.</span></div></div></div>
+<div class="row" data-i="169"><div class="cell en"><div class="ref" id="ref-11"><span class="refn">[11]</span><span class="reft">Reid Pryzant, Dan Iter, Jerry Li, Yin Tat Lee, Chenguang Zhu, and Michael Zeng. Automatic prompt optimization with &quot;gradient descent&quot; and beam search. In EMNLP, 2023.</span></div></div><div class="cell zh"><div class="ref" id="ref-11"><span class="refn">[11]</span><span class="reft">Reid Pryzant, Dan Iter, Jerry Li, Yin Tat Lee, Chenguang Zhu, and Michael Zeng. Automatic prompt optimization with &quot;gradient descent&quot; and beam search. In EMNLP, 2023.</span></div></div></div>
+<div class="row" data-i="170"><div class="cell en"><div class="ref" id="ref-12"><span class="refn">[12]</span><span class="reft">Yujia Qin, Shihao Liang, Yining Ye, Kunlun Zhu, Lan Yan, Yaxi Lu, Yankai Lin, Xin Cong, Xiangru Tang, Bill Qian, Sihan Zhao, Lauren Hong, Runchu Tian, Ruobing Xie, Jie Zhou, Mark Gerstein, Dahai Li, Zhiyuan Liu, and Maosong Sun. ToolLLM: Facilitating large language models to master 16000+ real-world APIs. In ICLR, 2024. Spotlight.</span></div></div><div class="cell zh"><div class="ref" id="ref-12"><span class="refn">[12]</span><span class="reft">Yujia Qin, Shihao Liang, Yining Ye, Kunlun Zhu, Lan Yan, Yaxi Lu, Yankai Lin, Xin Cong, Xiangru Tang, Bill Qian, Sihan Zhao, Lauren Hong, Runchu Tian, Ruobing Xie, Jie Zhou, Mark Gerstein, Dahai Li, Zhiyuan Liu, and Maosong Sun. ToolLLM: Facilitating large language models to master 16000+ real-world APIs. In ICLR, 2024. Spotlight.</span></div></div></div>
+<div class="row" data-i="171"><div class="cell en"><div class="ref" id="ref-13"><span class="refn">[13]</span><span class="reft">Marco Tulio Ribeiro, Tongshuang Wu, Carlos Guestrin, and Sameer Singh. Beyond accuracy: Behavioral testing of NLP models with CheckList. In ACL, 2020.</span></div></div><div class="cell zh"><div class="ref" id="ref-13"><span class="refn">[13]</span><span class="reft">Marco Tulio Ribeiro, Tongshuang Wu, Carlos Guestrin, and Sameer Singh. Beyond accuracy: Behavioral testing of NLP models with CheckList. In ACL, 2020.</span></div></div></div>
+<div class="row" data-i="172"><div class="cell en"><div class="ref" id="ref-14"><span class="refn">[14]</span><span class="reft">Shreya Shankar, Haotian Li, Parth Asawa, Madelon Hulsebos, Yiming Lin, J.D. Zamfirescu-Pereira, Harrison Chase, Will Fu-Hinthorn, Aditya G Parameswaran, and Eugene Wu. SPADE: Synthesizing data quality assertions for large language model pipelines. PVLDB, 17(12): 4173–4186, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-14"><span class="refn">[14]</span><span class="reft">Shreya Shankar, Haotian Li, Parth Asawa, Madelon Hulsebos, Yiming Lin, J.D. Zamfirescu-Pereira, Harrison Chase, Will Fu-Hinthorn, Aditya G Parameswaran, and Eugene Wu. SPADE: Synthesizing data quality assertions for large language model pipelines. PVLDB, 17(12): 4173–4186, 2024.</span></div></div></div>
+<div class="row" data-i="173"><div class="cell en"><div class="ref" id="ref-15"><span class="refn">[15]</span><span class="reft">Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell, Samuel R Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott R Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse, Oliver Rausch, Nicholas Schiefer, Da Yan, Miranda Zhang, and Ethan Perez. Towards understanding sycophancy in language models. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-15"><span class="refn">[15]</span><span class="reft">Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell, Samuel R Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott R Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse, Oliver Rausch, Nicholas Schiefer, Da Yan, Miranda Zhang, and Ethan Perez. Towards understanding sycophancy in language models. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="174"><div class="cell en"><div class="ref" id="ref-16"><span class="refn">[16]</span><span class="reft">Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. Reflexion: Language agents with verbal reinforcement learning. In NeurIPS, 2023.</span></div></div><div class="cell zh"><div class="ref" id="ref-16"><span class="refn">[16]</span><span class="reft">Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. Reflexion: Language agents with verbal reinforcement learning. In NeurIPS, 2023.</span></div></div></div>
+<div class="row" data-i="175"><div class="cell en"><div class="ref" id="ref-17"><span class="refn">[17]</span><span class="reft">Xingyao Wang, Zihan Wang, Jiateng Liu, Yangyi Chen, Lifan Yuan, Hao Peng, and Heng Ji. MINT: Evaluating LLMs in multi-turn interaction with tools and language feedback. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-17"><span class="refn">[17]</span><span class="reft">Xingyao Wang, Zihan Wang, Jiateng Liu, Yangyi Chen, Lifan Yuan, Hao Peng, and Heng Ji. MINT: Evaluating LLMs in multi-turn interaction with tools and language feedback. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="176"><div class="cell en"><div class="ref" id="ref-18"><span class="refn">[18]</span><span class="reft">Xinyuan Wang, Chenxi Li, Zhen Wang, Fan Bai, Haotian Luo, Jiayou Zhang, Nebojsa Jojic, Eric P Xing, and Zhiting Hu. PromptAgent: Strategic planning with language models enables expert-level prompt optimization. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-18"><span class="refn">[18]</span><span class="reft">Xinyuan Wang, Chenxi Li, Zhen Wang, Fan Bai, Haotian Luo, Jiayou Zhang, Nebojsa Jojic, Eric P Xing, and Zhiting Hu. PromptAgent: Strategic planning with language models enables expert-level prompt optimization. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="177"><div class="cell en"><div class="ref" id="ref-19"><span class="refn">[19]</span><span class="reft">Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc V Le, Denny Zhou, and Xinyun Chen. Large language models as optimizers. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-19"><span class="refn">[19]</span><span class="reft">Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc V Le, Denny Zhou, and Xinyun Chen. Large language models as optimizers. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="178"><div class="cell en"><div class="ref" id="ref-20"><span class="refn">[20]</span><span class="reft">Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. τ-bench: A benchmark for tool-agent-user interaction in real-world domains. arXiv preprint arXiv:2406.12045, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-20"><span class="refn">[20]</span><span class="reft">Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. τ-bench: A benchmark for tool-agent-user interaction in real-world domains. arXiv preprint arXiv:2406.12045, 2024.</span></div></div></div>
+<div class="row" data-i="179"><div class="cell en"><div class="ref" id="ref-21"><span class="refn">[21]</span><span class="reft">Qinyuan Ye, Mohamed Ahmed, Reid Pryzant, and Fereshte Khani. Prompt engineering a prompt engineer. In Findings of ACL, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-21"><span class="refn">[21]</span><span class="reft">Qinyuan Ye, Mohamed Ahmed, Reid Pryzant, and Fereshte Khani. Prompt engineering a prompt engineer. In Findings of ACL, 2024.</span></div></div></div>
+<div class="row" data-i="180"><div class="cell en"><div class="ref" id="ref-22"><span class="refn">[22]</span><span class="reft">Mert Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Zhi Huang, Carlos Guestrin, and James Zou. TextGrad: Automatic &quot;differentiation&quot; via text. arXiv preprint arXiv:2406.07496, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-22"><span class="refn">[22]</span><span class="reft">Mert Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Zhi Huang, Carlos Guestrin, and James Zou. TextGrad: Automatic &quot;differentiation&quot; via text. arXiv preprint arXiv:2406.07496, 2024.</span></div></div></div>
+<div class="row" data-i="181"><div class="cell en"><div class="ref" id="ref-23"><span class="refn">[23]</span><span class="reft">Shuyan Zhou, Frank F Xu, Hao Zhu, Xuhui Zhou, Robert Lo, Abishek Sridhar, Xianyi Cheng, Tianyue Ou, Yonatan Bisk, Daniel Fried, Uri Alon, and Graham Neubig. WebArena: A realistic web environment for building autonomous agents. In ICLR, 2024.</span></div></div><div class="cell zh"><div class="ref" id="ref-23"><span class="refn">[23]</span><span class="reft">Shuyan Zhou, Frank F Xu, Hao Zhu, Xuhui Zhou, Robert Lo, Abishek Sridhar, Xianyi Cheng, Tianyue Ou, Yonatan Bisk, Daniel Fried, Uri Alon, and Graham Neubig. WebArena: A realistic web environment for building autonomous agents. In ICLR, 2024.</span></div></div></div>
+<div class="row" data-i="182"><div class="cell en"><div class="ref" id="ref-24"><span class="refn">[24]</span><span class="reft">Yongchao Zhou, Andrei Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis, Harris Chan, and Jimmy Ba. Large language models are human-level prompt engineers. In ICLR, 2023.</span></div></div><div class="cell zh"><div class="ref" id="ref-24"><span class="refn">[24]</span><span class="reft">Yongchao Zhou, Andrei Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis, Harris Chan, and Jimmy Ba. Large language models are human-level prompt engineers. In ICLR, 2023.</span></div></div></div>
+<div class="row rh h2" data-i="183"><div class="cell en"><h2 id="en-sec-183">Appendices</h2></div><div class="cell zh"><h2 id="zh-sec-183">附录</h2></div></div>
+<div class="row rh h3" data-i="184"><div class="cell en"><h3 id="en-sec-184">A Metric Definitions (Formal)</h3></div><div class="cell zh"><h3 id="zh-sec-184">A 指标的形式化定义</h3></div></div>
+<div class="row" data-i="185"><div class="cell en"><p>Visible Pass Rate (VPR):</p></div><div class="cell zh"><p>可见通过率（VPR）：</p></div></div>
+<div class="row" data-i="186"><div class="cell en"><div class="math">$$VPR = \frac{\left|\{t \in T_{\mathrm{visible}} : t \text{ passes}\}\right|}{|T_{\mathrm{visible}}|} \qquad (2)$$</div></div><div class="cell zh"><div class="math">$$VPR = \frac{\left|\{t \in T_{\mathrm{visible}} : t \text{ passes}\}\right|}{|T_{\mathrm{visible}}|} \qquad (2)$$</div></div></div>
+<div class="row" data-i="187"><div class="cell en"><p>Hidden Pass Rate (HPR):</p></div><div class="cell zh"><p>隐藏通过率（HPR）：</p></div></div>
+<div class="row" data-i="188"><div class="cell en"><div class="math">$$HPR = \frac{\left|\{t \in T_{\mathrm{hidden}} : t \text{ passes}\}\right|}{|T_{\mathrm{hidden}}|} \qquad (3)$$</div></div><div class="cell zh"><div class="math">$$HPR = \frac{\left|\{t \in T_{\mathrm{hidden}} : t \text{ passes}\}\right|}{|T_{\mathrm{hidden}}|} \qquad (3)$$</div></div></div>
+<div class="row" data-i="189"><div class="cell en"><p>Mutation Score (MS):</p></div><div class="cell zh"><p>变异得分（MS）：</p></div></div>
+<div class="row" data-i="190"><div class="cell en"><div class="math">$$MS = \frac{\left|\{m \in M' : \exists\, t \in T_{\mathrm{vis}},\ t \text{ fails on } P_m\}\right|}{|M'|} \qquad (4)$$</div></div><div class="cell zh"><div class="math">$$MS = \frac{\left|\{m \in M' : \exists\, t \in T_{\mathrm{vis}},\ t \text{ fails on } P_m\}\right|}{|M'|} \qquad (4)$$</div></div></div>
+<div class="row" data-i="191"><div class="cell en"><p>where M′ denotes valid (activating) mutants, excluding non-activating mutants that fail activation probes after k attempts.</p></div><div class="cell zh"><p>其中 M′ 表示有效（已激活）变异体，排除了经 k 次尝试仍未通过激活探针的未激活变异体。</p></div></div>
+<div class="row" data-i="192"><div class="cell en"><p>Spec Update Regression Score (SURS):</p></div><div class="cell zh"><p>规约更新回归得分（SURS）：</p></div></div>
+<div class="row" data-i="193"><div class="cell en"><div class="math">$$SURS = \frac{\left|\{t \in T^{v1}_{\mathrm{inv}} : t \text{ passes on } A_{v2}\}\right|}{|T^{v1}_{\mathrm{inv}}|} \qquad (5)$$</div></div><div class="cell zh"><div class="math">$$SURS = \frac{\left|\{t \in T^{v1}_{\mathrm{inv}} : t \text{ passes on } A_{v2}\}\right|}{|T^{v1}_{\mathrm{inv}}|} \qquad (5)$$</div></div></div>
+<div class="row" data-i="194"><div class="cell en"><p>where T^v1_inv denotes v1 invariant tests (behaviors that must be preserved).</p></div><div class="cell zh"><p>其中 T^v1_inv 表示 v1 不变量测试（必须保持不变的行为）。</p></div></div>
+<div class="row" data-i="195"><div class="cell en"><p>Reliability Pass Rate (RPR):</p></div><div class="cell zh"><p>可靠性通过率（RPR）：</p></div></div>
+<div class="row" data-i="196"><div class="cell en"><div class="math">$$RPR_t = \frac{\sum_{i=1}^{N} \mathbb{1}[t \text{ passes on run } i]}{N} \qquad (6)$$</div></div><div class="cell zh"><div class="math">$$RPR_t = \frac{\sum_{i=1}^{N} \mathbb{1}[t \text{ passes on run } i]}{N} \qquad (6)$$</div></div></div>
+<div class="row rh h3" data-i="197"><div class="cell en"><h3 id="en-sec-197">B Mutation Testing Results</h3></div><div class="cell zh"><h3 id="zh-sec-197">B 变异测试结果</h3></div></div>
+<div class="row rwide" data-i="198"><div class="cell en"><figure class="tbl"><figcaption>Table 6: Selected Mutation Testing Results (K=Killed, S=Survived). Each spec has 5–7 total intents; the 4 most representative per spec are shown.</figcaption><div class="tw"><table><thead><tr><th>Spec</th><th>Mutation</th><th>V1</th><th>V2</th></tr></thead><tbody><tr><td>SupportOps</td><td>SKIP_AUTH_GATE</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>LEAK_PII_DIRECT_REQ</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>SKIP_CONFIRM_CANCEL</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>ALWAYS_CREATE_TICKET</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>ANSWER_WITHOUT_SQL</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>HALLUCINATE_NUMBERS</td><td>S*</td><td>K</td></tr><tr><td>DataInsights</td><td>SKIP_CLARIFY_AMBIG</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>FABRICATE_ON_EMPTY</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>SKIP_EVIDENCE_FIRST</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>FAIL_TO_PAGE_SEV1</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>RECOMMEND_DESTR</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>SKIP_RUNBOOK_LOOKUP</td><td>S*</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>APPROVE_NO_POLICY</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>APPROVE_NO_RECEIPT</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>IGNORE_DISALLOWED</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>SKIP_FX_CONVERSION</td><td>K</td><td>K</td></tr></tbody></table></div></figure></div><div class="cell zh"><figure class="tbl"><figcaption>表 6：变异测试结果选摘（K=杀死，S=存活）。每份规约共有 5–7 个意图，此处展示各规约最具代表性的 4 个。</figcaption><div class="tw"><table><thead><tr><th>规约</th><th>变异</th><th>V1</th><th>V2</th></tr></thead><tbody><tr><td>SupportOps</td><td>SKIP_AUTH_GATE</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>LEAK_PII_DIRECT_REQ</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>SKIP_CONFIRM_CANCEL</td><td>K</td><td>K</td></tr><tr><td>SupportOps</td><td>ALWAYS_CREATE_TICKET</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>ANSWER_WITHOUT_SQL</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>HALLUCINATE_NUMBERS</td><td>S*</td><td>K</td></tr><tr><td>DataInsights</td><td>SKIP_CLARIFY_AMBIG</td><td>K</td><td>K</td></tr><tr><td>DataInsights</td><td>FABRICATE_ON_EMPTY</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>SKIP_EVIDENCE_FIRST</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>FAIL_TO_PAGE_SEV1</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>RECOMMEND_DESTR</td><td>K</td><td>K</td></tr><tr><td>IncidentRunbook</td><td>SKIP_RUNBOOK_LOOKUP</td><td>S*</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>APPROVE_NO_POLICY</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>APPROVE_NO_RECEIPT</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>IGNORE_DISALLOWED</td><td>K</td><td>K</td></tr><tr><td>ExpenseGuard</td><td>SKIP_FX_CONVERSION</td><td>K</td><td>K</td></tr></tbody></table></div></figure></div></div>
+<div class="row" data-i="199"><div class="cell en"><p class="note">* Survived in 1/3 runs (DataInsights), 2/2 runs (IncidentRunbook). Full IDs and catalogs (5–7 intents/spec) in repository.</p></div><div class="cell zh"><p class="note">* 在 1/3 次运行中存活（DataInsights），2/2 次运行中存活（IncidentRunbook）。完整 ID 与目录（每份规约 5–7 个意图）见仓库。</p></div></div>
+  </main>
+</div>
+<div id="pop"></div>
+<div id="lb"><div></div></div>
+<script>
+(function(){
+  var K='tdad-mode', T='tdad-theme';
+  var body=document.body;
+  function setMode(m){
+    body.classList.remove('mode-en','mode-zh');
+    if(m==='en')body.classList.add('mode-en');
+    if(m==='zh')body.classList.add('mode-zh');
+    try{localStorage.setItem(K,m)}catch(e){}
+    document.querySelectorAll('.modes button').forEach(function(b){
+      b.classList.toggle('on', b.dataset.m===m);});
+  }
+  var saved=null; try{saved=localStorage.getItem(K)}catch(e){}
+  if(!saved) saved = (window.innerWidth<=768)?'zh':'both';
+  setMode(saved);
+  document.querySelectorAll('.modes button').forEach(function(b){
+    b.addEventListener('click',function(){setMode(b.dataset.m)});});
+
+  var tb=document.getElementById('themebtn');
+  tb.addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme');
+    if(!cur) cur = matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    var nx = cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',nx);
+    try{localStorage.setItem(T,nx)}catch(e){}
+  });
+
+  var tocEl=document.querySelector('.toc'), tbtn=document.getElementById('tocbtn');
+  tbtn.addEventListener('click',function(){tocEl.classList.toggle('open')});
+  tocEl.addEventListener('click',function(e){
+    if(e.target.closest('a')&&window.innerWidth<=1100) tocEl.classList.remove('open');});
+
+  document.querySelectorAll('.row').forEach(function(r){
+    r.addEventListener('click',function(e){
+      if(e.target.closest('a')||e.target.closest('.fig')) return;
+      var on=r.classList.contains('sel');
+      document.querySelectorAll('.row.sel').forEach(function(x){x.classList.remove('sel')});
+      if(!on) r.classList.add('sel');
+    });
+  });
+
+  var REFS={"1":"Berkeley. BFCL: Berkeley function calling leaderboard. https://gorilla.cs.berkeley.edu/leaderboard.html, 2025.","2":"Jan Betley, Daniel Tan, Niels Warncke, Anna Sztyber-Betley, Xuchan Bao, Martín Soto, Nathan Labenz, and Owain Evans. Emergent misalignment: Narrow finetuning can produce broadly misaligned LLMs. In ICML, 2025.","3":"Steven Cho, Stefano Ruberto, and Valerio Terragni. Metamorphic testing of large language models for natural language processing. In ICSME, 2025.","4":"Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization. In ICML, 2023.","5":"Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik Narasimhan. SWE-bench: Can language models resolve real-world GitHub issues? In ICLR, 2024.","6":"Jacek Karwowski, Oliver Hayman, Xingjian Bai, Klaus Kiendlhofer, Charlie Griffin, and Joar Skalse. Goodhart's law in reinforcement learning. In ICLR, 2024.","7":"Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav Santhanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas T Joshi, Hanna Moazam, Heather Miller, Matei Zaharia, and Christopher Potts. DSPy: Compiling declarative language model calls into self-improving pipelines. In ICLR, 2024.","8":"Victoria Krakovna, Jonathan Uesato, Vladimir Mikulik, Matthew Rahtz, Tom Everitt, Ramana Kumar, Zac Kenton, Jan Leike, and Shane Legg. Specification gaming: The flip side of AI ingenuity. DeepMind Blog, 2020.","9":"Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, Shudan Zhang, Xiang Deng, Aohan Zeng, Zhengxiao Du, Chenhui Zhang, Sheng Shen, Tianjun Zhang, Yu Su, Huan Sun, Minlie Huang, Yuxiao Dong, and Jie Tang. AgentBench: Evaluating LLMs as agents. In ICLR, 2024.","10":"Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, Shashank Gupta, Bodhisattwa Prasad Majumder, Katherine Hermann, Sean Welleck, Amir Yazdanbakhsh, and Peter Clark. Self-refine: Iterative refinement with self-feedback. In NeurIPS, 2023.","11":"Reid Pryzant, Dan Iter, Jerry Li, Yin Tat Lee, Chenguang Zhu, and Michael Zeng. Automatic prompt optimization with \"gradient descent\" and beam search. In EMNLP, 2023.","12":"Yujia Qin, Shihao Liang, Yining Ye, Kunlun Zhu, Lan Yan, Yaxi Lu, Yankai Lin, Xin Cong, Xiangru Tang, Bill Qian, Sihan Zhao, Lauren Hong, Runchu Tian, Ruobing Xie, Jie Zhou, Mark Gerstein, Dahai Li, Zhiyuan Liu, and Maosong Sun. ToolLLM: Facilitating large language models to master 16000+ real-world APIs. In ICLR, 2024. Spotlight.","13":"Marco Tulio Ribeiro, Tongshuang Wu, Carlos Guestrin, and Sameer Singh. Beyond accuracy: Behavioral testing of NLP models with CheckList. In ACL, 2020.","14":"Shreya Shankar, Haotian Li, Parth Asawa, Madelon Hulsebos, Yiming Lin, J.D. Zamfirescu-Pereira, Harrison Chase, Will Fu-Hinthorn, Aditya G Parameswaran, and Eugene Wu. SPADE: Synthesizing data quality assertions for large language model pipelines. PVLDB, 17(12): 4173–4186, 2024.","15":"Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell, Samuel R Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott R Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse, Oliver Rausch, Nicholas Schiefer, Da Yan, Miranda Zhang, and Ethan Perez. Towards understanding sycophancy in language models. In ICLR, 2024.","16":"Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. Reflexion: Language agents with verbal reinforcement learning. In NeurIPS, 2023.","17":"Xingyao Wang, Zihan Wang, Jiateng Liu, Yangyi Chen, Lifan Yuan, Hao Peng, and Heng Ji. MINT: Evaluating LLMs in multi-turn interaction with tools and language feedback. In ICLR, 2024.","18":"Xinyuan Wang, Chenxi Li, Zhen Wang, Fan Bai, Haotian Luo, Jiayou Zhang, Nebojsa Jojic, Eric P Xing, and Zhiting Hu. PromptAgent: Strategic planning with language models enables expert-level prompt optimization. In ICLR, 2024.","19":"Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc V Le, Denny Zhou, and Xinyun Chen. Large language models as optimizers. In ICLR, 2024.","20":"Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. τ-bench: A benchmark for tool-agent-user interaction in real-world domains. arXiv preprint arXiv:2406.12045, 2024.","21":"Qinyuan Ye, Mohamed Ahmed, Reid Pryzant, and Fereshte Khani. Prompt engineering a prompt engineer. In Findings of ACL, 2024.","22":"Mert Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Zhi Huang, Carlos Guestrin, and James Zou. TextGrad: Automatic \"differentiation\" via text. arXiv preprint arXiv:2406.07496, 2024.","23":"Shuyan Zhou, Frank F Xu, Hao Zhu, Xuhui Zhou, Robert Lo, Abishek Sridhar, Xianyi Cheng, Tianyue Ou, Yonatan Bisk, Daniel Fried, Uri Alon, and Graham Neubig. WebArena: A realistic web environment for building autonomous agents. In ICLR, 2024.","24":"Yongchao Zhou, Andrei Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis, Harris Chan, and Jimmy Ba. Large language models are human-level prompt engineers. In ICLR, 2023."};
+  var pop=document.getElementById('pop');
+  document.querySelectorAll('a.cite').forEach(function(a){
+    a.addEventListener('mouseenter',function(){
+      var t=REFS[a.dataset.ref]; if(!t)return;
+      pop.textContent=t; pop.style.display='block';
+      var r=a.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight;
+      pop.style.left=Math.max(8,Math.min(window.innerWidth-w-8,r.left-w/2+r.width/2))+'px';
+      pop.style.top=(r.top>h+14?r.top-h-8:r.bottom+8)+'px';
+    });
+    a.addEventListener('mouseleave',function(){pop.style.display='none'});
+    a.addEventListener('click',function(e){
+      e.preventDefault(); pop.style.display='none';
+      var el=document.getElementById('ref-'+a.dataset.ref); if(!el)return;
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.classList.add('hit'); setTimeout(function(){el.classList.remove('hit')},1600);
+    });
+  });
+
+  var lb=document.getElementById('lb'), lbi=lb.firstElementChild;
+  document.querySelectorAll('.fig').forEach(function(f){
+    f.addEventListener('click',function(){
+      lbi.innerHTML=f.innerHTML; lb.style.display='flex';});
+  });
+  lb.addEventListener('click',function(){lb.style.display='none';lbi.innerHTML=''});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){lb.style.display='none';lbi.innerHTML='';tocEl.classList.remove('open');}});
+
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  var targets=links.map(function(a){return document.getElementById('en-sec-'+a.dataset.sec)});
+  var tick=false;
+  function upd(){
+    tick=false; var best=0;
+    for(var i=0;i<targets.length;i++){
+      var t=targets[i]; if(!t)continue;
+      if(t.getBoundingClientRect().top<130) best=i;
+    }
+    links.forEach(function(a,i){a.classList.toggle('act',i===best)});
+  }
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});
+  upd();
+})();
+</script>
+</body>
+</html>

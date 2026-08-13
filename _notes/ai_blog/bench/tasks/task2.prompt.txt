@@ -1,0 +1,9 @@
+实现 minilog/stats.py 里的 top_sources 函数(目前 raise NotImplementedError)。
+
+行为规格以两处为准:该函数的 docstring,以及验收测试 spec_tests/task2/test_top_sources.py(先读它)。
+
+完成后运行:
+
+    python -m pytest spec_tests/task2 tests -q
+
+必须全部通过。不要修改任何测试文件。

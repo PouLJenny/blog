@@ -108,14 +108,14 @@
         
         查看已经开启的端口： firewall-cmd --list-ports 
         开启端口
-        firewall-cmd --zone=public --add-port=12345/tcp --permanent
+        firewall-cmd --zone=public --add-port=19922/tcp --permanent
         命令含义：
         --zone #作用域
         --add-port=80/tcp  #添加端口，格式为：端口/通讯协议
         --permanent  #永久生效，没有此参数重启后失效
         
         查询端口号80 是否开启：firewall-cmd --query-port=80/tcp
-        移除80端口号：firewall-cmd --permanent --zone=public --remove-port=80/tcp
+        移除80端口号：firewall-cmd --permanent --zone=public --remove-port=5201/tcp
         重启防火墙
         firewall-cmd --reload
         开启防火墙

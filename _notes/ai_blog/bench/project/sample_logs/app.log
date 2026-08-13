@@ -1,0 +1,13 @@
+2026-07-01 12:00:01 [DEBUG] db.pool: acquiring connection
+2026-07-01 12:00:02 [INFO] api.orders: created order 1001 (642ms)
+2026-07-01 12:00:03 [ERROR] api.auth: token expired (120ms)
+2026-07-01 12:00:04 [INFO] db.pool: query ok (30ms)
+2026-07-01 12:00:05 [WARNING] api.orders: retrying payment gateway (1503ms)
+2026-07-01 12:00:06 [INFO] worker.mail: sent receipt (88ms)
+2026-07-01 12:00:07 [DEBUG] api.auth: cache miss
+2026-07-01 12:00:08 [INFO] api.orders: created order 1002 (497ms)
+this line is corrupted and should be ignored
+2026-07-01 12:00:09 [CRITICAL] db.pool: connection pool exhausted (5000ms)
+2026-07-01 12:00:10 [INFO] api.orders: created order 1003 (500ms)
+2026-07-01 12:00:11 [ERROR] worker.mail: smtp timeout (3001ms)
+2026-07-01 12:00:12 [INFO] api.auth: login ok (105ms)

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="EARS: Easy Approach to Requirements Syntax — English-Chinese bilingual edition based on the original page supplied by the user.">
+<title>EARS：简易需求语法方法｜中英文对照</title>
+<style>
+:root {
+  --brand: #0399bc;
+  --brand-dark: #02708a;
+  --ink: #24333a;
+  --muted: #65747b;
+  --line: #e5e9eb;
+  --paper: #ffffff;
+  --soft: #f4f9fa;
+  --code: #edf7f9;
+  --shadow: 0 14px 44px rgba(15, 49, 61, .10);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #f7f8f8;
+  color: var(--ink);
+  font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  font-weight: 300;
+  line-height: 1.75;
+}
+a { color: var(--brand-dark); text-underline-offset: 3px; }
+a:hover { color: var(--brand); }
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255,255,255,.96);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+.nav {
+  width: min(1180px, calc(100% - 36px));
+  min-height: 62px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand { font-weight: 500; color: var(--brand); text-decoration: none; font-size: 1.08rem; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; font-size: .82rem; text-transform: uppercase; letter-spacing: .06em; }
+.nav-links a { text-decoration: none; color: var(--ink); }
+.hero {
+  min-height: 250px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 54px 20px;
+  color: white;
+  background: linear-gradient(135deg, #0399bc 0%, #0392b4 100%);
+}
+.hero h1 { margin: 0; font-size: clamp(2.7rem, 8vw, 5.2rem); font-weight: 300; letter-spacing: .03em; }
+.hero p { margin: 10px 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .95; }
+.toolbar-wrap { background: var(--paper); border-bottom: 1px solid var(--line); }
+.toolbar {
+  width: min(1080px, calc(100% - 32px));
+  margin: auto;
+  padding: 14px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.source { color: var(--muted); font-size: .9rem; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.controls button {
+  appearance: none;
+  border: 1px solid #bddde5;
+  background: white;
+  color: var(--brand-dark);
+  border-radius: 999px;
+  padding: 7px 13px;
+  font: inherit;
+  font-size: .84rem;
+  cursor: pointer;
+}
+.controls button.active, .controls button:hover { background: var(--brand); color: white; border-color: var(--brand); }
+main {
+  width: min(1080px, calc(100% - 32px));
+  margin: 42px auto 64px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: clamp(22px, 5vw, 56px);
+}
+.column-heads { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 8px; color: var(--muted); font-size: .76rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+.pair { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(24px, 5vw, 58px); align-items: start; }
+.cell { min-width: 0; }
+.cell p { margin: .35em 0 1.05em; }
+.major-heading { margin-top: 8px; }
+.major-heading h3 { margin: 0 0 .65em; color: var(--brand); font-size: clamp(1.45rem, 2vw, 1.8rem); font-weight: 500; line-height: 1.3; }
+.minor-heading h4 { margin: .3em 0 .45em; color: var(--brand); font-size: 1.05rem; font-weight: 500; line-height: 1.35; }
+.section-rule { border-top: 1px solid var(--line); margin: 24px 0 28px; }
+blockquote {
+  margin: .4em 0 1em;
+  padding: 14px 18px;
+  color: var(--brand-dark);
+  background: var(--code);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+  font-size: .95rem;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+blockquote p { margin: 0 !important; }
+.button {
+  display: inline-block;
+  background: #337ab7;
+  border: 1px solid #2e6da4;
+  color: white !important;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.button:hover { background: #286090; border-color: #204d74; }
+.footer { background: #24333a; color: #d9e2e5; text-align: center; padding: 34px 20px; }
+.footer a { color: white; }
+.footer .copyright { margin-top: 10px; color: #aebdc2; font-size: .84rem; }
+body.mode-en .zh, body.mode-en .column-heads .zh-head { display: none; }
+body.mode-en .pair, body.mode-en .column-heads { grid-template-columns: minmax(0, 1fr); }
+body.mode-zh .en, body.mode-zh .column-heads .en-head { display: none; }
+body.mode-zh .pair, body.mode-zh .column-heads { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+  .hero { min-height: 190px; }
+  .column-heads { display: none; }
+  .pair { grid-template-columns: 1fr; gap: 2px; }
+  .cell.zh { border-left: 3px solid #c9e8ee; padding-left: 15px; margin-bottom: 8px; }
+  main { margin-top: 22px; border-radius: 10px; }
+  body.mode-en .cell.en, body.mode-zh .cell.zh { border-left: 0; padding-left: 0; }
+}
+@media print {
+  body { background: white; }
+  .site-header, .toolbar-wrap { display: none; }
+  .hero { min-height: auto; padding: 24px; color: #222; background: white; border-bottom: 2px solid var(--brand); }
+  main { width: 100%; margin: 0; padding: 24px 0; border: 0; box-shadow: none; }
+  .pair { break-inside: avoid; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: .75em; word-break: break-all; }
+}
+</style>
+</head>
+<body class="mode-bilingual">
+<header class="site-header">
+  <nav class="nav" aria-label="Original website navigation">
+    <a class="brand" href="https://alistairmavin.com/">Alistair Mavin</a>
+    <div class="nav-links">
+      <a href="https://alistairmavin.com/">Home / 首页</a>
+      <a href="https://alistairmavin.com/about/">About / 关于</a>
+      <a href="https://alistairmavin.com/ears/">EARS</a>
+      <a href="https://alistairmavin.com/training/">Training / 培训</a>
+      <a href="https://alistairmavin.com/contact/">Contact / 联系</a>
+    </div>
+  </nav>
+</header>
+<section class="hero">
+  <div>
+    <h1>EARS</h1>
+    <p>Easy Approach to Requirements Syntax · 简易需求语法方法</p>
+  </div>
+</section>
+<div class="toolbar-wrap">
+  <div class="toolbar">
+    <div class="source">原文来源：<a href="https://alistairmavin.com/ears/">alistairmavin.com/ears/</a></div>
+    <div class="controls" aria-label="Language display controls">
+      <button type="button" class="active" data-mode="bilingual">中英对照</button>
+      <button type="button" data-mode="zh">仅中文</button>
+      <button type="button" data-mode="en">English only</button>
+      <button type="button" onclick="window.print()">打印</button>
+    </div>
+  </div>
+</div>
+<main>
+  <div class="column-heads" aria-hidden="true"><div class="en-head">English</div><div class="zh-head">中文</div></div>
+  <section class="pair major-heading">
+          <div class="cell en" lang="en"><h3>What is EARS?</h3></div>
+          <div class="cell zh" lang="zh-CN"><h3>什么是 EARS？</h3></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The Easy Approach to Requirements Syntax (EARS) is a mechanism to gently constrain textual requirements. The EARS patterns provide structured guidance that enable authors to write high quality textual requirements.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>简易需求语法方法（Easy Approach to Requirements Syntax，EARS）是一种对文本需求进行适度约束的机制。EARS 模式提供结构化指导，使编写者能够写出高质量的文本需求。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>There is a set syntax (structure), with an underlying ruleset. A small number of keywords are used to denote the different clauses of an EARS requirement. The clauses are always in the same order, following temporal logic. The syntax and the keywords closely match common usage of English and are therefore intuitive.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>EARS 具有一套固定的语法（结构）及其底层规则集。它使用少量关键词来标识一条 EARS 需求中的不同分句。这些分句始终按照相同顺序排列，并遵循时间逻辑。其语法和关键词与英语的日常用法高度一致，因此直观易懂。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair major-heading">
+          <div class="cell en" lang="en"><h3>How Was EARS Developed?</h3></div>
+          <div class="cell zh" lang="zh-CN"><h3>EARS 是如何开发出来的？</h3></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Mav and colleagues at Rolls-Royce PLC developed EARS whilst analysing the airworthiness regulations for a jet engine’s control system. The regulations contained high level objectives, a mixture of implicit and explicit requirements at different levels, lists, guidelines and supporting information.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>Mav 与劳斯莱斯公司（Rolls-Royce PLC）的同事在分析某喷气发动机控制系统的适航法规时开发了 EARS。这些法规包含高层目标、处于不同层级的隐式与显式需求、清单、指南以及支持性信息。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>In the process of extracting and simplifying the requirements, Mav noticed that the requirements all followed a similar structure. He found that requirements were easiest to read when the clauses always appeared in the same order. These patterns were refined and evolved to create EARS.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>在提取并简化需求的过程中，Mav 注意到这些需求都遵循相似的结构。他发现，当各个分句始终以相同顺序出现时，需求最容易阅读。随后，这些模式经过提炼和演化，最终形成了 EARS。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The notation was first published in 2009 and has been adopted by many organisations across the world.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>该表示法于 2009 年首次发表，此后被世界各地的许多组织采用。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair major-heading">
+          <div class="cell en" lang="en"><h3>Why Use EARS?</h3></div>
+          <div class="cell zh" lang="zh-CN"><h3>为什么使用 EARS？</h3></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>System requirements are usually written in unconstrained natural language (NL), which is inherently imprecise. Often, requirements authors are not trained in how to write requirements. During system development, requirements problems propagate to lower levels. This creates unnecessary volatility and risk, impacting programme schedule and cost.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>系统需求通常使用不受约束的自然语言（NL）编写，而自然语言本质上并不精确。需求编写者往往没有接受过需求写作方面的培训。在系统开发过程中，需求中的问题会向更低层级传播，由此造成不必要的变动与风险，并影响项目进度和成本。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>EARS reduces or even eliminates common problems found in natural language requirements. It is especially effective for requirements authors who must write requirements in English, but whose first language is not English. EARS has proved popular with practitioners because it is lightweight, there is little training overhead, no specialist tool is necessary, and the resultant requirements are easy to read.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>EARS 能够减少甚至消除自然语言需求中常见的问题。对于必须使用英语编写需求、但母语并非英语的需求编写者，EARS 尤其有效。EARS 受到从业者欢迎，是因为它十分轻量、培训成本很低、不需要专用工具，并且最终得到的需求易于阅读。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair major-heading">
+          <div class="cell en" lang="en"><h3>Who Uses EARS?</h3></div>
+          <div class="cell zh" lang="zh-CN"><h3>谁在使用 EARS？</h3></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>EARS is used worldwide by large and small organisations in different domains. These include blue chip companies such as Airbus, Bosch, Dyson, Honeywell, Intel, NASA, Rolls-Royce and Siemens.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>世界各地、不同领域的大型和小型组织都在使用 EARS，其中包括空中客车、博世、戴森、霍尼韦尔、英特尔、NASA、劳斯莱斯和西门子等知名企业与机构。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The notation is taught at universities around the world including in China, France, Germany, Sweden, UK and USA.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>世界各地的大学也在教授这种表示法，包括中国、法国、德国、瑞典、英国和美国的大学。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair major-heading">
+          <div class="cell en" lang="en"><h3>The EARS Patterns</h3></div>
+          <div class="cell zh" lang="zh-CN"><h3>EARS 模式</h3></div>
+        </section>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Generic EARS syntax</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>通用 EARS 语法</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The clauses of a requirement written in EARS always appear in the same order. The basic structure of an EARS requirement is:</p></div>
+          <div class="cell zh" lang="zh-CN"><p>使用 EARS 编写的需求，其各个分句始终按照相同顺序出现。一条 EARS 需求的基本结构是：</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>While &lt;optional pre-condition&gt;, when &lt;optional trigger&gt;, the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>While &lt;可选前置条件&gt;，when &lt;可选触发事件&gt;，&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The EARS ruleset states that a requirement must have: Zero or many preconditions; Zero or one trigger; One system name; One or many system responses.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>EARS 规则集规定，一条需求必须具有：零个或多个前置条件；零个或一个触发事件；一个系统名称；一个或多个系统响应。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The application of the EARS notation produces requirements in a small number of patterns, depending on the clauses that are used. The patterns are illustrated below.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>根据所使用的分句，应用 EARS 表示法后，需求会呈现为少数几种模式。下面对这些模式进行说明。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Ubiquitous requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>普适型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Ubiquitous requirements are always active (so there is no EARS keyword)</p></div>
+          <div class="cell zh" lang="zh-CN"><p>普适型需求始终有效（因此不使用任何 EARS 关键词）。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>The &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: The mobile phone shall have a mass of less than XX grams.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：该手机的质量应小于 XX 克。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>State driven requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>状态驱动型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>State driven requirements are active as long as the specified state remains true and are denoted by the keyword While.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>只要指定状态保持为真，状态驱动型需求就持续有效，并使用关键词 While 来表示。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>While &lt;precondition(s)&gt;, the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>While &lt;一个或多个前置条件&gt;，&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: While there is no card in the ATM, the ATM shall display “insert card to begin”.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：当 ATM 中没有卡时，ATM 应显示“插入卡以开始”。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Event driven requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>事件驱动型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Event driven requirements specify how a system must respond when a triggering event occurs and are denoted by the keyword When.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>事件驱动型需求规定触发事件发生时系统必须如何响应，并使用关键词 When 来表示。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>When &lt;trigger&gt;, the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>When &lt;触发事件&gt;，&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: When “mute” is selected, the laptop shall suppress all audio output.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：当选择“静音”时，笔记本电脑应抑制所有音频输出。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Optional feature requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>可选功能型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Optional feature requirements apply in products or systems that include the specified feature and are denoted by the keyword Where.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>可选功能型需求适用于包含指定功能的产品或系统，并使用关键词 Where 来表示。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>Where &lt;feature is included&gt;, the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>Where &lt;包含该功能&gt;，&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: Where the car has a sunroof, the car shall have a sunroof control panel on the driver door.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：如果汽车配有天窗，则汽车应在驾驶员侧车门上设置天窗控制面板。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Unwanted behaviour requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>非期望行为型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Unwanted behaviour requirements are used to specify the required system response to undesired situations and are denoted by the keywords If and Then.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>非期望行为型需求用于规定系统面对不希望发生的情况时所需作出的响应，并使用关键词 If 和 Then 来表示。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>If &lt;trigger&gt;, then the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>If &lt;触发事件&gt;，then &lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: If an invalid credit card number is entered, then the website shall display “please re-enter credit card details”.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：如果输入了无效的信用卡号码，那么网站应显示“请重新输入信用卡信息”。</p></div>
+        </section>
+<div class="section-rule" role="separator"></div>
+<section class="pair minor-heading">
+          <div class="cell en" lang="en"><h4>Complex requirements</h4></div>
+          <div class="cell zh" lang="zh-CN"><h4>复合型需求</h4></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>The simple building blocks of the EARS patterns described above can be combined to specify requirements for richer system behaviour. Requirements that include more than one EARS keyword are called Complex requirements.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>可以组合上述 EARS 模式的简单构件，以规定更丰富的系统行为。包含一个以上 EARS 关键词的需求称为复合型需求。</p></div>
+        </section>
+<section class="pair quote-row">
+          <div class="cell en" lang="en"><blockquote><p>While &lt;precondition(s)&gt;, When &lt;trigger&gt;, the &lt;system name&gt; shall &lt;system response&gt;</p></blockquote></div>
+          <div class="cell zh" lang="zh-CN"><blockquote><p>While &lt;一个或多个前置条件&gt;，When &lt;触发事件&gt;，&lt;系统名称&gt; shall &lt;系统响应&gt;</p></blockquote></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Example: While the aircraft is on ground, when reverse thrust is commanded, the engine control system shall enable reverse thrust.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>示例：当飞机处于地面状态时，如果发出反推指令，发动机控制系统应启用反推。</p></div>
+        </section>
+<section class="pair paragraph-row">
+          <div class="cell en" lang="en"><p>Complex requirements for unwanted behaviour also include the If-Then keywords.</p></div>
+          <div class="cell zh" lang="zh-CN"><p>针对非期望行为的复合型需求还会包含 If–Then 关键词。</p></div>
+        </section>
+<section class="pair action-row">
+          <div class="cell en" lang="en"><p><a class="button" href="https://alistairmavin.com/requirements-engineering-ears-training/">Requirements Engineering &amp; EARS Training</a></p></div>
+          <div class="cell zh" lang="zh-CN"><p><a class="button" href="https://alistairmavin.com/requirements-engineering-ears-training/">需求工程与 EARS 培训</a></p></div>
+        </section>
+</main>
+<footer class="footer">
+  <div><strong>Contact / 联系</strong></div>
+  <div><a href="mailto:mav@alistairmavin.com">Email: mav@alistairmavin.com</a></div>
+  <div class="copyright"><a href="https://alistairmavin.com/">© 2026 Alistair Mavin // All Rights Reserved</a></div>
+</footer>
+<script>
+(function () {
+  const buttons = document.querySelectorAll('[data-mode]');
+  buttons.forEach(button => button.addEventListener('click', () => {
+    const mode = button.dataset.mode;
+    document.body.classList.remove('mode-bilingual', 'mode-zh', 'mode-en');
+    document.body.classList.add('mode-' + mode);
+    buttons.forEach(b => b.classList.toggle('active', b === button));
+  }));
+})();
+</script>
+<!-- Audit: 55 original article nodes processed; 1 original article hyperlink(s) preserved. -->
+</body>
+</html>

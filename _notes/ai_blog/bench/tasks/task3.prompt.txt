@@ -1,0 +1,12 @@
+给 minilog 增加 JSON Lines 日志格式支持。验收测试在 spec_tests/task3/test_json_format.py,文件头部有完整规格说明,先读它。
+
+需要改动的地方:
+1. minilog/parser.py:新增 parse_json_line;让 parse_lines 支持 fmt 参数("auto"/"text"/"json",auto 按首个非空行是否以 "{" 开头判断格式)
+2. minilog/config.py:新增 DEFAULT_FORMAT = "auto"
+3. minilog/cli.py:新增 --format 参数(choices: auto/text/json),默认取 config.DEFAULT_FORMAT
+
+完成后运行:
+
+    python -m pytest spec_tests/task3 tests -q
+
+必须全部通过(包括原有 tests/ 不能回归)。不要修改任何测试文件。

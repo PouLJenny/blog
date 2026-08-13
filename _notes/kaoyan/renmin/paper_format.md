@@ -12,7 +12,7 @@
 
 Title(三号、Times New Roman体、加粗、居中)
 
-Abstract(小四、Times New Roman体、加粗)：Abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract.abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract. abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract abstract. abstract abstract (小四、Times New Roman体)
+Abstract(小四、Times New Roman体、加粗)： abstract (小四、Times New Roman体)
 
 Key words(小四、Times New Roman体、加粗)：word1; word2; word3(小四、Times New Roman体，一律小写，英文缩写除外)
 
@@ -30,4 +30,14 @@ https://zhuanlan.zhihu.com/p/101511790 
 
 段前 0 磅，段后：0 磅
 
+
+表(一律用三线表)
+
+表1.1 表的名称(表序分两级，小四、宋体、加粗、居中)
+
+表内文字：小四号、宋体、上下左右居中
+
+注(五号、宋体、加黑)：内容(五号、宋体)，有多条注释，用“①、②……”分列
+
+图(图序一级，依次标识，小四号、宋体、加黑、居中)
 # EOF

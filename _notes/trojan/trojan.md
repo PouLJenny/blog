@@ -9,6 +9,13 @@
 [官网](https://github.com/trojan-gfw '')
 
 ## 安装
+
+### 服务端安装2
+
+[Jrohy](https://github.com/Jrohy/trojan)
+[Jrohy-web](https://github.com/Jrohy/trojan-web)
+
+
 ### 服务端
 
 1. 给域名安装证书

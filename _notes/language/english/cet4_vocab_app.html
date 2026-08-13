@@ -67,22 +67,104 @@
   .phonetic { font-size: 15px; color: var(--text-secondary); margin-bottom: 14px; font-family: ui-monospace, "SF Mono", Menlo, monospace; display: flex; align-items: center; gap: 8px; }
   .definition { font-size: 16px; line-height: 1.7; margin-bottom: 12px; }
   .example { font-size: 13px; color: var(--text-secondary); padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-md); line-height: 1.6; margin-bottom: 14px; }
-  .hidden-side { opacity: 0; transition: opacity 0.2s; }
-  .hidden-side.show { opacity: 1; }
+  .hidden-side { display: none; }
+  .hidden-side.show { display: block; }
   .btn { padding: 8px 16px; border-radius: var(--radius-md); border: 0.5px solid var(--border-strong); background: transparent; color: var(--text-primary); font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 500; }
   .btn:hover { background: var(--bg-secondary); }
   .reveal-btn { align-self: center; margin-top: auto; padding: 10px 28px; font-size: 14px; }
   .rate-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
-  .rate-btn { padding: 12px; border-radius: var(--radius-md); border: 0.5px solid var(--border-strong); background: transparent; font-size: 13px; cursor: pointer; font-weight: 500; font-family: inherit; }
+  .rate-btn { padding: 10px 8px 8px; border-radius: var(--radius-md); border: 0.5px solid var(--border-strong); background: transparent; font-size: 13px; cursor: pointer; font-weight: 500; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .rate-btn.reveal-btn { display: inline-block; padding: 10px 28px; }
+  .rate-btn .rate-hint { font-size: 11px; font-weight: 400; opacity: 0.7; }
   .rate-btn.bad { color: var(--red); border-color: var(--red-border); }
   .rate-btn.bad:hover { background: var(--red-bg); }
   .rate-btn.mid { color: var(--amber); border-color: var(--amber-border); }
   .rate-btn.mid:hover { background: var(--amber-bg); }
   .rate-btn.good { color: var(--green); border-color: var(--green-border); }
   .rate-btn.good:hover { background: var(--green-bg); }
+  .srs-info { margin-top: 12px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); }
+  .srs-info .srs-line { display: flex; align-items: center; gap: 6px; line-height: 1.6; flex-wrap: wrap; }
+  .srs-info .srs-dots { letter-spacing: 2px; color: var(--primary); font-size: 10px; }
+  .help-block { margin-top: 1.5rem; padding: 10px 14px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg-secondary); }
+  .help-block summary { cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-primary); padding: 4px 0; user-select: none; outline: none; }
+  .help-block summary:hover { color: var(--primary); }
+  .help-body { font-size: 13px; color: var(--text-secondary); line-height: 1.75; margin-top: 8px; }
+  .help-body p { margin: 8px 0; }
+  .help-body ul { padding-left: 22px; margin: 8px 0; }
+  .help-body li { margin: 4px 0; }
+  .help-body code { font-family: ui-monospace, monospace; background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .help-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12.5px; }
+  .help-table th, .help-table td { padding: 6px 10px; border-bottom: 0.5px solid var(--border); text-align: left; }
+  .help-table th { color: var(--text-tertiary); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .state-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--text-tertiary); }
+  .state-dot[data-score="0"] { background: var(--red); }
+  .state-dot[data-score="1"] { background: var(--amber-border); }
+  .state-dot[data-score="2"] { background: var(--green-border); }
   .controls-row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
   .longman-btn { background: var(--primary); color: white; border: 0.5px solid var(--primary); padding: 6px 12px; font-size: 12px; border-radius: var(--radius-md); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; text-decoration: none; }
   .longman-btn:hover { background: var(--primary-dark); }
+  .dict-tabs { display: flex; gap: 2px; margin-top: 14px; margin-bottom: -1px; position: relative; z-index: 1; }
+  .dict-tab { padding: 6px 14px; font-size: 12.5px; cursor: pointer; border: none; background: transparent; color: var(--text-secondary); border-bottom: 2px solid transparent; font-family: inherit; }
+  .dict-tab.active { color: var(--text-primary); border-bottom-color: var(--primary); font-weight: 500; }
+  .dict-panel { display: block; }
+  .dict-content { padding: 14px 16px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg-secondary); max-height: 520px; overflow-y: auto; font-size: 13.5px; line-height: 1.75; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .dict-frame { width: 100%; height: 520px; border: 0.5px solid var(--border); border-radius: var(--radius-md); display: block; background: white; }
+  @media (max-width: 600px) { .dict-frame { height: 420px; } }
+  .dict-content .dictentry { display: block; }
+  .dict-content .dictentry + .dictentry { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-strong); }
+  .dict-content .dictionary_intro { display: block; font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .dict-content .dictlink, .dict-content .ldoceEntry, .dict-content .bussdictEntry { display: block; }
+  .dict-content .related_topics { display: block; font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
+  .dict-content .topic { font-size: 11px; color: var(--text-secondary); margin-right: 8px; }
+  .dict-content .Head { display: block; margin: 4px 0 10px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+  .dict-content .HWD { font-weight: 600; font-size: 17px; color: var(--text-primary); }
+  .dict-content .HYPHENATION { display: none; }
+  .dict-content .PRON, .dict-content .PronCodes { color: var(--text-secondary); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; }
+  .dict-content .POS { color: var(--primary); font-style: italic; margin-left: 6px; font-size: 12.5px; }
+  .dict-content .LEVEL { color: var(--text-tertiary); margin-left: 6px; font-size: 11px; }
+  .dict-content .GRAM { color: var(--text-tertiary); font-size: 12px; margin-left: 4px; }
+  .dict-content .Sense { display: block; margin-top: 10px; padding-left: 22px; position: relative; }
+  .dict-content .sensenum { position: absolute; left: 0; top: 0; min-width: 18px; font-weight: 600; color: var(--text-secondary); }
+  .dict-content .Subsense { display: block; margin-top: 6px; padding-left: 16px; }
+  .dict-content .SIGNPOST, .dict-content .ACTIV { display: inline-block; background: var(--primary-soft); color: var(--primary-dark); padding: 1px 7px; border-radius: 3px; font-size: 11px; margin-right: 6px; font-weight: 500; letter-spacing: 0.3px; }
+  .dict-content .FIELD { display: inline-block; background: var(--bg-tertiary); color: var(--text-tertiary); padding: 1px 6px; border-radius: 3px; font-size: 10.5px; margin-right: 4px; border: 0.5px solid var(--border); letter-spacing: 0.3px; }
+  .dict-content .DEF { color: var(--text-primary); }
+  .dict-content .defRef { color: var(--primary); }
+  .dict-content .EXAMPLE { display: block; color: var(--text-secondary); font-style: italic; margin: 6px 0 6px 4px; padding-left: 8px; border-left: 2px solid var(--border); font-size: 12.5px; }
+  .dict-content .REGISTERLAB { color: var(--text-tertiary); font-size: 12px; margin: 0 4px; font-style: italic; }
+  .dict-content .REFHWD { font-variant: small-caps; font-weight: 500; }
+  .dict-content .GramExa, .dict-content .ColloExa, .dict-content .PropExa { display: block; margin: 4px 0 4px 4px; }
+  .dict-content .GramBox, .dict-content .Usagebox, .dict-content .ThesBox { display: block; margin: 10px 0; padding: 10px 12px; background: var(--bg-tertiary); border-left: 3px solid var(--primary); border-radius: 3px; }
+  .dict-content .GramBox .HEADING, .dict-content .Usagebox .HEADING, .dict-content .boxheader { display: block; font-weight: 600; color: var(--primary-dark); font-size: 13px; margin-bottom: 6px; }
+  .dict-content .EXPL { display: block; font-size: 12.5px; }
+  .dict-content .EXPR { font-weight: 600; }
+  .dict-content .CROSS { color: var(--red); margin-right: 4px; }
+  .dict-content .dont_say { color: var(--red); font-weight: 500; }
+  .dict-content .BADEXA { color: var(--red); font-style: italic; }
+  .dict-content .NodeW { font-weight: 600; }
+  .dict-content .PROPFORMPREP, .dict-content .PROPFORM { display: inline-block; color: var(--primary-dark); font-style: italic; font-size: 12.5px; margin-right: 4px; }
+  .dict-content .OPP, .dict-content .SYN { display: inline-block; margin-left: 4px; font-size: 12px; color: var(--text-secondary); }
+  .dict-content .synopp, .dict-content .GLOSS, .dict-content .COLLGLOSS { display: inline-block; background: var(--bg-tertiary); color: var(--text-tertiary); padding: 1px 6px; border-radius: 3px; font-size: 10.5px; margin-right: 4px; border: 0.5px solid var(--border); letter-spacing: 0.3px; }
+  .dict-content .COLLO, .dict-content .COLLOC { display: inline-block; background: var(--primary-soft); color: var(--primary-dark); padding: 1px 7px; border-radius: 3px; font-size: 11px; margin-right: 6px; font-weight: 500; letter-spacing: 0.3px; }
+  .dict-content .Collocate { font-weight: 500; }
+  .dict-content .Crossref, .dict-content .crossRef, .dict-content .Crossrefto { display: block; margin: 4px 0; }
+  .dict-content .GEO { color: var(--text-tertiary); font-size: 11px; margin-right: 4px; }
+  .dict-content .HOMNUM, .dict-content .homnum { font-size: 9px; vertical-align: super; color: var(--text-tertiary); margin-left: 1px; }
+  .dict-content .asset, .dict-content .assetlink, .dict-content .yellow_box, .dict-content .pictures { display: none; }
+  .dict-content a { color: var(--primary); text-decoration: none; }
+  .dict-content a:hover { text-decoration: underline; }
+  .dict-speaker { display: inline-block; cursor: pointer; user-select: none; font-size: 11px; padding: 1px 6px; margin: 0 2px; border-radius: 3px; border: 0.5px solid var(--border); background: var(--bg); color: var(--text-secondary); white-space: nowrap; vertical-align: middle; }
+  .dict-speaker:hover { background: var(--primary-soft); color: var(--primary-dark); border-color: var(--primary); }
+  .dict-speaker-br { border-color: rgba(0,87,184,0.35); color: #0057B8; }
+  .dict-speaker-am { border-color: rgba(178,34,52,0.35); color: #B22234; }
+  .dict-speaker-br:hover { background: rgba(0,87,184,0.08); }
+  .dict-speaker-am:hover { background: rgba(178,34,52,0.08); }
+  #top-speakers { display: inline-flex; gap: 4px; align-items: center; }
+  .speaker-loading { display: inline-block; width: 11px; height: 11px; border: 1.5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: speaker-spin 0.8s linear infinite; vertical-align: middle; box-sizing: border-box; }
+  @keyframes speaker-spin { to { transform: rotate(360deg); } }
+  .dict-content .dict-loading { color: var(--text-tertiary); font-size: 12px; }
+  .dict-content .dict-error { color: var(--red); font-size: 12px; }
+  .dict-content img, .dict-content video { max-width: 100%; }
   .progress-track { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; margin-bottom: 1rem; }
   .progress-fill { height: 100%; background: var(--primary); transition: width 0.3s; }
   .meta-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 1rem; }
@@ -90,10 +172,12 @@
   .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); gap: 10px; }
   .list-word { font-weight: 500; font-size: 15px; }
   .list-def { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
-  .list-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .list-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
   .tag-due { background: var(--red-bg); color: var(--red); }
   .tag-fav { background: var(--amber-bg); color: var(--amber); }
   .tag-mastered { background: var(--green-bg); color: var(--green); }
+  .tag-new { background: var(--bg-secondary); color: var(--text-tertiary); }
+  .tag-neutral { background: var(--bg-secondary); color: var(--text-secondary); }
   textarea { width: 100%; min-height: 220px; padding: 10px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; border: 0.5px solid var(--border); border-radius: var(--radius-md); resize: vertical; background: var(--bg); color: var(--text-primary); }
   .import-help { font-size: 12px; color: var(--text-secondary); margin: 8px 0; line-height: 1.7; }
   .import-help code { font-family: ui-monospace, monospace; background: var(--bg-secondary); padding: 1px 5px; border-radius: 3px; }
@@ -132,9 +216,25 @@
   .sync-status.idle .dot { background: var(--text-tertiary); }
   .sync-status.disabled .dot { background: var(--text-tertiary); opacity: 0.5; }
   .sync-err { color: var(--red); font-size: 11px; margin-top: 4px; word-break: break-all; }
+  #sync-blocker { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; display: none; align-items: center; justify-content: center; }
+  #sync-blocker.show { display: flex; }
+  .sync-blocker-card { background: var(--bg); border-radius: var(--radius-lg); padding: 20px 24px; display: flex; align-items: center; gap: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-width: 86%; }
+  .sync-blocker-spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: speaker-spin 0.8s linear infinite; flex-shrink: 0; box-sizing: border-box; }
+  .sync-blocker-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .sync-blocker-msg { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .sync-blocker-sub { font-size: 12px; color: var(--text-secondary); }
 </style>
 </head>
 <body>
+<div id="sync-blocker" aria-hidden="true" role="alert">
+  <div class="sync-blocker-card">
+    <div class="sync-blocker-spinner"></div>
+    <div class="sync-blocker-text">
+      <div class="sync-blocker-msg" id="sync-blocker-msg">同步中…</div>
+      <div class="sync-blocker-sub">请勿操作，避免数据冲突</div>
+    </div>
+  </div>
+</div>
 <div class="container">
   <h1>📘 四级背单词 <span id="header-sync-info" style="font-size:12px; color:var(--text-tertiary); font-weight:400;">本地版 · 数据存浏览器</span></h1>
 
@@ -161,9 +261,12 @@
       <select id="filter-select">
         <option value="all">全部</option>
         <option value="due">今日待复习</option>
-        <option value="fav">收藏/错词</option>
+        <option value="unknown">不认识</option>
+        <option value="fuzzy">模糊</option>
+        <option value="fav">收藏</option>
         <option value="mastered">已掌握</option>
         <option value="new">未学习</option>
+        <option value="deleted">已删除</option>
       </select>
       <input type="search" id="search-box" placeholder="搜索单词…" style="padding:6px 10px; font-size:13px; border-radius:var(--radius-md); border:0.5px solid var(--border); background:var(--bg); color:var(--text-primary); flex:1; min-width:120px;" />
       <span style="font-size: 13px; color: var(--text-secondary);" id="list-count"></span>
@@ -176,12 +279,12 @@
       <div class="stat-card"><div class="stat-label">总词数</div><div class="stat-num" id="s-total">0</div></div>
       <div class="stat-card"><div class="stat-label">已掌握</div><div class="stat-num" id="s-mastered">0</div></div>
       <div class="stat-card"><div class="stat-label">学习中</div><div class="stat-num" id="s-learning">0</div></div>
-      <div class="stat-card"><div class="stat-label">错词数</div><div class="stat-num" id="s-fav">0</div></div>
+      <div class="stat-card"><div class="stat-label">收藏数</div><div class="stat-num" id="s-fav">0</div></div>
     </div>
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-label">连续打卡</div><div class="stat-num" id="s-streak">0 天</div></div>
       <div class="stat-card"><div class="stat-label">累计学习</div><div class="stat-num" id="s-totaldays">0 天</div></div>
-      <div class="stat-card"><div class="stat-label">今日</div><div class="stat-num" id="s-today">0</div></div>
+      <div class="stat-card"><div class="stat-label">今日 新+复</div><div class="stat-num" id="s-today">0</div></div>
       <div class="stat-card"><div class="stat-label">距6月13日</div><div class="stat-num" id="s-countdown">- 天</div></div>
     </div>
     <div class="section-title">每日目标</div>
@@ -190,11 +293,65 @@
       <input type="number" id="daily-target" min="10" max="500" step="10" value="200" />
       <button class="btn" onclick="saveTarget()">保存</button>
     </div>
+    <div class="setting-row">
+      <label>每天复习上限 <span style="color:var(--text-tertiary); font-weight:400; font-size:12px;">（0 = 不限）</span></label>
+      <input type="number" id="daily-review-cap" min="0" max="2000" step="50" value="0" />
+      <button class="btn" onclick="saveReviewCap()">保存</button>
+    </div>
     <div class="section-title">近 33 天打卡</div>
     <div class="heat-grid" id="heatmap"></div>
     <div style="display:flex; justify-content:space-between; font-size: 11px; color: var(--text-tertiary); margin-top:4px;">
       <span>少</span><span>多</span>
     </div>
+
+    <details class="help-block">
+      <summary>📚 复习算法说明（艾宾浩斯遗忘曲线 / SRS）</summary>
+      <div class="help-body">
+        <p><strong>核心思想</strong>：艾宾浩斯发现人对新信息的遗忘是先快后慢的。<strong>在快要忘掉的那一刻再复习</strong>，记忆会被推到下一个更长的间隔，反复几次后就转入长期记忆。</p>
+
+        <p><strong>本应用的 6 个阶段（间隔 = <code>[1, 2, 4, 7, 15]</code> 天）</strong>：</p>
+        <table class="help-table">
+          <thead><tr><th>阶段</th><th>含义</th><th>评"认识"后</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>刚学 / 重新开始</td><td>明天复习（+1 天）</td></tr>
+            <tr><td>1</td><td>已通过 1 关</td><td>+2 天</td></tr>
+            <tr><td>2</td><td>已通过 2 关</td><td>+4 天</td></tr>
+            <tr><td>3</td><td>已通过 3 关</td><td>+7 天</td></tr>
+            <tr><td>4</td><td>已通过 4 关</td><td>+15 天</td></tr>
+            <tr><td>5</td><td>✅ 已掌握，不再出现</td><td>—</td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>三个评分按钮的具体行为</strong>：</p>
+        <ul>
+          <li><span class="state-dot" data-score="0"></span><strong>不认识</strong>：阶段重置为 <code>0</code>，明天再来一遍。等于"前功尽弃，回到第一关"。</li>
+          <li><span class="state-dot" data-score="1"></span><strong>模糊</strong>：阶段<strong>不变</strong>，下次提前一点（<code>当前阶段间隔 - 1</code> 天，最少 1 天）。等于"再给你一次机会"。</li>
+          <li><span class="state-dot" data-score="2"></span><strong>认识</strong>：阶段 +1，按下一个阶段的间隔安排复习。到第 5 阶段后变成"已掌握"。</li>
+        </ul>
+
+        <p><strong>掌握一个词的最短路径</strong>：连续 5 次评"认识"，总跨度 <code>1+2+4+7+15 = 29 天</code>。中途任何一次"不认识"都会重置到阶段 0。</p>
+
+        <p><strong>为什么会有那么多"到期"词</strong>：每个学过的词都会按周期回来，不是"出错了才复习"。这是 SRS 的设计——只有反复在临界点成功回忆，才能真正记住。</p>
+
+        <p><strong>每天怎么消化</strong>：</p>
+        <ul>
+          <li>"今日新词 X / 200" 只算<strong>新词</strong>，复习不占名额</li>
+          <li>复习顺序按<strong>风险优先级</strong>：上次评"不认识" → "模糊" → "认识"；同档内按逾期天数排</li>
+          <li>队列：先做完高优先级复习 → 再学新词，直到当天新词配额学完</li>
+          <li>设了"每天复习上限"后，超出的复习自动顺延到次日（仍按优先级排）；上限不影响 dueDate 本身</li>
+          <li>连续打卡（🔥 连续 N 天）只看新词学习，单纯复习不计入</li>
+        </ul>
+
+        <p><strong>关于复习量爆炸</strong>：每个新词在 29 天里会触发 5 次复习。如果你每天稳定加 200 个新词，长期稳态会到 ~1000 次/天（200 新 + ~800 复习）。两个抑制手段：</p>
+        <ul>
+          <li>设置「每天复习上限」（如 300/500），高出的自动顺延</li>
+          <li>暂时调低「每天新学单词数」，让积压的复习先消化掉</li>
+        </ul>
+
+        <p style="color: var(--text-tertiary); font-size: 11px;">参数 <code>INTERVALS = [1, 2, 4, 7, 15]</code> 写死在源码里，要改自己改 :)</p>
+      </div>
+    </details>
+
     <div style="margin-top: 1.5rem; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
       <button class="btn" onclick="exportData()">📥 导出备份</button>
       <label class="btn" style="cursor:pointer;">
@@ -252,15 +409,81 @@ ability | /əˈbɪləti/ | n. 能力，才能
 (function(){
   const STORAGE_KEY = 'cet4_vocab_app_v1';
   const INTERVALS = [1, 2, 4, 7, 15];
+  // SRS helpers — visualize the spaced-repetition state
+  function previewDays(w, score) {
+    if (score === 0) return 1;
+    if (score === 1) return Math.max(1, INTERVALS[w.stage] - 1);
+    const nextStage = Math.min(w.stage + 1, INTERVALS.length);
+    return nextStage >= INTERVALS.length ? -1 : INTERVALS[nextStage]; // -1 → would master
+  }
+  function daysFromToday(dateStr) {
+    if (!dateStr) return null;
+    const t = new Date(today()).getTime();
+    const d = new Date(dateStr).getTime();
+    return Math.round((d - t) / 86400000);
+  }
+  function humanDelta(n) {
+    if (n == null) return '—';
+    if (n === 0) return '今天';
+    if (n === 1) return '明天';
+    if (n === -1) return '昨天';
+    if (n > 0) return n + ' 天后';
+    return -n + ' 天前';
+  }
+  function dueText(dateStr) {
+    const n = daysFromToday(dateStr);
+    if (n == null) return '—';
+    if (n < 0) return '逾期 ' + (-n) + ' 天';
+    if (n === 0) return '今天到期';
+    if (n === 1) return '明天到期';
+    return n + ' 天后';
+  }
+  function stageDots(stage) {
+    let s = '';
+    for (let i = 0; i < INTERVALS.length; i++) s += i < stage ? '●' : '○';
+    return s;
+  }
+  function lastScoreText(s) {
+    return s === 0 ? '不认识' : s === 1 ? '模糊' : s === 2 ? '认识' : '—';
+  }
   const EXAM_DATE = '2026-06-13';
 
   let state = {
     words: [], sessions: {}, streak: 0, lastStudyDate: null,
     dailyTarget: 200, dailyTargetUpdatedAt: 0,
+    dailyReviewCap: 0, dailyReviewCapUpdatedAt: 0,  // 0 = unlimited
+    libraryVersion: 0,
     updatedAt: 0,
     currentIdx: -1, sessionQueue: [],
   };
   let suppressSyncOnNextSave = false;
+
+  function normalizeState() {
+    if (!state.dailyTarget) state.dailyTarget = 200;
+    const now = Date.now();
+    if (!state.updatedAt) state.updatedAt = now;
+    if (!state.dailyTargetUpdatedAt) state.dailyTargetUpdatedAt = now;
+    if (!state.libraryVersion) state.libraryVersion = state.updatedAt;
+    for (const w of state.words || []) {
+      if (!w.updatedAt) w.updatedAt = now;
+      // Migrate legacy auto-fav from old "不认识" behavior:
+      // learned + fav + no lastScore == almost certainly auto-fav'd by the old rate(0).
+      // Reinterpret as lastScore=0 and clear fav (fav is now purely manual).
+      if (w.learned && w.fav && w.lastScore == null) {
+        w.lastScore = 0;
+        w.fav = false;
+      }
+    }
+    const sess = state.sessions || (state.sessions = {});
+    for (const d in sess) {
+      const v = sess[d];
+      if (typeof v === 'number') sess[d] = { new: v, review: 0 };
+      else if (v && typeof v === 'object') {
+        v.new = v.new || 0;
+        v.review = v.review || 0;
+      } else { delete sess[d]; }
+    }
+  }
 
   function load() {
     try {
@@ -268,15 +491,21 @@ ability | /əˈbɪləti/ | n. 能力，才能
       if (raw) {
         const parsed = JSON.parse(raw);
         state = Object.assign(state, parsed);
-        if (!state.dailyTarget) state.dailyTarget = 200;
-        const now = Date.now();
-        if (!state.updatedAt) state.updatedAt = now;
-        if (!state.dailyTargetUpdatedAt) state.dailyTargetUpdatedAt = now;
-        for (const w of state.words || []) {
-          if (!w.updatedAt) w.updatedAt = now;
-        }
       }
     } catch (e) {}
+    normalizeState();
+  }
+
+  function readSession(d) {
+    const s = state.sessions[d];
+    if (!s) return { new: 0, review: 0 };
+    if (typeof s === 'number') return { new: s, review: 0 };
+    return { new: s.new || 0, review: s.review || 0 };
+  }
+  function bumpSession(d, kind) {
+    const cur = readSession(d);
+    cur[kind] = (cur[kind] || 0) + 1;
+    state.sessions[d] = cur;
   }
   function save() {
     try {
@@ -298,6 +527,90 @@ ability | /əˈbɪləti/ | n. 能力，才能
     return persist;
   }
 
+  // Split full state into the two wire-format payloads.
+  //   library  → static dict fields (large, rarely changes)
+  //   progress → user state (small, pushed often)
+  function splitPersist(persist) {
+    const libraryVersion = persist.libraryVersion || persist.updatedAt || Date.now();
+    const library = {
+      libraryVersion,
+      words: (persist.words || []).map(w => ({
+        id: w.id, word: w.word,
+        phonetic: w.phonetic || '',
+        def: w.def || '',
+        example: w.example || '',
+      })),
+    };
+    const progress = {
+      libraryVersion,
+      sessions: persist.sessions || {},
+      streak: persist.streak || 0,
+      lastStudyDate: persist.lastStudyDate || null,
+      dailyTarget: persist.dailyTarget || 200,
+      dailyTargetUpdatedAt: persist.dailyTargetUpdatedAt || 0,
+      dailyReviewCap: persist.dailyReviewCap || 0,
+      dailyReviewCapUpdatedAt: persist.dailyReviewCapUpdatedAt || 0,
+      updatedAt: persist.updatedAt || Date.now(),
+      words: (persist.words || []).map(w => ({
+        id: w.id,
+        word: w.word,  // keep word string in progress for merge keying when library not pulled
+        stage: w.stage || 0,
+        dueDate: w.dueDate || '',
+        lastSeen: w.lastSeen || '',
+        lastScore: w.lastScore == null ? null : w.lastScore,
+        fav: !!w.fav,
+        mastered: !!w.mastered,
+        learned: !!w.learned,
+        deleted: !!w.deleted,
+        deletedAt: w.deletedAt == null ? null : w.deletedAt,
+        updatedAt: w.updatedAt || 0,
+      })),
+    };
+    return { library, progress };
+  }
+
+  // Recombine pulled progress (+ optional library) into a legacy-shaped persist
+  // so the existing mergeStates can be reused unchanged.
+  function combineRemote(progress, library) {
+    if (!progress) return null;
+    const libById = new Map();
+    if (library && Array.isArray(library.words)) {
+      for (const w of library.words) libById.set(w.id, w);
+    }
+    const words = (progress.words || []).map(pw => {
+      const lib = libById.get(pw.id);
+      return {
+        id: pw.id,
+        word: pw.word || (lib && lib.word) || '',
+        phonetic: (lib && lib.phonetic) || '',
+        def: (lib && lib.def) || '',
+        example: (lib && lib.example) || '',
+        stage: pw.stage || 0,
+        dueDate: pw.dueDate || '',
+        lastSeen: pw.lastSeen || '',
+        lastScore: pw.lastScore == null ? null : pw.lastScore,
+        fav: !!pw.fav,
+        mastered: !!pw.mastered,
+        learned: !!pw.learned,
+        deleted: !!pw.deleted,
+        deletedAt: pw.deletedAt == null ? null : pw.deletedAt,
+        updatedAt: pw.updatedAt || 0,
+      };
+    });
+    return {
+      words,
+      sessions: progress.sessions || {},
+      streak: progress.streak || 0,
+      lastStudyDate: progress.lastStudyDate || null,
+      dailyTarget: progress.dailyTarget || 200,
+      dailyTargetUpdatedAt: progress.dailyTargetUpdatedAt || 0,
+      dailyReviewCap: progress.dailyReviewCap || 0,
+      dailyReviewCapUpdatedAt: progress.dailyReviewCapUpdatedAt || 0,
+      libraryVersion: progress.libraryVersion || 0,
+      updatedAt: progress.updatedAt || 0,
+    };
+  }
+
   function mergeWord(a, b) {
     const aT = a.updatedAt || 0;
     const bT = b.updatedAt || 0;
@@ -312,9 +625,12 @@ ability | /əˈbɪləti/ | n. 能力，才能
       stage: newer.stage != null ? newer.stage : (older.stage || 0),
       dueDate: newer.dueDate || older.dueDate,
       lastSeen: (a.lastSeen || '') > (b.lastSeen || '') ? a.lastSeen : b.lastSeen,
+      lastScore: newer.lastScore != null ? newer.lastScore : (older.lastScore != null ? older.lastScore : null),
       fav: !!newer.fav,
       mastered: !!newer.mastered,
       learned: !!newer.learned,
+      deleted: !!newer.deleted,
+      deletedAt: newer.deletedAt != null ? newer.deletedAt : (older.deletedAt != null ? older.deletedAt : null),
       updatedAt: Math.max(aT, bT),
     };
   }
@@ -340,10 +656,22 @@ ability | /əˈbɪləti/ | n. 能力，才能
       }
     }
     const words = Array.from(byKey.values());
-    const sessions = Object.assign({}, local.sessions || {});
-    const rs = remote.sessions || {};
-    for (const d in rs) {
-      sessions[d] = Math.max(sessions[d] || 0, rs[d] || 0);
+    const sessions = {};
+    const ld = local.sessions || {};
+    const rd = remote.sessions || {};
+    const allKeys = new Set([].concat(Object.keys(ld), Object.keys(rd)));
+    function toObj(v) {
+      if (typeof v === 'number') return { new: v, review: 0 };
+      if (v && typeof v === 'object') return { new: v.new || 0, review: v.review || 0 };
+      return { new: 0, review: 0 };
+    }
+    for (const d of allKeys) {
+      const a = toObj(ld[d]);
+      const b = toObj(rd[d]);
+      sessions[d] = {
+        new: Math.max(a.new, b.new),
+        review: Math.max(a.review, b.review),
+      };
     }
     let streak = local.streak || 0;
     let lastStudyDate = local.lastStudyDate || null;
@@ -357,9 +685,18 @@ ability | /əˈbɪləti/ | n. 能力，才能
       dailyTarget = remote.dailyTarget || dailyTarget;
       dailyTargetUpdatedAt = remote.dailyTargetUpdatedAt;
     }
+    let dailyReviewCap = local.dailyReviewCap || 0;
+    let dailyReviewCapUpdatedAt = local.dailyReviewCapUpdatedAt || 0;
+    if ((remote.dailyReviewCapUpdatedAt || 0) > dailyReviewCapUpdatedAt) {
+      dailyReviewCap = remote.dailyReviewCap || 0;
+      dailyReviewCapUpdatedAt = remote.dailyReviewCapUpdatedAt;
+    }
+    const libraryVersion = Math.max(local.libraryVersion || 0, remote.libraryVersion || 0);
     return {
       words, sessions, streak, lastStudyDate,
       dailyTarget, dailyTargetUpdatedAt,
+      dailyReviewCap, dailyReviewCapUpdatedAt,
+      libraryVersion,
       updatedAt: Date.now(),
     };
   }
@@ -374,6 +711,9 @@ ability | /əˈbɪləti/ | n. 能力，才能
     state.lastStudyDate = merged.lastStudyDate;
     state.dailyTarget = merged.dailyTarget;
     state.dailyTargetUpdatedAt = merged.dailyTargetUpdatedAt;
+    state.dailyReviewCap = merged.dailyReviewCap;
+    state.dailyReviewCapUpdatedAt = merged.dailyReviewCapUpdatedAt;
+    if (merged.libraryVersion) state.libraryVersion = merged.libraryVersion;
     state.updatedAt = merged.updatedAt;
     suppressSyncOnNextSave = true;
     save();
@@ -386,8 +726,38 @@ ability | /əˈbɪləti/ | n. 能力，才能
   }
 
   const SYNC_CONFIG_KEY = 'cet4_vocab_sync_v1';
-  const SYNC_FILE = 'cet4_vocab.json';
+  const SYNC_FILE = 'cet4_vocab.json';            // legacy single-file format
+  const SYNC_FILE_PROGRESS = 'cet4_progress.json'; // new: per-word user state
+  const SYNC_FILE_LIBRARY = 'cet4_library.json';   // new: static dict content
+  const MIGRATION_BACKUP_KEY = 'cet4_vocab_app_v1_premigration_backup';
   const PUSH_DEBOUNCE_MS = 3000;
+
+  async function fetchGistFileContent(file) {
+    if (!file) return null;
+    let content = file.content;
+    if (file.truncated && file.raw_url) {
+      const r = await fetch(file.raw_url);
+      if (!r.ok) throw new Error('raw content fetch failed: ' + r.status);
+      content = await r.text();
+    }
+    try { return JSON.parse(content); }
+    catch (e) { throw new Error('远端 JSON 解析失败: ' + (file.filename || '')); }
+  }
+
+  let blockerDepth = 0;
+  function showBlocker(msg) {
+    blockerDepth++;
+    const el = document.getElementById('sync-blocker');
+    const m = document.getElementById('sync-blocker-msg');
+    if (m) m.textContent = msg || '同步中…';
+    if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
+  }
+  function hideBlocker() {
+    blockerDepth = Math.max(0, blockerDepth - 1);
+    if (blockerDepth > 0) return;
+    const el = document.getElementById('sync-blocker');
+    if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
+  }
 
   const sync = {
     config: { token: '', gistId: '' },
@@ -398,6 +768,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
     inFlight: false,
     pendingAfter: false,
     remoteUpdatedAt: 0,
+    remoteLibraryVersion: 0,
 
     loadConfig() {
       try {
@@ -448,29 +819,85 @@ ability | /əˈbɪləti/ | n. 能力，才能
       return res.json();
     },
 
-    async pull() {
+    // Pulls remote state, normalizing into a legacy-shaped persist object.
+    // Returns { remote, hasLegacy, libraryPulled } so the caller can decide
+    // whether to schedule a follow-up library push to clean up legacy.
+    async pull(opts) {
+      opts = opts || {};
       if (!sync.config.gistId) return null;
       const gist = await sync._request('GET', 'https://api.github.com/gists/' + encodeURIComponent(sync.config.gistId));
-      const file = gist && gist.files && gist.files[SYNC_FILE];
-      if (!file) return null;
-      let content = file.content;
-      if (file.truncated && file.raw_url) {
-        const r = await fetch(file.raw_url);
-        if (!r.ok) throw new Error('raw content fetch failed: ' + r.status);
-        content = await r.text();
+      const files = (gist && gist.files) || {};
+      const progressFile = files[SYNC_FILE_PROGRESS];
+      const libraryFile = files[SYNC_FILE_LIBRARY];
+      const legacyFile = files[SYNC_FILE];
+
+      // New format present: prefer it
+      if (progressFile) {
+        const progress = await fetchGistFileContent(progressFile);
+        let library = null;
+        // Only pull library if remote libraryVersion differs from local
+        // (or caller forces it, e.g. found IDs in progress not in local)
+        const remoteLV = (progress && progress.libraryVersion) || 0;
+        const localLV = state.libraryVersion || 0;
+        if (libraryFile && (opts.forceLibrary || remoteLV !== localLV)) {
+          library = await fetchGistFileContent(libraryFile);
+        }
+        let remote = combineRemote(progress, library);
+        // If progress mentions IDs we don't have locally and we didn't pull the
+        // library, do a forced re-pull to fetch dict fields for those new words.
+        if (remote && !library && libraryFile) {
+          const localIds = new Set((state.words || []).map(w => w.id));
+          const missingIds = remote.words.some(w => !localIds.has(w.id) && !w.deleted);
+          if (missingIds) {
+            library = await fetchGistFileContent(libraryFile);
+            remote = combineRemote(progress, library);
+          }
+        }
+        // If legacy file is still around (stale old client), merge it in too
+        if (legacyFile) {
+          const legacy = await fetchGistFileContent(legacyFile);
+          if (legacy && (legacy.updatedAt || 0) > (remote.updatedAt || 0)) {
+            remote = mergeStates(remote, legacy);
+            remote.updatedAt = legacy.updatedAt;
+          }
+          return { remote, hasLegacy: true, libraryPulled: !!library };
+        }
+        return { remote, hasLegacy: false, libraryPulled: !!library };
       }
-      try { return JSON.parse(content); }
-      catch (e) { throw new Error('远端 JSON 解析失败'); }
+
+      // Only legacy exists: migration path
+      if (legacyFile) {
+        const legacy = await fetchGistFileContent(legacyFile);
+        return { remote: legacy, hasLegacy: true, libraryPulled: true };
+      }
+
+      return null;
     },
 
-    async push(persist) {
+    // Push current state as split files. Atomically writes new format + deletes legacy.
+    //   opts.deleteLegacy:  set the legacy file to null in the PATCH
+    //   opts.pushLibrary:   include the library file in the PATCH (default: true)
+    async push(persist, opts) {
+      opts = opts || {};
+      const pushLibrary = opts.pushLibrary !== false;
+      const { library, progress } = splitPersist(persist);
       const body = { files: {} };
-      body.files[SYNC_FILE] = { content: JSON.stringify(persist) };
+      body.files[SYNC_FILE_PROGRESS] = { content: JSON.stringify(progress) };
+      if (pushLibrary) {
+        body.files[SYNC_FILE_LIBRARY] = { content: JSON.stringify(library) };
+      }
+      if (opts.deleteLegacy) {
+        body.files[SYNC_FILE] = null;
+      }
       if (sync.config.gistId) {
         await sync._request('PATCH', 'https://api.github.com/gists/' + encodeURIComponent(sync.config.gistId), body);
       } else {
         body.description = 'CET4 Vocab App Backup';
         body.public = false;
+        // Always include library on initial create
+        if (!body.files[SYNC_FILE_LIBRARY]) {
+          body.files[SYNC_FILE_LIBRARY] = { content: JSON.stringify(library) };
+        }
         const gist = await sync._request('POST', 'https://api.github.com/gists', body);
         sync.config.gistId = gist.id;
         sync.saveConfigPersist();
@@ -497,16 +924,30 @@ ability | /əˈbɪləti/ | n. 能力，才能
       sync.inFlight = true;
       try {
         sync.setStatus('syncing');
-        let remote = null;
+        let pullResult = null;
+        let hasLegacy = false;
+        let libraryPulledFromRemote = false;
         if (sync.config.gistId) {
-          remote = await sync.pull();
+          pullResult = await sync.pull();
         }
+        const remote = pullResult && pullResult.remote;
+        hasLegacy = !!(pullResult && pullResult.hasLegacy);
+        libraryPulledFromRemote = !!(pullResult && pullResult.libraryPulled);
         if (remote && (remote.updatedAt || 0) > sync.remoteUpdatedAt) {
           const merged = mergeStates(getPersist(), remote);
           applyMerged(merged);
         }
-        await sync.push(getPersist());
+        // Decide whether to push the library file:
+        // - we pulled it (so we know remote has it / will refresh anyway), OR
+        // - libraryVersion changed locally vs last sync, OR
+        // - we need to delete legacy file (atomic: push everything in one PATCH)
+        const localLV = state.libraryVersion || 0;
+        const pushLibrary = libraryPulledFromRemote
+          || hasLegacy
+          || localLV !== sync.remoteLibraryVersion;
+        await sync.push(getPersist(), { pushLibrary, deleteLegacy: hasLegacy });
         sync.remoteUpdatedAt = state.updatedAt;
+        sync.remoteLibraryVersion = localLV;
         sync.lastSyncedAt = Date.now();
         sync.setStatus('ok', '');
       } catch (e) {
@@ -523,7 +964,8 @@ ability | /əˈbɪləti/ | n. 能力，才能
     async syncNow() {
       if (!sync.isConfigured()) return;
       if (sync.pushTimer) { clearTimeout(sync.pushTimer); sync.pushTimer = null; }
-      await sync._runPush();
+      showBlocker(sync.config.gistId ? '正在同步…' : '正在创建云端 Gist…');
+      try { await sync._runPush(); } finally { hideBlocker(); }
     },
 
     async forcePush() {
@@ -533,8 +975,9 @@ ability | /əˈbɪləti/ | n. 能力，才能
       sync.inFlight = true;
       try {
         sync.setStatus('syncing');
-        await sync.push(getPersist());
+        await sync.push(getPersist(), { pushLibrary: true });
         sync.remoteUpdatedAt = state.updatedAt;
+        sync.remoteLibraryVersion = state.libraryVersion || 0;
         sync.lastSyncedAt = Date.now();
         sync.setStatus('ok', '');
       } catch (e) {
@@ -552,22 +995,41 @@ ability | /əˈbɪləti/ | n. 能力，才能
       if (!sync.isConfigured() || !sync.config.gistId) return;
       if (sync.inFlight) return;
       sync.inFlight = true;
+      showBlocker('正在拉取云端数据…');
       try {
         sync.setStatus('syncing');
-        const remote = await sync.pull();
+        // Initial sync forces a library pull so we can validate completeness
+        const pullResult = await sync.pull({ forceLibrary: true });
+        const remote = pullResult && pullResult.remote;
+        const hasLegacy = !!(pullResult && pullResult.hasLegacy);
+        if (hasLegacy && !localStorage.getItem(MIGRATION_BACKUP_KEY)) {
+          // First-time migration: keep a local backup of pre-migration state
+          try {
+            localStorage.setItem(MIGRATION_BACKUP_KEY, JSON.stringify({
+              savedAt: Date.now(),
+              state: getPersist(),
+              remote,
+            }));
+          } catch (e) { /* quota OK to skip */ }
+        }
         if (remote) {
           const merged = mergeStates(getPersist(), remote);
           applyMerged(merged);
           sync.remoteUpdatedAt = remote.updatedAt || 0;
-          await sync.push(getPersist());
-          sync.remoteUpdatedAt = state.updatedAt;
+          sync.remoteLibraryVersion = remote.libraryVersion || 0;
         }
+        // Push split-format; delete legacy if it was present.
+        // Always push (creates gist content if empty) — first run on a brand-new gist.
+        await sync.push(getPersist(), { pushLibrary: true, deleteLegacy: hasLegacy });
+        sync.remoteUpdatedAt = state.updatedAt;
+        sync.remoteLibraryVersion = state.libraryVersion || 0;
         sync.lastSyncedAt = Date.now();
         sync.setStatus('ok', '');
       } catch (e) {
         sync.setStatus('error', e.message || String(e));
       } finally {
         sync.inFlight = false;
+        hideBlocker();
         if (sync.pendingAfter) {
           sync.pendingAfter = false;
           setTimeout(sync._runPush, 0);
@@ -613,6 +1075,10 @@ ability | /əˈbɪləti/ | n. 能力，才能
     return out;
   }
 
+  function bumpLibraryVersion() {
+    state.libraryVersion = Date.now();
+  }
+
   window.importWords = function(replace) {
     const text = document.getElementById('import-text').value;
     if (!text.trim()) { setStatus('请先粘贴词表内容或上传文件', true); return; }
@@ -626,11 +1092,28 @@ ability | /əˈbɪləti/ | n. 能力，才能
       state.sessionQueue = [];
       setStatus('已覆盖导入 ' + newWords.length + ' 个单词 ✓');
     } else {
-      const existing = new Set(state.words.map(w => w.word.toLowerCase()));
-      const filtered = newWords.filter(w => !existing.has(w.word.toLowerCase()));
-      state.words = state.words.concat(filtered);
-      setStatus('追加 ' + filtered.length + ' 个新词（' + (newWords.length - filtered.length) + ' 个重复跳过）✓');
+      const existing = new Map();
+      for (const w of state.words) existing.set(w.word.toLowerCase(), w);
+      let revived = 0;
+      const trulyNew = [];
+      for (const nw of newWords) {
+        const ex = existing.get(nw.word.toLowerCase());
+        if (ex) {
+          if (ex.deleted) {
+            ex.deleted = false;
+            ex.deletedAt = null;
+            ex.updatedAt = Date.now();
+            revived++;
+          }
+        } else {
+          trulyNew.push(nw);
+        }
+      }
+      state.words = state.words.concat(trulyNew);
+      const dup = newWords.length - trulyNew.length - revived;
+      setStatus('追加 ' + trulyNew.length + ' 个新词' + (revived ? ' · 恢复 ' + revived + ' 个已删除' : '') + '（' + dup + ' 个重复跳过）✓');
     }
+    bumpLibraryVersion();
     save();
     refreshAll();
   };
@@ -663,14 +1146,34 @@ ability | /əˈbɪləti/ | n. 能力，才能
     alert('已保存：每天 ' + val + ' 个');
   };
 
+  window.saveReviewCap = function() {
+    const val = parseInt(document.getElementById('daily-review-cap').value, 10);
+    if (isNaN(val) || val < 0 || val > 2000) { alert('复习上限需在 0-2000 之间'); return; }
+    state.dailyReviewCap = val;
+    state.dailyReviewCapUpdatedAt = Date.now();
+    save();
+    refreshAll();
+    alert(val === 0 ? '已保存：复习不限上限' : '已保存：每天最多复习 ' + val + ' 个');
+  };
+
   function buildSessionQueue() {
     const t = today();
-    const due = state.words.filter(w => w.learned && !w.mastered && w.dueDate <= t)
-      .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-    const studiedToday = state.sessions[t] || 0;
-    const remaining = Math.max(0, state.dailyTarget - studiedToday - due.length);
-    const fresh = state.words.filter(w => !w.learned).slice(0, remaining);
-    state.sessionQueue = [...due, ...fresh].map(w => w.id);
+    const due = state.words.filter(w => !w.deleted && w.learned && !w.mastered && w.dueDate <= t);
+    // Importance ordering: words you previously rated worse come first; ties broken by overdue depth.
+    due.sort((a, b) => {
+      const sa = a.lastScore == null ? 1 : a.lastScore;
+      const sb = b.lastScore == null ? 1 : b.lastScore;
+      if (sa !== sb) return sa - sb;
+      return (a.dueDate || '').localeCompare(b.dueDate || '');
+    });
+    // Apply daily review cap (0 = unlimited). Counts include reviews already done today.
+    const reviewedToday = readSession(t).review;
+    const cap = state.dailyReviewCap || 0;
+    const cappedDue = cap > 0 ? due.slice(0, Math.max(0, cap - reviewedToday)) : due;
+    const studiedNewToday = readSession(t).new;
+    const remaining = Math.max(0, state.dailyTarget - studiedNewToday);
+    const fresh = state.words.filter(w => !w.deleted && !w.learned).slice(0, remaining);
+    state.sessionQueue = [...fresh, ...cappedDue].map(w => w.id);
     state.currentIdx = 0;
   }
 
@@ -691,8 +1194,8 @@ ability | /əˈbɪləti/ | n. 能力，才能
       return;
     }
     if (!word) {
-      const studiedToday = state.sessions[t] || 0;
-      card.innerHTML = '<div class="empty"><div style="font-size:36px; margin-bottom:8px;">🎉</div>今天的学习已完成！<br><span style="font-size:13px;">今日学习 ' + studiedToday + ' 个单词</span></div>';
+      const s = readSession(t);
+      card.innerHTML = '<div class="empty"><div style="font-size:36px; margin-bottom:8px;">🎉</div>今天的学习已完成！<br><span style="font-size:13px;">今日新词 ' + s.new + ' · 复习 ' + s.review + '</span></div>';
       updateMeta();
       return;
     }
@@ -702,40 +1205,314 @@ ability | /əˈbɪləti/ | n. 能力，才能
     card.innerHTML = `
       <div class="word-head">
         <div class="word">${escapeHtml(word.word)}</div>
-        <button class="star-btn ${word.fav ? 'on' : ''}" onclick="toggleFav(${word.id})" title="收藏/错词">★</button>
+        <button class="star-btn ${word.fav ? 'on' : ''}" onclick="toggleFav(${word.id})" title="收藏">★</button>
       </div>
       <div class="phonetic">
         ${word.phonetic ? escapeHtml(word.phonetic) : ''}
-        <button class="star-btn" onclick="speak('${escapeAttr(word.word)}')" title="朗读" style="font-size:14px;">🔊</button>
+        <span id="top-speakers"></span>
+        <span class="speaker-loading" id="speaker-loading" title="加载朗文发音…"></span>
+        <button class="star-btn" id="fallback-speaker" onclick="speak('${escapeAttr(word.word)}')" title="朗读 (有道, 朗文加载失败时显示)" style="font-size:14px; display:none;">🔊</button>
+      </div>
+      <div class="rate-row" id="rate-row">
+        <button class="rate-btn bad" onclick="rate(0)">不认识<span class="rate-hint">+1 天</span></button>
+        <button class="rate-btn mid" onclick="rate(1)">模糊<span class="rate-hint">+${previewDays(word, 1)} 天</span></button>
+        <button class="rate-btn good" onclick="rate(2)">认识<span class="rate-hint">${previewDays(word, 2) === -1 ? '✓ 掌握' : '+' + previewDays(word, 2) + ' 天'}</span></button>
+      </div>
+      <div class="srs-info">
+        ${word.learned ? `
+          <div class="srs-line"><span class="srs-dots">${stageDots(word.stage)}</span> 阶段 ${word.stage}/${INTERVALS.length}</div>
+          <div class="srs-line"><span class="state-dot" data-score="${word.lastScore ?? -1}"></span>上次「${lastScoreText(word.lastScore)}」· ${humanDelta(daysFromToday(word.lastSeen))} · 下次 ${dueText(word.dueDate)}</div>
+        ` : `<div class="srs-line">📘 新词 · 首次学习</div>`}
+      </div>
+      <div class="controls-row">
+        <button class="btn" id="reveal-btn" onclick="reveal()" style="font-size:12px; padding:6px 10px;">👁 显示释义</button>
+        <button class="btn" onclick="skip()" style="font-size:12px; padding:6px 10px;">⏭ 跳过</button>
+        <button class="danger-link" onclick="deleteWord(${word.id})" style="margin-left: 8px; font-size: 12px;" title="该词有问题，从词列表中移除">🗑 删除此词</button>
       </div>
       <div class="hidden-side" id="reveal-side">
         <div class="definition">${escapeHtml(word.def)}</div>
         ${word.example ? `<div class="example">${escapeHtml(word.example)}</div>` : ''}
-        <div style="margin-top: 4px;">
-          <a class="longman-btn" href="${longmanUrl}" target="_blank" rel="noopener noreferrer">📖 查朗文词典</a>
+        <div class="dict-tabs">
+          <button class="dict-tab active" data-tab="ldoce" onclick="switchDictTab('ldoce')">朗文 LDOCE</button>
+          <button class="dict-tab" data-tab="youdao" onclick="switchDictTab('youdao')">柯林斯英汉</button>
         </div>
-      </div>
-      <button class="rate-btn good reveal-btn" id="reveal-btn" onclick="reveal()">显示释义</button>
-      <div class="rate-row" id="rate-row" style="display:none;">
-        <button class="rate-btn bad" onclick="rate(0)">不认识</button>
-        <button class="rate-btn mid" onclick="rate(1)">模糊</button>
-        <button class="rate-btn good" onclick="rate(2)">认识</button>
-      </div>
-      <div class="controls-row">
-        <button class="btn" onclick="skip()" style="font-size:12px; padding:6px 10px;">⏭ 跳过</button>
-        <span class="badge-stage" style="margin-left:auto;">
-          ${word.learned ? '复习 · 阶段 ' + word.stage : '新词'}
-        </span>
+        <div class="dict-panel" id="dict-panel-ldoce">
+          <div class="dict-content" id="dict-content">
+            <div class="dict-loading">加载朗文词典...</div>
+          </div>
+          <div style="margin-top: 8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <a class="longman-btn" href="${longmanUrl}" target="_blank" rel="noopener noreferrer">📖 朗文原页面</a>
+            <button class="btn" onclick="refreshDict()" style="font-size:12px; padding:6px 10px;" title="忽略缓存，重新拉取朗文">🔄 刷新缓存</button>
+          </div>
+        </div>
+        <div class="dict-panel" id="dict-panel-youdao" style="display:none;">
+          <iframe class="dict-frame" id="dict-frame-youdao" src="about:blank" loading="lazy" referrerpolicy="no-referrer"></iframe>
+          <div style="margin-top: 8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <a class="longman-btn" href="https://dict.youdao.com/result?word=${encodeURIComponent(word.word.toLowerCase())}&lang=en" target="_blank" rel="noopener noreferrer">📕 有道原页面</a>
+            <button class="btn" onclick="refreshYoudao()" style="font-size:12px; padding:6px 10px;" title="重新加载有道页面">🔄 刷新</button>
+          </div>
+        </div>
       </div>
     `;
     updateMeta();
+    // Restore last-selected dict tab for this card
+    let savedTab = 'ldoce';
+    try { savedTab = sessionStorage.getItem('cet4_dict_tab') || 'ldoce'; } catch (_) {}
+    if (savedTab !== 'ldoce') switchDictTab(savedTab);
+    // Prefetch Longman page so reveal feels instant; also hoist BrE/AmE speakers to top now.
+    loadDict(word.word, { render: false });
   }
+
+  window.switchDictTab = function(tab) {
+    try { sessionStorage.setItem('cet4_dict_tab', tab); } catch (_) {}
+    document.querySelectorAll('.dict-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    const ldocePanel = document.getElementById('dict-panel-ldoce');
+    const youdaoPanel = document.getElementById('dict-panel-youdao');
+    if (ldocePanel) ldocePanel.style.display = tab === 'ldoce' ? '' : 'none';
+    if (youdaoPanel) youdaoPanel.style.display = tab === 'youdao' ? '' : 'none';
+    if (tab === 'youdao') {
+      const fr = document.getElementById('dict-frame-youdao');
+      const w = currentWord();
+      if (fr && w) {
+        const url = 'https://dict.youdao.com/result?word=' + encodeURIComponent(w.word.toLowerCase()) + '&lang=en';
+        if (fr.dataset.src !== url) {
+          fr.src = url;
+          fr.dataset.src = url;
+        }
+      }
+    }
+  };
+
+  window.refreshYoudao = function() {
+    const fr = document.getElementById('dict-frame-youdao');
+    const w = currentWord();
+    if (!fr || !w) return;
+    const url = 'https://dict.youdao.com/result?word=' + encodeURIComponent(w.word.toLowerCase()) + '&lang=en&_=' + Date.now();
+    fr.src = url;
+    fr.dataset.src = url;
+  };
 
   window.reveal = function() {
     document.getElementById('reveal-side').classList.add('show');
-    document.getElementById('reveal-btn').style.display = 'none';
-    document.getElementById('rate-row').style.display = 'grid';
+    const btn = document.getElementById('reveal-btn');
+    if (btn) btn.style.display = 'none';
+    const w = currentWord();
+    if (w) loadDict(w.word, { render: true });
   };
+
+  window.refreshDict = function() {
+    const w = currentWord();
+    if (!w) return;
+    loadDict(w.word, { render: true, force: true });
+  };
+
+  // --- Longman cache (localStorage, LRU bounded) ---
+  const DICT_CACHE_KEY = 'cet4_dict_cache_v1';
+  const DICT_CACHE_MAX = 200;
+  let dictCache = { entries: {}, order: [] };
+  const dictPending = new Map();
+
+  function loadDictCache() {
+    try {
+      const raw = localStorage.getItem(DICT_CACHE_KEY);
+      if (raw) dictCache = JSON.parse(raw);
+    } catch (e) {}
+    if (!dictCache || typeof dictCache !== 'object') dictCache = { entries: {}, order: [] };
+    if (!dictCache.entries) dictCache.entries = {};
+    if (!Array.isArray(dictCache.order)) dictCache.order = [];
+  }
+  function saveDictCache() {
+    try {
+      localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(dictCache));
+    } catch (e) {
+      // quota exceeded: evict half and retry once
+      const half = Math.floor(dictCache.order.length / 2);
+      dictCache.order.splice(0, half).forEach(k => delete dictCache.entries[k]);
+      try { localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(dictCache)); } catch (_) {}
+    }
+  }
+  function dictCacheGet(key) {
+    const e = dictCache.entries[key];
+    if (!e) return null;
+    const i = dictCache.order.indexOf(key);
+    if (i >= 0) { dictCache.order.splice(i, 1); dictCache.order.push(key); }
+    return e.html;
+  }
+  function dictCachePut(key, html) {
+    dictCache.entries[key] = { html, t: Date.now() };
+    const i = dictCache.order.indexOf(key);
+    if (i >= 0) dictCache.order.splice(i, 1);
+    dictCache.order.push(key);
+    while (dictCache.order.length > DICT_CACHE_MAX) {
+      const old = dictCache.order.shift();
+      delete dictCache.entries[old];
+    }
+    saveDictCache();
+  }
+  function dictCacheClear() {
+    dictCache = { entries: {}, order: [] };
+    try { localStorage.removeItem(DICT_CACHE_KEY); } catch (_) {}
+  }
+  window.clearDictCache = dictCacheClear;
+
+  function parseAndSanitizeLongman(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('script, iframe, noscript, link, style, form, button').forEach(el => el.remove());
+    const entries = doc.querySelectorAll('.dictentry');
+    if (!entries.length) throw new Error('未找到词条');
+    const wrap = document.createElement('div');
+    entries.forEach(e => wrap.appendChild(e.cloneNode(true)));
+    // Normalize curly punctuation → ASCII so Chinese-font fallback doesn't render
+    // U+2019 etc. as fullwidth glyphs on mobile (the "didn ' t" gap bug).
+    const walker = doc.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      n.nodeValue = n.nodeValue
+        .replace(/[‘’]/g, "'")
+        .replace(/[“”]/g, '"');
+    }
+    wrap.querySelectorAll('*').forEach(el => {
+      for (const a of Array.from(el.attributes)) {
+        if (a.name.startsWith('on')) el.removeAttribute(a.name);
+      }
+    });
+    wrap.querySelectorAll('a[href]').forEach(a => {
+      const h = a.getAttribute('href') || '';
+      if (h.startsWith('/')) a.setAttribute('href', 'https://www.ldoceonline.com' + h);
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    });
+    wrap.querySelectorAll('[data-src-mp3]').forEach(el => {
+      const isBr = el.classList.contains('brefile');
+      const isAm = el.classList.contains('amefile');
+      el.className = 'dict-speaker' + (isBr ? ' dict-speaker-br' : isAm ? ' dict-speaker-am' : '');
+      el.textContent = isBr ? '🔊英' : isAm ? '🔊美' : '🔊';
+    });
+    wrap.querySelectorAll('.asset, .assetlink, .yellow_box, .pictures, .Footer, .ad').forEach(el => el.remove());
+    return wrap.innerHTML;
+  }
+
+  function isCurrentWord(key) {
+    const cw = currentWord();
+    return !!cw && String(cw.word).toLowerCase() === key;
+  }
+
+  function hideSpeakerLoading() {
+    const sp = document.getElementById('speaker-loading');
+    if (sp) sp.style.display = 'none';
+  }
+
+  function hoistSpeakersFrom(source) {
+    const top = document.getElementById('top-speakers');
+    if (!top || !source) return;
+    top.innerHTML = '';
+    const br = source.querySelector('.dict-speaker-br');
+    const am = source.querySelector('.dict-speaker-am');
+    if (br) top.appendChild(br.cloneNode(true));
+    if (am) top.appendChild(am.cloneNode(true));
+    const fb = document.getElementById('fallback-speaker');
+    if (fb) fb.style.display = (br || am) ? 'none' : '';
+    hideSpeakerLoading();
+  }
+
+  function showFallbackSpeaker() {
+    const fb = document.getElementById('fallback-speaker');
+    if (fb) fb.style.display = '';
+    hideSpeakerLoading();
+  }
+
+  function renderCachedDict(cleanedHtml) {
+    const c = document.getElementById('dict-content');
+    if (!c) return;
+    c.innerHTML = cleanedHtml;
+    hoistSpeakersFrom(c);
+  }
+
+  function hoistSpeakersFromCache(key) {
+    const cached = dictCacheGet(key);
+    if (!cached) return;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = cached;
+    hoistSpeakersFrom(tmp);
+  }
+
+  async function loadDict(word, opts) {
+    const render = !opts || opts.render !== false;
+    const force = !!(opts && opts.force);
+    const key = String(word).toLowerCase();
+    // 1. Cache hit
+    if (!force) {
+      const cached = dictCacheGet(key);
+      if (cached) {
+        if (isCurrentWord(key)) {
+          if (render) renderCachedDict(cached);
+          else hoistSpeakersFromCache(key);
+        }
+        return;
+      }
+    }
+    // 2. In-flight join (prefetch race)
+    if (!force && dictPending.has(key)) {
+      if (render && isCurrentWord(key)) {
+        const c = document.getElementById('dict-content');
+        if (c) c.innerHTML = '<div class="dict-loading">加载朗文词典...</div>';
+      }
+      try { await dictPending.get(key); } catch (_) {}
+      if (!isCurrentWord(key)) return;
+      const c2 = dictCacheGet(key);
+      if (c2) {
+        if (render) renderCachedDict(c2);
+        else hoistSpeakersFromCache(key);
+      } else if (render) {
+        showFallbackSpeaker();
+      }
+      return;
+    }
+    // 3. Fetch
+    if (render && isCurrentWord(key)) {
+      const c = document.getElementById('dict-content');
+      if (c) c.innerHTML = '<div class="dict-loading">加载朗文词典...</div>';
+    }
+    const url = 'https://www.ldoceonline.com/dictionary/' + encodeURIComponent(key);
+    const p = (async () => {
+      const res = await fetch(url, { credentials: 'omit' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const html = await res.text();
+      const cleaned = parseAndSanitizeLongman(html);
+      dictCachePut(key, cleaned);
+      return cleaned;
+    })();
+    dictPending.set(key, p);
+    try {
+      const cleaned = await p;
+      if (!isCurrentWord(key)) return;
+      if (render) renderCachedDict(cleaned);
+      else hoistSpeakersFromCache(key);
+    } catch (e) {
+      if (!isCurrentWord(key)) return;
+      if (render) {
+        const c = document.getElementById('dict-content');
+        if (c) c.innerHTML = '<div class="dict-error">朗文加载失败：' + escapeHtml(e.message || String(e)) +
+          ' &middot; 可点下面「朗文原页面」直接在新窗口看</div>';
+      }
+      showFallbackSpeaker();
+    } finally {
+      dictPending.delete(key);
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const t = e.target.closest && e.target.closest('[data-src-mp3]');
+    if (!t) return;
+    const src = t.getAttribute('data-src-mp3');
+    if (!src) return;
+    try {
+      if (!window._dictPlayAudio) window._dictPlayAudio = new Audio();
+      window._dictPlayAudio.pause();
+      window._dictPlayAudio.src = src;
+      window._dictPlayAudio.play().catch(()=>{});
+    } catch (_) {}
+  });
 
   window.skip = function() {
     state.currentIdx++;
@@ -746,11 +1523,11 @@ ability | /əˈbɪləti/ | n. 能力，才能
     const word = currentWord();
     if (!word) return;
     const t = today();
+    const wasNew = !word.learned;
 
     if (score === 0) {
       word.stage = 0;
       word.dueDate = addDays(t, 1);
-      word.fav = true;
     } else if (score === 1) {
       word.dueDate = addDays(t, Math.max(1, INTERVALS[word.stage] - 1));
     } else {
@@ -763,10 +1540,11 @@ ability | /əˈbɪləti/ | n. 能力，才能
     }
     word.learned = true;
     word.lastSeen = t;
+    word.lastScore = score;
     word.updatedAt = Date.now();
 
-    state.sessions[t] = (state.sessions[t] || 0) + 1;
-    updateStreak();
+    bumpSession(t, wasNew ? 'new' : 'review');
+    if (wasNew) updateStreak();
 
     state.currentIdx++;
     save();
@@ -782,13 +1560,25 @@ ability | /əˈbɪləti/ | n. 能力，才能
     renderStudyCard();
   };
 
+  let speakAudio = null;
   window.speak = function(text) {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      u.rate = 0.9;
-      window.speechSynthesis.speak(u);
+    const w = String(text || '').trim().toLowerCase();
+    if (!w) return;
+    const url = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(w) + '&type=2';
+    if (!speakAudio) speakAudio = new Audio();
+    speakAudio.pause();
+    speakAudio.src = url;
+    const p = speakAudio.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'en-US';
+          u.rate = 0.9;
+          window.speechSynthesis.speak(u);
+        }
+      });
     }
   };
 
@@ -803,10 +1593,14 @@ ability | /əˈbɪləti/ | n. 能力，才能
 
   function updateMeta() {
     const t = today();
-    const studiedToday = state.sessions[t] || 0;
-    document.getElementById('meta-progress').textContent = '今日 ' + studiedToday + ' / ' + state.dailyTarget;
+    const s = readSession(t);
+    const cap = state.dailyReviewCap || 0;
+    let reviewPart = '';
+    if (cap > 0) reviewPart = ' · 🔁 复习 ' + s.review + ' / ' + cap;
+    else if (s.review) reviewPart = ' · 🔁 复习 ' + s.review;
+    document.getElementById('meta-progress').textContent = '新词 ' + s.new + ' / ' + state.dailyTarget + reviewPart;
     document.getElementById('meta-streak').textContent = '🔥 连续 ' + state.streak + ' 天';
-    const pct = Math.min(100, Math.round((studiedToday / state.dailyTarget) * 100));
+    const pct = Math.min(100, Math.round((s.new / state.dailyTarget) * 100));
     document.getElementById('progress-fill').style.width = pct + '%';
   }
 
@@ -815,7 +1609,12 @@ ability | /əˈbɪləti/ | n. 能力，才能
     const search = document.getElementById('search-box').value.trim().toLowerCase();
     const t = today();
     let items = state.words.slice();
+    // Hide deleted words from all filters except the dedicated 'deleted' view
+    if (filter === 'deleted') items = items.filter(w => w.deleted);
+    else items = items.filter(w => !w.deleted);
     if (filter === 'due') items = items.filter(w => w.learned && !w.mastered && w.dueDate <= t);
+    else if (filter === 'unknown') items = items.filter(w => w.lastScore === 0 && !w.mastered);
+    else if (filter === 'fuzzy') items = items.filter(w => w.lastScore === 1 && !w.mastered);
     else if (filter === 'fav') items = items.filter(w => w.fav);
     else if (filter === 'mastered') items = items.filter(w => w.mastered);
     else if (filter === 'new') items = items.filter(w => !w.learned);
@@ -829,12 +1628,25 @@ ability | /əˈbɪləti/ | n. 能力，才能
       body.innerHTML = '<div class="empty">没有匹配的单词</div>';
       return;
     }
+    const isDeletedView = filter === 'deleted';
     body.innerHTML = items.slice(0, 300).map(w => {
+      // Build a state pill that surfaces SRS progress instead of a single fuzzy "tag"
       let tag = '';
-      if (w.mastered) tag = '<span class="list-tag tag-mastered">已掌握</span>';
-      else if (w.fav) tag = '<span class="list-tag tag-fav">错词</span>';
-      else if (w.learned && w.dueDate <= t) tag = '<span class="list-tag tag-due">待复习</span>';
+      if (isDeletedView) tag = '<span class="list-tag tag-fav">已删除</span>';
+      else if (w.mastered) tag = '<span class="list-tag tag-mastered">已掌握</span>';
+      else if (!w.learned) tag = '<span class="list-tag tag-new">未学</span>';
+      else {
+        const delta = daysFromToday(w.dueDate);
+        const overdue = delta != null && delta < 0;
+        const today0 = delta === 0;
+        const cls = overdue || today0 ? 'tag-due' : 'tag-neutral';
+        const dueStr = overdue ? '逾期' + (-delta) + '天' : today0 ? '今天' : delta + '天后';
+        tag = `<span class="list-tag ${cls}"><span class="state-dot" data-score="${w.lastScore ?? -1}"></span>阶段${w.stage} · ${dueStr}</span>`;
+      }
       const longmanUrl = 'https://www.ldoceonline.com/dictionary/' + encodeURIComponent(w.word.toLowerCase());
+      const opBtn = isDeletedView
+        ? `<button class="star-btn" onclick="restoreWord(${w.id})" title="恢复" style="color:var(--primary); font-size:14px;">↺</button>`
+        : `<button class="star-btn" onclick="deleteWord(${w.id})" title="删除" style="color:var(--text-tertiary); font-size:14px;">🗑</button>`;
       return `
         <div class="list-item">
           <div style="flex:1; min-width:0;">
@@ -845,6 +1657,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
             ${tag}
             <a href="${longmanUrl}" target="_blank" rel="noopener noreferrer" class="star-btn" title="查朗文" style="color:var(--primary); text-decoration:none; font-size:14px;">📖</a>
             <button class="star-btn ${w.fav ? 'on' : ''}" onclick="toggleFavList(${w.id})">★</button>
+            ${opBtn}
           </div>
         </div>
       `;
@@ -853,6 +1666,36 @@ ability | /əˈbɪləti/ | n. 能力，才能
       body.innerHTML += '<div class="empty" style="padding:1rem;">…还有 ' + (items.length - 300) + ' 个，请用搜索或筛选缩小范围</div>';
     }
   }
+
+  window.deleteWord = function(id) {
+    const w = state.words.find(x => x.id === id);
+    if (!w) return;
+    if (!confirm('确定删除「' + w.word + '」？\n它会从学习队列里移除，但保留在「词表 → 已删除」筛选里，可恢复。\n云同步会把删除推到其他设备。')) return;
+    const now = Date.now();
+    w.deleted = true;
+    w.deletedAt = now;
+    w.updatedAt = now;
+    // Drop from current session queue if it's in there
+    const i = state.sessionQueue.indexOf(id);
+    if (i >= 0) {
+      state.sessionQueue.splice(i, 1);
+      if (state.currentIdx > i) state.currentIdx--;
+    }
+    bumpLibraryVersion();
+    save();
+    refreshAll();
+  };
+
+  window.restoreWord = function(id) {
+    const w = state.words.find(x => x.id === id);
+    if (!w) return;
+    w.deleted = false;
+    w.deletedAt = null;
+    w.updatedAt = Date.now();
+    bumpLibraryVersion();
+    save();
+    refreshAll();
+  };
 
   window.toggleFavList = function(id) {
     const w = state.words.find(x => x.id === id);
@@ -865,28 +1708,32 @@ ability | /əˈbɪləti/ | n. 能力，才能
 
   function renderStats() {
     const t = today();
-    document.getElementById('s-total').textContent = state.words.length;
-    document.getElementById('s-mastered').textContent = state.words.filter(w => w.mastered).length;
-    document.getElementById('s-learning').textContent = state.words.filter(w => w.learned && !w.mastered).length;
-    document.getElementById('s-fav').textContent = state.words.filter(w => w.fav).length;
+    const live = state.words.filter(w => !w.deleted);
+    document.getElementById('s-total').textContent = live.length;
+    document.getElementById('s-mastered').textContent = live.filter(w => w.mastered).length;
+    document.getElementById('s-learning').textContent = live.filter(w => w.learned && !w.mastered).length;
+    document.getElementById('s-fav').textContent = live.filter(w => w.fav).length;
     document.getElementById('s-streak').textContent = state.streak + ' 天';
     document.getElementById('s-totaldays').textContent = Object.keys(state.sessions).length + ' 天';
-    document.getElementById('s-today').textContent = state.sessions[t] || 0;
+    const sToday = readSession(t);
+    document.getElementById('s-today').textContent = sToday.new + (sToday.review ? ' + ' + sToday.review : '');
     document.getElementById('s-countdown').textContent = daysUntil(EXAM_DATE) + ' 天';
     document.getElementById('daily-target').value = state.dailyTarget;
+    document.getElementById('daily-review-cap').value = state.dailyReviewCap || 0;
 
     const grid = document.getElementById('heatmap');
     const cells = [];
     for (let i = 32; i >= 0; i--) {
       const d = addDays(t, -i);
-      const n = state.sessions[d] || 0;
+      const ds = readSession(d);
+      const n = ds.new;
       let cls = 'heat-cell';
       const target = state.dailyTarget;
       if (n >= target * 0.75) cls += ' heat-4';
       else if (n >= target * 0.4) cls += ' heat-3';
       else if (n >= target * 0.15) cls += ' heat-2';
       else if (n >= 1) cls += ' heat-1';
-      cells.push('<div class="' + cls + '" title="' + d + ': ' + n + '"></div>');
+      cells.push('<div class="' + cls + '" title="' + d + ': 新 ' + ds.new + ' / 复习 ' + ds.review + '"></div>');
     }
     grid.innerHTML = cells.join('');
   }
@@ -915,7 +1762,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
         const data = JSON.parse(e.target.result);
         if (!data.words || !Array.isArray(data.words)) throw new Error('格式不正确');
         state = Object.assign({ currentIdx: -1, sessionQueue: [] }, data);
-        if (!state.dailyTarget) state.dailyTarget = 200;
+        normalizeState();
         // Bump all timestamps so the restored snapshot is authoritative
         const now = Date.now();
         state.updatedAt = now;
@@ -936,7 +1783,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
 
   window.resetAll = function() {
     if (!confirm('确定清空所有单词和打卡记录吗？此操作不可恢复。')) return;
-    state = { words: [], sessions: {}, streak: 0, lastStudyDate: null, dailyTarget: 200, dailyTargetUpdatedAt: Date.now(), updatedAt: 0, currentIdx: -1, sessionQueue: [] };
+    state = { words: [], sessions: {}, streak: 0, lastStudyDate: null, dailyTarget: 200, dailyTargetUpdatedAt: Date.now(), dailyReviewCap: 0, dailyReviewCapUpdatedAt: Date.now(), updatedAt: 0, currentIdx: -1, sessionQueue: [] };
     save();
     refreshAll();
   };
@@ -1014,7 +1861,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
     if (gEl) gEl.value = sync.config.gistId || '';
   }
 
-  window.saveSyncConfig = function() {
+  window.saveSyncConfig = async function() {
     const token = (document.getElementById('sync-token').value || '').trim();
     const gistId = (document.getElementById('sync-gist-id').value || '').trim();
     sync.config.token = token;
@@ -1026,7 +1873,12 @@ ability | /əˈbɪləti/ | n. 能力，才能
       return;
     }
     sync.setStatus('idle', '');
-    alert('设置已保存。点「立即同步」开始首次同步。');
+    if (gistId) {
+      await sync.initialSync();
+    } else {
+      await sync.syncNow();
+      renderSyncInputs();
+    }
   };
 
   window.syncNow = function() {
@@ -1058,6 +1910,7 @@ ability | /əˈbɪləti/ | n. 能力，才能
   }, 30000);
 
   load();
+  loadDictCache();
   sync.loadConfig();
   renderSyncInputs();
   renderSyncStatus();

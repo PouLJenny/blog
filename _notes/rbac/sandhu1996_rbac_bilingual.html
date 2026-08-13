@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基于角色的访问控制模型 | Role-Based Access Control Models</title>
+<script>
+(function(){
+  var s = localStorage.getItem('rbac-theme');
+  if(s==='dark') document.documentElement.setAttribute('data-theme','dark');
+  var m = localStorage.getItem('rbac-mode') || (window.innerWidth<=768?'zh':'bi');
+  document.documentElement.setAttribute('data-mode', m);
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+:root{--primary:#009f52;--primary-light:#e1f5ec;--bg:#fff;--bg2:#f7faf8;--text:#1a2420;--text2:#3d5249;--text3:#6b8578;--border:#c8e6d5;--en-bg:#f0faf5;--shadow:0 2px 12px rgba(0,159,82,.08);--radius:6px;}
+[data-theme="dark"]{--bg:#0e1a14;--bg2:#162219;--text:#d6ede3;--text2:#9abfad;--text3:#5e8a72;--border:#1f3d2b;--en-bg:#111f17;--shadow:0 2px 12px rgba(0,0,0,.4);--primary-light:#0d2a1a;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Noto Serif SC',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:15px;transition:background .2s,color .2s;}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:10px 16px;box-shadow:var(--shadow);}
+#toc-toggle{background:none;border:none;cursor:pointer;color:var(--primary);font-size:18px;line-height:1;padding:4px 6px;border-radius:4px;}
+#toc-toggle:hover{background:var(--primary-light);}
+#topbar h1{font-size:13px;font-weight:600;color:var(--primary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-btns{display:flex;gap:6px;align-items:center;}
+.bar-btn{padding:4px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;color:var(--text2);transition:all .15s;}
+.bar-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+[data-mode="en"] .bar-btn[data-target="en"],[data-mode="zh"] .bar-btn[data-target="zh"],[data-mode="bi"] .bar-btn[data-target="bi"]{background:var(--primary);color:#fff;border-color:var(--primary);}
+#toc-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.3);}
+#toc-overlay.open{display:block;}
+#toc-drawer{position:fixed;top:0;left:0;width:280px;height:100vh;z-index:201;background:var(--bg);border-right:1px solid var(--border);overflow-y:auto;padding:16px;transform:translateX(-100%);transition:transform .25s ease;}
+#toc-drawer.open{transform:translateX(0);}
+#toc-drawer h2{font-size:13px;color:var(--primary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+#toc-drawer a{display:block;padding:6px 8px;font-size:13px;color:var(--text2);text-decoration:none;border-radius:4px;transition:background .15s;}
+#toc-drawer a:hover{background:var(--primary-light);color:var(--primary);}
+#toc-drawer a.sub{padding-left:20px;font-size:12px;}
+#content{max-width:880px;margin:0 auto;padding:32px 20px 80px;}
+.paper-header{text-align:center;padding:32px 0 24px;border-bottom:2px solid var(--primary);margin-bottom:32px;}
+.paper-header .journal{font-size:12px;color:var(--text3);font-style:italic;margin-bottom:12px;}
+.paper-header h2{font-size:26px;color:var(--text);line-height:1.3;margin-bottom:8px;}
+.paper-header .zh-title{font-size:20px;color:var(--primary);margin-bottom:16px;}
+.paper-header .authors{font-size:13px;color:var(--text2);margin-bottom:4px;}
+.paper-header .date{font-size:12px;color:var(--text3);}
+.bi-pair{display:grid;gap:0;margin-bottom:14px;}
+[data-mode="bi"] .bi-pair{grid-template-columns:1fr 1fr;}
+[data-mode="en"] .bi-pair .zh,[data-mode="zh"] .bi-pair .en{display:none;}
+[data-mode="bi"] .bi-pair .en{background:var(--en-bg);padding:10px 16px;border-left:3px solid var(--border);}
+[data-mode="bi"] .bi-pair .zh{padding:10px 16px;}
+.bi-pair p,.bi-pair li{margin:0;}
+.section{margin-bottom:36px;}
+.section-title{font-size:16px;font-weight:700;color:var(--primary);margin-bottom:4px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.section-title-zh{font-size:14px;color:var(--text2);margin-bottom:16px;}
+.sub-title{font-size:15px;font-weight:700;color:var(--primary);margin:24px 0 10px;}
+.abstract-box{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:var(--radius);padding:8px 4px;margin-bottom:32px;}
+.abstract-box .kw{font-size:12px;color:var(--text3);padding:10px 16px;}
+.def-box{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:var(--radius);padding:6px 4px;margin:14px 0;font-size:14px;}
+.def-box .def-title{font-weight:700;color:var(--primary);padding:8px 16px 0;font-size:13px;}
+.figure-box{background:var(--bg2);border:1px dashed var(--border);border-radius:var(--radius);padding:16px;margin:16px 0;text-align:center;color:var(--text2);}
+.figure-box .fig-caption{font-size:12px;color:var(--text3);margin-top:8px;font-style:italic;}
+.fig-svg{max-width:100%;overflow-x:auto;display:flex;justify-content:center;}
+.fig-svg svg{max-width:100%;height:auto;}
+.ref-list{list-style:none;}
+.ref-list li{font-size:13px;color:var(--text2);padding:6px 0 6px 32px;position:relative;border-bottom:1px solid var(--border);}
+.ref-list li::before{content:attr(data-n);position:absolute;left:0;color:var(--primary);font-weight:700;}
+.footnotes{font-size:12px;color:var(--text3);margin-top:16px;border-top:1px solid var(--border);padding-top:12px;}
+.footnotes p{margin-bottom:4px;}
+code{background:var(--primary-light);padding:1px 5px;border-radius:3px;font-size:.9em;}
+@media(max-width:768px){[data-mode="bi"] .bi-pair{grid-template-columns:1fr;}[data-mode="bi"] .bi-pair .en{border-left:none;border-bottom:1px solid var(--border);}#content{padding:16px 12px 60px;}.paper-header h2{font-size:20px;}}
+</style>
+</head>
+<body>
+<div id="toc-overlay" onclick="closeTOC()"></div>
+<div id="toc-drawer">
+  <h2>目录 / Contents</h2>
+  <a href="#abstract">摘要 Abstract</a>
+  <a href="#s1">1. 引言 Introduction</a>
+  <a href="#s2">2. 背景与动机 Background</a>
+  <a href="#s3">3. 角色与相关概念 Roles &amp; Related Concepts</a>
+  <a href="#s4">4. 参考模型族 A Family of Reference Models</a>
+  <a class="sub" href="#s41">4.1 基础模型 RBAC0</a>
+  <a class="sub" href="#s42">4.2 角色层次 RBAC1</a>
+  <a class="sub" href="#s43">4.3 约束 RBAC2</a>
+  <a class="sub" href="#s44">4.4 综合模型 RBAC3</a>
+  <a href="#s5">5. 管理模型 Management Models</a>
+  <a href="#s6">6. 结论 Conclusion</a>
+  <a href="#refs">参考文献 References</a>
+</div>
+<div id="topbar">
+  <button id="toc-toggle" onclick="toggleTOC()">☰</button>
+  <h1>基于角色的访问控制模型 | Sandhu et al., 1996</h1>
+  <div class="bar-btns">
+    <button class="bar-btn" data-target="zh" onclick="setMode('zh')">中文</button>
+    <button class="bar-btn" data-target="bi" onclick="setMode('bi')">对照</button>
+    <button class="bar-btn" data-target="en" onclick="setMode('en')">EN</button>
+    <button class="bar-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+<div id="content">
+
+<div class="paper-header">
+  <div class="journal">IEEE Computer, Vol. 29, No. 2, February 1996, pp. 38–47</div>
+  <h2>Role-Based Access Control Models</h2>
+  <div class="zh-title">基于角色的访问控制模型</div>
+  <div class="authors">Ravi S. Sandhu · Edward J. Coyne · Hal L. Feinstein · Charles E. Youman</div>
+  <div class="date">Revised October 26, 1995　·　SETA Corporation &amp; George Mason University</div>
+</div>
+
+<div id="abstract" class="section">
+  <div class="section-title">Abstract · 摘要</div>
+  <div class="abstract-box">
+    <div class="bi-pair">
+      <div class="en"><p>This article introduces a family of reference models for role-based access control (RBAC) in which permissions are associated with roles, and users are made members of appropriate roles. This greatly simplifies management of permissions. Roles are closely related to the concept of user groups in access control. However, a role brings together a set of users on one side and a set of permissions on the other, whereas user groups are typically defined as a set of users only.</p></div>
+      <div class="zh"><p>本文介绍了一族基于角色的访问控制（RBAC）参考模型。在这些模型中，权限与角色相关联，用户被分配至适当的角色，从而大幅简化了权限管理。角色与访问控制中"用户组"的概念密切相关，但二者有本质区别：角色将一侧的用户集合与另一侧的权限集合联结在一起，而用户组通常仅被定义为用户的集合。</p></div>
+    </div>
+    <div class="bi-pair">
+      <div class="en"><p>The basic concepts of RBAC originated with early multi-user computer systems. The resurgence of interest in RBAC has been driven by the need for general-purpose customizable facilities for RBAC and the need to manage the administration of RBAC itself. As a consequence RBAC facilities range from simple to complex. This article describes a novel framework of reference models to systematically address the diverse components of RBAC, and their interactions.</p></div>
+      <div class="zh"><p>RBAC 的基本概念起源于早期的多用户计算机系统。近年来 RBAC 重焕研究热情，其驱动力在于：一方面需要通用、可定制的 RBAC 机制，另一方面需要管理 RBAC 自身的管理事务。因此，RBAC 机制的复杂程度从简单到复杂不等。本文提出一套新颖的参考模型框架，系统性地涵盖 RBAC 的各组成部分及其交互关系。</p></div>
+    </div>
+    <div class="kw">Keywords / 关键词: security, access control, roles, models · 安全、访问控制、角色、模型</div>
+  </div>
+</div>
+
+<div id="s1" class="section">
+  <div class="section-title">1. Introduction</div>
+  <div class="section-title-zh">引言</div>
+  <div class="bi-pair">
+    <div class="en"><p>The concept of role-based access control (RBAC) began with multi-user and multi-application on-line systems pioneered in the 1970s. The central notion of RBAC is that permissions are associated with roles, and users are assigned to appropriate roles. This greatly simplifies management of permissions. Roles are created for the various job functions in an organization and users are assigned roles based on their responsibilities and qualifications. Users can be easily reassigned from one role to another. Roles can be granted new permissions as new applications and systems are incorporated, and permissions can be revoked from roles as needed.</p></div>
+    <div class="zh"><p>基于角色的访问控制（RBAC）这一概念源于 20 世纪 70 年代率先出现的多用户、多应用在线系统。RBAC 的核心思想是：权限与角色相关联，用户被分配至适当的角色。这极大地简化了权限管理。角色依据组织中各类职位职能而创建，用户则根据其职责和资质被分配相应角色。用户可以轻松地从一个角色重新分配到另一个角色。随着新应用和新系统的引入，可以为角色授予新权限；当权限不再需要时，也可以从角色中撤销。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A role is properly viewed as a semantic construct around which access control policy is formulated. The particular collection of users and permissions brought together by a role is transitory. The role is more stable because an organization's activities or functions usually change less frequently. Several distinct motivations for constructing a role are discussed below. A role can represent competency to do specific tasks, such as a physician or a pharmacist. A role can embody authority and responsibility, e.g., project supervisor. Authority and responsibility are distinct from competency. Jane Doe may be competent to head several departments, but is assigned to head one of them. Roles can reflect specific duty assignments that are rotated through multiple users, e.g., a duty physician or shift manager. RBAC models and implementations should be able to conveniently accommodate all of these manifestations of the role concept.</p></div>
+    <div class="zh"><p>角色应被视为制定访问控制策略所依托的语义构件。由角色汇聚在一起的用户集合与权限集合是暂时性的，而角色本身则更为稳定，因为组织的业务活动或职能通常变化频率较低。下文讨论构建角色的几种不同动机：角色可以代表执行特定任务的胜任能力，如医生或药剂师；角色可以体现权威与责任，如项目主管——权威与责任有别于胜任能力，简·多伊（Jane Doe）可能有能力主持多个部门，但仅被任命主持其中之一；角色还可以反映在多名用户之间轮换的特定职责，如值班医生或班次管理员。RBAC 模型及其实现应能方便地容纳角色概念的所有这些表现形式。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A recent study by NIST demonstrates that RBAC addresses many needs of the commercial and government sectors. In this study of 28 organizations, access control requirements were found to be driven by a variety of concerns including customer, stockholder and insurer confidence, privacy of personal information, preventing unauthorized distribution of financial assets, preventing unauthorized usage of long-distance telephone circuits, and adherence to professional standards. The study found that many organizations based access control decisions on "the roles that individual users take on as part of the organization." Many organizations preferred to centrally control and maintain access rights, not so much at the system administrator's personal discretion but more in accordance with the organization's protection guidelines.</p></div>
+    <div class="zh"><p>NIST 近期的一项研究表明，RBAC 能够满足商业和政府部门的诸多需求。该研究调查了 28 个组织，发现访问控制需求受到多方面因素驱动，包括：维护客户、股东和保险机构的信任，保护个人信息隐私，防止金融资产被未授权转移，防止长途电话线路被未授权使用，以及遵从职业规范等。研究发现，许多组织的访问控制决策基于"用户作为组织一员所承担的角色"。许多组织倾向于集中管控和维护访问权限，这种管控与其说取决于系统管理员的个人裁量，不如说更多地遵循组织的保护准则。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The study also found that organizations typically viewed their access control needs as unique and felt that available products lacked adequate flexibility. Other evidence of strong interest in RBAC comes from the standards arena. Roles are being considered as part of the emerging SQL3 standard for database management systems, based on their implementation in Oracle 7. Roles have also been incorporated in the commercial security profile of the draft Common Criteria. RBAC is also well matched to prevailing technology and business trends. A number of products support some form of RBAC directly, and others support closely related concepts, such as user groups, that can be utilized to implement roles.</p></div>
+    <div class="zh"><p>研究还发现，各组织普遍认为自身的访问控制需求具有独特性，并认为现有产品缺乏足够的灵活性。标准领域也有其他证据表明业界对 RBAC 的高度兴趣：基于 Oracle 7 中的实现，角色正被纳入新兴的 SQL3 数据库管理系统标准；角色也已被收录于《通用准则》（Common Criteria）草案的商用安全配置文件中。RBAC 与当前的技术和业务趋势也高度契合：许多产品直接支持某种形式的 RBAC，另一些产品则支持与之密切相关的概念（如用户组），可被用于实现角色机制。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Notwithstanding the recognized usefulness of the RBAC concept, there is little agreement on what RBAC means. As a result RBAC is an amorphous concept interpreted in different ways by various researchers and system developers, ranging from simple to elaborate and sophisticated.</p></div>
+    <div class="zh"><p>尽管 RBAC 概念的实用价值已获广泛认可，但对于"RBAC 究竟意味着什么"却鲜有共识。由此，RBAC 成为一个形态模糊的概念，被不同研究者和系统开发者以各种方式——从简单到精细复杂——加以诠释。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>This paper describes a novel framework of four reference models developed by the authors to provide a systematic approach to understanding RBAC, and to categorizing its implementation in different systems. Our framework also separates the administration of RBAC from its use for controlling access to data and other resources.</p></div>
+    <div class="zh"><p>本文描述了作者开发的一套由四个参考模型构成的新颖框架，旨在为系统性理解 RBAC 提供方法论，并为 RBAC 在不同系统中的实现提供分类依据。该框架还将 RBAC 的管理职能与其用于控制数据及其他资源访问的使用职能明确分离。</p></div>
+  </div>
+</div>
+
+<div id="s2" class="section">
+  <div class="section-title">2. Background and Motivation</div>
+  <div class="section-title-zh">背景与动机</div>
+  <div class="bi-pair">
+    <div class="en"><p>A major purpose of RBAC is to facilitate security administration and review. Many commercially successful access control systems for mainframes implement roles for security administration. For example, an operator role could access all resources but not change access permissions, a security-officer role could change permissions but have no access to resources, and an auditor role could access audit trails. This administrative use of roles is also found in modern network operating systems, e.g., Novell's NetWare and Microsoft Windows NT.</p></div>
+    <div class="zh"><p>RBAC 的主要目的之一是促进安全管理与审计。许多在大型主机领域取得商业成功的访问控制系统，都利用角色来实现安全管理。例如：操作员角色可访问所有资源但不能修改访问权限；安全官员角色可修改权限但无法访问资源；审计员角色可访问审计记录。这种角色的管理性运用在现代网络操作系统中同样可见，例如 Novell NetWare 和 Microsoft Windows NT。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Recent resurgence of interest in RBAC has focused on general support of RBAC at the application level. In the past, and today, specific applications have been built with RBAC encoded within the application itself. Existing operating systems and environments provide little support for application-level use of RBAC. Such support is beginning to emerge in products. The challenge is to identify application-independent facilities that are sufficiently flexible, yet simple to implement and use, to support a wide range of applications with minimal customization.</p></div>
+    <div class="zh"><p>近年来 RBAC 研究热情的复兴，聚焦于在应用层面提供对 RBAC 的通用支持。过去（乃至今日），众多具体应用程序将 RBAC 逻辑直接编码于应用内部。现有操作系统和运行环境对应用层 RBAC 的支持极为有限，尽管这种支持已开始在产品中萌芽。挑战在于：如何识别出与应用无关、足够灵活但又易于实现和使用的通用机制，从而以最少的定制化工作支持广泛的应用场景。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Sophisticated variations of RBAC include the capability to establish relations between roles as well as between permissions and roles and between users and roles. For example, two roles can be established as mutually exclusive, so the same user is not allowed to take on both roles. Roles can also take on inheritance relations, whereby one role inherits permissions assigned to a different role. These role-role relations can be used to enforce security policies that include separation of duties and delegation of authority. Heretofore, these relations would have to be encoded into application software; with RBAC, they can be specified once for a security domain.</p></div>
+    <div class="zh"><p>RBAC 的高级变体具备在角色之间、权限与角色之间以及用户与角色之间建立关系的能力。例如，两个角色可被设定为互斥，从而禁止同一用户同时持有这两个角色；角色还可以建立继承关系，使某一角色继承另一角色所分配的权限。这些角色间关系可用于执行包含职责分离和权力委托的安全策略。此前，这些关系必须硬编码到应用软件中；而借助 RBAC，它们只需在一个安全域层面定义一次即可。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>With RBAC it is possible to predefine role-permission relationships, which makes it simple to assign users to the predefined roles. The NIST study indicates that permissions assigned to roles tend to change relatively slowly compared to changes in user membership of roles. The study also found it desirable to allow administrators to confer and revoke membership to users in existing roles without giving these administrators authority to create new roles or change role-permission assignments. Assignment of users to roles will typically require less technical skill than assignment of permissions to roles. It can also be difficult, without RBAC, to determine what permissions have been authorized to what users.</p></div>
+    <div class="zh"><p>借助 RBAC，可以预先定义角色与权限的对应关系，从而使将用户分配至预定义角色的工作变得简单。NIST 研究表明，与角色用户成员资格的变动相比，分配给角色的权限变动相对缓慢。研究还发现，一种理想的做法是：允许管理员对现有角色中的用户成员资格进行授予和撤销，同时不赋予这些管理员创建新角色或更改角色-权限分配的权力。将用户分配给角色通常比将权限分配给角色所需的技术能力更低。此外，若缺乏 RBAC，要确定哪些用户被授权了哪些权限，往往也是件困难的事。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Access control policy is embodied in various components of RBAC such as role-permission, user-role and role-role relationships. These components collectively determine whether a particular user will be allowed to access a particular piece of data in the system. RBAC components may be configured directly by the system owner or indirectly by appropriate roles as delegated by the system owner. The policy enforced in a particular system is the net result of the precise configuration of various RBAC components as directed by the system owner. Moreover, the access control policy can evolve incrementally over the system life cycle, and in large systems it is almost certain to do so. The ability to modify policy to meet the changing needs of an organization is an important benefit of RBAC.</p></div>
+    <div class="zh"><p>访问控制策略体现于 RBAC 的各个组成部分中，如角色-权限、用户-角色和角色-角色关系。这些组件共同决定特定用户是否可以访问系统中某一特定数据。RBAC 组件可由系统所有者直接配置，也可由系统所有者委托的适当角色间接配置。特定系统中执行的策略，是系统所有者指导下对各 RBAC 组件进行精确配置的综合结果。此外，访问控制策略可以在系统生命周期内逐步演进，在大型系统中这几乎是必然的。能够修改策略以适应组织不断变化的需求，是 RBAC 的一项重要优势。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Although RBAC is policy neutral, it directly supports three well-known security principles: least privilege, separation of duties, and data abstraction. Least privilege is supported because RBAC can be configured so only those permissions required for the tasks conducted by members of the role are assigned to the role. Separation of duties is achieved by ensuring that mutually exclusive roles must be invoked to complete a sensitive task, such as requiring an accounting clerk and account manager to participate in issuing a check. Data abstraction is supported by means of abstract permissions such as credit and debit for an account object, rather than the read, write, execute permissions typically provided by the operating system.</p></div>
+    <div class="zh"><p>尽管 RBAC 本身对策略保持中立，但它直接支持三项著名的安全原则：最小权限、职责分离和数据抽象。最小权限的支持体现在：可将 RBAC 配置为只向角色分配其成员执行任务所必需的权限。职责分离通过确保须激活互斥角色才能完成敏感任务来实现，例如要求会计员和账户经理共同参与开具支票。数据抽象通过抽象权限来支持，例如对账户对象使用"贷记"和"借记"权限，而非操作系统通常提供的读、写、执行权限。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>However, RBAC cannot enforce application of these principles. The security officer could configure RBAC so it violates these principles. Also, the degree to which data abstraction is supported will be determined by the implementation details.</p></div>
+    <div class="zh"><p>然而，RBAC 无法强制这些原则的应用——安全官员完全可以将 RBAC 配置成违反这些原则的方式。数据抽象的支持程度也将由具体实现细节决定。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>RBAC is not a panacea for all access control issues. More sophisticated forms of access control are required to deal with situations where sequences of operations need to be controlled. For example, a purchase requisition requires various steps before it can lead to issuance of a purchase order. RBAC does not attempt to directly control the permissions for such a sequence of events. Other forms of access control can be layered on top of RBAC for this purpose. Mohammed and Dilts and Thomas and Sandhu have discussed some of these issues. We view control of sequences of operations to be outside the scope of RBAC, although RBAC can be a foundation on which to build such controls.</p></div>
+    <div class="zh"><p>RBAC 并非解决所有访问控制问题的万能药。对于需要控制操作序列的场景，还需要更复杂的访问控制形式。例如，一份采购申请须经过若干步骤才能最终签发采购订单，RBAC 并不试图直接控制这一系列事件的权限。为此目的，可在 RBAC 之上叠加其他形式的访问控制。Mohammed 与 Dilts、Thomas 与 Sandhu 都曾讨论过其中一些问题。本文认为，操作序列的控制超出了 RBAC 的范畴，尽管 RBAC 可以作为构建此类控制的基础。</p></div>
+  </div>
+</div>
+
+<div id="s3" class="section">
+  <div class="section-title">3. Roles and Related Concepts</div>
+  <div class="section-title-zh">角色与相关概念</div>
+  <div class="bi-pair">
+    <div class="en"><p>A frequently asked question is, "What is the difference between roles and groups?" Groups of users as the unit of access control are commonly provided in many access control systems. A major difference between most implementations of groups and the concept of roles is that groups are typically treated as a collection of users and not as a collection of permissions. A role is both a collection of users on one side and a collection of permissions on the other. The role serves as an intermediary to bring these two collections together.</p></div>
+    <div class="zh"><p>一个常被问到的问题是："角色与用户组有何区别？"以用户组作为访问控制单元，在许多访问控制系统中很常见。大多数用户组实现与角色概念的主要区别在于：用户组通常被视为用户的集合，而非权限的集合。角色则同时兼具两面——一侧是用户的集合，另一侧是权限的集合。角色作为中间体，将这两个集合联结在一起。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Consider the Unix operating system. Group membership in Unix is defined in two files, /etc/passwd and /etc/group. It is thus easy to determine the groups to which a particular user belongs or all the members of a specific group. Permissions are granted to groups on basis of permission bits associated with individual files and directories. To determine what permissions a particular group has will generally require a traversal of the entire filesystem tree. It is thus much easier to determine the membership of a group than to determine the permissions of the group. Moreover the assignment of permissions to groups is highly decentralized. Essentially, the owner of any sub-tree of the Unix filesystem can assign permissions for that sub-tree to a group. However, Unix groups can be used to implement roles in certain situations, even though groups are not the same as our concept of roles.</p></div>
+    <div class="zh"><p>以 Unix 操作系统为例：Unix 中的组成员关系定义在 <code>/etc/passwd</code> 和 <code>/etc/group</code> 两个文件中，因此很容易确定某用户所属的所有组，或某特定组的所有成员。权限则通过与各文件和目录关联的权限位授予给组，但要确定某个组拥有哪些权限，通常需要遍历整个文件系统目录树。因此，确定组的成员资格要比确定组的权限容易得多。此外，向组分配权限的方式高度分散：本质上，Unix 文件系统中任何子树的所有者都可以将该子树的权限分配给某个组。不过，在某些情形下，Unix 组仍可被用于实现角色，尽管组与我们所定义的角色概念并不相同。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>To illustrate the qualitative nature of the group versus role distinction, consider a hypothetical system in which it takes twice as long to determine group membership as to determine group permissions. Assume that group permissions and membership can only be changed by the system security officer. In this case, the group mechanism would be very close to our concept of a role.</p></div>
+    <div class="zh"><p>为说明组与角色之间区别的定性本质，设想一个假想系统：在该系统中，确定组成员资格所需的时间是确定组权限所需时间的两倍，且假定组权限和成员资格只能由系统安全官员更改。在这种情况下，该组机制就非常接近我们所定义的角色概念了。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The preceding discussion suggests two characteristics of a role: it should be approximately equally easy to determine role membership and role permissions, and control of role membership and role permissions should be relatively centralized in a few users. Many mechanisms that are claimed to be role-based fail one or both of these requirements.</p></div>
+    <div class="zh"><p>上述讨论揭示了角色的两个特征：其一，查询角色成员资格和角色权限应大致同样便捷；其二，角色成员资格和角色权限的管理权应相对集中于少数用户手中。许多声称基于角色的机制，往往无法满足这两个要求中的一个甚至两个。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A question is often asked concerning the relationship of roles to compartments. Compartments are a part of the security label structure as used in the classified defense and government sectors. Compartments are based on the notion of need-to-know, which has a semantic connotation regarding the information available under a compartment label analogous to the semantic connotation of role. However, the use of compartments is for the specific policy of one-directional information flow in a lattice of labels. Roles do not presume a particular policy of this kind.</p></div>
+    <div class="zh"><p>另一个常见问题是角色与"区划"（compartment）的关系。区划是国防和政府保密部门所用安全标签结构的组成部分，基于"须知"（need-to-know）原则——区划标签在语义上与角色具有类似的内涵，都指向某区划标签下可访问的信息类别。然而，区划的使用是为了执行标签格中单向信息流这一特定策略，而角色并不预设此类特定策略。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A long-standing distinction exists between discretionary and mandatory access controls, respectively known as DAC and MAC. This distinction emerged from security research in the defense sector. MAC enforces access controls on the basis of security labels attached to users (more precisely, to subjects) and objects. DAC enforces access control to an object on the basis of permissions or denials or both configured by an individual user, typically the object's owner. RBAC can be viewed as an independent component of access control, coexisting with MAC and DAC when appropriate. In such a case access is allowed if and only if permitted by RBAC, MAC, and DAC. We also expect that RBAC in many cases will exist by itself.</p></div>
+    <div class="zh"><p>访问控制中长期存在自主访问控制（DAC）与强制访问控制（MAC）的区分。这一区分源自国防领域的安全研究。MAC 依据附加在用户（更准确地说是主体）和对象上的安全标签来执行访问控制；DAC 则依据由单个用户（通常是对象所有者）配置的许可或拒绝（或二者兼有）来执行对象的访问控制。RBAC 可被视为独立的访问控制组件，在适当情形下与 MAC 和 DAC 共存，此时只有当 RBAC、MAC 和 DAC 均许可时，访问才被允许。我们也预期，在许多情形下 RBAC 会单独存在。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>As a related issue, is RBAC itself a discretionary or a mandatory mechanism? The answer depends on the precise definition of discretionary and mandatory as well as on the precise nature and configuration of permissions, roles, and users in an RBAC system. We understand mandatory to mean that individual users do not have any choice regarding which permissions or users are assigned to a role, whereas discretionary signifies that individual users make these decisions. As we said earlier, RBAC is policy-neutral by itself. Particular configurations of RBAC can have a strong mandatory flavor, while others can have a strong discretionary flavor.</p></div>
+    <div class="zh"><p>由此引出一个相关问题：RBAC 本身属于自主机制还是强制机制？答案取决于对"自主"和"强制"的精确定义，以及 RBAC 系统中权限、角色和用户的具体性质与配置。我们对"强制"的理解是：单个用户对于哪些权限或用户被分配给某角色没有任何选择权；而"自主"则意味着这些决定由单个用户作出。如前所述，RBAC 本身对策略保持中立。特定的 RBAC 配置可以带有强烈的强制色彩，而另一些配置则可带有强烈的自主色彩。</p></div>
+  </div>
+</div>
+
+<div id="s4" class="section">
+  <div class="section-title">4. A Family of Reference Models</div>
+  <div class="section-title-zh">参考模型族</div>
+  <div class="bi-pair">
+    <div class="en"><p>To understand the various dimensions of RBAC we define a family of four conceptual models. The relationship between these four models is shown in Figure 1(a) and their essential characteristics portrayed in Figure 1(b). RBAC0, the base model, is at the bottom, indicating that it is the minimum requirement for any system that professes to support RBAC. RBAC1 and RBAC2 both include RBAC0, but add independent features to it. They are called advanced models. RBAC1 adds the concept of role hierarchies (situations where roles can inherit permissions from other roles). RBAC2 adds constraints (which impose restrictions on acceptable configurations of the different components of RBAC). RBAC1 and RBAC2 are incomparable to one another. The consolidated model, RBAC3, includes RBAC1 and RBAC2 and, by transitivity, RBAC0.</p></div>
+    <div class="zh"><p>为理解 RBAC 的各个维度，我们定义了一族由四个概念模型构成的框架。这四个模型之间的关系如图 1(a) 所示，其本质特征则刻画于图 1(b)。RBAC0 是基础模型，位于最底层，代表任何声称支持 RBAC 的系统所必须满足的最低要求。RBAC1 和 RBAC2 均包含 RBAC0，但各自在其基础上添加了独立的特性，称为高级模型：RBAC1 引入角色层次的概念（即角色可以从其他角色继承权限的情形），RBAC2 引入约束（对 RBAC 各组件的可接受配置施加限制）。RBAC1 与 RBAC2 二者之间不可比较（互不包含）。综合模型 RBAC3 同时包含 RBAC1 和 RBAC2，并通过传递性包含 RBAC0。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>These models are intended to be reference points for comparison with systems and models used by other researchers and developers. They can also serve as a guideline for development of products and their evaluation by prospective customers. For the moment, we assume there is a single security officer who is the only one authorized to configure the various sets and relations of these models. Later we will introduce a more sophisticated management model.</p></div>
+    <div class="zh"><p>这些模型旨在作为参照基准，用于与其他研究者和开发者所使用的系统及模型进行比较。它们也可以作为产品开发的指南，以及潜在客户评估产品的依据。目前，我们假设存在单一的安全官员，是唯一被授权配置这些模型中各类集合与关系的人。稍后我们将引入一个更为复杂的管理模型。</p></div>
+  </div>
+
+  <div class="figure-box">
+    <div class="fig-svg">
+      <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif">
+        <text x="150" y="18" text-anchor="middle" font-weight="bold" fill="#009f52" font-size="11">(a) 模型间关系 / Relationship among models</text>
+        <rect x="85" y="32" width="130" height="34" rx="6" fill="#e1f5ec" stroke="#009f52" stroke-width="1.5"/>
+        <text x="150" y="54" text-anchor="middle" font-weight="bold" fill="#009f52" font-size="13">RBAC3</text>
+        <rect x="35" y="100" width="105" height="34" rx="6" fill="#f0faf5" stroke="#009f52" stroke-width="1.5"/>
+        <text x="87" y="122" text-anchor="middle" fill="currentColor" font-size="13">RBAC1</text>
+        <rect x="160" y="100" width="105" height="34" rx="6" fill="#f0faf5" stroke="#009f52" stroke-width="1.5"/>
+        <text x="212" y="122" text-anchor="middle" fill="currentColor" font-size="13">RBAC2</text>
+        <rect x="85" y="168" width="130" height="34" rx="6" fill="#f7faf8" stroke="#c8e6d5" stroke-width="1.5"/>
+        <text x="150" y="190" text-anchor="middle" fill="currentColor" font-size="13">RBAC0</text>
+        <line x1="87" y1="134" x2="120" y2="168" stroke="#009f52" stroke-width="1.5"/>
+        <line x1="212" y1="134" x2="180" y2="168" stroke="#009f52" stroke-width="1.5"/>
+        <line x1="87" y1="100" x2="118" y2="66" stroke="#009f52" stroke-width="1.5"/>
+        <line x1="212" y1="100" x2="182" y2="66" stroke="#009f52" stroke-width="1.5"/>
+        <text x="150" y="232" text-anchor="middle" font-size="10" fill="#6b8578">RBAC1、RBAC2 各自包含 RBAC0</text>
+        <text x="150" y="250" text-anchor="middle" font-size="10" fill="#6b8578">RBAC3 包含 RBAC1 与 RBAC2</text>
+        <text x="150" y="268" text-anchor="middle" font-size="10" fill="#6b8578">RBAC1 与 RBAC2 互不可比</text>
+        <text x="445" y="18" text-anchor="middle" font-weight="bold" fill="#009f52" font-size="11">(b) RBAC 组件 / RBAC models</text>
+        <rect x="312" y="30" width="262" height="240" rx="8" fill="none" stroke="#c8e6d5" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="318" y="55" width="74" height="26" rx="4" fill="#e1f5ec" stroke="#009f52" stroke-width="1"/>
+        <text x="355" y="72" text-anchor="middle" font-size="10" fill="#009f52">RH 层次</text>
+        <rect x="494" y="55" width="74" height="26" rx="4" fill="#e1f5ec" stroke="#009f52" stroke-width="1"/>
+        <text x="531" y="72" text-anchor="middle" font-size="9" fill="#009f52">约束</text>
+        <rect x="318" y="120" width="58" height="26" rx="4" fill="#f0faf5" stroke="#c8e6d5" stroke-width="1"/>
+        <text x="347" y="137" text-anchor="middle" font-size="10" fill="currentColor">P 权限</text>
+        <rect x="412" y="120" width="58" height="26" rx="4" fill="#f7faf8" stroke="#009f52" stroke-width="1.5"/>
+        <text x="441" y="137" text-anchor="middle" font-size="10" font-weight="bold" fill="#009f52">R 角色</text>
+        <rect x="506" y="120" width="58" height="26" rx="4" fill="#f0faf5" stroke="#c8e6d5" stroke-width="1"/>
+        <text x="535" y="137" text-anchor="middle" font-size="10" fill="currentColor">U 用户</text>
+        <rect x="412" y="195" width="58" height="26" rx="4" fill="#f0faf5" stroke="#c8e6d5" stroke-width="1"/>
+        <text x="441" y="212" text-anchor="middle" font-size="10" fill="currentColor">S 会话</text>
+        <line x1="376" y1="133" x2="412" y2="133" stroke="#6b8578" stroke-width="1.5" marker-end="url(#a1)"/>
+        <text x="394" y="128" text-anchor="middle" font-size="9" fill="#6b8578">PA</text>
+        <line x1="506" y1="133" x2="470" y2="133" stroke="#6b8578" stroke-width="1.5" marker-end="url(#a1)"/>
+        <text x="488" y="128" text-anchor="middle" font-size="9" fill="#6b8578">UA</text>
+        <line x1="441" y1="195" x2="441" y2="146" stroke="#6b8578" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="448" y="172" font-size="8" fill="#6b8578">user/roles</text>
+        <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6b8578"/></marker></defs>
+      </svg>
+    </div>
+    <div class="fig-caption">图 1 / Figure 1：RBAC 模型族 · A Family of RBAC Models</div>
+  </div>
+
+  <div id="s41" class="sub-title">4.1 Base Model — RBAC0　基础模型</div>
+  <div class="bi-pair">
+    <div class="en"><p>The base model RBAC0 consists of that part of Figure 1(b) not identified with one of the three advanced models. There are three sets of entities called users (U), roles (R), and permissions (P). The diagram also shows a collection of sessions (S). A user in this model is a human being. The concept of a user can be generalized to include intelligent autonomous agents such as robots, immobile computers, or even networks of computers. For simplicity, we focus on a user as a human being. A role is a job function or job title within the organization with some associated semantics regarding the authority and responsibility conferred on a member of the role.</p></div>
+    <div class="zh"><p>基础模型 RBAC0 由图 1(b) 中未被归入三个高级模型的部分构成。它包含三类实体集合：用户（U）、角色（R）和权限（P），图中还展示了会话（S）的集合。在本模型中，用户是指人。用户的概念可以推广到包括智能自主体（如机器人、固定式计算机，甚至计算机网络）在内，但为简单起见，我们将用户聚焦于人。角色是组织中的某项工作职能或职衔，附带有关于该角色成员所被赋予的权威与责任的语义。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A permission is an approval of a particular mode of access to one or more objects in the system. The terms authorization, access right and privilege are also used in the literature to denote a permission. Permissions are always positive and confer the ability to the holder of the permission to perform some action(s) in the system. Objects are data objects as well as resource objects represented by data within the computer system. Our conceptual model permits a variety of interpretations for permissions, from very coarse grain, e.g., where access is permitted to an entire subnetwork, to very fine grain, where the unit of access is a particular field of a particular record. Some access control literature talks about "negative permissions" which deny, rather than confer, access. In our framework denial of access is modeled as a constraint rather than a negative permission.</p></div>
+    <div class="zh"><p>权限是对系统中一个或多个对象以特定方式进行访问的批准。文献中也使用"授权"（authorization）、"访问权"（access right）和"特权"（privilege）等术语来指代权限。权限永远是正向的，它赋予权限持有者在系统中执行某些动作的能力。对象既包括数据对象，也包括以计算机系统内数据表示的资源对象。我们的概念模型允许对权限作多种粒度的解读：从非常粗粒度（例如允许访问整个子网），到非常细粒度（例如访问单元是某条特定记录的某个特定字段）。某些访问控制文献谈及"负权限"（negative permissions）——它拒绝而非赋予访问。在我们的框架中，访问的拒绝被建模为一种约束，而非负权限。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The nature of a permission depends greatly on the implementation details of a system and the kind of system that it is. A general model for access control must therefore treat permissions as uninterpreted symbols to some extent. Each system protects objects of the abstraction it implements. Thus an operating system protects such things as files, directories, devices, and ports, with operations such as read, write, and execute. A relational database management system protects relations, tuples, attributes, and views, with operations such as SELECT, UPDATE, DELETE, and INSERT. An accounting application protects accounts and ledgers with operations such as debit, credit, transfer, create-account, and delete-account. It should be possible to assign the credit operation to a role without being compelled to also assign the debit operation to that role.</p></div>
+    <div class="zh"><p>权限的性质在很大程度上取决于系统的实现细节以及系统的类型。因此，一个通用的访问控制模型必须在某种程度上将权限视为未经解释的符号。每个系统保护的是其所实现的抽象层次上的对象：操作系统保护文件、目录、设备和端口等，对应读、写、执行等操作；关系数据库管理系统保护关系、元组、属性和视图，对应 SELECT、UPDATE、DELETE、INSERT 等操作；会计应用程序保护账户和账簿，对应借记、贷记、转账、建账、销账等操作。应当可以只将"贷记"操作分配给某个角色，而不被迫同时将"借记"操作也分配给该角色。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Permissions can apply to single objects or to many. For example, a permission can be as specific as read access to a particular file or as generic as read access to all files belonging to a particular department. The manner in which individual permissions are joined into a generic permission so they can be assigned as a single unit is highly implementation dependent.</p></div>
+    <div class="zh"><p>权限可以适用于单个对象，也可以适用于多个对象。例如，权限可以具体到对某个特定文件的读访问，也可以宽泛到对某个部门所有文件的读访问。至于如何将单个权限组合成一个通用权限、从而作为单一单元加以分配，则高度依赖于具体实现。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Figure 1(b) shows user assignment (UA) and permission assignment (PA) relations. Both are many-to-many relations. A user can be a member of many roles, and a role can have many users. Similarly, a role can have many permissions, and the same permission can be assigned to many roles. The key to RBAC lies in these two relations. Ultimately, it is a user who exercises permissions. The placement of a role as an intermediary to enable a user to exercise a permission provides much greater control over access configuration and review than does directly relating users to permissions.</p></div>
+    <div class="zh"><p>图 1(b) 展示了用户分配（UA）和权限分配（PA）两个关系，二者均为多对多关系：一个用户可以是多个角色的成员，一个角色也可以拥有多个用户；同样，一个角色可以拥有多项权限，同一权限也可以分配给多个角色。RBAC 的关键正在于这两个关系。归根结底，行使权限的是用户。将角色置于中间位置、由其使用户得以行使权限，相比直接将用户与权限关联，能对访问配置与审计提供大得多的控制力。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Each session is a mapping of one user to possibly many roles, i.e., a user establishes a session during which the user activates some subset of roles that he or she is a member of. The double-headed arrow from the session to R in Figure 1(b) indicates that multiple roles are simultaneously activated. The permissions available to the user are the union of permissions from all roles activated in that session. Each session is associated with a single user, as indicated by the single-headed arrow from the session to U in Figure 1(b). This association remains constant for the life of a session.</p></div>
+    <div class="zh"><p>每个会话是从一个用户到（可能多个）角色的映射，即：用户建立一个会话，并在该会话中激活其所属角色的某个子集。图 1(b) 中从会话指向 R 的双向箭头表示多个角色被同时激活。用户在该会话中可用的权限，是该会话中所有被激活角色权限的并集。每个会话只与单一用户关联，如图 1(b) 中从会话指向 U 的单向箭头所示，且这一关联在会话的整个生命周期内保持不变。</p></div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-title">定义 1 / Definition 1 — RBAC0</div>
+    <div class="bi-pair">
+      <div class="en">
+        <p>The RBAC0 model has the following components:</p>
+        <p>• U, R, P, and S (users, roles, permissions and sessions respectively);</p>
+        <p>• PA &sube; P &times; R, a many-to-many permission to role assignment relation;</p>
+        <p>• UA &sube; U &times; R, a many-to-many user to role assignment relation;</p>
+        <p>• <em>user</em> : S &rarr; U, a function mapping each session s<sub>i</sub> to the single user <em>user</em>(s<sub>i</sub>) (constant for the session's lifetime); and</p>
+        <p>• <em>roles</em> : S &rarr; 2<sup>R</sup>, a function mapping each session s<sub>i</sub> to a set of roles roles(s<sub>i</sub>) &sube; {r | (user(s<sub>i</sub>), r) &isin; UA} (which can change with time), and session s<sub>i</sub> has the permissions &cup;<sub>r&isin;roles(s<sub>i</sub>)</sub> {p | (p, r) &isin; PA}.</p>
+      </div>
+      <div class="zh">
+        <p>RBAC0 模型包含以下组件：</p>
+        <p>• U、R、P、S（分别为用户、角色、权限和会话）；</p>
+        <p>• PA &sube; P &times; R，权限到角色的多对多分配关系；</p>
+        <p>• UA &sube; U &times; R，用户到角色的多对多分配关系；</p>
+        <p>• <em>user</em> : S &rarr; U，将每个会话 s<sub>i</sub> 映射到唯一用户 <em>user</em>(s<sub>i</sub>) 的函数（在会话生命周期内保持不变）；以及</p>
+        <p>• <em>roles</em> : S &rarr; 2<sup>R</sup>，将每个会话 s<sub>i</sub> 映射到角色集合 roles(s<sub>i</sub>) &sube; {r | (user(s<sub>i</sub>), r) &isin; UA}（可随时间变化）的函数，且会话 s<sub>i</sub> 拥有的权限为 &cup;<sub>r&isin;roles(s<sub>i</sub>)</sub> {p | (p, r) &isin; PA}。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bi-pair">
+    <div class="en"><p>We expect each role to be assigned at least one permission and each user to be assigned to at least one role. The model, however, does not require this.</p></div>
+    <div class="zh"><p>我们期望每个角色至少被分配一项权限，每个用户至少被分配一个角色。不过，模型本身并不强制要求这一点。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>As noted earlier, RBAC0 treats permissions as uninterpreted symbols because the precise nature of a permission is implementation and system dependent. We do require that permissions apply to data and resource objects and not to the components of RBAC itself. Permissions to modify the sets U, R, and P and relations PA and UA are called administrative permissions. These will be discussed later in the management model for RBAC. For now we assume that only a single security officer can change these components.</p></div>
+    <div class="zh"><p>如前所述，RBAC0 将权限视为未经解释的符号，因为权限的确切性质依赖于具体实现和系统。我们确实要求权限作用于数据对象和资源对象，而不作用于 RBAC 自身的各组件。修改集合 U、R、P 以及关系 PA、UA 的权限称为管理权限（administrative permissions），将在后文的 RBAC 管理模型中讨论。目前，我们假设只有单一的安全官员能够更改这些组件。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Sessions are under the control of individual users. As far as the model is concerned, a user can create a session and choose to activate some subset of the user's roles. Roles active in a session can be changed at the user's discretion. The session terminates at the user's initiative. (Some systems will terminate a session if it is inactive for too long. Strictly speaking, this is a constraint and properly belongs in RBAC2.)</p></div>
+    <div class="zh"><p>会话受单个用户控制。就模型而言，用户可以创建一个会话，并选择激活其角色的某个子集。会话中处于激活状态的角色可由用户自行变更，会话也由用户主动终止。（某些系统会在会话闲置过久时将其终止。严格来说，这属于一种约束，应归入 RBAC2。）</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A user may have multiple sessions open at the same time, each in a different window on the workstation screen for instance. Each session may have a different combination of active roles. This feature of RBAC supports the principle of least privilege. A user who is a member of several roles can invoke any subset of these that is suitable for the tasks to be accomplished in that session. Thus, a user who is a member of a powerful role can normally keep this role deactivated and explicitly activate it when needed. So in RBAC0 it is entirely up to the user's discretion as to which roles are activated in a given session. RBAC0 also permits roles to be dynamically activated and deactivated during the life of a session. The concept of a session equates to the traditional notion of a subject in the access control literature. A subject (or session) is a unit of access control, and a user may have multiple subjects (or sessions) with different permissions active at the same time.</p></div>
+    <div class="zh"><p>用户可以同时打开多个会话，例如工作站屏幕上的不同窗口各对应一个会话。每个会话可以激活不同的角色组合。RBAC 的这一特性支持最小权限原则：身兼多个角色成员资格的用户，可以在每个会话中只激活适合当前任务的角色子集。因此，持有高权限角色的用户，通常可以保持该角色不激活，仅在需要时显式激活。所以在 RBAC0 中，某一会话激活哪些角色完全由用户自行裁量。RBAC0 还允许在会话生命周期内动态激活和停用角色。会话的概念等同于访问控制文献中传统的"主体"（subject）概念：主体（或会话）是访问控制的单元，一个用户可以同时拥有多个具有不同激活权限的主体（或会话）。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Some authors include duties, in addition to permissions, as an attribute of roles. A duty is an obligation on a user's part to perform one or more tasks, which are generally essential for the smooth functioning of an organization. In our view duties are an advanced concept which do not belong in RBAC0. We have also chosen not to incorporate duties in our advanced models. We feel that incorporation of concepts such as duties in access control models requires further research. One approach is to treat them as similar to permissions. Other approaches could be based on new access control paradigms such as task-based authorization.</p></div>
+    <div class="zh"><p>除权限之外，一些作者还将"职责"（duties）作为角色的一项属性。职责是用户负有的、执行一项或多项任务的义务，这些任务通常对组织的顺畅运转至关重要。在我们看来，职责是一个高级概念，不应归入 RBAC0。我们也选择不在高级模型中纳入职责。我们认为，将职责这类概念纳入访问控制模型尚需进一步研究：一种思路是将其视为类似权限来处理；其他思路则可能基于新的访问控制范式，如基于任务的授权（task-based authorization）。</p></div>
+  </div>
+
+  <div id="s42" class="sub-title">4.2 Role Hierarchies — RBAC1　角色层次</div>
+  <div class="bi-pair">
+    <div class="en"><p>The model RBAC1 introduces role hierarchies (RH), as indicated in Figure 1. Role hierarchies are almost inevitably included whenever roles are discussed in the literature. They are also commonly implemented in systems that provide roles. Role hierarchies are a natural means for structuring roles to reflect an organization's lines of authority and responsibility. Examples of role hierarchies are shown in Figure 2. By convention more powerful (or senior) roles are shown toward the top of these diagrams, and less powerful (or junior) roles toward the bottom.</p></div>
+    <div class="zh"><p>RBAC1 引入了角色层次（RH），如图 1 所示。每当文献讨论角色时，角色层次几乎无可避免地被纳入其中；在提供角色机制的系统中，它也被普遍实现。角色层次是一种自然的角色组织方式，可反映组织的权威与职责脉络。图 2 给出了角色层次的示例。按照惯例，权限更大（即更高级）的角色位于图示上方，权限更小（即更低级）的角色位于下方。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>In Figure 2(a) the junior-most role is health-care provider. The physician role is senior to health-care provider and thereby inherits all permissions from health-care provider. The physician role can have permissions in addition to those inherited from the health-care provider role. Inheritance of permissions is transitive so, for example, in Figure 2(a), the primary-care physician role inherits permissions from the physician and health-care provider roles. Primary-care physician and specialist physician both inherit permissions from the physician role, but each one of these will have different permissions directly assigned to it. Figure 2(b) illustrates multiple inheritance of permissions, where the project supervisor role inherits from both test engineer and programmer roles.</p></div>
+    <div class="zh"><p>在图 2(a) 中，最低级的角色是医疗服务提供者（health-care provider）。医生（physician）角色高于医疗服务提供者，因而继承了医疗服务提供者的全部权限；除了从医疗服务提供者继承的权限外，医生角色还可拥有额外权限。权限继承具有传递性，因此，例如在图 2(a) 中，全科医生（primary-care physician）角色继承了医生角色和医疗服务提供者角色的权限。全科医生和专科医生（specialist physician）都从医生角色继承权限，但二者各自还会被直接分配不同的权限。图 2(b) 展示了权限的多重继承：项目主管（project supervisor）角色同时继承了测试工程师（test engineer）和程序员（programmer）两个角色的权限。</p></div>
+  </div>
+
+  <div class="figure-box">
+    <div class="fig-svg">
+      <svg viewBox="0 0 660 470" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif" font-size="11">
+        <!-- (a) -->
+        <line x1="150" y1="92" x2="98" y2="60" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="150" y1="92" x2="210" y2="60" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="150" y1="110" x2="150" y2="150" stroke="currentColor" stroke-width="1.2"/>
+        <text x="95" y="42" text-anchor="middle">Primary-care</text>
+        <text x="95" y="55" text-anchor="middle">Physician 全科医生</text>
+        <text x="215" y="42" text-anchor="middle">Specialist</text>
+        <text x="215" y="55" text-anchor="middle">Physician 专科医生</text>
+        <text x="150" y="103" text-anchor="middle" fill="#009f52">Physician 医生</text>
+        <text x="150" y="163" text-anchor="middle">Health-care provider 医疗服务提供者</text>
+        <text x="150" y="195" text-anchor="middle" font-style="italic" fill="#6b8578">(a)</text>
+        <!-- (b) -->
+        <line x1="505" y1="58" x2="445" y2="92" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="505" y1="58" x2="575" y2="92" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="440" y1="110" x2="500" y2="148" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="580" y1="110" x2="515" y2="148" stroke="currentColor" stroke-width="1.2"/>
+        <text x="505" y="50" text-anchor="middle" fill="#009f52">Project Supervisor 项目主管</text>
+        <text x="435" y="103" text-anchor="middle">Test Engineer 测试工程师</text>
+        <text x="585" y="103" text-anchor="middle">Programmer 程序员</text>
+        <text x="505" y="160" text-anchor="middle">Project Member 项目成员</text>
+        <text x="505" y="195" text-anchor="middle" font-style="italic" fill="#6b8578">(b)</text>
+        <!-- (c) -->
+        <line x1="290" y1="302" x2="210" y2="262" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="295" y1="302" x2="345" y2="262" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="420" y1="302" x2="365" y2="262" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="425" y1="302" x2="500" y2="262" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="290" y1="320" x2="335" y2="360" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="425" y1="320" x2="375" y2="360" stroke="currentColor" stroke-width="1.2"/>
+        <text x="200" y="255" text-anchor="middle" fill="#009f52">Test Engineer&prime; 测试工程师&prime;</text>
+        <text x="355" y="255" text-anchor="middle" fill="#009f52">Project Supervisor 项目主管</text>
+        <text x="510" y="255" text-anchor="middle" fill="#009f52">Programmer&prime; 程序员&prime;</text>
+        <text x="280" y="315" text-anchor="middle">Test Engineer 测试工程师</text>
+        <text x="430" y="315" text-anchor="middle">Programmer 程序员</text>
+        <text x="355" y="375" text-anchor="middle">Project Member 项目成员</text>
+        <text x="355" y="408" text-anchor="middle" font-style="italic" fill="#6b8578">(c) 私有角色 private roles</text>
+      </svg>
+    </div>
+    <div class="fig-caption">图 2 / Figure 2：角色层次示例 · Examples of Role Hierarchies</div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Mathematically, these hierarchies are partial orders. A partial order is a reflexive, transitive and anti-symmetric relation. Inheritance is reflexive because a role inherits its own permissions, transitivity is a natural requirement in this context, and anti-symmetry rules out roles that inherit from one another and would therefore be redundant.</p></div>
+    <div class="zh"><p>从数学角度看，这些层次是偏序（partial order）。偏序是一种自反、传递且反对称的关系。继承是自反的，因为角色继承自身的权限；传递性在此语境下是自然的要求；反对称性则排除了相互继承的角色——这类角色会因彼此继承而显得冗余。</p></div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-title">定义 2 / Definition 2 — RBAC1</div>
+    <div class="bi-pair">
+      <div class="en">
+        <p>The RBAC1 model has the following components:</p>
+        <p>• U, R, P, S, PA, UA, and <em>user</em> are unchanged from RBAC0;</p>
+        <p>• RH &sube; R &times; R is a partial order on R called the role hierarchy or role dominance relation, also written as &ge;; and</p>
+        <p>• <em>roles</em> : S &rarr; 2<sup>R</sup> is modified from RBAC0 to require roles(s<sub>i</sub>) &sube; {r | (&exist;r&prime; &ge; r)[(user(s<sub>i</sub>), r&prime;) &isin; UA]} (which can change with time), and session s<sub>i</sub> has the permissions &cup;<sub>r&isin;roles(s<sub>i</sub>)</sub> {p | (&exist;r&Prime; &le; r)[(p, r&Prime;) &isin; PA]}.</p>
+      </div>
+      <div class="zh">
+        <p>RBAC1 模型包含以下组件：</p>
+        <p>• U、R、P、S、PA、UA 和 <em>user</em> 与 RBAC0 相同；</p>
+        <p>• RH &sube; R &times; R 是 R 上的偏序关系，称为角色层次或角色支配关系，也记作 &ge;；以及</p>
+        <p>• <em>roles</em> : S &rarr; 2<sup>R</sup> 在 RBAC0 基础上修改为要求 roles(s<sub>i</sub>) &sube; {r | (&exist;r&prime; &ge; r)[(user(s<sub>i</sub>), r&prime;) &isin; UA]}（可随时间变化），且会话 s<sub>i</sub> 拥有的权限为 &cup;<sub>r&isin;roles(s<sub>i</sub>)</sub> {p | (&exist;r&Prime; &le; r)[(p, r&Prime;) &isin; PA]}。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bi-pair">
+    <div class="en"><p>Note that a user is allowed to establish a session with any combination of roles junior to those the user is a member of. Also, the permissions in a session are those directly assigned to the roles of the session as well as those assigned to roles junior to these.</p></div>
+    <div class="zh"><p>需要注意的是，用户可以用其所属角色之下任意组合的下级角色来建立会话。同时，会话中的权限既包括直接分配给该会话各角色的权限，也包括分配给这些角色之下级角色的权限。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>It is sometimes useful in hierarchies to limit the scope of inheritance. Consider the hierarchy of Figure 2(b) where the project supervisor role is senior to both the test engineer and programmer roles. Now suppose test engineers wish to keep some permissions private to their role and prevent their inheritance in the hierarchy to project supervisors. This situation can exist for legitimate reasons; for example, access to incomplete work in progress may not be appropriate for the senior role while RBAC can be useful for enabling such access to test engineers. This situation can be accommodated by defining a new role test engineer&prime; and relating it to test engineer as shown in Figure 2(c). The private permissions of test engineers can be assigned to role test engineer&prime;. Test engineers are assigned to role test engineer&prime; and inherit permissions from the test engineer role, which are also inherited upward in the hierarchy by the project supervisor role. Permissions of test engineer&prime; are, however, not inherited by the project supervisor role. We call roles such as test engineer&prime; private roles.</p></div>
+    <div class="zh"><p>在层次中，有时限制继承的范围是有用的。考虑图 2(b) 的层次，其中项目主管角色高于测试工程师和程序员两个角色。现在假设测试工程师希望将某些权限保留为本角色私有，防止其在层次中向上继承给项目主管。这种情形可能出于正当理由而存在；例如，对未完成在制工作的访问对高级角色可能并不合适，而 RBAC 恰可用于使测试工程师获得这种访问。该情形可通过定义一个新角色"测试工程师&prime;"并将其与"测试工程师"相关联来处理，如图 2(c) 所示。测试工程师的私有权限可以分配给"测试工程师&prime;"角色。测试工程师被分配到"测试工程师&prime;"角色，并从"测试工程师"角色继承权限，而后者的权限在层次中又被项目主管角色向上继承。然而，"测试工程师&prime;"的权限并不会被项目主管角色继承。我们将"测试工程师&prime;"这类角色称为私有角色（private roles）。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>In some systems the effect of private roles is achieved by blocking upward inheritance of certain permissions. In this case the hierarchy does not depict the distribution of permission accurately. It is preferable to introduce private roles and keep the meaning of the hierarchical relationship among roles intact. Figure 3 shows, more generally, how a private subhierarchy of roles can be constructed: the entire subhierarchy comprising the subproject roles is replicated, with the shared portion assigned permissions inheritable by the supervisor role S, and the private counterparts allowing their inheritance within the subproject only. This makes it clear which private roles exist in the system and assists in access review to determine the nature of the private permissions.</p></div>
+    <div class="zh"><p>在某些系统中，私有角色的效果是通过阻断某些权限的向上继承来实现的。在这种情况下，层次结构无法准确刻画权限的分布。更可取的做法是引入私有角色，从而保持角色间层次关系含义的完整。图 3 更一般地展示了如何构造角色的私有子层次：将包含子项目角色的整个子层次加以复制，其中共享部分被分配可被主管角色 S 继承的权限，而其私有对应部分则使权限仅在该子项目内部继承。这样可以清晰地看出系统中存在哪些私有角色，并有助于访问审计、确定私有权限的性质。</p></div>
+  </div>
+
+  <div class="figure-box">
+    <div class="fig-svg">
+      <svg viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif" font-size="11">
+        <!-- (a) Role Hierarchy -->
+        <line x1="180" y1="48" x2="50" y2="135" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="180" y1="48" x2="130" y2="135" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="180" y1="48" x2="232" y2="83" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="240" y1="93" x2="205" y2="135" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="240" y1="93" x2="300" y2="135" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="205" y1="145" x2="240" y2="178" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="300" y1="145" x2="248" y2="180" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="240" y1="190" x2="170" y2="218" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="50" y1="148" x2="158" y2="218" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="130" y1="148" x2="162" y2="218" stroke="currentColor" stroke-width="1.1"/>
+        <circle cx="180" cy="42" r="4" fill="#009f52"/><text x="180" y="34" text-anchor="middle" fill="#009f52">S</text>
+        <circle cx="240" cy="88" r="4" fill="currentColor"/><text x="255" y="86">S3</text>
+        <circle cx="50" cy="140" r="4" fill="currentColor"/><text x="38" y="138" text-anchor="end">T1</text>
+        <circle cx="130" cy="140" r="4" fill="currentColor"/><text x="130" y="130" text-anchor="middle">T2</text>
+        <circle cx="205" cy="140" r="4" fill="currentColor"/><text x="200" y="130" text-anchor="end">T3</text>
+        <circle cx="300" cy="140" r="4" fill="currentColor"/><text x="312" y="138">T4</text>
+        <circle cx="240" cy="184" r="4" fill="currentColor"/><text x="255" y="190">P3</text>
+        <circle cx="165" cy="222" r="4" fill="currentColor"/><text x="165" y="240" text-anchor="middle">P</text>
+        <text x="175" y="265" text-anchor="middle" font-style="italic" fill="#6b8578">(a) 角色层次 Role Hierarchy</text>
+        <!-- (b) Administrative Role Hierarchy -->
+        <line x1="540" y1="58" x2="465" y2="142" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="540" y1="58" x2="540" y2="142" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="540" y1="58" x2="615" y2="142" stroke="currentColor" stroke-width="1.1"/>
+        <circle cx="540" cy="52" r="4" fill="#009f52"/><text x="540" y="44" text-anchor="middle" fill="#009f52">CSO</text>
+        <circle cx="463" cy="146" r="4" fill="currentColor"/><text x="463" y="164" text-anchor="middle">SO1</text>
+        <circle cx="540" cy="146" r="4" fill="currentColor"/><text x="540" y="164" text-anchor="middle">SO2</text>
+        <circle cx="617" cy="146" r="4" fill="currentColor"/><text x="617" y="164" text-anchor="middle">SO3</text>
+        <text x="540" y="195" text-anchor="middle" font-style="italic" fill="#6b8578">(b) 管理角色层次 Administrative Role Hierarchy</text>
+        <!-- (c) Private and Scoped Roles -->
+        <line x1="250" y1="298" x2="150" y2="388" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="250" y1="298" x2="232" y2="378" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="252" y1="296" x2="372" y2="332" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="362" y1="295" x2="305" y2="328" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="362" y1="295" x2="468" y2="332" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="380" y1="340" x2="318" y2="378" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="380" y1="340" x2="468" y2="378" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="305" y1="332" x2="312" y2="378" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="470" y1="332" x2="470" y2="378" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="312" y1="392" x2="382" y2="428" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="470" y1="392" x2="392" y2="430" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="380" y1="376" x2="308" y2="336" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="390" y1="376" x2="466" y2="334" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="386" y1="388" x2="388" y2="424" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="90" y1="368" x2="148" y2="390" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="150" y1="396" x2="195" y2="455" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="232" y1="392" x2="205" y2="455" stroke="currentColor" stroke-width="1.1"/>
+        <line x1="385" y1="434" x2="215" y2="458" stroke="currentColor" stroke-width="1.1"/>
+        <circle cx="250" cy="292" r="4" fill="#009f52"/><text x="250" y="284" text-anchor="middle" fill="#009f52">S</text>
+        <circle cx="362" cy="290" r="4" fill="#009f52"/><text x="375" y="286" fill="#009f52">S3&prime;</text>
+        <circle cx="300" cy="330" r="4" fill="#009f52"/><text x="290" y="326" text-anchor="end" fill="#009f52">T3&prime;</text>
+        <circle cx="380" cy="334" r="4" fill="currentColor"/><text x="393" y="332">S3</text>
+        <circle cx="470" cy="328" r="4" fill="#009f52"/><text x="483" y="326" fill="#009f52">T4&prime;</text>
+        <circle cx="90" cy="362" r="4" fill="#009f52"/><text x="78" y="360" text-anchor="end" fill="#009f52">T1&prime;</text>
+        <circle cx="150" cy="390" r="4" fill="currentColor"/><text x="138" y="396" text-anchor="end">T1</text>
+        <circle cx="232" cy="385" r="4" fill="currentColor"/><text x="232" y="375" text-anchor="middle">T2</text>
+        <circle cx="312" cy="385" r="4" fill="currentColor"/><text x="300" y="392" text-anchor="end">T3</text>
+        <circle cx="385" cy="382" r="4" fill="#009f52"/><text x="398" y="380" fill="#009f52">P3&prime;</text>
+        <circle cx="470" cy="385" r="4" fill="currentColor"/><text x="483" y="390">T4</text>
+        <circle cx="388" cy="430" r="4" fill="currentColor"/><text x="400" y="436">P3</text>
+        <circle cx="208" cy="458" r="4" fill="currentColor"/><text x="208" y="476" text-anchor="middle">P</text>
+        <text x="340" y="508" text-anchor="middle" font-style="italic" fill="#6b8578">(c) 私有与受范围限定的角色 Private and Scoped Roles</text>
+      </svg>
+    </div>
+    <div class="fig-caption">图 3 / Figure 3：某项目的角色层次 · Role Hierarchies for a Project</div>
+  </div>
+
+  <div id="s43" class="sub-title">4.3 Constraints — RBAC2　约束</div>
+  <div class="bi-pair">
+    <div class="en"><p>Model RBAC2 introduces the concept of constraints as shown in Figure 1(b). Although we have called our models RBAC1 and RBAC2, there isn't really an implied progression. Either constraints or role hierarchies can be introduced first. This is indicated by the incomparable relation between RBAC1 and RBAC2 in Figure 1(a). Constraints are an important aspect of RBAC and are sometimes argued to be the principal motivation for RBAC. A common example is that of mutually disjoint roles, such as purchasing manager and accounts payable manager. In most organizations (except the very smallest) the same individual will not be permitted to be a member of both roles, because this creates a possibility for committing fraud. This is a well-known and time-honored principle called separation of duties.</p></div>
+    <div class="zh"><p>RBAC2 引入了约束的概念，如图 1(b) 所示。尽管我们将模型命名为 RBAC1 和 RBAC2，但二者之间并无先后推进的含义——约束和角色层次可以按任意先后顺序引入。这一点由图 1(a) 中 RBAC1 与 RBAC2 之间互不可比的关系所体现。约束是 RBAC 的一个重要方面，有时被认为是引入 RBAC 的主要动机。一个常见例子是互斥角色，如采购经理和应付账款经理。在大多数组织中（极小型组织除外），同一个人不被允许同时担任这两个角色，因为这会造成实施欺诈的可能。这就是著名而历久弥新的"职责分离"原则。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Constraints are a powerful mechanism for laying out higher-level organizational policy. Once certain roles are declared to be mutually exclusive, there need not be so much concern about the assignment of individual users to roles. The latter activity can then be delegated and decentralized without fear of compromising overall policy objectives of the organization. So long as the management of RBAC is entirely centralized in a single security officer, constraints are a useful convenience; but the same effect can largely be achieved by judicious care on the part of the security officer. However, if management of RBAC is decentralized, constraints become a mechanism by which senior security officers can restrict the ability of users who can exercise administrative privileges. This enables the chief security officer to lay out the broad scope of what is acceptable and impose this as a mandatory requirement on other security officers and users who participate in RBAC management.</p></div>
+    <div class="zh"><p>约束是制定高层组织策略的强大机制。一旦某些角色被声明为互斥，就不必过多担忧单个用户的角色分配问题；后者随之可以被下放和分散，而不必担心损害组织的整体策略目标。只要 RBAC 的管理完全集中于单一安全官员，约束就只是一种有用的便利——同样的效果在很大程度上也可通过安全官员的审慎来达成。然而，一旦 RBAC 的管理被分散，约束就成为一种机制：高级安全官员借此可以限制那些能够行使管理特权的用户的能力。这使首席安全官员得以划定"何为可接受"的大致范围，并将其作为强制性要求施加于其他参与 RBAC 管理的安全官员和用户。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>With respect to RBAC0, RBAC1, and RBAC2, constraints can apply to the UA and PA relations and the user and roles functions for various sessions. Constraints are predicates which, applied to these relations and functions, return a value of "acceptable" or "not acceptable." Constraints can also be viewed as sentences in some appropriate formal language. Intuitively, constraints are better viewed according to their kind and nature. We discuss constraints informally rather than stating them in a formal notation. Hence, the following definition.</p></div>
+    <div class="zh"><p>就 RBAC0、RBAC1 和 RBAC2 而言，约束可以作用于 UA 和 PA 关系，以及各会话的 user 和 roles 函数。约束是谓词，将其作用于这些关系和函数时，返回"可接受"或"不可接受"的值。约束也可被视为某种适当形式语言中的语句。直观上，约束更宜按其种类和性质来理解。我们以非形式化的方式讨论约束，而不用形式化记法陈述它们。由此给出如下定义。</p></div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-title">定义 3 / Definition 3 — RBAC2</div>
+    <div class="bi-pair">
+      <div class="en"><p>RBAC2 is unchanged from RBAC0 except for requiring that there be a collection of constraints that determine whether or not values of various components of RBAC0 are acceptable. Only acceptable values will be permitted.</p></div>
+      <div class="zh"><p>RBAC2 与 RBAC0 相同，唯一区别是要求存在一组约束，用于判定 RBAC0 各组件的取值是否可接受。只有可接受的值才被允许。</p></div>
+    </div>
+  </div>
+
+  <div class="bi-pair">
+    <div class="en"><p>Implementation considerations generally call for simple constraints that can be efficiently checked and enforced. Fortunately, in RBAC simple constraints can go a long way. We now discuss some constraints that we feel are reasonable to implement. Most, if not all, constraints applied to the user assignment relation have a counterpart that applies to the permission assignment relation. We therefore discuss constraints on these two components in parallel.</p></div>
+    <div class="zh"><p>出于实现的考虑，通常需要简单的、可被高效检查和执行的约束。所幸，在 RBAC 中，简单的约束就能起到很大作用。下面我们讨论一些我们认为合理可实现的约束。作用于用户分配关系的约束，大多数（即便不是全部）都有一个作用于权限分配关系的对应约束。因此，我们将对这两个组件上的约束并行讨论。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The most frequently mentioned constraint in the context of RBAC is mutually exclusive roles. The same user can be assigned to at most one role in a mutually exclusive set. This supports separation of duties. The dual constraint on permission assignment receives hardly any mention in the literature. Actually, a mutual exclusion constraint on permission assignment can provide additional assurance for separation of duties. This dual constraint requires that the same permission can be assigned to at most one role in a mutually exclusive set. Consider two mutually exclusive roles, accounts-manager and purchasing-manager. Mutual exclusion in terms of UA specifies that one individual cannot be a member of both roles. Mutual exclusion in terms of PA specifies that the same permission cannot be assigned to both roles. More directly, exclusion constraints on PA are a useful means of limiting the distribution of powerful permissions.</p></div>
+    <div class="zh"><p>RBAC 语境中最常提及的约束是互斥角色：在互斥集合中，同一用户最多只能被分配其中一个角色，这支持了职责分离。而作用于权限分配的对应约束在文献中却鲜有提及。事实上，权限分配上的互斥约束可为职责分离提供额外保障。这一对偶约束要求：在互斥集合中，同一权限最多只能分配给其中一个角色。考虑两个互斥角色——账户经理（accounts-manager）和采购经理（purchasing-manager）。就 UA 而言的互斥规定：一个人不能同时是这两个角色的成员。就 PA 而言的互斥规定：同一权限不能同时分配给这两个角色。更直接地说，PA 上的互斥约束是限制强大权限分布的一种有用手段。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>More generally membership by users in various combinations of roles can be deemed to be acceptable or not. Thus it may be acceptable for a user to be a member of a programmer role and a tester role in different projects, but unacceptable to take on both roles within the same project. Similarly for permission assignment.</p></div>
+    <div class="zh"><p>更一般地，用户在各种角色组合中的成员资格可被判定为可接受或不可接受。因此，一个用户在不同项目中分别担任程序员角色和测试员角色或许是可接受的，但在同一项目内同时担任这两个角色则可能不可接受。权限分配亦同此理。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Another example of a user assignment constraint is that a role can have a maximum number of members. For instance, there is only one person in the role of chairman of a department. Similarly, the number of roles to which an individual user can belong could also be limited. We call these cardinality constraints. Correspondingly, the number of roles to which a permission can be assigned can have cardinality constraints to control the distribution of powerful permissions. It should be noted that minimum cardinality constraints may be difficult to implement. For example if there is a minimum number of occupants of a role, what can the system do if one of them disappears? How will the system know this has happened?</p></div>
+    <div class="zh"><p>用户分配约束的另一个例子是：一个角色可以有最大成员数限制。例如，部门主任这一角色只能由一人担任。同样，单个用户所能归属的角色数量也可加以限制。我们称这些为基数约束（cardinality constraints）。相应地，一个权限可被分配给的角色数量也可设置基数约束，以控制强大权限的分布。需要注意的是，最小基数约束可能难以实现。例如，若某角色规定有最小占用人数，那么当其中一人消失时系统能做什么？系统又如何得知此事已经发生？</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The concept of prerequisite roles is based on competency and appropriateness, whereby a user can be assigned to role A only if the user is already a member of role B. For example, only those users who are already members of the project role can be assigned to the testing task role within that project. In this example the prerequisite role is junior to the new role being assumed. Prerequisites between incomparable roles are less likely to occur in practice. The dual constraint on permission assignment applies more at the role end of the PA relation. It could be useful, for consistency, to require that permission p can be assigned to a role only if that role already possesses permission q. For instance, in many systems permission to read a file requires permission to read the directory in which the file is located.</p></div>
+    <div class="zh"><p>先决角色（prerequisite roles）的概念基于胜任能力与适当性：只有当用户已经是角色 B 的成员时，才能被分配到角色 A。例如，只有已经是某项目角色成员的用户，才能被分配到该项目内的测试任务角色。在此例中，先决角色低于将要担任的新角色；不可比角色之间的先决关系在实践中较少出现。权限分配上的对应约束更多作用于 PA 关系的角色一端：为保持一致性，要求只有当某角色已拥有权限 q 时，权限 p 才能分配给它，这可能是有用的。例如，在许多系统中，读取文件的权限需要以读取该文件所在目录的权限为前提。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>User assignment constraints are effective only if suitable external discipline is maintained in assigning user identifiers to human beings. If the same individual is assigned two or more user identifiers, separation and cardinality controls break down. There must be a one-to-one correspondence between user identifiers and human beings. A similar argument applies to permission constraints. If the same operation is sanctioned by two different permissions, the RBAC system cannot effectively enforce cardinality and separation constraints.</p></div>
+    <div class="zh"><p>用户分配约束只有在为人分配用户标识符时维持适当的外部纪律，才能有效。如果同一个人被分配了两个或更多用户标识符，分离约束和基数约束就会失效。用户标识符与人之间必须保持一一对应。类似的论证也适用于权限约束：如果同一操作由两个不同的权限所许可，RBAC 系统就无法有效执行基数约束和分离约束。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Constraints can also apply to sessions, and the user and roles functions associated with a session. It may be acceptable for a user to be a member of two roles but the user cannot be active in both roles at the same time. Other constraints on sessions can limit the number of sessions that a user can have active at the same time. Correspondingly, the number of sessions to which a permission is assigned can be limited.</p></div>
+    <div class="zh"><p>约束也可作用于会话，以及与会话关联的 user 和 roles 函数。允许一个用户同时是两个角色的成员或许是可接受的，但该用户不能同时在这两个角色中处于激活状态。会话上的其他约束可限制一个用户同时激活的会话数量。相应地，一个权限所被分配到的会话数量也可受到限制。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>A role hierarchy can be considered as a constraint. The constraint is that a permission assigned to a junior role must also be assigned to all senior roles. Or equivalently, the constraint is that a user assigned to a senior role must also be assigned to all junior roles. So in some sense, RBAC1 is redundant and is subsumed by RBAC2. However, we feel it is appropriate to recognize the existence of role hierarchies in their own right. They are reduced to constraints only by introducing redundancy of permission assignment or user assignment. It is preferable to support hierarchies directly rather than indirectly by means of redundant assignment.</p></div>
+    <div class="zh"><p>角色层次本身也可被视为一种约束：该约束要求，分配给某下级角色的权限必须也分配给其所有上级角色；或等价地，该约束要求，分配给某上级角色的用户必须也分配给其所有下级角色。因此在某种意义上，RBAC1 是冗余的，可被 RBAC2 所涵盖。然而，我们认为应当承认角色层次自身的独立存在价值——它们只有通过引入权限分配或用户分配的冗余才能被归约为约束。直接支持层次，要优于借助冗余分配间接支持层次。</p></div>
+  </div>
+
+  <div id="s44" class="sub-title">4.4 Consolidated Model — RBAC3　综合模型</div>
+  <div class="bi-pair">
+    <div class="en"><p>RBAC3 combines RBAC1 and RBAC2 to provide both role hierarchies and constraints. There are several issues that arise by bringing these two concepts together. Constraints can apply to the role hierarchy itself, as indicated by the dashed arrow to RH in Figure 1(b). The role hierarchy is required to be a partial order. This constraint is intrinsic to the model. Additional constraints can limit the number of senior (or junior) roles that a given role may have. Two or more roles can also be constrained to have no common senior (or junior) role. These kinds of constraints are useful in situations where the authority to change the role hierarchy has been decentralized, but the chief security officer desires to restrict the overall manner in which such changes can be made.</p></div>
+    <div class="zh"><p>RBAC3 将 RBAC1 和 RBAC2 合并，同时提供角色层次和约束。把这两个概念结合在一起会引出若干问题。约束可以作用于角色层次本身，如图 1(b) 中指向 RH 的虚线箭头所示。角色层次被要求构成偏序，这一约束是模型内在固有的。此外的约束可以限制某个角色所能拥有的上级（或下级）角色数量；也可以约束两个或多个角色不得拥有共同的上级（或下级）角色。这类约束在以下情形中很有用：更改角色层次的权力已被分散，但首席安全官员希望对此类更改的总体方式加以限制。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Subtle interactions arise between constraints and hierarchies. Suppose that test engineer and programmer roles are declared to be mutually exclusive in the context of Figure 2(b). The project supervisor role violates this mutual exclusion. In some cases such a violation of a mutual exclusion constraint by a senior role may be acceptable, while in other cases it may not. We feel that the model should not rule out one or the other possibility. A similar situation arises with cardinality constraints. Suppose that a user can be assigned to at most one role. Does an assignment to the test engineer role in Figure 2(b) violate this constraint? In other words, do cardinality constraints apply only to direct membership, or do they also carry on to inherited membership?</p></div>
+    <div class="zh"><p>约束与层次之间会产生微妙的交互。假设在图 2(b) 的情境中，测试工程师和程序员角色被声明为互斥。那么项目主管角色就违反了这一互斥关系。在某些情形下，高级角色对互斥约束的这种违反可能是可接受的，而在另一些情形下则不可接受。我们认为，模型不应排除这两种可能性中的任何一种。基数约束也会出现类似情形。假设一个用户最多只能被分配一个角色，那么图 2(b) 中对测试工程师角色的分配是否违反了该约束？换言之，基数约束是仅适用于直接成员资格，还是也延及继承而来的成员资格？</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The hierarchy of Figure 2(c) illustrates how constraints are useful in the presence of private roles. In this case the test engineer&prime;, programmer&prime;, and project supervisor roles can be declared to be mutually exclusive. Because these have no common senior for these roles, there is no conflict. In general private roles will not have common seniors with any other roles because they are maximal elements in the hierarchy. So mutual exclusion of private roles can always be specified without raising any conflict. The shared counterpart of the private roles can be declared to have a maximum cardinality constraint of zero members. In this way test engineers must be assigned to the test engineer&prime; role. The test engineer role serves as a means for sharing permissions with the project supervisor role.</p></div>
+    <div class="zh"><p>图 2(c) 的层次说明了在存在私有角色时约束如何发挥作用。在此情形下，可以将"测试工程师&prime;"、"程序员&prime;"和"项目主管"角色声明为互斥。由于这些角色没有共同的上级，因此不会产生冲突。一般而言，私有角色不会与任何其他角色拥有共同的上级，因为它们是层次中的极大元素。所以，私有角色的互斥总能在不引发任何冲突的情况下被指定。私有角色所对应的共享角色，可被声明带有最大基数为零（零成员）的约束。如此一来，测试工程师就必须被分配到"测试工程师&prime;"角色。而"测试工程师"角色则充当与项目主管角色共享权限的通道。</p></div>
+  </div>
+</div>
+
+<div id="s5" class="section">
+  <div class="section-title">5. Management Models</div>
+  <div class="section-title-zh">管理模型</div>
+  <div class="bi-pair">
+    <div class="en"><p>So far we have assumed that all components of RBAC are under direct control of a single security officer. In large systems the number of roles can be in the hundreds or thousands. Managing these roles and their interrelationships is a formidable task that often is highly centralized and delegated to a small team of security administrators. Because the main advantage of RBAC is to facilitate administration of permissions, it is natural to ask how RBAC can be used to manage RBAC itself. We believe that the use of RBAC for managing RBAC will be an important factor in the success of RBAC. Here we can only touch on some of the major issues.</p></div>
+    <div class="zh"><p>迄今为止，我们假设 RBAC 的所有组件均由单一安全官员直接控制。在大型系统中，角色数量可能多达数百乃至数千。管理这些角色及其相互关系是一项艰巨的任务，通常高度集中，并委托给一个小型安全管理员团队。由于 RBAC 的主要优势在于促进权限管理，自然就会问：RBAC 能否被用于管理 RBAC 自身？我们相信，用 RBAC 来管理 RBAC 将是 RBAC 取得成功的一个重要因素。这里我们只能触及其中一些主要问题。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>We mention some approaches to access control management that have been discussed in the literature. ISO has developed a number of security management related standards and documents. These can be approached via the top-level System Management Overview document. The ISO model is object-oriented and includes a hierarchy based on containment (a directory contains files and a file contains records). Roles could be integrated into the ISO approach.</p></div>
+    <div class="zh"><p>我们提及文献中讨论过的若干访问控制管理方法。ISO 已制定了一些与安全管理相关的标准和文档，可通过顶层的《系统管理概述》（System Management Overview）文档加以了解。ISO 模型是面向对象的，包含一个基于包含关系的层次（目录包含文件，文件包含记录）。角色可以被整合进 ISO 的方法之中。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>There is a long tradition of models for propagation of access rights, where the right to propagate rights is controlled by special control rights. Among the most recent and most developed of these is Sandhu's typed access matrix model. While it is often difficult to analyze the consequences of even fairly simple rules for propagation of rights, these models indicate that simple primitives can be composed to yield very flexible and expressive systems.</p></div>
+    <div class="zh"><p>访问权传播模型有着悠久的传统，其中传播权的权利由特殊的控制权来管控。这类模型中较新且较为成熟的是 Sandhu 的类型化访问矩阵模型（typed access matrix model）。尽管即便对相当简单的权利传播规则，分析其后果往往也很困难，但这些模型表明：简单的原语可以组合出非常灵活、富有表达力的系统。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>One example of work on managing RBAC is by Moffett and Sloman who define a fairly elaborate model based on role domains, owners, managers, and security administrators. In their work authority is not controlled or delegated from a single central point, but rather is negotiated between independent managers who have only a limited trust in each other.</p></div>
+    <div class="zh"><p>管理 RBAC 方面的一项工作来自 Moffett 与 Sloman，他们定义了一个相当精细的模型，基于角色域（role domains）、所有者、管理者和安全管理员。在他们的工作中，权威并非由单一中心点控制或委派，而是在彼此只有有限信任的独立管理者之间协商而成。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Our management model for RBAC is illustrated in Figure 4. The top half of this figure is essentially the same as Figure 1(b). The constraints in Figure 4 apply to all components. The bottom half of Figure 4 is a mirror image of the top half for administrative roles and administrative permissions. It is intended that administrative roles AR and administrative permissions AP be respectively disjoint from the regular roles R and permissions P. The model shows that permissions can only be assigned to roles and administrative permissions can only be assigned to administrative roles. This is a built-in constraint.</p></div>
+    <div class="zh"><p>我们的 RBAC 管理模型如图 4 所示。该图的上半部分本质上与图 1(b) 相同，图 4 中的约束作用于所有组件。图 4 的下半部分是上半部分针对管理角色和管理权限的镜像。其设计意图是：管理角色 AR 和管理权限 AP 分别与常规角色 R 和权限 P 不相交。模型表明：权限只能分配给（常规）角色，管理权限只能分配给管理角色。这是一项内建约束。</p></div>
+  </div>
+
+  <div class="figure-box">
+    <div class="fig-svg">
+      <svg viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg" font-family="Georgia,serif" font-size="10">
+        <defs>
+          <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker>
+          <marker id="ahg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6b8578"/></marker>
+        </defs>
+        <!-- circles -->
+        <circle cx="90" cy="270" r="40" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="90" y="266" text-anchor="middle" font-style="italic">U</text><text x="90" y="280" text-anchor="middle">USERS 用户</text>
+        <circle cx="330" cy="150" r="42" fill="none" stroke="#009f52" stroke-width="1.5"/>
+        <text x="330" y="146" text-anchor="middle" font-style="italic" fill="#009f52">R</text><text x="330" y="160" text-anchor="middle" fill="#009f52">ROLES 角色</text>
+        <circle cx="565" cy="150" r="40" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="565" y="146" text-anchor="middle" font-style="italic">P</text><text x="565" y="160" text-anchor="middle">PERM. 权限</text>
+        <circle cx="330" cy="395" r="42" fill="none" stroke="#009f52" stroke-width="1.5"/>
+        <text x="330" y="388" text-anchor="middle" font-style="italic" fill="#009f52">AR</text><text x="330" y="401" text-anchor="middle" fill="#009f52">ADMIN. ROLES</text><text x="330" y="413" text-anchor="middle" fill="#009f52">管理角色</text>
+        <circle cx="565" cy="395" r="40" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="565" y="391" text-anchor="middle" font-style="italic">AP</text><text x="565" y="404" text-anchor="middle">ADMIN. PERM.</text>
+        <!-- sessions ellipse -->
+        <ellipse cx="215" cy="272" rx="16" ry="48" fill="none" stroke="currentColor" stroke-width="1.1"/>
+        <circle cx="215" cy="250" r="4" fill="currentColor"/><circle cx="215" cy="272" r="4" fill="currentColor"/><circle cx="215" cy="294" r="4" fill="currentColor"/>
+        <text x="215" y="235" text-anchor="middle" font-style="italic">S</text><text x="215" y="338" text-anchor="middle">SESSIONS 会话</text>
+        <!-- RH loop on R -->
+        <path d="M310,112 Q330,92 350,112" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)"/>
+        <text x="330" y="86" text-anchor="middle" fill="#6b8578">RH 角色层次</text>
+        <!-- ARH loop on AR -->
+        <path d="M310,433 Q330,453 350,433" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)"/>
+        <text x="330" y="478" text-anchor="middle" fill="#6b8578">ARH 管理角色层次</text>
+        <!-- UA top -->
+        <line x1="120" y1="245" x2="292" y2="168" stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)"/>
+        <text x="195" y="205" text-anchor="middle" fill="#6b8578">UA 用户分配</text>
+        <!-- UA bottom -->
+        <line x1="120" y1="295" x2="292" y2="378" stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)"/>
+        <text x="195" y="350" text-anchor="middle" fill="#6b8578">UA</text>
+        <!-- PA top -->
+        <line x1="372" y1="150" x2="524" y2="150" stroke="currentColor" stroke-width="1.2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <text x="448" y="138" text-anchor="middle" fill="#6b8578">PA 权限分配</text>
+        <!-- APA bottom -->
+        <line x1="372" y1="395" x2="524" y2="395" stroke="currentColor" stroke-width="1.2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <text x="448" y="383" text-anchor="middle" fill="#6b8578">APA 管理权限分配</text>
+        <!-- session arrows -->
+        <line x1="231" y1="258" x2="290" y2="175" stroke="currentColor" stroke-width="1" marker-end="url(#ah)"/>
+        <line x1="231" y1="286" x2="290" y2="372" stroke="currentColor" stroke-width="1" marker-end="url(#ah)"/>
+        <line x1="199" y1="262" x2="128" y2="262" stroke="currentColor" stroke-width="1" marker-end="url(#ah)"/>
+        <text x="180" y="278" font-style="italic" fill="#6b8578">user</text>
+        <text x="240" y="262" font-style="italic" fill="#6b8578">roles</text>
+        <!-- constraints -->
+        <rect x="430" y="262" width="92" height="22" rx="11" fill="none" stroke="currentColor" stroke-width="1.1"/>
+        <text x="476" y="277" text-anchor="middle">CONSTRAINTS 约束</text>
+        <line x1="476" y1="260" x2="476" y2="235" stroke="#6b8578" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ahg)"/>
+        <line x1="476" y1="286" x2="476" y2="312" stroke="#6b8578" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ahg)"/>
+        <line x1="428" y1="273" x2="400" y2="273" stroke="#6b8578" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ahg)"/>
+        <line x1="524" y1="273" x2="552" y2="273" stroke="#6b8578" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ahg)"/>
+      </svg>
+    </div>
+    <div class="fig-caption">图 4 / Figure 4：RBAC 管理模型 · RBAC Administrative Model（上半为常规 RBAC，下半为镜像的管理性 ARBAC）</div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The top half of Figure 4 can range in sophistication across RBAC0, RBAC1, RBAC2, and RBAC3. The bottom half can similarly range in sophistication across ARBAC0, ARBAC1, ARBAC2, and ARBAC3, where the A denotes administrative. In general we would expect the administrative model to be simpler than the RBAC model itself. Thus ARBAC0 can be used to manage RBAC3, but there seems to be no point in using ARBAC3 to manage RBAC0.</p></div>
+    <div class="zh"><p>图 4 的上半部分在复杂程度上可以在 RBAC0、RBAC1、RBAC2、RBAC3 之间变化。下半部分同样可以在 ARBAC0、ARBAC1、ARBAC2、ARBAC3 之间变化，其中 A 表示"管理性"（administrative）。一般而言，我们期望管理模型比 RBAC 模型本身更简单。因此，可以用 ARBAC0 来管理 RBAC3，而用 ARBAC3 来管理 RBAC0 则似乎毫无意义。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>It is also important to recognize that constraints can cut across both top and bottom halves of Figure 4. We have already asserted a built-in constraint that permissions can only be assigned to roles and administrative permissions can only be assigned to administrative roles. If administrative roles are mutually exclusive with respect to regular roles, we will have a situation where security administrators can manage RBAC but not use any of the privileges themselves.</p></div>
+    <div class="zh"><p>同样重要的是要认识到，约束可以横跨图 4 的上下两半部分。我们已经断言了一项内建约束：权限只能分配给角色，管理权限只能分配给管理角色。如果管理角色与常规角色互斥，就会出现这样一种情形：安全管理员可以管理 RBAC，但自己不能使用其中任何特权。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>How about management of the administrative hierarchy? In principle one could construct a second level administrative hierarchy to manage the first level one and so on. We feel that even a second level of administrative hierarchy is unnecessary. Hence the administration of the administrative hierarchy is left to a single chief security officer. This is reasonable for a single organization or a single administrative unit within an organization. The issue of how these units interact is not directly addressed in our model.</p></div>
+    <div class="zh"><p>那么管理层次本身又该如何管理？原则上，可以构造第二级管理层次来管理第一级，如此层层递进。我们认为，即便是第二级管理层次也属多余。因此，管理层次本身的管理就交由单一的首席安全官员负责。对于单一组织或组织内的单一管理单元而言，这是合理的。至于这些单元之间如何交互的问题，我们的模型并未直接论及。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Administrative authority in RBAC can be viewed as the ability to modify the user assignment, permission assignment and role hierarchy relations. In a management model the permissions that authorize these administrative operations must be explicitly defined. The precise nature of these permissions is implementation specific, but their general nature is much the same.</p></div>
+    <div class="zh"><p>RBAC 中的管理权威可被看作修改用户分配、权限分配和角色层次这三个关系的能力。在管理模型中，授权这些管理操作的权限必须被显式定义。这些权限的确切性质因实现而异，但其一般性质大体相同。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>One of the main issues in the management model is how to scope the administrative authority vested in administrative roles. To illustrate this consider the hierarchies shown in Figure 3(a). The administrative hierarchy of Figure 3(b) shows a single chief security officer role (CSO), which is senior to the three security officer roles SO1, SO2, and SO3. The scoping issue concerns which roles of Figure 3(a) can be managed by which roles of Figure 3(b). Let us say the CSO role can manage all roles of Figure 3(a). Suppose SO1 manages task T1. In general we do not want SO1 to automatically inherit the ability to manage the junior role P also. So the scope of SO1 can be limited entirely to T1. Similarly, the scope of SO2 can be limited to T2. Assume SO3 can manage the entire subproject consisting of S3, T3, T4, and P3. The scope of SO3 is then bounded by S3 at the top and P3 at the bottom.</p></div>
+    <div class="zh"><p>管理模型中的核心问题之一，是如何界定授予管理角色的管理权威的范围。为说明这一点，考虑图 3(a) 所示的层次。图 3(b) 的管理层次展示了单一的首席安全官员角色（CSO），它高于三个安全官员角色 SO1、SO2 和 SO3。范围界定问题关乎：图 3(a) 中的哪些角色可由图 3(b) 中的哪些角色来管理。假设 CSO 角色可以管理图 3(a) 中的所有角色，并设 SO1 管理任务 T1。一般而言，我们不希望 SO1 自动继承管理其下级角色 P 的能力，因此 SO1 的范围可被完全限定在 T1。同样，SO2 的范围可被限定在 T2。假设 SO3 可以管理由 S3、T3、T4、P3 构成的整个子项目，那么 SO3 的范围在上界以 S3 为限、在下界以 P3 为限。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>In general, each administrative role will be mapped to some subset of the role hierarchy it is responsible for managing. There are other aspects of management that need to be scoped. For example, SO1 may only be able to add users to the T1 role but their removal requires the CSO to act. More generally, we need to scope not only the roles an administrative role manages, but also the permissions and users that role manages. It is also important to control changes in the role hierarchy itself. For example, because SO3 manages the subhierarchy between S3 and P3, SO3 could be authorized to add additional tasks to that subproject.</p></div>
+    <div class="zh"><p>一般而言，每个管理角色都将被映射到其所负责管理的角色层次的某个子集。管理还有其他需要界定范围的方面。例如，SO1 可能只能向 T1 角色添加用户，而删除用户则需要 CSO 出面。更一般地，我们不仅需要界定一个管理角色所管理的角色范围，还需界定该角色所管理的权限和用户范围。控制角色层次本身的变更也很重要。例如，由于 SO3 管理 S3 与 P3 之间的子层次，SO3 可被授权向该子项目添加额外的任务。</p></div>
+  </div>
+</div>
+
+<div id="s6" class="section">
+  <div class="section-title">6. Conclusion</div>
+  <div class="section-title-zh">结论</div>
+  <div class="bi-pair">
+    <div class="en"><p>We have presented a family of RBAC models that systematically spans the spectrum from simple to complex. These models provide a common frame of reference for other research and development in this area. We have also presented a management model whereby RBAC can be used to control itself. This supports our position that RBAC is policy-neutral, rather than a model of a specific security policy.</p></div>
+    <div class="zh"><p>本文提出了一族 RBAC 模型，系统性地涵盖了从简单到复杂的完整谱系。这些模型为该领域的其他研究与开发提供了共同的参照框架。我们还提出了一种管理模型，使 RBAC 能够用于管理自身。这支持了我们的立场：RBAC 对策略保持中立，而非某种特定安全策略的模型。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>Much remains to be done to realize the promise of RBAC. One of the outstanding research problems in this area is to develop a systematic approach to the design and analysis of RBAC configurations. Some recent research on the design and analysis of role hierarchies has been reported. As mentioned earlier, there is little discussion in the literature about constraints in the context of RBAC. A categorization and taxonomy of constraints would be useful. A formal notation for stating and enforcing constraints, along with some measure of difficulty of enforcement, should be developed. The ability to reason about constraints and analyze the net effect of an RBAC configuration in terms of higher-level policy objectives is an important open research area.</p></div>
+    <div class="zh"><p>要充分实现 RBAC 的潜力，仍有大量工作有待完成。该领域最突出的研究问题之一，是开发一种对 RBAC 配置进行系统化设计与分析的方法。关于角色层次的设计与分析，近来已有一些研究见诸报道。如前所述，文献中关于 RBAC 语境下约束的讨论还很少。对约束进行分类和建立分类体系将很有价值。还应开发一套用于陈述和执行约束的形式化记法，并配以某种执行难度的度量。能够对约束进行推理、并从高层策略目标的角度分析某一 RBAC 配置的综合效果，是一个重要的开放研究领域。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p>The management aspects of RBAC need further work. Development of a systematic methodology that deals with the design and analysis of role hierarchies, constraints, and RBAC management in a unified framework is a challenging research goal. Many of these open issues and problems are intertwined and will require an integrated approach for their resolution.</p></div>
+    <div class="zh"><p>RBAC 的管理层面也需进一步研究。在一个统一框架下处理角色层次、约束以及 RBAC 管理的设计与分析，开发出一套系统化的方法论，是一个富有挑战性的研究目标。这些开放议题和问题中有许多彼此交织，需要以一种整合的方法加以解决。</p></div>
+  </div>
+  <div class="bi-pair">
+    <div class="en"><p><strong>Acknowledgement.</strong> The authors are grateful to David Ferraiolo and Janet Cugini of NIST for useful comments while this work was in progress. The authors also thank the anonymous reviewers whose comments and suggestions have significantly improved the paper.</p></div>
+    <div class="zh"><p><strong>致谢。</strong>作者感谢 NIST 的 David Ferraiolo 和 Janet Cugini 在本工作进行过程中提供的宝贵意见。作者还感谢匿名审稿人，他们的意见和建议显著改进了本文。</p></div>
+  </div>
+</div>
+
+<div id="refs" class="section">
+  <div class="section-title">References · 参考文献</div>
+  <ol class="ref-list">
+    <li data-n="[1]">Ferraiolo, D.F., Gilbert, D.M., and Lynch, N. "An examination of federal and commercial access control policy needs." <em>NIST-NCSC National Computer Security Conference</em>, pp. 107&ndash;116, Baltimore, MD, September 20&ndash;23, 1993.</li>
+    <li data-n="[2]">Common Criteria Editorial Board. <em>Common Criteria for Information Technology Security Evaluation</em>, Version 0.9, Preliminary Draft, December 1994.</li>
+    <li data-n="[3]">Mohammed, I. and Dilts, D.M. "Design for dynamic user-role-based security." <em>Computers &amp; Security</em>, 13(8):661&ndash;671, 1994.</li>
+    <li data-n="[4]">Thomas, R. and Sandhu, R.S. "Conceptual foundations for a model of task-based authorizations." <em>IEEE Computer Security Foundations Workshop 7</em>, pp. 66&ndash;79, Franconia, NH, June 1994.</li>
+    <li data-n="[5]">Sandhu, R.S. "Lattice-based access control models." <em>IEEE Computer</em>, 26(11):9&ndash;19, November 1993.</li>
+    <li data-n="[6]">Jonscher, D. "Extending access controls with duties &mdash; realized by active mechanisms." In Thuraisingham, B. and Landwehr, C.E. (eds.), <em>Database Security VI: Status and Prospects</em>, pp. 91&ndash;111. North-Holland, 1993.</li>
+    <li data-n="[7]">Ferraiolo, D. and Kuhn, R. "Role-based access controls." <em>15th NIST-NCSC National Computer Security Conference</em>, pp. 554&ndash;563, Baltimore, MD, October 13&ndash;16, 1992.</li>
+    <li data-n="[8]">Hu, M.-Y., Demurjian, S.A., and Ting, T.C. "User-role based security in the ADAM object-oriented design and analyses environment." In <em>Database Security VIII: Status and Prospects</em>. North-Holland, 1995.</li>
+    <li data-n="[9]">Nyanchama, M. and Osborn, S. "Access rights administration in role-based security systems." In <em>Database Security VIII: Status and Prospects</em>. North-Holland, 1995.</li>
+    <li data-n="[10]">von Solms, S.H. and van der Merwe, I. "The management of computer security profiles using a role-oriented approach." <em>Computers &amp; Security</em>, 13(8):673&ndash;680, 1994.</li>
+    <li data-n="[11]">ISO/IEC 10040. <em>Information Technology &mdash; Open Systems Interconnection &mdash; Systems Management Overview</em>.</li>
+    <li data-n="[12]">Sandhu, R.S. "The typed access matrix model." <em>Proceedings IEEE Computer Society Symposium on Research in Security and Privacy</em>, pp. 122&ndash;136, Oakland, CA, May 1992.</li>
+    <li data-n="[13]">Moffett, J.D. and Sloman, M.S. "Delegation of authority." In Krishnan, I. and Zimmer, W. (eds.), <em>Integrated Network Management II</em>, pp. 595&ndash;606. Elsevier Science Publishers B.V. (North-Holland), 1991.</li>
+    <li data-n="[14]">Fernandez, E.B., Wu, J., and Fernandez, M.H. "User group structures in object-oriented database authorization." In <em>Database Security VIII: Status and Prospects</em>. North-Holland, 1995.</li>
+  </ol>
+</div>
+
+<div class="footnotes">
+  <p>* 本文部分由 NIST 合同 50-DKNA-4-00122 和 50-DKNB-5-00188 资助；Ravi Sandhu 的工作另受美国国家科学基金会（NSF）项目 CCR-9503560 资助。</p>
+  <p>* 作者隶属：Ravi Sandhu 任职于 SETA Corporation 及 George Mason University 信息与软件系统工程系；Edward Coyne、Hal Feinstein 与 Charles Youman 任职于 SETA Corporation。通讯请寄：Prof. Ravi Sandhu, ISSE Department, George Mason University, Fairfax, VA 22030。</p>
+</div>
+
+</div>
+<script>
+function setMode(m){document.documentElement.setAttribute('data-mode',m);localStorage.setItem('rbac-mode',m);}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');var n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('rbac-theme',n);document.getElementById('theme-btn').textContent=n==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';}
+function toggleTOC(){document.getElementById('toc-drawer').classList.toggle('open');document.getElementById('toc-overlay').classList.toggle('open');}
+function closeTOC(){document.getElementById('toc-drawer').classList.remove('open');document.getElementById('toc-overlay').classList.remove('open');}
+(function(){if(localStorage.getItem('rbac-theme')==='dark')document.getElementById('theme-btn').textContent='\u2600\uFE0F';})();
+document.querySelectorAll('#toc-drawer a').forEach(function(a){a.addEventListener('click',closeTOC);});
+</script>
+</body>
+</html>

@@ -1110,6 +1110,13 @@ and event_time >= toDateTime('2025-11-07 09:30:00')
 limit 30 \G
 ```
 
+### 企业版CK中如何让查询能利用多节点的能力
+
+```sql
+select * from table 
+settings enable_parallel_replicas=1,enable_analyzer=1
+```
+
 
 ## system.query_log
 
